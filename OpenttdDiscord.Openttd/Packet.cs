@@ -59,7 +59,7 @@ namespace OpenttdDiscord.Openttd
 
         public ushort ReadU16() => BitConverter.ToUInt16(this.Buffer, (this.Position += 2) - 2);
 
-        public uint ReadU32() => BitConverter.ToUInt16(this.Buffer, (this.Position += 4) - 4);
+        public uint ReadU32() => BitConverter.ToUInt32(this.Buffer, (this.Position += 4) - 4); 
 
 
         public string ReadString()

@@ -24,8 +24,6 @@ namespace OpenttdDiscord
             var reader = new UdpPacketReader();
             var receveived = reader.ReadPacket(received);
             int a = 123;
-
-
         }
     }
 }

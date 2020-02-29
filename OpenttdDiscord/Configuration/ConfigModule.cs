@@ -14,16 +14,8 @@ namespace OpenttdDiscord.Configuration
     {
         public void Register(in IServiceCollection services)
         {
-            var builder = new ConfigurationBuilder()
-        .AddJsonFile("Configuration.json", optional: true, reloadOnChange: true);
-            var configuration = builder.Build();
-
-            services.AddSingleton(new MySqlConfig()
-            {
-                ConnectionString = configuration["mysql:connectionString"],
-            });
-
-            services.AddSingleton(new OpenttdDiscordConfig(configuration));
+            services.AddSingleton(new MySqlConfig());
+            services.AddSingleton(new OpenttdDiscordConfig());
         }
     }
 }

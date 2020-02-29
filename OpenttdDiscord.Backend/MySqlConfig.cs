@@ -8,6 +8,6 @@ namespace OpenttdDiscord.Backend
 {
     public class MySqlConfig
     {
-        public string ConnectionString { get; set; }
+        public string ConnectionString { get; } = Environment.GetEnvironmentVariable("ottd-discord-connectionstring");
     }
 }

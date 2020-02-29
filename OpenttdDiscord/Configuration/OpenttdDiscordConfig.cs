@@ -9,15 +9,6 @@ namespace OpenttdDiscord.Configuration
 {
     public class OpenttdDiscordConfig
     {
-        public string Token { get; }
-
-        public OpenttdDiscordConfig(IConfigurationRoot config)
-        {
-            const string prefix = "discord:";
-
-            this.Token = config[$"{prefix}token"];
-
-        }
-        
+        public string Token { get; } = Environment.GetEnvironmentVariable("ottd-discord-token");
     }
 }

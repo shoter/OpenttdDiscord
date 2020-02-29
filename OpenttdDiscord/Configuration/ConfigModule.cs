@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using OpenttdDiscord.Backend;
+using OpenttdDiscord.Common;
 using System;
 using System.Collections.Generic;
 using System.Linq;

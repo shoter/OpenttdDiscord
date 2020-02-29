@@ -9,9 +9,13 @@ namespace OpenttdDiscord.Backend.Servers
     public interface ISubscribedServerRepository
     {
 
-        Task<bool> Exists(string ip, int port);
+        Task<bool> Exists(string ip, int port, ulong channelId);
 
         Task<SubscribedServer> Add(Server server, ulong channelId);
+
+        Task<SubscribedServer> Get(string ip, int port, ulong channelId);
+
+        Task<IEnumerable<SubscribedServer>> GetAll();
 
         Task UpdateServer(ulong serverId, ulong messageId);
         

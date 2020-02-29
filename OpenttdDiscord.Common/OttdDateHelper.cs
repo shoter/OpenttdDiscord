@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OpenttdDiscord.Openttd
+namespace OpenttdDiscord.Common
 {
     internal class OttdDateHelper
     {

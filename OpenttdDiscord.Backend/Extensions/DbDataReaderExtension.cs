@@ -16,6 +16,13 @@ namespace OpenttdDiscord.Backend.Extensions
         public static ulong ReadU64(this DbDataReader r, string columnName) => ulong.Parse(r.ReadString(columnName));
 
         public static T Read<T>(this DbDataReader r, string columnName) => r.GetFieldValue<T>(r.GetOrdinal(columnName));
-        
+
+        public static T ReadNullable<T>(this DbDataReader r, string columnName)
+        {
+            int ordinal = r.GetOrdinal(columnName);
+            if (r.IsDBNull(ordinal))
+                return default(T);
+            return r.Read<T>(columnName);
+        }
     }
 }

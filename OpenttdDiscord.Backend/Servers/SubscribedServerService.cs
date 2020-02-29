@@ -20,8 +20,8 @@ namespace OpenttdDiscord.Backend.Servers
 
         public async Task<SubscribedServer> AddServer(string ip, int port, ulong channelId)
         {
-            if (await this.subscribedServerRepository.Exists(ip, port))
-                return null;
+            if (await this.subscribedServerRepository.Exists(ip, port, channelId))
+                return await this.subscribedServerRepository.Get(ip, port, channelId);
 
             Server server = await this.serverRepository.GetServer(ip, port);
 
@@ -33,6 +33,9 @@ namespace OpenttdDiscord.Backend.Servers
             return await this.subscribedServerRepository.Add(server, channelId);
         }
 
+        public Task<bool> Exists(string ip, int port, ulong channelId) => this.subscribedServerRepository.Exists(ip, port, channelId);
+
+        public Task<IEnumerable<SubscribedServer>> GetAllServers() => this.subscribedServerRepository.GetAll();
         public Task UpdateServer(ulong serverId, ulong messageId) => this.subscribedServerRepository.UpdateServer(serverId, messageId);
     }
 }

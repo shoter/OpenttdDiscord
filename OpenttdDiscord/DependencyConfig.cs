@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using OpenttdDiscord.Backend.Servers;
 using OpenttdDiscord.Commands;
 using OpenttdDiscord.Configuration;
+using OpenttdDiscord.Openttd.Udp;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,6 +24,7 @@ namespace OpenttdDiscord
             new ConfigModule().Register(services);
             new ServersModule().Register(services);
             new CommandsModule().Register(services);
+            new UdpModule().Register(services);
 
             services.AddSingleton<DiscordSocketClient>();
             services.AddSingleton<CommandService>();

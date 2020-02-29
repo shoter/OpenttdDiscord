@@ -11,12 +11,14 @@ namespace OpenttdDiscord.Backend.Servers
         public Server Server { get; }
         public DateTimeOffset LastUpdate { get; }
         public ulong ChannelId { get; }
+        public ulong? MessageId { get; }
 
-        public SubscribedServer(Server server, DateTimeOffset lastUpdate, ulong channelId)
+        public SubscribedServer(Server server, DateTimeOffset lastUpdate, ulong channelId, ulong? messageId)
         {
             this.Server = server;
             this.LastUpdate = lastUpdate;
             this.ChannelId = channelId;
+            this.MessageId = messageId;
         }
     }
 }

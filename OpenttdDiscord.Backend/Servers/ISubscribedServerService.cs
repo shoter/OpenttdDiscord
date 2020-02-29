@@ -10,7 +10,11 @@ namespace OpenttdDiscord.Backend.Servers
     {
         Task<SubscribedServer> AddServer(string ip, int port, ulong channelId);
 
-        Task UpdateServer(ulong serverId, ulong messageId);
+        Task<bool> Exists(string ip, int port, ulong channelId);
 
+        Task<IEnumerable<SubscribedServer>> GetAllServers();
+
+        Task UpdateServer(ulong serverId, ulong messageId);
     }
+
 }

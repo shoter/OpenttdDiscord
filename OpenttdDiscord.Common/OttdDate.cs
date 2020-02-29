@@ -4,24 +4,24 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OpenttdDiscord.Openttd
+namespace OpenttdDiscord.Common
 {
-    public class OttdDate
-    {
-        public byte Day { get; }
-        public byte Month { get; }
+	public class OttdDate
+	{
+		public byte Day { get; }
+		public byte Month { get; }
 
-        public uint Year { get; }
+		public uint Year { get; }
 
-        public OttdDate(byte day, byte month, uint year)
-        {
-            this.Day = day;
-            this.Month = month;
-            this.Year = year;
-        }
+		public OttdDate(byte day, byte month, uint year)
+		{
+			this.Day = day;
+			this.Month = month;
+			this.Year = year;
+		}
 
-        public OttdDate(uint date)
-        {
+		public OttdDate(uint date)
+		{
 			/* Year determination in multiple steps to account for leap
 			 * years. First do the large steps, then the smaller ones.
 			 */

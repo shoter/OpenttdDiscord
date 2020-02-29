@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OpenttdDiscord.Backend
+namespace OpenttdDiscord.Common
 {
     public interface IModule
     {

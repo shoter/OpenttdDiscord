@@ -8,4 +8,8 @@
     <Folder Include="Tcp\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\OpenttdDiscord.Common\OpenttdDiscord.Common.csproj" />
+  </ItemGroup>
+
 </Project>

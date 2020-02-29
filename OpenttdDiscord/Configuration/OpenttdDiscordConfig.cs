@@ -9,6 +9,6 @@ namespace OpenttdDiscord.Configuration
 {
     public class OpenttdDiscordConfig
     {
-        public string Token { get; } = Environment.GetEnvironmentVariable("ottd-discord-token");
+        public string Token { get; } = Environment.GetEnvironmentVariable("ottd_discord_token");
     }
 }

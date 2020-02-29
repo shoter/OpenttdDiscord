@@ -1,4 +1,5 @@
-﻿using Discord.Commands;
+﻿using Discord;
+using Discord.Commands;
 using OpenttdDiscord.Backend.Servers;
 using System;
 using System.Collections.Generic;
@@ -18,6 +19,8 @@ namespace OpenttdDiscord.Commands
             => ReplyAsync("pong!");
 
         [Command("register_server")]
+        [RequireContext(ContextType.Guild, ErrorMessage = "Sorry, this command must be ran from within a server, not a DM!")]
+        [RequireUserPermission(GuildPermission.Administrator)]
         public async Task RegisterServer(string ip, int port)
         {
             if(await this.SubscribedServerService.Exists(ip, port, Context.Channel.Id))

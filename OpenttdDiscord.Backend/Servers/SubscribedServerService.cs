@@ -36,6 +36,6 @@ namespace OpenttdDiscord.Backend.Servers
         public Task<bool> Exists(string ip, int port, ulong channelId) => this.subscribedServerRepository.Exists(ip, port, channelId);
 
         public Task<IEnumerable<SubscribedServer>> GetAllServers() => this.subscribedServerRepository.GetAll();
-        public Task UpdateServer(ulong serverId, ulong messageId) => this.subscribedServerRepository.UpdateServer(serverId, messageId);
+        public Task UpdateServer(ulong serverId, ulong channelId, ulong messageId) => this.subscribedServerRepository.UpdateServer(serverId, channelId, messageId);
     }
 }

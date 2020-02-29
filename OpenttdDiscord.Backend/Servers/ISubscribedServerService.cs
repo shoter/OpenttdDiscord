@@ -14,7 +14,7 @@ namespace OpenttdDiscord.Backend.Servers
 
         Task<IEnumerable<SubscribedServer>> GetAllServers();
 
-        Task UpdateServer(ulong serverId, ulong messageId);
+        Task UpdateServer(ulong serverId, ulong channelId, ulong messageId);
     }
 
 }

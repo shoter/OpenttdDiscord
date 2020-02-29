@@ -16,6 +16,7 @@ using System.Timers;
 using Discord.Rest;
 using OpenttdDiscord.Common;
 using OpenttdDiscord.Backend;
+using OpenttdDiscord.Embeds;
 
 namespace OpenttdDiscord
 {
@@ -24,6 +25,7 @@ namespace OpenttdDiscord
         private static DiscordSocketClient client;
         private static ISubscribedServerService subscribedServerService;
         private static IUdpOttdClient udpOttdClient;
+        private static IUdpEmbedFactory udpEmbedFactory;
 
         private static readonly Timer updateTimer = new Timer(3_000);
 
@@ -37,6 +39,7 @@ namespace OpenttdDiscord
             subscribedServerService = services.GetRequiredService<ISubscribedServerService>();
             client = services.GetRequiredService<DiscordSocketClient>();
             udpOttdClient = services.GetRequiredService<IUdpOttdClient>();
+            udpEmbedFactory = services.GetRequiredService<IUdpEmbedFactory>();
             client.Log += Log;
             services.GetRequiredService<CommandService>().Log += Log;
 
@@ -76,33 +79,17 @@ namespace OpenttdDiscord
 
                         if (msg is PacketUdpServerResponse r)
                         {
-                            var embed = new EmbedBuilder
-                            {
-                                Title = $"{r.ServerName}"
-                            };
-
-                            embed.AddField("Players", $"{r.ClientsOn}/{r.ClientsMax}", true);
-                            embed.AddField("Map Size", $"{r.MapWidth}x{r.MapHeight}", true);
-                            embed.AddField("Year", $"{r.GameDate.ToString()}", true);
-
-                            embed.AddField("Climate", r.Landscape.Stringify().FirstUpper(), true);
-                            embed.AddField("Map name", r.MapName, true);
-                            embed.AddField("Language", r.Language.Stringify().FirstUpper(), true);
-
-                            embed.AddField("Server address", $"{s.Server.ServerIp}:{s.Server.ServerPort}", true);
-                            embed.AddField("Password?", r.HasPassword ? "No" : "Yes", true);
-
-                            embed.WithCurrentTimestamp();
-
+                            Embed embed = await udpEmbedFactory.Create(r, s.Server);
+                          
 
                             await (await channel.GetMessageAsync(messageId.Value) as RestUserMessage).ModifyAsync(x =>
                             {
-                                x.Embed = embed.Build();
+                                x.Embed = embed;
                                 x.Content = string.Empty;
                             });
                         }
 
-                        await subscribedServerService.UpdateServer(s.Server.Id, messageId.Value);
+                        await subscribedServerService.UpdateServer(s.Server.Id, s.ChannelId, messageId.Value);
                     }
                 }
             }

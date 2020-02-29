@@ -112,7 +112,7 @@ namespace OpenttdDiscord.Backend.Servers
             }
         }
 
-        public async Task UpdateServer(ulong serverId, ulong messageId)
+        public async Task UpdateServer(ulong serverId, ulong channelId, ulong messageId)
         {
             using (var conn = new MySqlConnection(this.connectionString))
             {
@@ -123,8 +123,9 @@ namespace OpenttdDiscord.Backend.Servers
                     cmd.Connection = conn;
                     cmd.CommandText = "UPDATE subscribed_servers " +
                         "SET last_update = now(), message_id = @message_id" +
-                        " WHERE server_id = @id";
+                        " WHERE server_id = @id AND channel_id = @cid";
                     cmd.Parameters.AddWithValue("id", serverId);
+                    cmd.Parameters.AddWithValue("cid", channelId);
                     cmd.Parameters.AddWithValue("message_id", messageId);
                     await cmd.ExecuteNonQueryAsync();
                 }

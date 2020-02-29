@@ -15,6 +15,7 @@ using OpenttdDiscord.Commands;
 using System.Timers;
 using Discord.Rest;
 using OpenttdDiscord.Common;
+using OpenttdDiscord.Backend;
 
 namespace OpenttdDiscord
 {
@@ -29,6 +30,10 @@ namespace OpenttdDiscord
         public static async Task Main()
         {
             using var services = DependencyConfig.ServiceProvider;
+            var msql = services.GetRequiredService<MySqlConfig>();
+            var d = services.GetRequiredService<OpenttdDiscordConfig>();
+            Console.WriteLine(msql.ConnectionString);
+            Console.WriteLine(d.Token);
             subscribedServerService = services.GetRequiredService<ISubscribedServerService>();
             client = services.GetRequiredService<DiscordSocketClient>();
             udpOttdClient = services.GetRequiredService<IUdpOttdClient>();

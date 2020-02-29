@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 
 namespace OpenttdDiscord.Configuration
 {
-    public class DiscordConfig
+    public class OpenttdDiscordConfig
     {
         public string Token { get; }
 
-        public DiscordConfig(IConfigurationRoot config)
+        public OpenttdDiscordConfig(IConfigurationRoot config)
         {
             const string prefix = "discord:";
 

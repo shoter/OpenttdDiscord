@@ -1,5 +1,6 @@
 ﻿using Discord;
 using Discord.WebSocket;
+using Discord.Commands;
 using OpenttdDiscord.Configuration;
 using OpenttdDiscord.Openttd;
 using Microsoft.Extensions.DependencyInjection;
@@ -9,6 +10,8 @@ using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading.Tasks;
+using OpenttdDiscord.Backend.Servers;
+using OpenttdDiscord.Commands;
 
 namespace OpenttdDiscord
 {
@@ -20,28 +23,27 @@ namespace OpenttdDiscord
      
         public static async Task Main()
         {
-            var c = DependencyConfig.ServiceProvider.GetService<Config>();
+            using (var services = DependencyConfig.ServiceProvider)
+            {
+                client = services.GetRequiredService<DiscordSocketClient>();
+                client.Log += Log;
+                services.GetRequiredService<CommandService>().Log += Log;
 
-            client = new DiscordSocketClient();
-            client.MessageReceived += MessageReceivedAsync;
 
-            await client.LoginAsync(TokenType.Bot, "NDY5NjU1NDE5Mjc5OTAwNjky.XlekaA.4wq4iuyVhL8LQDBR7YvpiQge0y0");
-            await client.StartAsync();
+                await client.LoginAsync(TokenType.Bot, services.GetRequiredService<OpenttdDiscordConfig>().Token);
+                await client.StartAsync();
 
-            await Task.Delay(-1);
+                await services.GetRequiredService<CommandHandlingService>().InitializeAsync();
+
+                await Task.Delay(-1);
+            }
         }
 
-        // This is not the recommended way to write a bot - consider
-        // reading over the Commands Framework sample.
-        private static async Task MessageReceivedAsync(SocketMessage message)
+        private static Task Log(LogMessage arg)
         {
-            // The bot should never respond to itself.
-            if (message.Author.Id == client.CurrentUser.Id)
-                return;
-
-            if (message.Content == "!ping")
-                await message.Channel.SendMessageAsync("pong!");
+            Console.WriteLine(arg.Message);
+            return Task.CompletedTask;
         }
-
+      
     }
 }

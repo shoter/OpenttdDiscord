@@ -1,4 +1,8 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Discord.Commands;
+using Discord.WebSocket;
+using Microsoft.Extensions.DependencyInjection;
+using OpenttdDiscord.Backend.Servers;
+using OpenttdDiscord.Commands;
 using OpenttdDiscord.Configuration;
 using System;
 using System.Collections.Generic;
@@ -17,6 +21,11 @@ namespace OpenttdDiscord
             var services = new ServiceCollection();
 
             new ConfigModule().Register(services);
+            new ServersModule().Register(services);
+            new CommandsModule().Register(services);
+
+            services.AddSingleton<DiscordSocketClient>();
+            services.AddSingleton<CommandService>();
 
             ServiceProvider = services.BuildServiceProvider();
         }

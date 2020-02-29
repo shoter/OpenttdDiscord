@@ -32,6 +32,7 @@ namespace OpenttdDiscord.Openttd.Udp
         public string ServerName { get; internal set; }
         public string ServerRevision { get; internal set; }
         public byte LanguageId { get; internal set; }
+        public OttdLanguage Language => (OttdLanguage)LanguageId;
         public bool HasPassword { get; internal set; }
         public byte ClientsMax { get; internal set; }
         public byte ClientsOn { get; internal set; }
@@ -41,6 +42,7 @@ namespace OpenttdDiscord.Openttd.Udp
         public ushort MapWidth { get; internal set; }
         public ushort MapHeight { get; internal set; }
         public byte MapSet { get; internal set; }
+        public Landscape Landscape => (Landscape)MapSet;
         public bool IsDedicated { get; internal set; }
 
     }

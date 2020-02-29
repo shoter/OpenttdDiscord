@@ -10,7 +10,7 @@ namespace OpenttdDiscord.Commands
 {
     public class ServerCommands : ModuleBase<SocketCommandContext>
     {
-        public ISubscribedServerService subscribedServerService { get; set; }
+        public ISubscribedServerService SubscribedServerService { get; set; }
 
         [Command("ping")]
         [Alias("pong", "hello")]
@@ -20,12 +20,12 @@ namespace OpenttdDiscord.Commands
         [Command("register_server")]
         public async Task RegisterServer(string ip, int port)
         {
-            if(await this.subscribedServerService.Exists(ip, port, Context.Channel.Id))
+            if(await this.SubscribedServerService.Exists(ip, port, Context.Channel.Id))
             {
                 await ReplyAsync("Server is already registered on this channel");
                 return;
             }
-            await this.subscribedServerService.AddServer(ip, port, Context.Channel.Id);
+            await this.SubscribedServerService.AddServer(ip, port, Context.Channel.Id);
             await ReplyAsync("Server has been registered!");
         }
 

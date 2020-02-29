@@ -11,3 +11,6 @@ dotnet_style_qualification_for_method = false:none
 
 # IDE0003: Remove qualification
 dotnet_style_qualification_for_field = false:none
+
+# IDE0040: Add accessibility modifiers
+dotnet_style_require_accessibility_modifiers = for_non_interface_members:warning

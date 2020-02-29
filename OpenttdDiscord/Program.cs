@@ -14,40 +14,39 @@ using OpenttdDiscord.Backend.Servers;
 using OpenttdDiscord.Commands;
 using System.Timers;
 using Discord.Rest;
+using OpenttdDiscord.Common;
 
 namespace OpenttdDiscord
 {
-    class Program
+    internal class Program
     {
-        static DiscordSocketClient client;
-        static ISubscribedServerService subscribedServerService;
-        static IUdpOttdClient udpOttdClient;
+        private static DiscordSocketClient client;
+        private static ISubscribedServerService subscribedServerService;
+        private static IUdpOttdClient udpOttdClient;
 
-        static Timer updateTimer = new Timer(3_000);
+        private static readonly Timer updateTimer = new Timer(3_000);
 
         public static async Task Main()
         {
-            using (var services = DependencyConfig.ServiceProvider)
-            {
-                subscribedServerService = services.GetRequiredService<ISubscribedServerService>();
-                client = services.GetRequiredService<DiscordSocketClient>();
-                udpOttdClient = services.GetRequiredService<IUdpOttdClient>();
-                client.Log += Log;
-                services.GetRequiredService<CommandService>().Log += Log;
+            using var services = DependencyConfig.ServiceProvider;
+            subscribedServerService = services.GetRequiredService<ISubscribedServerService>();
+            client = services.GetRequiredService<DiscordSocketClient>();
+            udpOttdClient = services.GetRequiredService<IUdpOttdClient>();
+            client.Log += Log;
+            services.GetRequiredService<CommandService>().Log += Log;
 
-                updateTimer.AutoReset = true;
-                updateTimer.Elapsed += new ElapsedEventHandler(OnTimedEvent);
+            updateTimer.AutoReset = true;
+            updateTimer.Elapsed += new ElapsedEventHandler(OnTimedEvent);
 
 
-                await client.LoginAsync(TokenType.Bot, services.GetRequiredService<OpenttdDiscordConfig>().Token);
-                await client.StartAsync();
+            await client.LoginAsync(TokenType.Bot, services.GetRequiredService<OpenttdDiscordConfig>().Token);
+            await client.StartAsync();
 
-                updateTimer.Start();
+            updateTimer.Start();
 
-                await services.GetRequiredService<CommandHandlingService>().InitializeAsync();
+            await services.GetRequiredService<CommandHandlingService>().InitializeAsync();
 
-                await Task.Delay(-1);
-            }
+            await Task.Delay(-1);
         }
 
         private static async void OnTimedEvent(Object source, ElapsedEventArgs e)
@@ -81,9 +80,9 @@ namespace OpenttdDiscord
                             embed.AddField("Map Size", $"{r.MapWidth}x{r.MapHeight}", true);
                             embed.AddField("Year", $"{r.GameDate.ToString()}", true);
 
-                            embed.AddField("Climate", "Temperate", true);
+                            embed.AddField("Climate", r.Landscape.Stringify().FirstUpper(), true);
                             embed.AddField("Map name", r.MapName, true);
-                            embed.AddField("Language", "Polish", true);
+                            embed.AddField("Language", r.Language.Stringify().FirstUpper(), true);
 
                             embed.AddField("Server address", $"{s.Server.ServerIp}:{s.Server.ServerPort}", true);
                             embed.AddField("Password?", r.HasPassword ? "No" : "Yes", true);

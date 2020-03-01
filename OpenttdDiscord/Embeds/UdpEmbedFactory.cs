@@ -32,7 +32,7 @@ namespace OpenttdDiscord.Embeds
                         embed.AddField("Language", r.Language.Stringify().FirstUpper(), true);
 
                         embed.AddField("Server address", $"{server.ServerIp}:{server.ServerPort}", true);
-                        embed.AddField("Password?", r.HasPassword ? "No" : "Yes", true);
+                        embed.AddField("Password?", r.HasPassword ? "Yes" : "No", true);
 
                         embed.WithCurrentTimestamp();
                         return Task.FromResult(embed.Build());

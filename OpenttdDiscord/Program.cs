@@ -27,7 +27,7 @@ namespace OpenttdDiscord
         private static IUdpOttdClient udpOttdClient;
         private static IUdpEmbedFactory udpEmbedFactory;
 
-        private static readonly Timer updateTimer = new Timer(30_000);
+        private static readonly Timer updateTimer = new Timer(60_000);
 
         public static async Task Main()
         {
@@ -59,7 +59,6 @@ namespace OpenttdDiscord
 
         private static async void OnTimedEvent(Object source, ElapsedEventArgs e)
         {
-            updateTimer.Stop();
             try
             {
 
@@ -97,9 +96,7 @@ namespace OpenttdDiscord
             {
                 Console.WriteLine("Exception " + ex.ToString());
             }
-
             GC.KeepAlive(updateTimer);
-            updateTimer.Start();
         }
 
         private static Task Log(LogMessage arg)

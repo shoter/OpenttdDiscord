@@ -91,12 +91,12 @@ namespace OpenttdDiscord
                         await subscribedServerService.UpdateServer(s.Server.Id, s.ChannelId, messageId.Value);
                     }
                 }
+                GC.KeepAlive(updateTimer);
             }
             catch (Exception ex)
             {
                 Console.WriteLine("Exception " + ex.ToString());
             }
-            GC.KeepAlive(updateTimer);
         }
 
         private static Task Log(LogMessage arg)

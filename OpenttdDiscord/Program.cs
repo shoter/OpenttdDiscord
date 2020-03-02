@@ -104,6 +104,5 @@ namespace OpenttdDiscord
             Console.WriteLine(arg.Message);
             return Task.CompletedTask;
         }
-
     }
 }

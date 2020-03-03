@@ -17,6 +17,8 @@ using Discord.Rest;
 using OpenttdDiscord.Common;
 using OpenttdDiscord.Backend;
 using OpenttdDiscord.Embeds;
+using OpenttdDiscord.Openttd.Tcp;
+using Microsoft.Extensions.Configuration;
 
 namespace OpenttdDiscord
 {
@@ -31,6 +33,18 @@ namespace OpenttdDiscord
 
         public static async Task Main()
         {
+            var config = new ConfigurationBuilder()
+                   .SetBasePath(System.IO.Directory.GetCurrentDirectory())
+                   .Build();
+
+            DependencyConfig.Init(config);
+
+            ITcpOttdClient c = DependencyConfig.ServiceProvider.GetRequiredService<ITcpOttdClient>();
+
+            await c.Start("192.168.2.100", 3979, "testerek");
+
+            await Task.Delay(-1);
+            return;
             using var services = DependencyConfig.ServiceProvider;
             var msql = services.GetRequiredService<MySqlConfig>();
             var d = services.GetRequiredService<OpenttdDiscordConfig>();

@@ -51,6 +51,7 @@ namespace OpenttdDiscord.Openttd.Tcp
                     }
             }
 
+            packet.PrepareToSend();
             return packet;
         }
     }

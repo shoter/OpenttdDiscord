@@ -14,10 +14,13 @@ namespace OpenttdDiscord.Openttd.Tcp
 
         public uint FrameCounterMax { get; }
 
-        public PacketServerFrameMessage(uint frameCounter, uint frameCounterMax)
+        public byte Token { get; }
+
+        public PacketServerFrameMessage(uint frameCounter, uint frameCounterMax, byte token)
         {
             this.FrameCounter = frameCounter;
             this.FrameCounterMax = frameCounterMax;
+            this.Token = token;
         }
     }
 }

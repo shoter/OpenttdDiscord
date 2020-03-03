@@ -18,8 +18,11 @@ namespace OpenttdDiscord.Openttd.Tcp
                     {
                         uint frameCounter = packet.ReadU32();
                         uint frameCounterMax = packet.ReadU32();
+                        byte token = 0;
+                        if(packet.Position < packet.Size)
+                            token = packet.ReadByte();
 
-                        return new PacketServerFrameMessage(frameCounter, frameCounterMax);
+                        return new PacketServerFrameMessage(frameCounter, frameCounterMax, token);
                     }
                 case TcpMessageType.PACKET_SERVER_SYNC:
                     {
@@ -48,6 +51,18 @@ namespace OpenttdDiscord.Openttd.Tcp
                     {
                         return new PacketServerQuitMessage(clientId: packet.ReadU32());
                     }
+                case TcpMessageType.PACKET_SERVER_CLIENT_INFO:
+                    {
+                        uint clientId = packet.ReadU32();
+                        byte playas = packet.ReadByte();
+                        string clientName = packet.ReadString();
+
+                        return new PacketServerClientInfoMessage(clientId, playas, clientName);
+                    }
+                case TcpMessageType.PACKET_SERVER_JOIN:
+                    {
+                        return new PacketServerJoinMessage(packet.ReadU32());
+                    }
                 case TcpMessageType.PACKET_SERVER_FULL:
                 case TcpMessageType.PACKET_SERVER_BANNED:
                 case TcpMessageType.PACKET_SERVER_MAP_BEGIN:
@@ -61,6 +76,7 @@ namespace OpenttdDiscord.Openttd.Tcp
                 case TcpMessageType.PACKET_SERVER_COMPANY_UPDATE:
                 case TcpMessageType.PACKET_SERVER_MOVE:
                 case TcpMessageType.PACKET_SERVER_COMMAND:
+                case TcpMessageType.PACKET_SERVER_CHECK_NEWGRFS:
 
                 case TcpMessageType.PACKET_SERVER_CHAT:
                 case TcpMessageType.PACKET_SERVER_RCON:

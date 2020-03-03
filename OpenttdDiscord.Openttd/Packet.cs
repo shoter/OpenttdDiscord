@@ -57,10 +57,10 @@ namespace OpenttdDiscord.Openttd
         {
             foreach(char c in str)
             {
-                this.Buffer[this.Position++] = (byte)c;
+                this.Buffer[this.Size++] = (byte)c;
             }
 
-            this.Buffer[this.Position++] = 0;
+            this.Buffer[this.Size++] = 0;
         }
 
         public byte ReadByte() => this.Buffer[this.Position++];

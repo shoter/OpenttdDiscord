@@ -36,11 +36,21 @@ namespace OpenttdDiscord.Openttd
 
         public void SendU16(ushort value)
         {
-            byte[] bytes = BitConverter.GetBytes(Size);
+            byte[] bytes = BitConverter.GetBytes(value);
             this.Buffer[this.Size] = bytes[0];
             this.Buffer[this.Size + 1] = bytes[1];
 
             this.Size += 2;
+        }
+        public void SendU32(uint value)
+        {
+            byte[] bytes = BitConverter.GetBytes(value);
+            this.Buffer[this.Size] = bytes[0];
+            this.Buffer[this.Size + 1] = bytes[1];
+            this.Buffer[this.Size + 2] = bytes[2];
+            this.Buffer[this.Size + 3] = bytes[3];
+
+            this.Size += 4;
         }
 
         public void SendString(string str)

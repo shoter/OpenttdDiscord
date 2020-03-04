@@ -16,3 +16,16 @@ Openttd Discord bot.
 Debugging process is the same excluding the fact that you need to launch your project instead of docker instance. It should work out of the box with environment variables set.
 
 
+## Usage
+
+### Creating message updating server status
+
+
+```
+@BotMention register_server IP Port
+```
+
+It will create following message that will be updated every minute.
+
+![Server status result - it shows information about players on the server, server ip and port, server name and some other minor things.](https://github.com/shoter/OpenttdDiscord/raw/master/media/server_status.png)
+

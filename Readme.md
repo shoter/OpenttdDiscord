@@ -13,3 +13,6 @@ Openttd Discord bot.
 * run run.sh to launch docker with openttd bot loaded. It will automatically take your environment variables.
 
 
+Debugging process is the same excluding the fact that you need to launch your project instead of docker instance. It should work out of the box with environment variables set.
+
+

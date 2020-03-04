@@ -24,17 +24,19 @@ namespace OpenttdDiscord.Openttd.Tcp
         private readonly ITcpPacketCreator packetCreator;
         private readonly IUdpPacketCreator udpPacketCreator;
         private readonly IUdpPacketReader udpPacketReader;
-        private readonly bool connected = false;
+        private readonly TcpClient client = new TcpClient();
+        private bool connected = false;
         private readonly CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+        private ConnectionState connectionState = ConnectionState.NotConnected;
 
         private readonly ConcurrentDictionary<uint, Player> players = new ConcurrentDictionary<uint, Player>();
 
-        TcpMessageType[] ignoredLoggedTypes = new TcpMessageType[]
-{
+        private readonly TcpMessageType[] ignoredLoggedTypes = new TcpMessageType[]
+        {
                 TcpMessageType.PACKET_SERVER_SYNC,
                 TcpMessageType.PACKET_CLIENT_ACK,
                 TcpMessageType.PACKET_SERVER_FRAME
-};
+        };
 
         private uint myClientId = 0;
         public TcpOttdClient(ITcpPacketCreator packetCreator, ITcpPacketReader packetReader, IUdpPacketReader udpPacketReader, IUdpPacketCreator udpPacketCreator, ILogger<ITcpOttdClient> logger)
@@ -84,167 +86,179 @@ namespace OpenttdDiscord.Openttd.Tcp
         public async void mainLoop(CancellationToken token, string serverIp, int serverPort, string username, string password)
         {
 
-            TcpClient client = new TcpClient(serverIp, serverPort);
             Task sizeTask = null;
             byte[] sizeBuffer = new byte[2];
-            this.QueueInternal(await this.CreateJoinMessage(serverIp, serverPort, username));
 
             while (token.IsCancellationRequested == false)
             {
-#if !DEBUG
                 try
                 {
-#endif
+                    if (this.connectionState == ConnectionState.NotConnected)
+                    {
+                        client.Connect(serverIp, serverPort);
+                        this.QueueInternal(await this.CreateJoinMessage(serverIp, serverPort, username));
+                        this.connectionState = ConnectionState.Connecting;
+                    }
+                    for (int i = 0; i < 100; ++i)
+                    {
+                        if (this.sendMessageQueue.TryDequeue(out ITcpMessage msg))
+                        {
+                            Packet packet = this.packetCreator.Create(msg);
+                            await client.GetStream().WriteAsync(packet.Buffer, 0, packet.Size);
+                            if (!ignoredLoggedTypes.Contains(msg.MessageType))
+                                this.logger.LogTrace($"Sent {msg.MessageType.ToString()} - {packet.Size}");
+                        }
+                        else
+                            break;
+                    }
 
-                for (int i = 0; i < 100; ++i)
-                {
-                    if (this.sendMessageQueue.TryDequeue(out ITcpMessage msg))
+                    while (this.internalSendMessageQueue.TryDequeue(out ITcpMessage msg))
                     {
                         Packet packet = this.packetCreator.Create(msg);
                         await client.GetStream().WriteAsync(packet.Buffer, 0, packet.Size);
                         if (!ignoredLoggedTypes.Contains(msg.MessageType))
-                            this.logger.LogTrace($"Sent {msg.MessageType.ToString()} - {packet.Size}");
+                            this.logger.LogTrace($"Sent Internal {msg.MessageType.ToString()} - {packet.Size}");
+
                     }
-                    else
-                        break;
-                }
 
-                while (this.internalSendMessageQueue.TryDequeue(out ITcpMessage msg))
-                {
-                    Packet packet = this.packetCreator.Create(msg);
-                    await client.GetStream().WriteAsync(packet.Buffer, 0, packet.Size);
-                    if (!ignoredLoggedTypes.Contains(msg.MessageType))
-                        this.logger.LogTrace($"Sent Internal {msg.MessageType.ToString()} - {packet.Size}");
-
-                }
-
-                if (sizeTask == null)
-                {
-                    sizeTask = client.GetStream().ReadAsync(sizeBuffer, 0, 2);
-                }
-
-                //for (int i = 0; i < 100 &&client.GetStream().DataAvailable; ++i)
-                if (sizeTask?.IsCompleted ?? false)
-                {
-                    ushort size = BitConverter.ToUInt16(sizeBuffer, 0);
-
-                    if (size <= 2)
+                    if (sizeTask == null)
                     {
-                        sizeTask = null;
+                        sizeTask = client.GetStream().ReadAsync(sizeBuffer, 0, 2);
                     }
-                    else
+
+                    //for (int i = 0; i < 100 &&client.GetStream().DataAvailable; ++i)
+                    if (sizeTask?.IsCompleted ?? false)
                     {
+                        ushort size = BitConverter.ToUInt16(sizeBuffer, 0);
 
-                        byte[] content = new byte[size];
-                        content[0] = sizeBuffer[0];
-                        content[1] = sizeBuffer[1];
-
-                        await client.GetStream().ReadAsync(content, 2, size - 2);
-
-                        sizeTask = null;
-
-                        var packet = new Packet(content);
-                        ITcpMessage msg = this.packetReader.Read(packet);
-
-                        if (!ignoredLoggedTypes.Contains(msg.MessageType))
-                            this.logger.LogTrace($"Received {msg.MessageType}");
-
-                        switch (msg.MessageType)
+                        if (size <= 2)
                         {
-                            case TcpMessageType.PACKET_SERVER_FULL:
-                                {
-                                    this.logger.LogWarning($"Cannot join {serverIp}:{serverPort} - server is full");
-                                    await Task.Delay(TimeSpan.FromMinutes(1));
-                                    this.QueueInternal(await this.CreateJoinMessage(serverIp, serverPort, username));
-                                    break;
-                                }
-                            case TcpMessageType.PACKET_SERVER_BANNED:
-                                {
-                                    this.logger.LogWarning($"Cannot join {serverIp}:{serverPort} - user is banned");
-                                    await Task.Delay(TimeSpan.FromMinutes(10));
-                                    this.QueueInternal(await this.CreateJoinMessage(serverIp, serverPort, username));
-                                    break;
-                                }
-                            case TcpMessageType.PACKET_SERVER_NEED_GAME_PASSWORD:
-                                {
-                                    this.QueueInternal(new PacketClientGamePasswordMessage(password));
-                                    break;
-                                }
-                            case TcpMessageType.PACKET_SERVER_FRAME:
-                                {
-                                    var m = msg as PacketServerFrameMessage;
-                                    this.QueueInternal(new PacketClientAckMessage(m.FrameCounter, m.Token));
-                                    break;
-                                }
-                            case TcpMessageType.PACKET_SERVER_CHECK_NEWGRFS:
-                                {
-                                    // Everything ok here xD
-                                    this.QueueInternal(new GenericTcpMessage(TcpMessageType.PACKET_CLIENT_NEWGRFS_CHECKED));
-                                    break;
-                                }
-                            case TcpMessageType.PACKET_SERVER_CLIENT_INFO:
-                                {
-                                    var m = msg as PacketServerClientInfoMessage;
-                                    var player = new Player(m.ClientId)
+                            sizeTask = null;
+                        }
+                        else
+                        {
+
+                            byte[] content = new byte[size];
+                            content[0] = sizeBuffer[0];
+                            content[1] = sizeBuffer[1];
+
+                            await client.GetStream().ReadAsync(content, 2, size - 2);
+
+                            sizeTask = null;
+
+                            var packet = new Packet(content);
+                            ITcpMessage msg = this.packetReader.Read(packet);
+
+                            if (!ignoredLoggedTypes.Contains(msg.MessageType))
+                                this.logger.LogTrace($"Received {msg.MessageType}");
+
+                            switch (msg.MessageType)
+                            {
+                                case TcpMessageType.PACKET_SERVER_FULL:
                                     {
-                                        Name = m.ClientName
-                                    };
-                                    this.logger.LogTrace($"{m.ClientId} - {m.ClientName}");
-                                    this.players.AddOrUpdate(m.ClientId, player, (_, __) => player);
-
-                                    if (connected)
-                                        this.receivedMessageQueue.Enqueue(msg);
-
-                                    break;
-                                }
-                            case TcpMessageType.PACKET_SERVER_WELCOME:
-                                {
-                                    var m = msg as PacketServerWelcomeMessage;
-                                    this.myClientId = m.ClientId;
-                                    this.QueueInternal(new GenericTcpMessage(TcpMessageType.PACKET_CLIENT_GETMAP));
-                                    break;
-                                }
-                            case TcpMessageType.PACKET_SERVER_MAP_DONE:
-                                {
-                                    this.QueueInternal(new GenericTcpMessage(TcpMessageType.PACKET_CLIENT_MAP_OK));
-                                    break;
-                                }
-                            default:
-                                {
-                                    if (connected == false)
+                                        this.logger.LogWarning($"Cannot join {serverIp}:{serverPort} - server is full");
+                                        await Task.Delay(TimeSpan.FromMinutes(1));
+                                        this.Reset();
                                         break;
+                                    }
+                                case TcpMessageType.PACKET_SERVER_BANNED:
+                                    {
+                                        this.logger.LogWarning($"Cannot join {serverIp}:{serverPort} - user is banned");
+                                        await Task.Delay(TimeSpan.FromMinutes(10));
+                                        this.Reset();
+                                        break;
+                                    }
+                                case TcpMessageType.PACKET_SERVER_NEED_GAME_PASSWORD:
+                                    {
+                                        this.QueueInternal(new PacketClientGamePasswordMessage(password));
+                                        break;
+                                    }
+                                case TcpMessageType.PACKET_SERVER_FRAME:
+                                    {
+                                        var m = msg as PacketServerFrameMessage;
+                                        this.QueueInternal(new PacketClientAckMessage(m.FrameCounter, m.Token));
+                                        this.connected = true;
+                                        this.connectionState = ConnectionState.Connected;
+                                        break;
+                                    }
+                                case TcpMessageType.PACKET_SERVER_CHECK_NEWGRFS:
+                                    {
+                                        // Everything ok here xD
+                                        this.QueueInternal(new GenericTcpMessage(TcpMessageType.PACKET_CLIENT_NEWGRFS_CHECKED));
+                                        break;
+                                    }
+                                case TcpMessageType.PACKET_SERVER_CLIENT_INFO:
+                                    {
+                                        var m = msg as PacketServerClientInfoMessage;
+                                        var player = new Player(m.ClientId)
+                                        {
+                                            Name = m.ClientName
+                                        };
+                                        this.logger.LogTrace($"{m.ClientId} - {m.ClientName}");
+                                        this.players.AddOrUpdate(m.ClientId, player, (_, __) => player);
 
-                                    TcpMessageType[] ignoredMessages =
-                                {
+                                        if (connected)
+                                            this.receivedMessageQueue.Enqueue(msg);
+
+                                        break;
+                                    }
+                                case TcpMessageType.PACKET_SERVER_WELCOME:
+                                    {
+                                        var m = msg as PacketServerWelcomeMessage;
+                                        this.myClientId = m.ClientId;
+                                        this.QueueInternal(new GenericTcpMessage(TcpMessageType.PACKET_CLIENT_GETMAP));
+                                        this.connectionState = ConnectionState.DownloadingMap;
+                                        break;
+                                    }
+                                case TcpMessageType.PACKET_SERVER_MAP_DONE:
+                                    {
+                                        this.QueueInternal(new GenericTcpMessage(TcpMessageType.PACKET_CLIENT_MAP_OK));
+                                        break;
+                                    }
+                                default:
+                                    {
+                                        if (connected == false)
+                                            break;
+
+                                        TcpMessageType[] ignoredMessages =
+                                    {
                                         TcpMessageType.PACKET_SERVER_MAP_BEGIN, TcpMessageType.PACKET_SERVER_MAP_DATA, TcpMessageType.PACKET_SERVER_MAP_SIZE
                                     };
 
-                                    if (ignoredMessages.Contains(msg.MessageType))
-                                        break;
+                                        if (ignoredMessages.Contains(msg.MessageType))
+                                            break;
 
-                                    this.receivedMessageQueue.Enqueue(msg);
-                                    break;
-                                }
+                                        this.receivedMessageQueue.Enqueue(msg);
+                                        break;
+                                    }
+                            }
                         }
                     }
-                }
 
-                await Task.Delay(1);
-#if !DEBUG
+                    await Task.Delay(1);
                 }
                 catch (Exception e)
                 {
-                    this.logger.LogError(e, $"{nameof(TcpOttdClient)}:{nameof(mainLoop)}");
-                    this.players.Clear();
-                    this.internalSendMessageQueue.Clear();
-                    this.sendMessageQueue.Clear();
-                    this.receivedMessageQueue.Clear();
-                    this.myClientId = 0;
+                    this.logger.LogError(e, $"Client failure: {nameof(TcpOttdClient)}:{nameof(mainLoop)} for {serverIp}:{serverPort}");
+                     this.Reset();
+#if DEBUG
+                    await Task.Delay(5_000); // wait small amount of time xD before reconnecting.
+#else
                     await Task.Delay(60_000); // wait 60 seconds before reconnecting.
-                }
 #endif
+                }
             }
+        }
 
+        private void Reset()
+        {
+            this.players.Clear();
+            this.internalSendMessageQueue.Clear();
+            this.sendMessageQueue.Clear();
+            this.receivedMessageQueue.Clear();
+            this.myClientId = 0;
+            this.connected = false;
+            this.connectionState = ConnectionState.NotConnected;
         }
 
         private async Task<PacketClientJoinMessage> CreateJoinMessage(string serverIp, int serverPort, string username)

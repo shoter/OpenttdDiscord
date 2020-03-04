@@ -24,6 +24,7 @@ namespace OpenttdDiscord.Openttd.Tcp
         private readonly ITcpPacketCreator packetCreator;
         private readonly IUdpPacketCreator udpPacketCreator;
         private readonly IUdpPacketReader udpPacketReader;
+        private readonly IRevisionTranslator revisionTranslator;
         private readonly TcpClient client = new TcpClient();
         private bool connected = false;
         private readonly CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
@@ -39,13 +40,14 @@ namespace OpenttdDiscord.Openttd.Tcp
         };
 
         private uint myClientId = 0;
-        public TcpOttdClient(ITcpPacketCreator packetCreator, ITcpPacketReader packetReader, IUdpPacketReader udpPacketReader, IUdpPacketCreator udpPacketCreator, ILogger<ITcpOttdClient> logger)
+        public TcpOttdClient(ITcpPacketCreator packetCreator, ITcpPacketReader packetReader, IUdpPacketReader udpPacketReader, IUdpPacketCreator udpPacketCreator, IRevisionTranslator revisionTranslator, ILogger<ITcpOttdClient> logger)
         {
             this.logger = logger;
             this.packetCreator = packetCreator;
             this.packetReader = packetReader;
             this.udpPacketCreator = udpPacketCreator;
             this.udpPacketReader = udpPacketReader;
+            this.revisionTranslator = revisionTranslator;
         }
 
         public Task QueueMessage(ITcpMessage message)
@@ -273,7 +275,7 @@ namespace OpenttdDiscord.Openttd.Tcp
                 JoinAs = 0,
                 Language = 0,
                 OpenttdRevision = revision,
-                NewgrfVersion = 1 << 28 | 9 << 24 | 3 << 20 | 1 << 19 | 28004,
+                NewgrfVersion = this.revisionTranslator.TranslateToNewGrfRevision(revision).Revision
             };
         }
 

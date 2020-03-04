@@ -41,7 +41,7 @@ namespace OpenttdDiscord
 
             ITcpOttdClient c = DependencyConfig.ServiceProvider.GetRequiredService<ITcpOttdClient>();
 
-            await c.Start("192.168.2.100", 3979, "testerek");
+            await c.Start("82.177.95.152", 3980, "ottd-bot-test");
 
             await Task.Delay(-1);
             return;

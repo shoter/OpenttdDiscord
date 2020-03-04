@@ -9,6 +9,7 @@ using OpenttdDiscord.Backend.Servers;
 using OpenttdDiscord.Commands;
 using OpenttdDiscord.Configuration;
 using OpenttdDiscord.Embeds;
+using OpenttdDiscord.Openttd;
 using OpenttdDiscord.Openttd.Tcp;
 using OpenttdDiscord.Openttd.Udp;
 using System;
@@ -33,6 +34,7 @@ namespace OpenttdDiscord
             new UdpModule().Register(services);
             new TcpModule().Register(services);
             new EmbedsModule().Register(services);
+            new OttdModule().Register(services);
 
             services.AddSingleton<DiscordSocketClient>();
             services.AddSingleton<CommandService>();

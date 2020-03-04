@@ -61,7 +61,7 @@ namespace OpenttdDiscord.Openttd.Tcp
             this.internalSendMessageQueue.Enqueue(message);
         }
 
-        public async void updateEvents(CancellationToken token)
+        public async void UpdateEvents(CancellationToken token)
         {
             while (token.IsCancellationRequested == false)
             {
@@ -85,7 +85,7 @@ namespace OpenttdDiscord.Openttd.Tcp
             }
         }
 
-        public async void mainLoop(CancellationToken token, string serverIp, int serverPort, string username, string password)
+        public async void MainLoop(CancellationToken token, string serverIp, int serverPort, string username, string password)
         {
 
             Task sizeTask = null;
@@ -241,7 +241,7 @@ namespace OpenttdDiscord.Openttd.Tcp
                 }
                 catch (Exception e)
                 {
-                    this.logger.LogError(e, $"Client failure: {nameof(TcpOttdClient)}:{nameof(mainLoop)} for {serverIp}:{serverPort}");
+                    this.logger.LogError(e, $"Client failure: {nameof(TcpOttdClient)}:{nameof(MainLoop)} for {serverIp}:{serverPort}");
                      this.Reset();
 #if DEBUG
                     await Task.Delay(5_000); // wait small amount of time xD before reconnecting.
@@ -282,8 +282,8 @@ namespace OpenttdDiscord.Openttd.Tcp
         public Task Start(string serverIp, int serverPort, string username, string password = "")
         {
             this.logger.LogInformation($"Connecting to {serverIp}:{serverPort}");
-            ThreadPool.QueueUserWorkItem(new WaitCallback((_) => mainLoop(cancellationTokenSource.Token, serverIp, serverPort, username, password)), null);
-            ThreadPool.QueueUserWorkItem(new WaitCallback((_) => updateEvents(cancellationTokenSource.Token)), null);
+            ThreadPool.QueueUserWorkItem(new WaitCallback((_) => MainLoop(cancellationTokenSource.Token, serverIp, serverPort, username, password)), null);
+            ThreadPool.QueueUserWorkItem(new WaitCallback((_) => UpdateEvents(cancellationTokenSource.Token)), null);
             return Task.CompletedTask;
         }
 

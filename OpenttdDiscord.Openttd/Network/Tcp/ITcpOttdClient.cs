@@ -9,13 +9,15 @@ namespace OpenttdDiscord.Openttd.Tcp
 {
     public interface ITcpOttdClient
     {
+        ConnectionState ConnectionState { get; }
+
         event EventHandler<ITcpMessage> MessageReceived;
         Task QueueMessage(ITcpMessage message);
 
         /// <summary>
         /// It should make sure that TCP client is up and running.
         /// </summary>
-        Task Start(string serverIp, int serverPort, string username, string password = "");
+        Task Start(string serverIp, int serverPort, string username, string password, string revision, uint newgrfRevision);
 
         /// <summary>
         /// It should make sure that Tcp Client stopped

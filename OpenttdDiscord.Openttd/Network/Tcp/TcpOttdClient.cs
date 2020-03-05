@@ -20,15 +20,12 @@ namespace OpenttdDiscord.Openttd.Tcp
         private readonly ConcurrentQueue<ITcpMessage> internalSendMessageQueue = new ConcurrentQueue<ITcpMessage>();
         private readonly ConcurrentQueue<ITcpMessage> receivedMessageQueue = new ConcurrentQueue<ITcpMessage>();
         private readonly Microsoft.Extensions.Logging.ILogger logger;
-        private readonly ITcpPacketReader packetReader;
-        private readonly ITcpPacketCreator packetCreator;
-        private readonly IUdpPacketCreator udpPacketCreator;
-        private readonly IUdpPacketReader udpPacketReader;
+        private readonly ITcpPacketService tcpPacketService;
         private readonly IRevisionTranslator revisionTranslator;
         private readonly TcpClient client = new TcpClient();
         private bool connected = false;
         private readonly CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
-        private ConnectionState connectionState = ConnectionState.NotConnected;
+        public ConnectionState ConnectionState { get; private set; } = ConnectionState.NotConnected;
 
         private readonly ConcurrentDictionary<uint, Player> players = new ConcurrentDictionary<uint, Player>();
 
@@ -40,14 +37,11 @@ namespace OpenttdDiscord.Openttd.Tcp
         };
 
         private uint myClientId = 0;
-        public TcpOttdClient(ITcpPacketCreator packetCreator, ITcpPacketReader packetReader, IUdpPacketReader udpPacketReader, IUdpPacketCreator udpPacketCreator, IRevisionTranslator revisionTranslator, ILogger<ITcpOttdClient> logger)
+        public TcpOttdClient(ITcpPacketService tcpPacketService, IRevisionTranslator revisionTranslator, ILogger<ITcpOttdClient> logger)
         {
             this.logger = logger;
-            this.packetCreator = packetCreator;
-            this.packetReader = packetReader;
-            this.udpPacketCreator = udpPacketCreator;
-            this.udpPacketReader = udpPacketReader;
             this.revisionTranslator = revisionTranslator;
+            this.tcpPacketService = tcpPacketService;
         }
 
         public Task QueueMessage(ITcpMessage message)
@@ -85,9 +79,8 @@ namespace OpenttdDiscord.Openttd.Tcp
             }
         }
 
-        public async void MainLoop(CancellationToken token, string serverIp, int serverPort, string username, string password)
+        public async void MainLoop(CancellationToken token, string serverIp, int serverPort, string username, string password, string revision, uint newgrfRevision)
         {
-
             Task sizeTask = null;
             byte[] sizeBuffer = new byte[2];
 
@@ -95,17 +88,27 @@ namespace OpenttdDiscord.Openttd.Tcp
             {
                 try
                 {
-                    if (this.connectionState == ConnectionState.NotConnected)
+                    if (this.ConnectionState == ConnectionState.NotConnected)
                     {
+                        sizeTask = null;
+                        this.Reset();
+
+                        this.ConnectionState = ConnectionState.Connecting;
                         client.Connect(serverIp, serverPort);
-                        this.QueueInternal(await this.CreateJoinMessage(serverIp, serverPort, username));
-                        this.connectionState = ConnectionState.Connecting;
+                        this.QueueInternal(new PacketClientJoinMessage()
+                        {
+                            ClientName = username,
+                            JoinAs = 0,
+                            Language = 0,
+                            OpenttdRevision = revision,
+                            NewgrfVersion = newgrfRevision
+                        });
                     }
                     for (int i = 0; i < 100; ++i)
                     {
                         if (this.sendMessageQueue.TryDequeue(out ITcpMessage msg))
                         {
-                            Packet packet = this.packetCreator.Create(msg);
+                            Packet packet = this.tcpPacketService.CreatePacket(msg);
                             await client.GetStream().WriteAsync(packet.Buffer, 0, packet.Size);
                             if (!ignoredLoggedTypes.Contains(msg.MessageType))
                                 this.logger.LogTrace($"Sent {msg.MessageType.ToString()} - {packet.Size}");
@@ -116,7 +119,7 @@ namespace OpenttdDiscord.Openttd.Tcp
 
                     while (this.internalSendMessageQueue.TryDequeue(out ITcpMessage msg))
                     {
-                        Packet packet = this.packetCreator.Create(msg);
+                        Packet packet = this.tcpPacketService.CreatePacket(msg);
                         await client.GetStream().WriteAsync(packet.Buffer, 0, packet.Size);
                         if (!ignoredLoggedTypes.Contains(msg.MessageType))
                             this.logger.LogTrace($"Sent Internal {msg.MessageType.ToString()} - {packet.Size}");
@@ -149,7 +152,7 @@ namespace OpenttdDiscord.Openttd.Tcp
                             sizeTask = null;
 
                             var packet = new Packet(content);
-                            ITcpMessage msg = this.packetReader.Read(packet);
+                            ITcpMessage msg = this.tcpPacketService.ReadPacket(packet);
 
                             if (!ignoredLoggedTypes.Contains(msg.MessageType))
                                 this.logger.LogTrace($"Received {msg.MessageType}");
@@ -180,7 +183,7 @@ namespace OpenttdDiscord.Openttd.Tcp
                                         var m = msg as PacketServerFrameMessage;
                                         this.QueueInternal(new PacketClientAckMessage(m.FrameCounter, m.Token));
                                         this.connected = true;
-                                        this.connectionState = ConnectionState.Connected;
+                                        this.ConnectionState = ConnectionState.Connected;
                                         break;
                                     }
                                 case TcpMessageType.PACKET_SERVER_CHECK_NEWGRFS:
@@ -209,7 +212,7 @@ namespace OpenttdDiscord.Openttd.Tcp
                                         var m = msg as PacketServerWelcomeMessage;
                                         this.myClientId = m.ClientId;
                                         this.QueueInternal(new GenericTcpMessage(TcpMessageType.PACKET_CLIENT_GETMAP));
-                                        this.connectionState = ConnectionState.DownloadingMap;
+                                        this.ConnectionState = ConnectionState.DownloadingMap;
                                         break;
                                     }
                                 case TcpMessageType.PACKET_SERVER_MAP_DONE:
@@ -242,7 +245,7 @@ namespace OpenttdDiscord.Openttd.Tcp
                 catch (Exception e)
                 {
                     this.logger.LogError(e, $"Client failure: {nameof(TcpOttdClient)}:{nameof(MainLoop)} for {serverIp}:{serverPort}");
-                     this.Reset();
+                    this.Reset();
 #if DEBUG
                     await Task.Delay(5_000); // wait small amount of time xD before reconnecting.
 #else
@@ -250,6 +253,8 @@ namespace OpenttdDiscord.Openttd.Tcp
 #endif
                 }
             }
+
+            this.ConnectionState = ConnectionState.NotConnected;
         }
 
         private void Reset()
@@ -260,31 +265,25 @@ namespace OpenttdDiscord.Openttd.Tcp
             this.receivedMessageQueue.Clear();
             this.myClientId = 0;
             this.connected = false;
-            this.connectionState = ConnectionState.NotConnected;
+            this.ConnectionState = ConnectionState.NotConnected;
         }
 
-        private async Task<PacketClientJoinMessage> CreateJoinMessage(string serverIp, int serverPort, string username)
+        public async Task Start(string serverIp, int serverPort, string username, string password, string revision, uint newgrfRevision)
         {
-            UdpOttdClient udpClient = new UdpOttdClient(this.udpPacketReader, this.udpPacketCreator);
-            var response = await udpClient.SendMessage(new PacketUdpClientFindServer(), serverIp, serverPort);
-            string revision = (response as PacketUdpServerResponse).ServerRevision;
-
-            return new PacketClientJoinMessage()
+            if(this.ConnectionState != ConnectionState.NotConnected)
             {
-                ClientName = username,
-                JoinAs = 0,
-                Language = 0,
-                OpenttdRevision = revision,
-                NewgrfVersion = this.revisionTranslator.TranslateToNewGrfRevision(revision).Revision
-            };
-        }
+                throw new OttdException("You cannot connect to different server while this client is connected to a server");
+            }
 
-        public Task Start(string serverIp, int serverPort, string username, string password = "")
-        {
             this.logger.LogInformation($"Connecting to {serverIp}:{serverPort}");
-            ThreadPool.QueueUserWorkItem(new WaitCallback((_) => MainLoop(cancellationTokenSource.Token, serverIp, serverPort, username, password)), null);
+            ThreadPool.QueueUserWorkItem(new WaitCallback((_) => MainLoop(cancellationTokenSource.Token, serverIp, serverPort, username, password, revision, newgrfRevision)), null);
             ThreadPool.QueueUserWorkItem(new WaitCallback((_) => UpdateEvents(cancellationTokenSource.Token)), null);
-            return Task.CompletedTask;
+
+            if((await TaskHelper.WaitUntil(() => ConnectionState == ConnectionState.Connected, delayBetweenChecks: TimeSpan.FromSeconds(0.5), duration: TimeSpan.FromSeconds(10))) == false)
+            {
+                this.cancellationTokenSource.Cancel();
+                throw new Exception("Could not connect");
+            }
         }
 
         public Task Stop()

@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace OpenttdDiscord.Openttd.Tcp
 {
-    public interface ITcpPacketReader
+    public interface ITcpPacketService
     {
-        ITcpMessage Read(Packet packet);
-        
+        Packet CreatePacket(ITcpMessage message);
+        ITcpMessage ReadPacket(Packet packet);
     }
 }

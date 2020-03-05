@@ -6,9 +6,56 @@ using System.Threading.Tasks;
 
 namespace OpenttdDiscord.Openttd.Tcp
 {
-    public class TcpPacketReader : ITcpPacketReader
+    public class TcpPacketService : ITcpPacketService
     {
-        public ITcpMessage Read(Packet packet)
+        public Packet CreatePacket(ITcpMessage message)
+        {
+            Packet packet = new Packet();
+            packet.SendByte((byte)message.MessageType);
+
+            switch (message)
+            {
+                case PacketClientJoinMessage j:
+                    {
+                        packet.SendString(j.OpenttdRevision);
+                        packet.SendU32(j.NewgrfVersion);
+                        packet.SendString(j.ClientName);
+                        packet.SendByte(j.JoinAs);
+                        packet.SendByte(j.Language);
+
+                        break;
+                    }
+                case PacketClientGamePasswordMessage p:
+                    {
+                        packet.SendString(p.Password);
+
+                        break;
+                    }
+                case PacketClientAckMessage ack:
+                    {
+                        packet.SendU32(ack.FrameCounter);
+                        packet.SendByte(ack.Token);
+
+                        break;
+                    }
+
+                case GenericTcpMessage _:
+                    {
+                        // here we have only messages that have only type
+                        break;
+                    }
+
+                default:
+                    {
+                        throw new NotImplementedException(message.MessageType.ToString());
+                    }
+            }
+
+            packet.PrepareToSend();
+            return packet;
+        }
+
+        public ITcpMessage ReadPacket(Packet packet)
         {
             var type = (TcpMessageType)packet.ReadByte();
 
@@ -19,7 +66,7 @@ namespace OpenttdDiscord.Openttd.Tcp
                         uint frameCounter = packet.ReadU32();
                         uint frameCounterMax = packet.ReadU32();
                         byte token = 0;
-                        if(packet.Position < packet.Size)
+                        if (packet.Position < packet.Size)
                             token = packet.ReadByte();
 
                         return new PacketServerFrameMessage(frameCounter, frameCounterMax, token);
@@ -80,7 +127,7 @@ namespace OpenttdDiscord.Openttd.Tcp
 
                 case TcpMessageType.PACKET_SERVER_CHAT:
                 case TcpMessageType.PACKET_SERVER_RCON:
-                {
+                    {
                         return new GenericTcpMessage(type);
                     }
                 default:
@@ -88,7 +135,6 @@ namespace OpenttdDiscord.Openttd.Tcp
                         throw new NotImplementedException(type.ToString());
                     }
             }
-
         }
     }
 }

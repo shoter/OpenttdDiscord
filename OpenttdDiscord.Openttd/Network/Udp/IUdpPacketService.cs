@@ -6,8 +6,11 @@ using System.Threading.Tasks;
 
 namespace OpenttdDiscord.Openttd.Udp
 {
-    public interface IUdpPacketReader
+    public interface IUdpPacketService
     {
+        Packet CreatePacket(IUdpMessage message);
+
         IUdpMessage ReadPacket(Packet packet);
+        
     }
 }

@@ -7,14 +7,22 @@ using System.Threading.Tasks;
 
 namespace OpenttdDiscord.Openttd.Udp
 {
-    public class UdpPacketReader : IUdpPacketReader
+    public class UdpPacketService : IUdpPacketService
     {
+        public Packet CreatePacket(IUdpMessage message)
+        {
+            Packet packet = new Packet();
+            packet.SendByte((byte)message.MessageType);
+            packet.PrepareToSend();
+            return packet;
+        }
+
         public IUdpMessage ReadPacket(Packet packet)
         {
             // this variable will be probably not needed :\.
             UdpMessageType type = (UdpMessageType)packet.ReadByte();
 
-            switch(type)
+            switch (type)
             {
                 case UdpMessageType.PACKET_UDP_SERVER_RESPONSE:
                     {
@@ -61,9 +69,9 @@ namespace OpenttdDiscord.Openttd.Udp
 
                         return r;
                     }
+                default:
+                    throw new NotImplementedException(type.ToString());
             }
-
-            return null;
         }
     }
 }

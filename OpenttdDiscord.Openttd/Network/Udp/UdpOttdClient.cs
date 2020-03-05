@@ -9,18 +9,16 @@ namespace OpenttdDiscord.Openttd.Udp
 {
     public class UdpOttdClient : IUdpOttdClient
     {
-        private readonly IUdpPacketReader packetReader;
-        private readonly IUdpPacketCreator packetCreator;
+        private readonly IUdpPacketService udpPacketService;
 
-        public UdpOttdClient(IUdpPacketReader packetReader, IUdpPacketCreator packetCreator)
+        public UdpOttdClient(IUdpPacketService udpPacketService)
         {
-            this.packetCreator = packetCreator;
-            this.packetReader = packetReader;
+            this.udpPacketService = udpPacketService;
         }
 
         public async Task<IUdpMessage> SendMessage(IUdpMessage message, string ip, int port)
         {
-            var sendPacket = packetCreator.CreatePacket(message);
+            var sendPacket = this.udpPacketService.CreatePacket(message);
 
             using (UdpClient client = new UdpClient())
             {
@@ -29,13 +27,8 @@ namespace OpenttdDiscord.Openttd.Udp
                 await client.SendAsync(sendPacket.Buffer, sendPacket.Size, remoteEP);
                 var receiveBytes = await client.ReceiveAsync();
 
-                return packetReader.ReadPacket(new Packet(receiveBytes.Buffer));
+                return this.udpPacketService.ReadPacket(new Packet(receiveBytes.Buffer));
             }
         }
-
-
-
-
-
     }
 }

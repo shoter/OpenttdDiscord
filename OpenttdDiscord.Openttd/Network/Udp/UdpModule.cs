@@ -6,15 +6,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OpenttdDiscord.Openttd.Tcp
+namespace OpenttdDiscord.Openttd.Udp
 {
-    public class TcpModule : IModule
+    public class UdpModule : IModule
     {
         public void Register(in IServiceCollection services)
         {
-            services.AddTransient<ITcpOttdClient, TcpOttdClient>();
-            services.AddSingleton<ITcpPacketReader, TcpPacketReader>();
-            services.AddSingleton<ITcpPacketCreator, TcpPacketCreator>();
+            services.AddSingleton<IUdpPacketService, UdpPacketService>();
+            services.AddTransient<IUdpOttdClient, UdpOttdClient>();
         }
     }
 }

@@ -1,20 +1,21 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using OpenttdDiscord.Common;
-using OpenttdDiscord.Openttd.Network;
+using OpenttdDiscord.Openttd.Network.Tcp;
+using OpenttdDiscord.Openttd.Network.Udp;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OpenttdDiscord.Openttd
+namespace OpenttdDiscord.Openttd.Network
 {
-    public class OttdModule : IModule
+    internal class NetworkModule : IModule
     {
         public void Register(in IServiceCollection services)
         {
-            new NetworkModule().Register(services);
-            services.AddSingleton<IRevisionTranslator, RevisionTranslator>();
+            new TcpModule().Register(services);
+            new UdpModule().Register(services);
         }
     }
 }

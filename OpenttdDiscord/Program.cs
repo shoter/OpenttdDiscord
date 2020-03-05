@@ -4,7 +4,7 @@ using Discord.Commands;
 using OpenttdDiscord.Configuration;
 using OpenttdDiscord.Openttd;
 using Microsoft.Extensions.DependencyInjection;
-using OpenttdDiscord.Openttd.Udp;
+using OpenttdDiscord.Openttd.Network.Udp;
 using System;
 using System.Linq;
 using System.Net;
@@ -17,7 +17,7 @@ using Discord.Rest;
 using OpenttdDiscord.Common;
 using OpenttdDiscord.Backend;
 using OpenttdDiscord.Embeds;
-using OpenttdDiscord.Openttd.Tcp;
+using OpenttdDiscord.Openttd.Network.Tcp;
 using Microsoft.Extensions.Configuration;
 
 namespace OpenttdDiscord

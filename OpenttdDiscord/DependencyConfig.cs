@@ -10,8 +10,8 @@ using OpenttdDiscord.Commands;
 using OpenttdDiscord.Configuration;
 using OpenttdDiscord.Embeds;
 using OpenttdDiscord.Openttd;
-using OpenttdDiscord.Openttd.Tcp;
-using OpenttdDiscord.Openttd.Udp;
+using OpenttdDiscord.Openttd.Network.Tcp;
+using OpenttdDiscord.Openttd.Network.Udp;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,8 +31,6 @@ namespace OpenttdDiscord
             new ConfigModule().Register(services);
             new ServersModule().Register(services);
             new CommandsModule().Register(services);
-            new UdpModule().Register(services);
-            new TcpModule().Register(services);
             new EmbedsModule().Register(services);
             new OttdModule().Register(services);
 

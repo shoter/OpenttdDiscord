@@ -1,6 +1,6 @@
 ﻿using Discord;
 using OpenttdDiscord.Backend.Servers;
-using OpenttdDiscord.Openttd.Udp;
+using OpenttdDiscord.Openttd.Network.Udp;
 using System;
 using System.Collections.Generic;
 using System.Linq;

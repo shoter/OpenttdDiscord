@@ -17,4 +17,8 @@
     <ProjectReference Include="..\OpenttdDiscord.Openttd\OpenttdDiscord.Openttd.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Tcp\" />
+  </ItemGroup>
+
 </Project>

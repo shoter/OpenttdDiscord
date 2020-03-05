@@ -5,7 +5,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OpenttdDiscord.Openttd.Udp
+namespace OpenttdDiscord.Openttd.Network.Udp
 {
     public class UdpOttdClient : IUdpOttdClient
     {

@@ -6,9 +6,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OpenttdDiscord.Openttd.Tcp
+namespace OpenttdDiscord.Openttd.Network.Tcp
 {
-    public class TcpModule : IModule
+    internal class TcpModule : IModule
     {
         public void Register(in IServiceCollection services)
         {

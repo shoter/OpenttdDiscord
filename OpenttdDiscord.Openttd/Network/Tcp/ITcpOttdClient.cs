@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace OpenttdDiscord.Openttd.Tcp
+namespace OpenttdDiscord.Openttd.Network.Tcp
 {
     public interface ITcpOttdClient
     {

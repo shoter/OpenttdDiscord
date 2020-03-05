@@ -1,7 +1,8 @@
 ﻿using Microsoft.Extensions.Logging;
 using NLog;
 using OpenttdDiscord.Common;
-using OpenttdDiscord.Openttd.Udp;
+using OpenttdDiscord.Openttd.Network;
+using OpenttdDiscord.Openttd.Network.Udp;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -11,7 +12,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace OpenttdDiscord.Openttd.Tcp
+namespace OpenttdDiscord.Openttd.Network.Tcp
 {
     public class TcpOttdClient : ITcpOttdClient
     {
@@ -270,7 +271,7 @@ namespace OpenttdDiscord.Openttd.Tcp
 
         public async Task Start(string serverIp, int serverPort, string username, string password, string revision, uint newgrfRevision)
         {
-            if(this.ConnectionState != ConnectionState.NotConnected)
+            if (this.ConnectionState != ConnectionState.NotConnected)
             {
                 throw new OttdException("You cannot connect to different server while this client is connected to a server");
             }
@@ -279,10 +280,10 @@ namespace OpenttdDiscord.Openttd.Tcp
             ThreadPool.QueueUserWorkItem(new WaitCallback((_) => MainLoop(cancellationTokenSource.Token, serverIp, serverPort, username, password, revision, newgrfRevision)), null);
             ThreadPool.QueueUserWorkItem(new WaitCallback((_) => UpdateEvents(cancellationTokenSource.Token)), null);
 
-            if((await TaskHelper.WaitUntil(() => ConnectionState == ConnectionState.Connected, delayBetweenChecks: TimeSpan.FromSeconds(0.5), duration: TimeSpan.FromSeconds(10))) == false)
+            if ((await TaskHelper.WaitUntil(() => ConnectionState == ConnectionState.Connected, delayBetweenChecks: TimeSpan.FromSeconds(0.5), duration: TimeSpan.FromSeconds(10))) == false)
             {
                 this.cancellationTokenSource.Cancel();
-                throw new Exception("Could not connect");
+                throw new OttdConnectionException("Could not connect");
             }
         }
 

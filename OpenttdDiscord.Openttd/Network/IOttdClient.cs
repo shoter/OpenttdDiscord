@@ -1,12 +1,12 @@
-﻿using OpenttdDiscord.Openttd.Tcp;
-using OpenttdDiscord.Openttd.Udp;
+﻿using OpenttdDiscord.Openttd.Network.Tcp;
+using OpenttdDiscord.Openttd.Network.Udp;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OpenttdDiscord.Openttd
+namespace OpenttdDiscord.Network.Openttd
 {
     /// <summary>
     /// 1 ottd client per server

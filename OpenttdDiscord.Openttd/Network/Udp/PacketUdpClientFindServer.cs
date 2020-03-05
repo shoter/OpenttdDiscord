@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OpenttdDiscord.Openttd.Udp
+namespace OpenttdDiscord.Openttd.Network.Udp
 {
     public class PacketUdpClientFindServer : IUdpMessage
     {

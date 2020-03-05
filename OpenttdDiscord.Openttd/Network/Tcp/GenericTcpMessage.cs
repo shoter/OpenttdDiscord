@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OpenttdDiscord.Openttd.Tcp
+namespace OpenttdDiscord.Openttd.Network.Tcp
 {
     public class GenericTcpMessage : ITcpMessage
     {

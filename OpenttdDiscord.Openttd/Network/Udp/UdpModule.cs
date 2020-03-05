@@ -6,9 +6,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OpenttdDiscord.Openttd.Udp
+namespace OpenttdDiscord.Openttd.Network.Udp
 {
-    public class UdpModule : IModule
+    internal class UdpModule : IModule
     {
         public void Register(in IServiceCollection services)
         {

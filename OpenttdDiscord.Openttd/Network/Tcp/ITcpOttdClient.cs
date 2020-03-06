@@ -10,6 +10,7 @@ namespace OpenttdDiscord.Openttd.Network.Tcp
     public interface ITcpOttdClient
     {
         ConnectionState ConnectionState { get; }
+        uint MyClientId { get; }
 
         event EventHandler<ITcpMessage> MessageReceived;
         Task QueueMessage(ITcpMessage message);

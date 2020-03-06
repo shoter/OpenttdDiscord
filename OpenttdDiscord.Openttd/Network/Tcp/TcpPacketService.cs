@@ -38,7 +38,16 @@ namespace OpenttdDiscord.Openttd.Network.Tcp
 
                         break;
                     }
+                case PacketClientChatMessage chat:
+                    {
+                        packet.SendByte((byte)(((byte)NetworkAction.NETWORK_ACTION_CHAT) + ((byte)chat.ChatDestination)));
+                        packet.SendByte((byte)chat.ChatDestination);
+                        packet.SendU32(chat.Destination);
+                        packet.SendString(chat.Message);
+                        packet.SendU64(chat.Data);
 
+                        break;
+                    }
                 case GenericTcpMessage _:
                     {
                         // here we have only messages that have only type
@@ -110,6 +119,16 @@ namespace OpenttdDiscord.Openttd.Network.Tcp
                     {
                         return new PacketServerJoinMessage(packet.ReadU32());
                     }
+                case TcpMessageType.PACKET_SERVER_CHAT:
+                    {
+                        NetworkAction action = (NetworkAction)packet.ReadByte();
+                        uint clientId = packet.ReadU32();
+                        bool selfSend = packet.ReadBool();
+                        string msg = packet.ReadString();
+                        long data = packet.ReadI64();
+
+                        return new PacketServerChatMessage(action, clientId, selfSend, msg, data);
+                    }
                 case TcpMessageType.PACKET_SERVER_FULL:
                 case TcpMessageType.PACKET_SERVER_BANNED:
                 case TcpMessageType.PACKET_SERVER_MAP_BEGIN:
@@ -125,7 +144,6 @@ namespace OpenttdDiscord.Openttd.Network.Tcp
                 case TcpMessageType.PACKET_SERVER_COMMAND:
                 case TcpMessageType.PACKET_SERVER_CHECK_NEWGRFS:
 
-                case TcpMessageType.PACKET_SERVER_CHAT:
                 case TcpMessageType.PACKET_SERVER_RCON:
                     {
                         return new GenericTcpMessage(type);

@@ -14,6 +14,7 @@ namespace OpenttdDiscord.Openttd.Network
     {
         public void Register(in IServiceCollection services)
         {
+            services.AddSingleton<IOttdClientFactory, OttdClientFactory>();
             new TcpModule().Register(services);
             new UdpModule().Register(services);
         }

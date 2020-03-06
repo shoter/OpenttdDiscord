@@ -19,6 +19,7 @@ using OpenttdDiscord.Backend;
 using OpenttdDiscord.Embeds;
 using OpenttdDiscord.Openttd.Network.Tcp;
 using Microsoft.Extensions.Configuration;
+using OpenttdDiscord.Openttd.Network;
 
 namespace OpenttdDiscord
 {
@@ -42,7 +43,11 @@ namespace OpenttdDiscord
             ITcpOttdClient c = DependencyConfig.ServiceProvider.GetRequiredService<ITcpOttdClient>();
             IUdpOttdClient u = DependencyConfig.ServiceProvider.GetRequiredService<IUdpOttdClient>();
 
-            await c.Start("82.177.95.152", 3980, "ottd-bot-test");
+            IOttdClient ottd = DependencyConfig.ServiceProvider.GetRequiredService<IOttdClientFactory>().Create(new ServerInfo("192.168.2.100", 3979), c, u);
+
+            await ottd.JoinGame("OttdBot", "");
+            await ottd.SendChatMessage("Siemano!");
+
 
             await Task.Delay(-1);
             return;

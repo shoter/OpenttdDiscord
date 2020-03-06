@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OpenttdDiscord.Network.Openttd
+namespace OpenttdDiscord.Openttd.Network
 {
     /// <summary>
     /// 1 ottd client per server
@@ -14,6 +14,9 @@ namespace OpenttdDiscord.Network.Openttd
     public interface IOttdClient
     {
         ConnectionState ConnectionState { get; }
+
+        event EventHandler<ReceivedChatMessage> ReceivedChatMessage;
+
 
         Task JoinGame(string username, string password);
 

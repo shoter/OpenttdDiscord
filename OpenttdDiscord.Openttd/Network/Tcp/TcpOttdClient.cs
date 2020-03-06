@@ -37,7 +37,7 @@ namespace OpenttdDiscord.Openttd.Network.Tcp
                 TcpMessageType.PACKET_SERVER_FRAME
         };
 
-        private uint myClientId = 0;
+        public uint MyClientId { get; private set; } = 0;
         public TcpOttdClient(ITcpPacketService tcpPacketService, IRevisionTranslator revisionTranslator, ILogger<ITcpOttdClient> logger)
         {
             this.logger = logger;
@@ -99,7 +99,7 @@ namespace OpenttdDiscord.Openttd.Network.Tcp
                         this.QueueInternal(new PacketClientJoinMessage()
                         {
                             ClientName = username,
-                            JoinAs = 0,
+                            JoinAs = 255,
                             Language = 0,
                             OpenttdRevision = revision,
                             NewgrfVersion = newgrfRevision
@@ -211,7 +211,7 @@ namespace OpenttdDiscord.Openttd.Network.Tcp
                                 case TcpMessageType.PACKET_SERVER_WELCOME:
                                     {
                                         var m = msg as PacketServerWelcomeMessage;
-                                        this.myClientId = m.ClientId;
+                                        this.MyClientId = m.ClientId;
                                         this.QueueInternal(new GenericTcpMessage(TcpMessageType.PACKET_CLIENT_GETMAP));
                                         this.ConnectionState = ConnectionState.DownloadingMap;
                                         break;
@@ -264,7 +264,7 @@ namespace OpenttdDiscord.Openttd.Network.Tcp
             this.internalSendMessageQueue.Clear();
             this.sendMessageQueue.Clear();
             this.receivedMessageQueue.Clear();
-            this.myClientId = 0;
+            this.MyClientId = 0;
             this.connected = false;
             this.ConnectionState = ConnectionState.NotConnected;
         }

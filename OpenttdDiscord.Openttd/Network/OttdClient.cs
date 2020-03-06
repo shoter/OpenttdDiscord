@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OpenttdDiscord.Network.Openttd
+namespace OpenttdDiscord.Openttd.Network
 {
     public class OttdClient : IOttdClient
     {
@@ -16,6 +16,8 @@ namespace OpenttdDiscord.Network.Openttd
         private readonly IRevisionTranslator revisionTranslator;
         private readonly ServerInfo serverInfo;
 
+        public event EventHandler<ReceivedChatMessage> ReceivedChatMessage;
+
         public ConnectionState ConnectionState => tcpClient.ConnectionState;
         internal OttdClient(ServerInfo serverInfo,ITcpOttdClient tcpClient, IUdpOttdClient udpClient, IRevisionTranslator revisionTranslator)
         {
@@ -23,8 +25,30 @@ namespace OpenttdDiscord.Network.Openttd
             this.udpClient = udpClient;
             this.tcpClient = tcpClient;
             this.revisionTranslator = revisionTranslator;
+
+            this.tcpClient.MessageReceived += TcpClient_MessageReceived;
         }
 
+        private void TcpClient_MessageReceived(object sender, ITcpMessage e)
+        {
+            switch(e.MessageType)
+            {
+                case TcpMessageType.PACKET_SERVER_CHAT:
+                    {
+                        var m = e as PacketServerChatMessage;
+                        if (m.ClientId == this.tcpClient.MyClientId)
+                            break;
+                        ChatDestination destination = (ChatDestination)((int)m.NetworkAction - (int)NetworkAction.NETWORK_ACTION_CHAT);
+
+                        if (new ChatDestination[] { ChatDestination.DESTTYPE_BROADCAST, ChatDestination.DESTTYPE_CLIENT, ChatDestination.DESTTYPE_TEAM }.Contains(destination))
+                        {
+                            this.ReceivedChatMessage?.Invoke(this, new ReceivedChatMessage(m.Message, m.ClientId, destination));
+                            this.SendChatMessage($"{destination} {m.Message}");
+                        }
+                        break;
+                    }
+            }
+        }
 
         public async Task<PacketUdpServerResponse> AskAboutServerInfo()
         {
@@ -48,9 +72,6 @@ namespace OpenttdDiscord.Network.Openttd
             throw new NotImplementedException();
         }
 
-        public Task SendChatMessage(string message)
-        {
-            throw new NotImplementedException();
-        }
+        public Task SendChatMessage(string message) => this.tcpClient.QueueMessage(new PacketClientChatMessage(ChatDestination.DESTTYPE_BROADCAST, 0, message));
     }
 }

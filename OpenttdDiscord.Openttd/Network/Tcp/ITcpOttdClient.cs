@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OpenttdDiscord.Common;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,6 +12,7 @@ namespace OpenttdDiscord.Openttd.Network.Tcp
     {
         ConnectionState ConnectionState { get; }
         uint MyClientId { get; }
+        IReadOnlyDictionary<uint, Player> Players { get; }
 
         event EventHandler<ITcpMessage> MessageReceived;
         Task QueueMessage(ITcpMessage message);

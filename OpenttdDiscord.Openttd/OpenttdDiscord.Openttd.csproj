@@ -9,6 +9,7 @@
     <PackageReference Include="NLog" Version="4.6.8" />
     <PackageReference Include="RandomAnalyzers.RequiredMember" Version="1.0.0" />
     <PackageReference Include="System.Collections.Concurrent" Version="4.3.0" />
+    <PackageReference Include="System.Collections.Immutable" Version="1.7.0" />
   </ItemGroup>
 
   <ItemGroup>

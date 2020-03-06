@@ -6,6 +6,7 @@ using OpenttdDiscord.Openttd.Network.Udp;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 using System.Net.Sockets;
 using System.Text;
@@ -25,12 +26,15 @@ namespace OpenttdDiscord.Openttd.Network.Tcp
         private readonly IRevisionTranslator revisionTranslator;
         private readonly TcpClient client = new TcpClient();
         private bool connected = false;
-        private readonly CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+        private CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
         public ConnectionState ConnectionState { get; private set; } = ConnectionState.NotConnected;
 
         private readonly ConcurrentDictionary<uint, Player> players = new ConcurrentDictionary<uint, Player>();
 
         public uint MyClientId { get; private set; } = 0;
+
+        public IReadOnlyDictionary<uint, Player> Players => this.players.ToImmutableDictionary();
+
         public TcpOttdClient(ITcpPacketService tcpPacketService, IRevisionTranslator revisionTranslator, ILogger<ITcpOttdClient> logger)
         {
             this.logger = logger;
@@ -161,29 +165,43 @@ namespace OpenttdDiscord.Openttd.Network.Tcp
                                     {
                                         var m = msg as PacketServerFrameMessage;
                                         await this.QueueMessage(new PacketClientAckMessage(m.FrameCounter, m.Token));
-                                        this.connected = true;
                                         this.ConnectionState = ConnectionState.Connected;
+                                        this.connected = true;
                                         break;
                                     }
                                 case TcpMessageType.PACKET_SERVER_CHECK_NEWGRFS:
                                     {
-                                        // Everything ok here xD
                                         await this.QueueMessage(new GenericTcpMessage(TcpMessageType.PACKET_CLIENT_NEWGRFS_CHECKED));
                                         break;
                                     }
                                 case TcpMessageType.PACKET_SERVER_CLIENT_INFO:
                                     {
                                         var m = msg as PacketServerClientInfoMessage;
-                                        var player = new Player(m.ClientId)
-                                        {
-                                            Name = m.ClientName
-                                        };
-                                        this.logger.LogTrace($"{m.ClientId} - {m.ClientName}");
+                                        var player = new Player(m.ClientId, m.ClientName);
                                         this.players.AddOrUpdate(m.ClientId, player, (_, __) => player);
 
                                         if (connected)
                                             this.receivedMessageQueue.Enqueue(msg);
 
+                                        break;
+                                    }
+                                case TcpMessageType.PACKET_SERVER_QUIT:
+                                    {
+                                        var m = msg as PacketServerQuitMessage;
+
+                                        this.players.TryRemove(m.ClientId, out _);
+
+                                        this.receivedMessageQueue.Enqueue(msg);
+                                        break;
+
+                                    }
+                                case TcpMessageType.PACKET_SERVER_ERROR_QUIT:
+                                    {
+                                        var m = msg as PacketServerErrorQuitMessage;
+
+                                        this.players.TryRemove(m.ClientId, out _);
+
+                                        this.receivedMessageQueue.Enqueue(msg);
                                         break;
                                     }
                                 case TcpMessageType.PACKET_SERVER_WELCOME:
@@ -252,14 +270,21 @@ namespace OpenttdDiscord.Openttd.Network.Tcp
 
             if ((await TaskHelper.WaitUntil(() => ConnectionState == ConnectionState.Connected, delayBetweenChecks: TimeSpan.FromSeconds(0.5), duration: TimeSpan.FromSeconds(10))) == false)
             {
-                this.cancellationTokenSource.Cancel();
-                throw new OttdConnectionException("Could not connect");
+                try
+                {
+                    await this.Stop();
+                }
+                finally
+                {
+                    throw new OttdConnectionException("Could not connect");
+                }
             }
         }
 
         public Task Stop()
         {
             this.cancellationTokenSource.Cancel();
+            this.cancellationTokenSource = new CancellationTokenSource();
             return Task.CompletedTask;
         }
     }

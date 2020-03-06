@@ -17,6 +17,8 @@ namespace OpenttdDiscord.Openttd.Network
 
         event EventHandler<ReceivedChatMessage> ReceivedChatMessage;
 
+        ServerInfo ServerInfo { get; }
+
 
         Task JoinGame(string username, string password);
 

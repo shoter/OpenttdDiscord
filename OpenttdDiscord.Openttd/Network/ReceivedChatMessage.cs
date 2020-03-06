@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OpenttdDiscord.Common;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,15 +9,15 @@ namespace OpenttdDiscord.Openttd.Network
 {
     public class ReceivedChatMessage
     {
-        public uint Recipient { get; }
+        public Player Player { get; }
 
         public string Message { get; }
 
         public ChatDestination ChatDestination { get; }
 
-        public ReceivedChatMessage(string msg, uint recipient, ChatDestination chatDestination)
+        public ReceivedChatMessage(string msg, Player player, ChatDestination chatDestination)
         {
-            this.Recipient = recipient;
+            this.Player = player;
             this.Message = msg;
             this.ChatDestination = chatDestination;
         }

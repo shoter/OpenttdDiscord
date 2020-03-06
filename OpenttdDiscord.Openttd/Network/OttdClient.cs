@@ -1,4 +1,5 @@
-﻿using OpenttdDiscord.Openttd;
+﻿using OpenttdDiscord.Common;
+using OpenttdDiscord.Openttd;
 using OpenttdDiscord.Openttd.Network.Tcp;
 using OpenttdDiscord.Openttd.Network.Udp;
 using System;
@@ -14,14 +15,14 @@ namespace OpenttdDiscord.Openttd.Network
         private readonly IUdpOttdClient udpClient;
         private readonly ITcpOttdClient tcpClient;
         private readonly IRevisionTranslator revisionTranslator;
-        private readonly ServerInfo serverInfo;
+        public ServerInfo ServerInfo { get; }
 
         public event EventHandler<ReceivedChatMessage> ReceivedChatMessage;
 
         public ConnectionState ConnectionState => tcpClient.ConnectionState;
         internal OttdClient(ServerInfo serverInfo,ITcpOttdClient tcpClient, IUdpOttdClient udpClient, IRevisionTranslator revisionTranslator)
         {
-            this.serverInfo = serverInfo;
+            this.ServerInfo = serverInfo;
             this.udpClient = udpClient;
             this.tcpClient = tcpClient;
             this.revisionTranslator = revisionTranslator;
@@ -42,8 +43,12 @@ namespace OpenttdDiscord.Openttd.Network
 
                         if (new ChatDestination[] { ChatDestination.DESTTYPE_BROADCAST, ChatDestination.DESTTYPE_CLIENT, ChatDestination.DESTTYPE_TEAM }.Contains(destination))
                         {
-                            this.ReceivedChatMessage?.Invoke(this, new ReceivedChatMessage(m.Message, m.ClientId, destination));
-                            this.SendChatMessage($"{destination} {m.Message}");
+                            this.ReceivedChatMessage?.Invoke(this, new ReceivedChatMessage(m.Message, tcpClient.Players[m.ClientId], destination));
+                            foreach(var g in this.tcpClient.Players)
+                            {
+                                var p = g.Value;
+                                SendChatMessage($"#{p.ClientId} - {p.Name}");
+                            }
                         }
                         break;
                     }
@@ -52,7 +57,7 @@ namespace OpenttdDiscord.Openttd.Network
 
         public async Task<PacketUdpServerResponse> AskAboutServerInfo()
         {
-            IUdpMessage response = await udpClient.SendMessage(new PacketUdpClientFindServer(), serverInfo.ServerIp, serverInfo.ServerPort);
+            IUdpMessage response = await udpClient.SendMessage(new PacketUdpClientFindServer(), ServerInfo.ServerIp, ServerInfo.ServerPort);
 
             return response as PacketUdpServerResponse;
         }
@@ -64,7 +69,7 @@ namespace OpenttdDiscord.Openttd.Network
             string revision = (await this.AskAboutServerInfo()).ServerRevision;
             uint newgrfRevision = this.revisionTranslator.TranslateToNewGrfRevision(revision).Revision;
 
-            await this.tcpClient.Start(serverInfo.ServerIp, serverInfo.ServerPort, username, password, revision, newgrfRevision);
+            await this.tcpClient.Start(ServerInfo.ServerIp, ServerInfo.ServerPort, username, password, revision, newgrfRevision);
         }
 
         public Task<object> SendAdminCommand(string command)

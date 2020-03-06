@@ -30,13 +30,6 @@ namespace OpenttdDiscord.Openttd.Network.Tcp
 
         private readonly ConcurrentDictionary<uint, Player> players = new ConcurrentDictionary<uint, Player>();
 
-        private readonly TcpMessageType[] ignoredLoggedTypes = new TcpMessageType[]
-        {
-                TcpMessageType.PACKET_SERVER_SYNC,
-                TcpMessageType.PACKET_CLIENT_ACK,
-                TcpMessageType.PACKET_SERVER_FRAME
-        };
-
         public uint MyClientId { get; private set; } = 0;
         public TcpOttdClient(ITcpPacketService tcpPacketService, IRevisionTranslator revisionTranslator, ILogger<ITcpOttdClient> logger)
         {
@@ -50,12 +43,6 @@ namespace OpenttdDiscord.Openttd.Network.Tcp
             this.sendMessageQueue.Enqueue(message);
             return Task.CompletedTask;
         }
-
-        private void QueueInternal(ITcpMessage message)
-        {
-            this.internalSendMessageQueue.Enqueue(message);
-        }
-
         public async void UpdateEvents(CancellationToken token)
         {
             while (token.IsCancellationRequested == false)
@@ -65,8 +52,6 @@ namespace OpenttdDiscord.Openttd.Network.Tcp
                 {
                     if (receivedMessageQueue.TryDequeue(out message))
                     {
-                        if (!ignoredLoggedTypes.Contains(message.MessageType))
-                            this.logger.LogTrace($"Received {message.MessageType}");
                         this.MessageReceived?.Invoke(this, message);
                     }
 
@@ -96,7 +81,7 @@ namespace OpenttdDiscord.Openttd.Network.Tcp
 
                         this.ConnectionState = ConnectionState.Connecting;
                         client.Connect(serverIp, serverPort);
-                        this.QueueInternal(new PacketClientJoinMessage()
+                        await this.QueueMessage(new PacketClientJoinMessage()
                         {
                             ClientName = username,
                             JoinAs = 255,
@@ -111,8 +96,6 @@ namespace OpenttdDiscord.Openttd.Network.Tcp
                         {
                             Packet packet = this.tcpPacketService.CreatePacket(msg);
                             await client.GetStream().WriteAsync(packet.Buffer, 0, packet.Size);
-                            if (!ignoredLoggedTypes.Contains(msg.MessageType))
-                                this.logger.LogTrace($"Sent {msg.MessageType.ToString()} - {packet.Size}");
                         }
                         else
                             break;
@@ -122,8 +105,6 @@ namespace OpenttdDiscord.Openttd.Network.Tcp
                     {
                         Packet packet = this.tcpPacketService.CreatePacket(msg);
                         await client.GetStream().WriteAsync(packet.Buffer, 0, packet.Size);
-                        if (!ignoredLoggedTypes.Contains(msg.MessageType))
-                            this.logger.LogTrace($"Sent Internal {msg.MessageType.ToString()} - {packet.Size}");
 
                     }
 
@@ -155,9 +136,6 @@ namespace OpenttdDiscord.Openttd.Network.Tcp
                             var packet = new Packet(content);
                             ITcpMessage msg = this.tcpPacketService.ReadPacket(packet);
 
-                            if (!ignoredLoggedTypes.Contains(msg.MessageType))
-                                this.logger.LogTrace($"Received {msg.MessageType}");
-
                             switch (msg.MessageType)
                             {
                                 case TcpMessageType.PACKET_SERVER_FULL:
@@ -176,13 +154,13 @@ namespace OpenttdDiscord.Openttd.Network.Tcp
                                     }
                                 case TcpMessageType.PACKET_SERVER_NEED_GAME_PASSWORD:
                                     {
-                                        this.QueueInternal(new PacketClientGamePasswordMessage(password));
+                                        await this.QueueMessage(new PacketClientGamePasswordMessage(password));
                                         break;
                                     }
                                 case TcpMessageType.PACKET_SERVER_FRAME:
                                     {
                                         var m = msg as PacketServerFrameMessage;
-                                        this.QueueInternal(new PacketClientAckMessage(m.FrameCounter, m.Token));
+                                        await this.QueueMessage(new PacketClientAckMessage(m.FrameCounter, m.Token));
                                         this.connected = true;
                                         this.ConnectionState = ConnectionState.Connected;
                                         break;
@@ -190,7 +168,7 @@ namespace OpenttdDiscord.Openttd.Network.Tcp
                                 case TcpMessageType.PACKET_SERVER_CHECK_NEWGRFS:
                                     {
                                         // Everything ok here xD
-                                        this.QueueInternal(new GenericTcpMessage(TcpMessageType.PACKET_CLIENT_NEWGRFS_CHECKED));
+                                        await this.QueueMessage(new GenericTcpMessage(TcpMessageType.PACKET_CLIENT_NEWGRFS_CHECKED));
                                         break;
                                     }
                                 case TcpMessageType.PACKET_SERVER_CLIENT_INFO:
@@ -212,26 +190,18 @@ namespace OpenttdDiscord.Openttd.Network.Tcp
                                     {
                                         var m = msg as PacketServerWelcomeMessage;
                                         this.MyClientId = m.ClientId;
-                                        this.QueueInternal(new GenericTcpMessage(TcpMessageType.PACKET_CLIENT_GETMAP));
+                                        await this.QueueMessage(new GenericTcpMessage(TcpMessageType.PACKET_CLIENT_GETMAP));
                                         this.ConnectionState = ConnectionState.DownloadingMap;
                                         break;
                                     }
                                 case TcpMessageType.PACKET_SERVER_MAP_DONE:
                                     {
-                                        this.QueueInternal(new GenericTcpMessage(TcpMessageType.PACKET_CLIENT_MAP_OK));
+                                        await this.QueueMessage(new GenericTcpMessage(TcpMessageType.PACKET_CLIENT_MAP_OK));
                                         break;
                                     }
                                 default:
                                     {
                                         if (connected == false)
-                                            break;
-
-                                        TcpMessageType[] ignoredMessages =
-                                    {
-                                        TcpMessageType.PACKET_SERVER_MAP_BEGIN, TcpMessageType.PACKET_SERVER_MAP_DATA, TcpMessageType.PACKET_SERVER_MAP_SIZE
-                                    };
-
-                                        if (ignoredMessages.Contains(msg.MessageType))
                                             break;
 
                                         this.receivedMessageQueue.Enqueue(msg);

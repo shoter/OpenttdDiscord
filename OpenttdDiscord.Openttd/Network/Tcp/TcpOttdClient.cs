@@ -117,7 +117,6 @@ namespace OpenttdDiscord.Openttd.Network.Tcp
                         sizeTask = client.GetStream().ReadAsync(sizeBuffer, 0, 2);
                     }
 
-                    //for (int i = 0; i < 100 &&client.GetStream().DataAvailable; ++i)
                     if (sizeTask?.IsCompleted ?? false)
                     {
                         ushort size = BitConverter.ToUInt16(sizeBuffer, 0);

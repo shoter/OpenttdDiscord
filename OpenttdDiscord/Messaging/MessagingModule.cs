@@ -6,13 +6,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OpenttdDiscord.Embeds
+namespace OpenttdDiscord.Messaging
 {
-    public class EmbedsModule : IModule
+    public class MessagingModule : IModule
     {
         public void Register(in IServiceCollection services)
         {
-            services.AddSingleton<IUdpEmbedFactory, UdpEmbedFactory>();
+            services.AddSingleton<IEmbedFactory, EmbedFactory>();
         }
     }
 }

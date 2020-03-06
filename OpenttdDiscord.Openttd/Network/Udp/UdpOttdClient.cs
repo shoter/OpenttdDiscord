@@ -19,16 +19,13 @@ namespace OpenttdDiscord.Openttd.Network.Udp
         public async Task<IUdpMessage> SendMessage(IUdpMessage message, string ip, int port)
         {
             var sendPacket = this.udpPacketService.CreatePacket(message);
+            using UdpClient client = new UdpClient();
+            var remoteEP = new IPEndPoint(IPAddress.Parse(ip), port);
 
-            using (UdpClient client = new UdpClient())
-            {
-                var remoteEP = new IPEndPoint(IPAddress.Parse(ip), port);
+            await client.SendAsync(sendPacket.Buffer, sendPacket.Size, remoteEP);
+            var receiveBytes = await client.ReceiveAsync();
 
-                await client.SendAsync(sendPacket.Buffer, sendPacket.Size, remoteEP);
-                var receiveBytes = await client.ReceiveAsync();
-
-                return this.udpPacketService.ReadPacket(new Packet(receiveBytes.Buffer));
-            }
+            return this.udpPacketService.ReadPacket(new Packet(receiveBytes.Buffer));
         }
     }
 }

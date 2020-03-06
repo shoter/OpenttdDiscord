@@ -14,6 +14,7 @@ namespace OpenttdDiscord.Openttd.Network.Tcp
         {
             services.AddTransient<ITcpOttdClient, TcpOttdClient>();
             services.AddSingleton<ITcpPacketService, TcpPacketService>();
+            services.AddSingleton<ITcpOttdClientFactory, TcpOttdClientFactory>();
         }
     }
 }

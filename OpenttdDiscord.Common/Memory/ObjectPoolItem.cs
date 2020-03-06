@@ -24,7 +24,7 @@ namespace OpenttdDiscord.Common.Memory
             if (disposed == false)
             {
                 disposed = true;
-                await origin.PutObject(this.Item);
+                origin.PutObject(this.Item);
             }
         }
     }

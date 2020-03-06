@@ -13,7 +13,7 @@ namespace OpenttdDiscord.Openttd.Network.Udp
         public void Register(in IServiceCollection services)
         {
             services.AddSingleton<IUdpPacketService, UdpPacketService>();
-            services.AddTransient<IUdpOttdClient, UdpOttdClient>();
+            services.AddSingleton<IUdpOttdClientFactory, UdpOttdClientFactory>();
         }
     }
 }

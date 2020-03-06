@@ -8,7 +8,7 @@ using NLog.Extensions.Logging;
 using OpenttdDiscord.Backend.Servers;
 using OpenttdDiscord.Commands;
 using OpenttdDiscord.Configuration;
-using OpenttdDiscord.Embeds;
+using OpenttdDiscord.Messaging;
 using OpenttdDiscord.Openttd;
 using OpenttdDiscord.Openttd.Network.Tcp;
 using OpenttdDiscord.Openttd.Network.Udp;
@@ -31,11 +31,12 @@ namespace OpenttdDiscord
             new ConfigModule().Register(services);
             new ServersModule().Register(services);
             new CommandsModule().Register(services);
-            new EmbedsModule().Register(services);
+            new MessagingModule().Register(services);
             new OttdModule().Register(services);
 
             services.AddSingleton<DiscordSocketClient>();
             services.AddSingleton<CommandService>();
+            services.AddSingleton<ServerInfoProcessor>();
             services.AddLogging(loggingBuilder =>
               {
                   // configure Logging with NLog

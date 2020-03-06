@@ -18,20 +18,19 @@ namespace OpenttdDiscord.Common.Memory
             this.factory = factory;
         }
 
-        public async Task<ObjectPoolItem<T>> GetObject()
+        public ObjectPoolItem<T> GetObject()
         {
             if (this.pool.TryTake(out T item))
                 return new ObjectPoolItem<T>(item, this);
-            item = await factory.Create();
+            item = factory.Create();
             this.pool.Add(item);
 
             return new ObjectPoolItem<T>(item, this);
         }
 
-        public Task PutObject(T item)
+        public void PutObject(T item)
         {
             this.pool.Add(item);
-            return Task.CompletedTask;
         }
     }
 }

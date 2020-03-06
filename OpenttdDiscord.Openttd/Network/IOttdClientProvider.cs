@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OpenttdDiscord.Common
+namespace OpenttdDiscord.Openttd.Network
 {
-    public interface IFactory<T>
+    public interface IOttdClientProvider
     {
-        T Create();
+        IOttdClient Provide(string serverIp, int port);
     }
 }

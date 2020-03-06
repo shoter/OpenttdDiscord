@@ -9,8 +9,7 @@ namespace OpenttdDiscord.Common.Memory
     public interface IObjectPool<T>
         where T : class
     {
-        Task<ObjectPoolItem<T>> GetObject();
-
-        Task PutObject(T item);
+        ObjectPoolItem<T> GetObject();
+        void PutObject(T item);
     }
 }

@@ -13,12 +13,16 @@ namespace OpenttdDiscord.Openttd.Network
     public class OttdClientFactory : IOttdClientFactory
     {
         private readonly IRevisionTranslator revisionTranslator;
+        private readonly ITcpOttdClientFactory tcpClientFactory;
+        private readonly IUdpOttdClientFactory udpClientFactory;
 
-        public OttdClientFactory(IRevisionTranslator revisionTranslator)
+        public OttdClientFactory(IRevisionTranslator revisionTranslator, ITcpOttdClientFactory tcpClientFactory, IUdpOttdClientFactory udpClientFactory)
         {
             this.revisionTranslator = revisionTranslator;
+            this.tcpClientFactory = tcpClientFactory;
+            this.udpClientFactory = udpClientFactory;
         }
 
-        public IOttdClient Create(ServerInfo serverInfo, ITcpOttdClient tcpClient, IUdpOttdClient udpClient) => new OttdClient(serverInfo, tcpClient, udpClient, revisionTranslator);
+        public IOttdClient Create(ServerInfo serverInfo) => new OttdClient(serverInfo, tcpClientFactory.Create(), udpClientFactory.Create(), revisionTranslator);
     }
 }

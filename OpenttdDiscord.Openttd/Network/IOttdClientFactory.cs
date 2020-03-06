@@ -12,6 +12,6 @@ namespace OpenttdDiscord.Openttd.Network
 {
     public interface IOttdClientFactory
     {
-        IOttdClient Create(ServerInfo serverInfo, ITcpOttdClient tcpClient, IUdpOttdClient udpClient);
+        IOttdClient Create(ServerInfo serverInfo);
     }
 }

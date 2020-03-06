@@ -7,11 +7,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OpenttdDiscord.Embeds
+namespace OpenttdDiscord.Messaging
 {
-    public interface IUdpEmbedFactory
+    public interface IEmbedFactory
     {
-        Task<Embed> Create(IUdpMessage message, Server server);
+        Embed Create(PacketUdpServerResponse message, Server server);
         
     }
 }

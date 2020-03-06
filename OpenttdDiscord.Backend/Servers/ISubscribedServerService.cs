@@ -8,6 +8,7 @@ namespace OpenttdDiscord.Backend.Servers
 {
     public interface ISubscribedServerService
     {
+        event EventHandler<SubscribedServer> ServerAdded;
         Task<SubscribedServer> AddServer(string ip, int port, ulong channelId);
 
         Task<bool> Exists(string ip, int port, ulong channelId);

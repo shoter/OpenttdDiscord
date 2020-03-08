@@ -23,7 +23,8 @@ namespace OpenttdDiscord
 
         private readonly List<SubscribedServer> servers = new List<SubscribedServer>();
 
-        public ServerInfoProcessor(DiscordSocketClient client, ISubscribedServerService subscribedServerService, IOttdClientProvider ottdClientProvider, IEmbedFactory embedFactory)
+        public ServerInfoProcessor(DiscordSocketClient client, ISubscribedServerService subscribedServerService,
+            IOttdClientProvider ottdClientProvider, IEmbedFactory embedFactory)
         {
             this.subscribedServerService = subscribedServerService;
             this.client = client;
@@ -33,27 +34,30 @@ namespace OpenttdDiscord
             this.subscribedServerService.ServerAdded += (_, ss) => servers.Add(ss);
         }
 
-        public async Task Start()
+        public Task Start()
         {
-            servers.AddRange(await subscribedServerService.GetAllServers());
-
             ThreadPool.QueueUserWorkItem(new WaitCallback((_) => MainLoop()), null);
+            return Task.CompletedTask;
         }
 
         private async void MainLoop()
         {
+            servers.AddRange(await subscribedServerService.GetAllServers());
             while (true)
             {
                 try
                 {
-                    foreach (var s in servers)
+                    for (int i = 0; i < servers.Count; i++)
                     {
+                        var s = servers[i];
+
                         var channel = client.GetChannel(s.ChannelId) as SocketTextChannel;
                         ulong? messageId = s.MessageId;
                         if (messageId.HasValue == false || (await channel.GetMessageAsync(messageId.Value)) == null)
                         {
                             messageId = (await channel.SendMessageAsync("Getting server info")).Id;
                         }
+
                         if (messageId.HasValue)
                         {
                             var ottdClient = this.ottdClientProvider.Provide(s.Server.ServerIp, s.Server.ServerPort);
@@ -61,14 +65,13 @@ namespace OpenttdDiscord
 
                             Embed embed = embedFactory.Create(r, s.Server);
 
-
-                            await (await channel.GetMessageAsync(messageId.Value) as RestUserMessage).ModifyAsync(x =>
+                            await ((RestUserMessage) await channel.GetMessageAsync(messageId.Value)).ModifyAsync(x =>
                             {
                                 x.Embed = embed;
-                                x.Content = string.Empty;
                             });
 
                             await subscribedServerService.UpdateServer(s.Server.Id, s.ChannelId, messageId.Value);
+                            servers[i] = new SubscribedServer(s.Server, s.LastUpdate, s.ChannelId, messageId);
                         }
                     }
 #if DEBUG
@@ -82,8 +85,6 @@ namespace OpenttdDiscord
                     Console.WriteLine("Exception " + ex.ToString());
                 }
             }
-
         }
-
     }
 }

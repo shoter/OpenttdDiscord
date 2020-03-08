@@ -101,3 +101,4 @@ ipch/
 *.aps
 *.ncb
 
+.vscode/

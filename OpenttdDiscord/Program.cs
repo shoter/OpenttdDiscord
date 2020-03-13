@@ -19,6 +19,7 @@ using OpenttdDiscord.Backend;
 using OpenttdDiscord.Openttd.Network.Tcp;
 using Microsoft.Extensions.Configuration;
 using OpenttdDiscord.Openttd.Network;
+using OpenttdDiscord.Chatting;
 
 namespace OpenttdDiscord
 {
@@ -54,6 +55,7 @@ namespace OpenttdDiscord
         private static async Task Client_Connected()
         {
             await DependencyConfig.ServiceProvider.GetRequiredService<ServerInfoProcessor>().Start();
+            await DependencyConfig.ServiceProvider.GetRequiredService<IChatService>().Start();
         }
 
         private static Task Log(LogMessage arg)

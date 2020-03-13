@@ -5,7 +5,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NLog;
 using NLog.Extensions.Logging;
+using OpenttdDiscord.Backend;
 using OpenttdDiscord.Backend.Servers;
+using OpenttdDiscord.Chatting;
 using OpenttdDiscord.Commands;
 using OpenttdDiscord.Configuration;
 using OpenttdDiscord.Messaging;
@@ -29,13 +31,14 @@ namespace OpenttdDiscord
             var services = new ServiceCollection();
 
             new ConfigModule().Register(services);
-            new ServersModule().Register(services);
+            new BackendModule().Register(services);
             new CommandsModule().Register(services);
             new MessagingModule().Register(services);
             new OttdModule().Register(services);
 
             services.AddSingleton<DiscordSocketClient>();
             services.AddSingleton<CommandService>();
+            services.AddSingleton<IChatService, ChatService>();
             services.AddSingleton<ServerInfoProcessor>();
             services.AddLogging(loggingBuilder =>
               {

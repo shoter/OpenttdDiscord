@@ -1,0 +1,38 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace OpenttdDiscord.Backend.Servers
+{
+    public class ServerService : IServerService
+    {
+        public event EventHandler<Server> Added;
+
+        private readonly IServerRepository serverRepository;
+
+        public ServerService(IServerRepository serverRepository)
+        {
+            this.serverRepository = serverRepository;
+        }
+
+        public async Task<Server> Getsert(string ip, int port)
+        {
+            Server server = await this.serverRepository.GetServer(ip, port);
+
+            if (server != null)
+                return server;
+
+            server = await this.serverRepository.AddServer(ip, port);
+            Added?.Invoke(this, server);
+            return server;
+        }
+
+        public async Task<bool> Exists(string ip, int port) => await this.serverRepository.GetServer(ip, port) != null;
+
+        public Task<Server> Get(string ip, int port) => this.serverRepository.GetServer(ip, port);
+
+        public Task<List<Server>> GetAll() => this.serverRepository.GetAll();
+    }
+}

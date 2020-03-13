@@ -43,12 +43,7 @@ namespace OpenttdDiscord.Openttd.Network
 
                         if (new ChatDestination[] { ChatDestination.DESTTYPE_BROADCAST, ChatDestination.DESTTYPE_CLIENT, ChatDestination.DESTTYPE_TEAM }.Contains(destination))
                         {
-                            this.ReceivedChatMessage?.Invoke(this, new ReceivedChatMessage(m.Message, tcpClient.Players[m.ClientId], destination));
-                            foreach(var g in this.tcpClient.Players)
-                            {
-                                var p = g.Value;
-                                SendChatMessage($"#{p.ClientId} - {p.Name}");
-                            }
+                            this.ReceivedChatMessage?.Invoke(this, new ReceivedChatMessage(m.Message, tcpClient.Players[m.ClientId], destination, this.ServerInfo));
                         }
                         break;
                     }

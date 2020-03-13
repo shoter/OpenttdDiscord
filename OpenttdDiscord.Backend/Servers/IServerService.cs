@@ -6,10 +6,13 @@ using System.Threading.Tasks;
 
 namespace OpenttdDiscord.Backend.Servers
 {
-    public interface IServerRepository
+    public interface IServerService
     {
-        Task<Server> GetServer(string ip, int port);
-        Task<Server> AddServer(string ip, int port);
+        event EventHandler<Server> Added;
+        Task<Server> Getsert(string ip, int port);
+        Task<bool> Exists(string ip, int port);
+        Task<Server> Get(string ip, int port);
+
         Task<List<Server>> GetAll();
         
     }

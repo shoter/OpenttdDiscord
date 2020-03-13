@@ -2,6 +2,7 @@
 using Discord.Commands;
 using Discord.WebSocket;
 using Microsoft.Extensions.DependencyInjection;
+using OpenttdDiscord.Chatting;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,6 +16,7 @@ namespace OpenttdDiscord.Commands
     {
         private readonly CommandService commands;
         private readonly DiscordSocketClient discord;
+        private readonly IChatService chatService;
         private readonly IServiceProvider services;
 
         public CommandHandlingService(IServiceProvider services, CommandService commandService, DiscordSocketClient client)
@@ -28,6 +30,8 @@ namespace OpenttdDiscord.Commands
             // Hook MessageReceived so we can process each message to see
             // if it qualifies as a command.
             discord.MessageReceived += MessageReceivedAsync;
+
+            this.chatService = services.GetRequiredService<IChatService>();
         }
 
         public async Task InitializeAsync()
@@ -47,7 +51,15 @@ namespace OpenttdDiscord.Commands
             // Perform prefix check. You may want to replace this with
             // (!message.HasCharPrefix('!', ref argPos))
             // for a more traditional command format like !help.
-            if (!message.HasMentionPrefix(discord.CurrentUser, ref argPos)) return;
+            if (!message.HasMentionPrefix(discord.CurrentUser, ref argPos))
+            {
+                this.chatService.AddMessage(new DiscordMessage()
+                {
+                    ChannelId = message.Channel.Id,
+                    Message = message.Content,
+                    Username = message.Author.Username
+                });
+            }
 
             var context = new SocketCommandContext(discord, message);
             // Perform the execution of the command. In this method,

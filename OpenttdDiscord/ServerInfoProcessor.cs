@@ -64,15 +64,16 @@ namespace OpenttdDiscord
                             var r = await ottdClient.AskAboutServerInfo();
 
                             Embed embed = embedFactory.Create(r, s.Server);
-
-                            await ((RestUserMessage) await channel.GetMessageAsync(messageId.Value)).ModifyAsync(x =>
+                            var msg = await channel.GetMessageAsync(messageId.Value) as RestUserMessage;
+                            await msg.ModifyAsync(x =>
                             {
                                 x.Embed = embed;
                             });
 
                             await subscribedServerService.UpdateServer(s.Server.Id, s.ChannelId, messageId.Value);
-                            servers[i] = new SubscribedServer(s.Server, s.LastUpdate, s.ChannelId, messageId);
                         }
+                        servers[i] = new SubscribedServer(s.Server, s.LastUpdate, s.ChannelId, messageId);
+
                     }
 #if DEBUG
                     await Task.Delay(TimeSpan.FromSeconds(5));

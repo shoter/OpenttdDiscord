@@ -10,9 +10,10 @@ namespace OpenttdDiscord.Backend.Servers
     {
         public void Register(in IServiceCollection services)
         {
-            services.AddScoped<IServerRepository, ServerRepository>();
-            services.AddScoped<ISubscribedServerRepository, SubscribedServerRepository>();
-            services.AddScoped<ISubscribedServerService, SubscribedServerService>();
+            services.AddSingleton<IServerService, ServerService>();
+            services.AddSingleton<IServerRepository, ServerRepository>();
+            services.AddSingleton<ISubscribedServerRepository, SubscribedServerRepository>();
+            services.AddSingleton<ISubscribedServerService, SubscribedServerService>();
         }
     }
 }

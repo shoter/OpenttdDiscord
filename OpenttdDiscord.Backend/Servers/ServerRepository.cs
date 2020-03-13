@@ -41,7 +41,26 @@ namespace OpenttdDiscord.Backend.Servers
                 using (var reader = await cmd.ExecuteReaderAsync())
                 {
                     await reader.ReadAsync();
-                    return ReadFromReader(reader);
+                    Server server = ReadFromReader(reader);
+                    return server;
+                }
+            }
+        }
+
+        public async Task<List<Server>> GetAll()
+        {
+            using (var conn = new MySqlConnection(this.connectionString))
+            {
+                await conn.OpenAsync();
+                using (var cmd = new MySqlCommand($"SELECT * FROM servers", conn))
+                {
+                    using (var reader = await cmd.ExecuteReaderAsync())
+                    {
+                        List<Server> servers = new List<Server>();
+                        while (await reader.ReadAsync())
+                            servers.Add(ReadFromReader(reader));
+                        return servers;
+                    }
                 }
             }
         }

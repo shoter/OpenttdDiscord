@@ -22,7 +22,7 @@ Debugging process is the same excluding the fact that you need to launch your pr
 
 
 ```
-@BotMention register_server IP Port
+@BotMention put_server_info IP Port
 ```
 
 It will create following message that will be updated every minute.

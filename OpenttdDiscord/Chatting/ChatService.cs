@@ -73,7 +73,7 @@ namespace OpenttdDiscord.Chatting
 
                         IOttdClient client = ottdClientProvider.Provide(server.ServerIp, server.ServerPort);
 
-                        if (client.ConnectionState == ConnectionState.NotConnected)
+                        if (client.ConnectionState == ConnectionState.Idle)
                         {
                             await client.JoinGame("OpenTTDBot", "");
                             client.ReceivedChatMessage -= Client_ReceivedChatMessage;
@@ -83,6 +83,8 @@ namespace OpenttdDiscord.Chatting
 
                     while (receivedMessagges.TryDequeue(out ReceivedChatMessage msg))
                     {
+                        if (msg.Player.ClientId == 1)
+                            continue;
                         Server s = servers.Values.First(s => s.ServerIp == msg.ServerInfo.ServerIp && s.ServerPort == msg.ServerInfo.ServerPort);
                         IEnumerable<ChatChannelServer> csList = chatServers.Values.Where(x => x.ServerId == s.Id);
 

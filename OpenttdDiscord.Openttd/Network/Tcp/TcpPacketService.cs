@@ -143,6 +143,7 @@ namespace OpenttdDiscord.Openttd.Network.Tcp
                 case TcpMessageType.PACKET_SERVER_MOVE:
                 case TcpMessageType.PACKET_SERVER_COMMAND:
                 case TcpMessageType.PACKET_SERVER_CHECK_NEWGRFS:
+                case TcpMessageType.PACKET_SERVER_NEED_COMPANY_PASSWORD:
                 case TcpMessageType.PACKET_SERVER_WAIT:
                 case TcpMessageType.PACKET_SERVER_RCON:
                     {

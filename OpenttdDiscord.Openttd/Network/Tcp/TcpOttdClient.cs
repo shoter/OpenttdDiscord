@@ -25,9 +25,11 @@ namespace OpenttdDiscord.Openttd.Network.Tcp
         private readonly IRevisionTranslator revisionTranslator;
         private bool connected = false;
         private CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
-        public ConnectionState ConnectionState { get; private set; } = ConnectionState.NotConnected;
+        public ConnectionState ConnectionState { get; private set; } = ConnectionState.Idle;
 
         private readonly ConcurrentDictionary<uint, Player> players = new ConcurrentDictionary<uint, Player>();
+
+        private TcpClient client = new TcpClient();
 
         public uint MyClientId { get; private set; } = 0;
 
@@ -69,9 +71,9 @@ namespace OpenttdDiscord.Openttd.Network.Tcp
 
         public async void MainLoop(CancellationToken token, string serverIp, int serverPort, string username, string password, string revision, uint newgrfRevision)
         {
-            Task sizeTask = null;
+            Task<int> sizeTask = null;
             byte[] sizeBuffer = new byte[2];
-            TcpClient client = new TcpClient();
+            int sizeBufferPos = 0;
 
 
             while (token.IsCancellationRequested == false)
@@ -106,16 +108,42 @@ namespace OpenttdDiscord.Openttd.Network.Tcp
                     }
 
 
-                    while ((sizeTask ??= client.GetStream().ReadAsync(sizeBuffer, 0, 2)).IsCompleted)
+                    while ((sizeTask ??= client.GetStream().ReadAsync(sizeBuffer, sizeBufferPos, 2 - sizeBufferPos)).IsCompleted)
                     {
+                        sizeBufferPos += sizeTask.Result;
+
+                        if (sizeBufferPos == 1)
+                        {
+                            sizeTask = client.GetStream().ReadAsync(sizeBuffer, sizeBufferPos, 2 - sizeBufferPos);
+                            await sizeTask;
+                        }
+
+                        sizeBufferPos = 0;
+                        sizeTask = null;
+                        
+
+
                         sizeTask = null;
 
                         ushort size = BitConverter.ToUInt16(sizeBuffer, 0);
                         byte[] content = new byte[size];
                         content[0] = sizeBuffer[0];
                         content[1] = sizeBuffer[1];
+                        int contentSize = 2;
 
-                        await client.GetStream().ReadAsync(content, 2, size - 2);
+
+                        do
+                        {
+                            Task<int> task = client.GetStream().ReadAsync(content, contentSize, size - contentSize);
+                            await task;
+                            contentSize += task.Result;
+                        } while (contentSize < size);
+
+
+
+                        ulong sum = 0;
+                        for (int i = 2; i < size; ++i)
+                            sum += content[i];
 
                         var packet = new Packet(content);
                         ITcpMessage msg = this.tcpPacketService.ReadPacket(packet);
@@ -227,6 +255,7 @@ namespace OpenttdDiscord.Openttd.Network.Tcp
 
         private void Reset()
         {
+            this.client = new TcpClient();
             this.players.Clear();
             this.sendMessageQueue.Clear();
             this.receivedMessageQueue.Clear();
@@ -237,10 +266,12 @@ namespace OpenttdDiscord.Openttd.Network.Tcp
 
         public async Task Start(string serverIp, int serverPort, string username, string password, string revision, uint newgrfRevision)
         {
-            if (this.ConnectionState != ConnectionState.NotConnected)
+            if (this.ConnectionState != ConnectionState.Idle)
             {
                 throw new OttdException("You cannot connect to different server while this client is connected to a server");
             }
+            this.ConnectionState = ConnectionState.NotConnected;
+
 
             this.logger.LogInformation($"Connecting to {serverIp}:{serverPort}");
             ThreadPool.QueueUserWorkItem(new WaitCallback((_) => MainLoop(cancellationTokenSource.Token, serverIp, serverPort, username, password, revision, newgrfRevision)), null);
@@ -264,6 +295,7 @@ namespace OpenttdDiscord.Openttd.Network.Tcp
             this.cancellationTokenSource.Cancel();
             this.cancellationTokenSource = new CancellationTokenSource();
             return TaskHelper.WaitUntil(() => ConnectionState == ConnectionState.NotConnected, delayBetweenChecks: TimeSpan.FromSeconds(0.5), duration: TimeSpan.FromSeconds(10));
+            this.ConnectionState = ConnectionState.Idle;
         }
     }
 }

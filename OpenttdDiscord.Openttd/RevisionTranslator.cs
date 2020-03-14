@@ -22,6 +22,9 @@ namespace OpenttdDiscord.Openttd
 
             release = (byte)(splitted.Length > 1 ? 0 : 1);
 
+            if (revision.Contains("RC"))
+                release = 0;
+
             return new NewGrfRevision(major, minor, build, release);
         }
     }

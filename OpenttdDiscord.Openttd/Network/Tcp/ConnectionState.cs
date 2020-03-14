@@ -8,6 +8,7 @@ namespace OpenttdDiscord.Openttd.Network.Tcp
 {
     public enum ConnectionState
     {
+        Idle,
         NotConnected,
         Connecting,
         DownloadingMap,

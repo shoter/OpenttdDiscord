@@ -93,6 +93,7 @@ namespace OpenttdDiscord.Chatting
                             var channel = discord.GetChannel(cs.ChannelId) as SocketTextChannel;
 
                             var chatMsg = $"[{cs.ServerName}] {msg.Player.Name}: {msg.Message}";
+
                             await channel.SendMessageAsync(chatMsg);
 
                             IEnumerable<ChatChannelServer> others = chatServers.Values.Where(x => x.ChannelId == channel.Id && x.ServerId != s.Id);
@@ -121,9 +122,12 @@ namespace OpenttdDiscord.Chatting
 
 
                     }
-                  
 
-                    await Task.Delay(TimeSpan.FromSeconds(1));
+#if DEBUG
+                    await Task.Delay(TimeSpan.FromSeconds(0.05));
+#else
+                    await Task.Delay(TimeSpan.FromSeconds(0.3));
+#endif
                 }
                 catch (Exception e)
                 {

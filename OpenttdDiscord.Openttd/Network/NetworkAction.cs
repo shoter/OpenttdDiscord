@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OpenttdDiscord.Openttd.Network.Tcp
+namespace OpenttdDiscord.Openttd.Network
 {
-    public enum NetworkAction
-    {
+	public enum NetworkAction
+	{
 		NETWORK_ACTION_JOIN,
 		NETWORK_ACTION_LEAVE,
 		NETWORK_ACTION_KICKED,

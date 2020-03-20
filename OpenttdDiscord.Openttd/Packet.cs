@@ -79,6 +79,22 @@ namespace OpenttdDiscord.Openttd
             this.Buffer[this.Size++] = 0;
         }
 
+        public void SendString(string str, int size)
+        {
+            for(int i = 0;i < size; ++ i)
+            {
+                if (i < str.Length)
+                {
+                    SendByte((byte)str[i]);
+                }
+                else
+                {
+                    SendByte(0);
+                    break;
+                }
+            }
+        }
+
         public byte ReadByte() => this.Buffer[this.Position++];
 
         public bool ReadBool() => ReadByte() != 0;
@@ -86,6 +102,8 @@ namespace OpenttdDiscord.Openttd
         public ushort ReadU16() => BitConverter.ToUInt16(this.Buffer, (this.Position += 2) - 2);
 
         public uint ReadU32() => BitConverter.ToUInt32(this.Buffer, (this.Position += 4) - 4);
+
+        public ulong ReadU64() => BitConverter.ToUInt64(this.Buffer, (this.Position += 8) - 8);
 
         public long ReadI64() => BitConverter.ToInt64(this.Buffer, (this.Position += 8) - 8);
 
@@ -102,6 +120,18 @@ namespace OpenttdDiscord.Openttd
             }
 
             this.Position++;
+
+            return str.ToString();
+        }
+
+        public string ReadString(int size)
+        {
+            StringBuilder str = new StringBuilder();
+
+            for(int i = 0;i < size; ++i)
+            {
+                str.Append((char)this.Buffer[this.Position]);
+            }
 
             return str.ToString();
         }

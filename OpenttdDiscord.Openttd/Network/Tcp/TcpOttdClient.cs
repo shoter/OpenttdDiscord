@@ -139,12 +139,6 @@ namespace OpenttdDiscord.Openttd.Network.Tcp
                             contentSize += task.Result;
                         } while (contentSize < size);
 
-
-
-                        ulong sum = 0;
-                        for (int i = 2; i < size; ++i)
-                            sum += content[i];
-
                         var packet = new Packet(content);
                         ITcpMessage msg = this.tcpPacketService.ReadPacket(packet);
 

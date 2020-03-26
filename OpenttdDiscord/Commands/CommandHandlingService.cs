@@ -59,6 +59,8 @@ namespace OpenttdDiscord.Commands
                     Message = message.Content,
                     Username = message.Author.Username
                 });
+
+                return;
             }
 
             var context = new SocketCommandContext(discord, message);

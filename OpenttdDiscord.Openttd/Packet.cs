@@ -71,12 +71,11 @@ namespace OpenttdDiscord.Openttd
 
         public void SendString(string str)
         {
-            foreach(char c in str)
-            {
-                this.Buffer[this.Size++] = (byte)c;
-            }
+            var bytes = Encoding.Default.GetBytes(str);
+            foreach (byte b in bytes)
+                SendByte(b);
 
-            this.Buffer[this.Size++] = 0;
+            SendByte(0);
         }
 
         public byte ReadByte() => this.Buffer[this.Position++];
@@ -91,7 +90,7 @@ namespace OpenttdDiscord.Openttd
 
 
 
-        public string ReadString()
+       /* public string ReadString()
         {
             StringBuilder str = new StringBuilder();
 
@@ -103,7 +102,21 @@ namespace OpenttdDiscord.Openttd
 
             this.Position++;
 
-            return str.ToString();
+            return str.ReadString();
+        }*/
+
+        public string ReadString()
+        {
+            List<byte> bytes = new List<byte>();
+
+            while (this.Buffer[this.Position] != 0)
+            {
+                bytes.Add(this.Buffer[this.Position++]);
+            }
+
+            this.Position++;
+
+            return Encoding.Default.GetString(bytes.ToArray());
         }
     }
 }

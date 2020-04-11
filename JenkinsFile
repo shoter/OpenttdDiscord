@@ -2,13 +2,19 @@ pipeline {
   agent any
   stages {
   stage("Clean") {
-		sh "dotnet clean"
+		steps {
+			sh "dotnet clean"
+		}
   }
   stage("Build") {
-		sh "dotnet build -c Release -warnaserror"
+		steps {
+			sh "dotnet build -c Release -warnaserror"
+		}
   }
   stage("Test") {
-		sh "dotnet test"
+		steps {
+			sh "dotnet test"
+		}
   }
 }
 }

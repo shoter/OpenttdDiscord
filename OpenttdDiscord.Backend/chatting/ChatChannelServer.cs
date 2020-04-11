@@ -2,15 +2,9 @@ namespace OpenttdDiscord.Backend.Chatting
 {
     public class ChatChannelServer 
     {
-        public ulong ServerId { get; }
-        public ulong ChannelId { get; }
-        public string ServerName { get; }
-
-        public ChatChannelServer(ulong serverId, ulong channelId, string serverName)
-        {
-            this.ServerId = serverId;
-            this.ChannelId = channelId;
-            this.ServerName = serverName;
-        }
+        public ulong ServerId { get; internal set; }
+        public ulong ChannelId { get; internal set; }
+        public string ServerName { get; internal set; }
+        public bool JoinMessagesEnabled { get; internal set; }
     }
 }

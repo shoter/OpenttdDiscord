@@ -15,10 +15,11 @@ namespace OpenttdDiscord.Openttd
 
         public string Password { get; }
 
-        public ServerInfo(string serverIp, int serverPort)
+        public ServerInfo(string serverIp, int serverPort, string password = "")
         {
             this.ServerIp = serverIp;
             this.ServerPort = serverPort;
+            this.Password = password;
         }
     }
 }

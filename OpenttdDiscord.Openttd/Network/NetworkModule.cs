@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using OpenttdDiscord.Common;
+using OpenttdDiscord.Openttd.Network.AdminPort;
 using OpenttdDiscord.Openttd.Network.Tcp;
 using OpenttdDiscord.Openttd.Network.Udp;
 using System;
@@ -18,6 +19,7 @@ namespace OpenttdDiscord.Openttd.Network
             services.AddSingleton<IOttdClientProvider, OttdClientProvider>();
             new TcpModule().Register(services);
             new UdpModule().Register(services);
+            new AdminPortModule().Register(services);
         }
     }
 }

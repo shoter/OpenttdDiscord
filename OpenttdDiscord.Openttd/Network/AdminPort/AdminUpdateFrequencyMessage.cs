@@ -17,7 +17,9 @@ namespace OpenttdDiscord.Openttd.Network.AdminPort
         public AdminUpdateFrequencyMessage(AdminUpdateType updateType, UpdateFrequency updateFrequency)
         {
             this.UpdateType = updateType;
-            this.UpdateFrequency = UpdateFrequency;
+            this.UpdateFrequency = updateFrequency;
         }
+
+        public override string ToString() => $"Update FREQ {UpdateType} to {UpdateFrequency}";
     }
 }

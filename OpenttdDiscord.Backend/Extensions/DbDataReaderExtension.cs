@@ -13,6 +13,8 @@ namespace OpenttdDiscord.Backend.Extensions
 
         public static int ReadInt(this DbDataReader r, string columnName) => int.Parse(r.ReadString(columnName));
 
+        public static bool ReadBool(this DbDataReader r, string columnName) => int.Parse(r.ReadString(columnName)) != 0;
+
         public static ulong ReadU64(this DbDataReader r, string columnName) => ulong.Parse(r.ReadString(columnName));
 
         public static T Read<T>(this DbDataReader r, string columnName) => r.GetFieldValue<T>(r.GetOrdinal(columnName));

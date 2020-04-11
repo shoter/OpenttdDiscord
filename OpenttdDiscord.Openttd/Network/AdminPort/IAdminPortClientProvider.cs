@@ -6,10 +6,9 @@ using System.Threading.Tasks;
 
 namespace OpenttdDiscord.Openttd.Network.AdminPort
 {
-    public class AdminPingMessage : IAdminMessage
+    public interface IAdminPortClientProvider
     {
-        public AdminMessageType MessageType => AdminMessageType.ADMIN_PACKET_ADMIN_PING;
-
-        public uint Argument { get; set; }
+        Task<IAdminPortClient> GetClient(ServerInfo info);
+        
     }
 }

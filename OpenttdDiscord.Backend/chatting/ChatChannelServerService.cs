@@ -29,10 +29,13 @@ namespace OpenttdDiscord.Backend.Chatting
 
             if(chatChannelServer == null)
             {
-                chatChannelServer = await this.chatChannelServerRepository.Insert(new ChatChannelServer(
-                    server.Id,
-                    channelId,
-                    serverName));
+                chatChannelServer = await this.chatChannelServerRepository.Insert(new ChatChannelServer()
+                {
+                    ChannelId = channelId,
+                    JoinMessagesEnabled = false,
+                    ServerId = server.Id,
+                    ServerName = serverName
+                });
 
                 this.Added?.Invoke(this, chatChannelServer);
             }

@@ -20,6 +20,8 @@ using OpenttdDiscord.Openttd.Network.Tcp;
 using Microsoft.Extensions.Configuration;
 using OpenttdDiscord.Openttd.Network;
 using OpenttdDiscord.Chatting;
+using OpenttdDiscord.Openttd.Network.AdminPort;
+using Microsoft.Extensions.Logging;
 
 namespace OpenttdDiscord
 {
@@ -36,6 +38,14 @@ namespace OpenttdDiscord
             DependencyConfig.Init(config);
 
             using var services = DependencyConfig.ServiceProvider;
+
+            var client = new AdminPortClient(new ServerInfo("192.168.2.100", 3982, "admin_pass"), services.GetRequiredService<IAdminPacketService>(), services.GetRequiredService<ILogger<AdminPortClient>>());
+
+            await client.Join();
+
+
+            await Task.Delay(-1);
+            /*
             client = services.GetRequiredService<DiscordSocketClient>();
             client.Log += Log;
             services.GetRequiredService<CommandService>().Log += Log;
@@ -49,7 +59,7 @@ namespace OpenttdDiscord
 
             client.Connected += Client_Connected;
 
-            await Task.Delay(-1);
+            await Task.Delay(-1);*/
         }
 
         private static async Task Client_Connected()

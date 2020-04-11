@@ -284,11 +284,11 @@ namespace OpenttdDiscord.Openttd.Network.Tcp
             }
         }
 
-        public Task Stop()
+        public async Task Stop()
         {
             this.cancellationTokenSource.Cancel();
             this.cancellationTokenSource = new CancellationTokenSource();
-            return TaskHelper.WaitUntil(() => ConnectionState == ConnectionState.NotConnected, delayBetweenChecks: TimeSpan.FromSeconds(0.5), duration: TimeSpan.FromSeconds(10));
+            await TaskHelper.WaitUntil(() => ConnectionState == ConnectionState.NotConnected, delayBetweenChecks: TimeSpan.FromSeconds(0.5), duration: TimeSpan.FromSeconds(10));
             this.ConnectionState = ConnectionState.Idle;
         }
     }

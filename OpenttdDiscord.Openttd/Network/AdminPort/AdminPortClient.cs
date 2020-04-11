@@ -16,6 +16,8 @@ namespace OpenttdDiscord.Openttd.Network.AdminPort
         private TcpClient tcpClient;
         public AdminConnectionState ConnectionState { get; private set; }
 
+        public ConcurrentDictionary<uint, Player> Players { get; } = new ConcurrentDictionary<uint, Player>();
+
         public event EventHandler<IAdminMessage> MessageReceived;
 
         private readonly Microsoft.Extensions.Logging.ILogger logger;
@@ -26,12 +28,17 @@ namespace OpenttdDiscord.Openttd.Network.AdminPort
 
         private readonly ConcurrentQueue<IAdminMessage> sendMessageQueue = new ConcurrentQueue<IAdminMessage>();
 
+        
+
         private CancellationTokenSource cancellationTokenSource = null;
 
         public ServerInfo ServerInfo { get; }
 
-        public ConcurrentDictionary<AdminUpdateType, bool> HandledUpdateTypes { get; } = new ConcurrentDictionary<AdminUpdateType, bool>();
-        public AdminPortClient(ServerInfo serverInfo, IAdminPacketService adminPacketService, ILogger<AdminPortClient> logger)
+        public ConcurrentDictionary<AdminUpdateType, AdminUpdateSetting> AdminUpdateSettings { get; } = new ConcurrentDictionary<AdminUpdateType, AdminUpdateSetting>();
+
+
+        public AdminServerInfo AdminServerInfo { get; private set; } = new AdminServerInfo();
+        public AdminPortClient(ServerInfo serverInfo, IAdminPacketService adminPacketService, ILogger<IAdminPortClient> logger)
         {
             this.ServerInfo = serverInfo;
             this.logger = logger;
@@ -39,12 +46,18 @@ namespace OpenttdDiscord.Openttd.Network.AdminPort
 
             foreach(var type in Enums.ToArray<AdminUpdateType>())
             {
-                this.HandledUpdateTypes.TryAdd(type, false);
+                this.AdminUpdateSettings.TryAdd(type, new AdminUpdateSetting(false, type, UpdateFrequency.ADMIN_FREQUENCY_AUTOMATIC));
             }
         }
 
-        private void EventLoop(CancellationToken token)
+        private async void EventLoop(CancellationToken token)
         {
+            while(token.IsCancellationRequested == false)
+            {
+
+
+                await Task.Delay(TimeSpan.FromSeconds(0.1));
+            }
 
         }
 
@@ -64,6 +77,9 @@ namespace OpenttdDiscord.Openttd.Network.AdminPort
                         this.ConnectionState = AdminConnectionState.Connecting;
                     }
 
+                    if (this.tcpClient == null)
+                        continue;
+
                     for(int i = 0;i < 100; ++i)
                     {
                         if (this.sendMessageQueue.TryDequeue(out IAdminMessage msg))
@@ -81,8 +97,15 @@ namespace OpenttdDiscord.Openttd.Network.AdminPort
 
                         if(receivedBytes != 2)
                         {
-                            await tcpClient.GetStream().ReadAsync(sizeBuffer, 1, 1);
+                            await Task.Delay(TimeSpan.FromMilliseconds(1));
+                            int bytes = await tcpClient.GetStream().ReadAsync(sizeBuffer, 1, 1);
+                            if (bytes == 0)
+                            {
+                                throw new OttdConnectionException("Something went wrong - restarting");
+                            }
+
                         }
+
 
                         sizeTask = null;
 
@@ -94,16 +117,23 @@ namespace OpenttdDiscord.Openttd.Network.AdminPort
 
                         do
                         {
+                            await Task.Delay(TimeSpan.FromMilliseconds(1));
                             Task<int> task = tcpClient.GetStream().ReadAsync(content, contentSize, size - contentSize);
                             await task;
                             contentSize += task.Result;
+                            if(task.Result == 0)
+                            {
+                                throw new OttdConnectionException("No further data received in message!");
+                            }
                         } while (contentSize < size);
 
 
                         var packet = new Packet(content);
                         IAdminMessage message = this.adminPacketService.ReadPacket(packet);
 
-                        switch(message.MessageType)
+                        this.logger.LogInformation($"I received {message.MessageType}");
+
+                        switch (message.MessageType)
                         {
                             case AdminMessageType.ADMIN_PACKET_SERVER_PROTOCOL:
                                 {
@@ -111,10 +141,45 @@ namespace OpenttdDiscord.Openttd.Network.AdminPort
 
                                     foreach(var s in msg.AdminUpdateSettings)
                                     {
-
+                                        this.logger.LogInformation($"Update settings {s.Key} - {s.Value}");
+                                        this.AdminUpdateSettings.TryUpdate(s.Key, new AdminUpdateSetting(true, s.Key, s.Value), this.AdminUpdateSettings[s.Key]);
                                     }
 
+                                    break;
+                                }
+                            case AdminMessageType.ADMIN_PACKET_SERVER_WELCOME:
+                                {
+                                    var msg = message as AdminServerWelcomeMessage;
 
+                                    AdminServerInfo = new AdminServerInfo()
+                                    {
+                                        IsDedicated = msg.IsDedicated,
+                                        MapName = msg.MapName,
+                                        RevisionName = msg.NetworkRevision,
+                                        ServerName = msg.ServerName
+                                    };
+
+
+                                    this.SendMessage(new AdminUpdateFrequencyMessage(AdminUpdateType.ADMIN_UPDATE_CHAT, UpdateFrequency.ADMIN_FREQUENCY_AUTOMATIC));
+                                    this.SendMessage(new AdminUpdateFrequencyMessage(AdminUpdateType.ADMIN_UPDATE_CONSOLE, UpdateFrequency.ADMIN_FREQUENCY_AUTOMATIC));
+                                    this.SendMessage(new AdminUpdateFrequencyMessage(AdminUpdateType.ADMIN_UPDATE_CLIENT_INFO, UpdateFrequency.ADMIN_FREQUENCY_AUTOMATIC));
+                                    this.SendMessage(new AdminPollMessage(AdminUpdateType.ADMIN_UPDATE_CLIENT_INFO, uint.MaxValue));
+
+                                    break;
+                                }
+                            case AdminMessageType.ADMIN_PACKET_SERVER_CLIENT_INFO:
+                                {
+                                    var msg = message as AdminServerClientInfoMessage;
+                                    var player = new Player(msg.ClientId, msg.ClientName);
+                                    this.Players.AddOrUpdate(msg.ClientId, player, (_, __) => player);
+
+                                    break;
+                                }
+                            default:
+                                {
+                                    var msg = message as AdminServerChatMessage;
+                                    this.receivedMessagesQueue.Enqueue(message);
+                                    break;
                                 }
                         }
 
@@ -126,12 +191,15 @@ namespace OpenttdDiscord.Openttd.Network.AdminPort
                 }
                 catch(Exception e)
                 {
-                    this.tcpClient.Dispose();
+                    this.logger.LogError($"{ServerInfo.ServerIp}:{ServerInfo.ServerPort} encountered error", e);
+
+                    this.tcpClient?.Dispose();
                     this.tcpClient = null;
                     this.sendMessageQueue.Clear();
                     this.receivedMessagesQueue.Clear();
-                    this.logger.LogError($"{ServerInfo.ServerIp}:{ServerInfo.ServerPort} encountered error", e);
+                    this.ConnectionState = AdminConnectionState.NotConnected;
 
+                    await Task.Delay(TimeSpan.FromSeconds(1));
                 }
 
             }
@@ -157,21 +225,32 @@ namespace OpenttdDiscord.Openttd.Network.AdminPort
                     this.cancellationTokenSource = new CancellationTokenSource();
                     this.cancellationTokenSource.Cancel();
                 }
-
-
-
-
-                    throw new NotImplementedException();
             }
-            catch(Exception)
+            catch(Exception e)
             {
                 this.ConnectionState = AdminConnectionState.Idle;
+                throw new OttdConnectionException("Could not join server", e);
             }
         }
 
-        public Task Disconnect()
+        public async Task Disconnect()
         {
-            throw new NotImplementedException();
+            if (this.ConnectionState == AdminConnectionState.Idle)
+                return;
+            try
+            {
+                this.cancellationTokenSource.Cancel();
+
+                if ((await TaskHelper.WaitUntil(() => ConnectionState == AdminConnectionState.Idle, delayBetweenChecks: TimeSpan.FromSeconds(0.5), duration: TimeSpan.FromSeconds(10))) == false)
+                {
+                    this.cancellationTokenSource = new CancellationTokenSource();
+                    this.cancellationTokenSource.Cancel();
+                }
+            }
+            catch (Exception e)
+            {
+                throw new OttdConnectionException("Could not join server", e);
+            }
         }
 
         public void SendMessage(IAdminMessage message)

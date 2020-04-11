@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OpenttdDiscord.Common;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +12,11 @@ namespace OpenttdDiscord.Openttd.Network.AdminPort
     {
         AdminConnectionState ConnectionState { get; }
 
-        ConcurrentDictionary<AdminUpdateType, bool> HandledUpdateTypes { get; }
+        ConcurrentDictionary<AdminUpdateType, AdminUpdateSetting> AdminUpdateSettings { get; }
+
+        ConcurrentDictionary<uint, Player> Players { get; }
+
+        AdminServerInfo AdminServerInfo { get; }
 
         event EventHandler<IAdminMessage> MessageReceived;
 

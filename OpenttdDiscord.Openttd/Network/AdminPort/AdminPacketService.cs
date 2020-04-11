@@ -14,7 +14,7 @@ namespace OpenttdDiscord.Openttd.Network.AdminPort
             Packet packet = new Packet();
             packet.SendByte((byte)message.MessageType);
 
-            switch(message.MessageType)
+            switch (message.MessageType)
             {
                 case AdminMessageType.ADMIN_PACKET_ADMIN_JOIN:
                     {
@@ -37,8 +37,8 @@ namespace OpenttdDiscord.Openttd.Network.AdminPort
                 case AdminMessageType.ADMIN_PACKET_ADMIN_UPDATE_FREQUENCY:
                     {
                         var msg = message as AdminUpdateFrequencyMessage;
-                        packet.SendU16((byte)msg.UpdateType);
-                        packet.SendU16((byte)msg.UpdateFrequency);
+                        packet.SendU16((ushort)msg.UpdateType);
+                        packet.SendU16((ushort)msg.UpdateFrequency);
                         break;
                     }
 
@@ -47,6 +47,7 @@ namespace OpenttdDiscord.Openttd.Network.AdminPort
                         var msg = message as AdminChatMessage;
                         packet.SendByte((byte)msg.NetworkAction);
                         packet.SendByte((byte)msg.ChatDestination);
+                        packet.SendU32(msg.Destination);
                         packet.SendString(msg.Message, 900);
 
                         break;
@@ -68,33 +69,35 @@ namespace OpenttdDiscord.Openttd.Network.AdminPort
 
                 case AdminMessageType.ADMIN_PACKET_ADMIN_QUIT:
                 case AdminMessageType.ADMIN_PACKET_ADMIN_GAMESCRIPT: //this will be implemented later or never.
-                {
+                    {
                         break;
                     }
 
             }
 
+            packet.PrepareToSend();
             return packet;
         }
 
         public IAdminMessage ReadPacket(Packet packet)
         {
             var type = (AdminMessageType)packet.ReadByte();
-            switch(type)
+            switch (type)
             {
                 case AdminMessageType.ADMIN_PACKET_SERVER_PROTOCOL:
                     {
-                        Dictionary<AdminUpdateType, ushort> dic = new Dictionary<AdminUpdateType, ushort>();
+                        var dic = new Dictionary<AdminUpdateType, UpdateFrequency>();
+                        byte version = packet.ReadByte();
 
-                        bool _enabled;
-                        while(_enabled = packet.ReadBool())
+                        bool enabled;
+                        while (enabled = packet.ReadBool())
                         {
-                            AdminUpdateType updateType = (AdminUpdateType)packet.ReadByte();
+                            AdminUpdateType updateType = (AdminUpdateType)packet.ReadU16();
                             ushort frequency = packet.ReadU16();
-                            dic.Add(updateType, frequency);
+                            dic.Add(updateType, (UpdateFrequency)frequency);
                         }
 
-                        return new AdminServerProtocolMessage(dic);
+                        return new AdminServerProtocolMessage(version, dic);
                     }
                 case AdminMessageType.ADMIN_PACKET_SERVER_WELCOME:
                     {
@@ -214,6 +217,11 @@ namespace OpenttdDiscord.Openttd.Network.AdminPort
                         return new AdminServerRconMessage(packet.ReadU16(), packet.ReadString());
                     }
 
+                case AdminMessageType.ADMIN_PACKET_SERVER_CONSOLE:
+                    {
+                        return new AdminServerConsoleMessage(packet.ReadString(), packet.ReadString());
+                    }
+
                 case AdminMessageType.ADMIN_PACKET_SERVER_NEWGAME:
                 case AdminMessageType.ADMIN_PACKET_SERVER_SHUTDOWN:
                 case AdminMessageType.ADMIN_PACKET_SERVER_CMD_NAMES:
@@ -222,7 +230,7 @@ namespace OpenttdDiscord.Openttd.Network.AdminPort
                 case AdminMessageType.ADMIN_PACKET_SERVER_RCON_END:
                 case AdminMessageType.ADMIN_PACKET_SERVER_PONG:
                 case AdminMessageType.ADMIN_PACKET_SERVER_COMPANY_STATS: // I do not need this packet for now.
-                {
+                    {
                         return new GenericAdminMessage(type);
                     }
                 default:

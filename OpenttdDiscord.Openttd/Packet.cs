@@ -71,21 +71,22 @@ namespace OpenttdDiscord.Openttd
 
         public void SendString(string str)
         {
-            foreach(char c in str)
-            {
-                this.Buffer[this.Size++] = (byte)c;
-            }
+            var bytes = Encoding.Default.GetBytes(str);
+            foreach (byte b in bytes)
+                SendByte(b);
 
-            this.Buffer[this.Size++] = 0;
+            SendByte(0);
         }
 
         public void SendString(string str, int size)
         {
-            for(int i = 0;i < size; ++ i)
+            var bytes = Encoding.Default.GetBytes(str);
+
+            for (int i = 0;i < size; ++ i)
             {
-                if (i < str.Length)
+                if (i < bytes.Length)
                 {
-                    SendByte((byte)str[i]);
+                    SendByte(bytes[i]);
                 }
                 else
                 {
@@ -111,29 +112,28 @@ namespace OpenttdDiscord.Openttd
 
         public string ReadString()
         {
-            StringBuilder str = new StringBuilder();
+            List<byte> bytes = new List<byte>();
 
-            while(this.Buffer[this.Position] != 0)
+            while (this.Buffer[this.Position] != 0)
             {
-                char c = (char)this.Buffer[this.Position++];
-                str.Append(c);
+                bytes.Add(this.Buffer[this.Position++]);
             }
 
             this.Position++;
 
-            return str.ToString();
+            return Encoding.Default.GetString(bytes.ToArray());
         }
 
         public string ReadString(int size)
         {
-            StringBuilder str = new StringBuilder();
+            List<byte> bytes = new List<byte>();
 
-            for(int i = 0;i < size; ++i)
+            for (int i = 0;i < size; ++i)
             {
-                str.Append((char)this.Buffer[this.Position]);
+                bytes.Add(this.Buffer[this.Position]);
             }
 
-            return str.ToString();
+            return Encoding.Default.GetString(bytes.ToArray());
         }
     }
 }

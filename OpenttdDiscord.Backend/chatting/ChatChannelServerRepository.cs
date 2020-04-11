@@ -80,14 +80,13 @@ namespace OpenttdDiscord.Backend.Chatting
             }
         }
 
-        public ChatChannelServer ReadFromReader(DbDataReader reader)
+        public ChatChannelServer ReadFromReader(DbDataReader reader) => new ChatChannelServer()
         {
-            return new ChatChannelServer(
-                reader.ReadU64("server_id"),
-                reader.ReadU64("channel_id"),
-                reader.ReadString("server_name")
-                );
-        }
+            ServerId = reader.ReadU64("server_id"),
+            ChannelId = reader.ReadU64("channel_id"),
+            ServerName = reader.ReadString("server_name"),
+            JoinMessagesEnabled = reader.ReadBool("connect_message_enabled")
+        };
 
         public async Task<ChatChannelServer> Get(ulong serverId, ulong channelId)
         {

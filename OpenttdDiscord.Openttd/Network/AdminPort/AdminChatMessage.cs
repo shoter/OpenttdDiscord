@@ -14,13 +14,16 @@ namespace OpenttdDiscord.Openttd.Network.AdminPort
 
         public ChatDestination ChatDestination { get; }
 
+        public uint Destination { get; }
+
         public string Message { get; }
 
-        public AdminChatMessage(NetworkAction networkAction, ChatDestination chatDestination, string message)
+        public AdminChatMessage(NetworkAction networkAction, ChatDestination chatDestination, uint destination, string message)
         {
             this.NetworkAction = networkAction;
             this.ChatDestination = chatDestination;
             this.Message = message;
+            this.Destination = destination;
         }
     }
 }

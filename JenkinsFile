@@ -1,0 +1,13 @@
+pipeline {
+  agent any
+  stages {
+  stage("Clean") {
+		sh "dotnet clean"
+  }
+  stage("Build") {
+		sh "dotnet build -c Release -warnaserror"
+  }
+  stage("Test") {
+		sh "dotnet test"
+  }
+}

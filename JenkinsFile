@@ -18,7 +18,7 @@ pipeline {
   stage("Test") {
 		steps {
 			script {
-			sh "dotnet test"
+			sh "dotnet test --no-build --nologo --list-tests"
 			}
 		}
   }

@@ -27,7 +27,7 @@ namespace OpenttdDiscord
 {
     internal class Program
     {
-        private static DiscordSocketClient client;
+        //private static DiscordSocketClient client;
 
         public static async Task Main()
         {

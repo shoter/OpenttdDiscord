@@ -54,7 +54,10 @@ namespace OpenttdDiscord.Openttd.Network.AdminPort
         {
             while(token.IsCancellationRequested == false)
             {
-
+                if(this.receivedMessagesQueue.TryDequeue(out IAdminMessage msg))
+                {
+                    this.MessageReceived?.Invoke(this, msg);
+                }
 
                 await Task.Delay(TimeSpan.FromSeconds(0.1));
             }

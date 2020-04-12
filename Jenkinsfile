@@ -3,17 +3,19 @@ pipeline {
   stages {
     stage('Build and Test') {
       agent {
-        docker 'mcr.microsoft.com/dotnet/core/sdk:3.1'
+        dockerfile {
+			    filename "Dockerfile.test"
+		    } 
       }
       stages {
         stage('Build') {
           steps {
-			sh "dotnet build"
+			sh "dotnet build -c Release -warnaserror"
           }
         }
         stage('Test') {
           steps {
-			  sh "dotnet test"
+			  sh "dotnet test --no-build --nologo -c Release --verbosity d"
           }
         }
       }

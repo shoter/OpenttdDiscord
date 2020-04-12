@@ -10,7 +10,8 @@ pipeline {
       stages {
         stage('Build') {
           steps {
-			sh "dotnet build -c Release -warnaserror"
+            sh "cd /source"
+            sh "dotnet build -c Release -warnaserror"
           }
         }
         stage('Test') {

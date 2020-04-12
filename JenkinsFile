@@ -18,7 +18,7 @@ pipeline {
   stage("Test") {
 		steps {
 			script {
-			sh "dotnet test --no-build --nologo -c Release"
+			sh "dotnet test --no-build --nologo -c Release --verbosity d"
 			}
 		}
   }

@@ -1,26 +1,27 @@
 pipeline {
-  agent any
+  agent none
   stages {
-  stage("Clean") {
-		steps {
-			script {
-			sh "dotnet clean"
-			}
-		}
+    stage('Build and Test') {
+      agent {
+        docker 'mcr.microsoft.com/dotnet/core/sdk:3.1'
+      }
+      stages {
+        stage('Build') {
+          steps {
+			sh "dotnet build"
+          }
+        }
+        stage('Test') {
+          steps {
+			  sh "dotnet test"
+          }
+        }
+      }
+      post {
+        success {
+          // stash name: 'artifacts', includes: "node_modules/**/*"
+        }
+      }
+    }
   }
-  stage("Build") {
-		steps {
-			script {
-			sh "dotnet build -c Release -warnaserror"
-			}
-		}
-  }
-  stage("Test") {
-		steps {
-			script {
-			sh "dotnet test --no-build --nologo -c Release --verbosity d"
-			}
-		}
-  }
-}
 }

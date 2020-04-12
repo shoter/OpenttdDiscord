@@ -7,6 +7,10 @@ pipeline {
 			    filename "Dockerfile.test"
 		    } 
       }
+      environment {
+        // https://stackoverflow.com/questions/53556623/dotnet-build-permission-denied-in-docker-container-running-jenkins
+        HOME = '/tmp'
+      } 
       stages {
         stage('Build') {
           steps {

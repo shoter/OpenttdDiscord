@@ -17,11 +17,11 @@ pipeline {
           }
         }
       }
-      post {
-        success {
-          // stash name: 'artifacts', includes: "node_modules/**/*"
-        }
-      }
+    //   post {
+    //     success {
+    //        stash name: 'artifacts', includes: "node_modules/**/*"
+    //     }
+    //   }
     }
   }
 }

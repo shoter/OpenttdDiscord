@@ -1,5 +1,11 @@
 pipeline {
   agent none
+  parameters {
+        booleanParam(defaultValue: true, description: '', name: 'userFlag')
+        booleanParam(defaultValue: true, description: '', name: 'userFlag')
+        booleanParam(defaultValue: true, description: '', name: 'userFlag')
+  }
+
   stages {
     stage('Build and Test') {
       agent {
@@ -14,14 +20,12 @@ pipeline {
       stages {
         stage('Build') {
           steps {
-            sh "cd /source"
-            sh "ls"
             sh "dotnet build -c Release -warnaserror"
           }
         }
         stage('Test') {
           steps {
-			  sh "dotnet test --no-build --nologo -c Release --verbosity d"
+			  sh "dotnet test --no-build --nologo -c Release"
           }
         }
       }

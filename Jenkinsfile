@@ -1,10 +1,10 @@
 pipeline {
   agent none
   parameters {
-        credentials(name: 'DISCORD_TOKEN', description: '', defaultValue: "ottd_discord_token_${env.GIT_BRANCH}', credentialType: "Secret text", required: true)
-        credentials(name: 'MYSQL_CONN', description: '', defaultValue: 'ottd_discord_mysql_${env.GIT_BRANCH}', credentialType: "Secret text", required: true)
-        credentials(name: 'SSH_REMOTE', description: '', defaultValue: 'ottd_discord_remote_${env.GIT_BRANCH}', credentialType: "Username with password", required: true)
-        string(name: 'IMAGE_VERSION', defaultValue: '${env.GIT_BRANCH}', description: '')
+        credentials(name: 'DISCORD_TOKEN', description: '', defaultValue: "ottd_discord_token_${env.GIT_BRANCH}", credentialType: "Secret text", required: true)
+        credentials(name: 'MYSQL_CONN', description: '', defaultValue: "ottd_discord_mysql_${env.GIT_BRANCH}", credentialType: "Secret text", required: true)
+        credentials(name: 'SSH_REMOTE', description: '', defaultValue: "ottd_discord_remote_${env.GIT_BRANCH}", credentialType: "Username with password", required: true)
+        string(name: 'IMAGE_VERSION', defaultValue: "${env.GIT_BRANCH}", description: '')
   }
 
   environment {

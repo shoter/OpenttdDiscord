@@ -39,35 +39,35 @@ pipeline {
       }
     }
 
-        stage('Create image') {
-        agent any
-        stages {
-          stage('Build') {
-            steps {
-              sh "./build.sh"
-            }
-          }
-          stage('Deploy') {
-            agent any
-            steps {
-              script {
-                def remote = [:]
-                remote.name = 'pir'
-                remote.host = 'pir.ja.dom'
-                remote.user = SSH_REMOTE_USR
-                remote.password = SSH_REMOTE_PSW
-                remote.allowAnyHosts = true
-                sshCommand remote: remote, command: "docker stop openttd_discord:${IMAGE_VERSION} || true && docker rm openttd_discord:${IMAGE_VERSION} || true"
-                sshCommand remote: remote, command: "docker run -d --name=\"openttd_discord:${IMAGE_VERSION}\" \
-                                                    -e ottd_discord_token=\"${DISCORD_TOKEN}\" \
-                                                    -e MYSQL_CONN=\"${MYSQL_CONN}\" \
-                                                    --restart always \
-                                                    \"openttd_discord:${IMAGE_VERSION}\""
-              }
-            }
-          }
-        }
-      }
+      //   stage('Create image') {
+      //   agent any
+      //   stages {
+      //     stage('Build') {
+      //       steps {
+      //         sh "./build.sh"
+      //       }
+      //     }
+      //     stage('Deploy') {
+      //       agent any
+      //       steps {
+      //         script {
+      //           def remote = [:]
+      //           remote.name = 'pir'
+      //           remote.host = 'pir.ja.dom'
+      //           remote.user = SSH_REMOTE_USR
+      //           remote.password = SSH_REMOTE_PSW
+      //           remote.allowAnyHosts = true
+      //           sshCommand remote: remote, command: "docker stop openttd_discord:${IMAGE_VERSION} || true && docker rm openttd_discord:${IMAGE_VERSION} || true"
+      //           sshCommand remote: remote, command: "docker run -d --name=\"openttd_discord:${IMAGE_VERSION}\" \
+      //                                               -e ottd_discord_token=\"${DISCORD_TOKEN}\" \
+      //                                               -e MYSQL_CONN=\"${MYSQL_CONN}\" \
+      //                                               --restart always \
+      //                                               \"openttd_discord:${IMAGE_VERSION}\""
+      //         }
+      //       }
+      //     }
+      //   }
+      // }
     }
 
     

@@ -3,8 +3,16 @@ pipeline {
   parameters {
         credentials(name: 'DISCORD_TOKEN', description: '', defaultValue: '', credentialType: "Secret text", required: true)
         credentials(name: 'MYSQL_CONN', description: '', defaultValue: '', credentialType: "Secret text", required: true)
+        credentials(name: 'SSH_REMOTE', description: '', defaultValue: '', credentialType: "Username with password", required: true)
         string(name: 'IMAGE_VERSION', defaultValue: 'test', description: '')
   }
+
+  environment {
+        SSH_REMOTE = credentials("${params.SSH_REMOTE}")
+        IMAGE_VERSION = credentials("${params.IMAGE_VERSION}")
+        DISCORD_TOKEN = credentials("${params.DISCORD_TOKEN}")        
+        MYSQL_CONN = credentials("${params.MYSQL_CONN}")
+    }  
 
   stages {
     stage('Build and Test') {
@@ -36,12 +44,26 @@ pipeline {
         stages {
           stage('Build') {
             steps {
-              sh "build.sh"
+              sh "./build.sh"
             }
           }
-          stage('Test') {
+          stage('Deploy') {
+            agent any
             steps {
-            sh "dotnet test --no-build --nologo -c Release"
+              script {
+                def remote = [:]
+                remote.name = 'pir'
+                remote.host = 'pir.ja.dom'
+                remote.user = SSH_REMOTE_USR
+                remote.password = SSH_REMOTE_PSW
+                remote.allowAnyHosts = true
+                sshCommand remote: remote, command: "docker stop openttd_discord:${IMAGE_VERSION} || true && docker rm openttd_discord:${IMAGE_VERSION} || true"
+                sshCommand remote: remote, command: "docker run -d --name=\"openttd_discord:${IMAGE_VERSION}\" \
+                                                    -e ottd_discord_token=\"${DISCORD_TOKEN}\" \
+                                                    -e MYSQL_CONN=\"${MYSQL_CONN}\" \
+                                                    --restart always \
+                                                    \"openttd_discord:${IMAGE_VERSION}\""
+              }
             }
           }
         }

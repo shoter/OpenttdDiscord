@@ -29,6 +29,7 @@ pipeline {
           }
         }
       }
+    }
 
         stage('Create image') {
         agent any
@@ -48,5 +49,4 @@ pipeline {
     }
 
     
-  }
 }

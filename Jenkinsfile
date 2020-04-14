@@ -9,7 +9,7 @@ pipeline {
 
   environment {
         SSH_REMOTE = credentials("${params.SSH_REMOTE}")
-        IMAGE_VERSION = credentials("${params.IMAGE_VERSION}")
+        IMAGE_VERSION = "${params.IMAGE_VERSION}"
         DISCORD_TOKEN = credentials("${params.DISCORD_TOKEN}")        
         MYSQL_CONN = credentials("${params.MYSQL_CONN}")
     }  

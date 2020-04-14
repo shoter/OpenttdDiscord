@@ -1,9 +1,9 @@
 pipeline {
   agent none
   parameters {
-        booleanParam(defaultValue: true, description: '', name: 'userFlag')
-        booleanParam(defaultValue: true, description: '', name: 'userFlag')
-        booleanParam(defaultValue: true, description: '', name: 'userFlag')
+        credentials(name: 'DISCORD_TOKEN', description: '', defaultValue: '', credentialType: "Secret text", required: true)
+        credentials(name: 'MYSQL_CONN', description: '', defaultValue: '', credentialType: "Secret text", required: true)
+        string(name: 'IMAGE_VERSION', defaultValue: 'test', description: '')
   }
 
   stages {
@@ -29,11 +29,24 @@ pipeline {
           }
         }
       }
-    //   post {
-    //     success {
-    //        stash name: 'artifacts', includes: "node_modules/**/*"
-    //     }
-    //   }
+
+        stage('Create image') {
+        agent any
+        stages {
+          stage('Build') {
+            steps {
+              sh "build.sh"
+            }
+          }
+          stage('Test') {
+            steps {
+            sh "dotnet test --no-build --nologo -c Release"
+            }
+          }
+        }
+      }
     }
+
+    
   }
 }

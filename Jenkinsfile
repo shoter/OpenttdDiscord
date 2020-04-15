@@ -9,9 +9,10 @@ pipeline {
 
   environment {
         SSH_REMOTE = credentials("${params.SSH_REMOTE}")
-        IMAGE_VERSION = "${params.IMAGE_VERSION}"
+        IMAGE_VERSION = params.IMAGE_VERSION
         DISCORD_TOKEN = credentials("${params.DISCORD_TOKEN}")        
         MYSQL_CONN = credentials("${params.MYSQL_CONN}")
+        IMAGE_NAME = "openttd_discord:${params.IMAGE_VERSION}"
     }  
 
   stages {
@@ -28,6 +29,7 @@ pipeline {
       stages {
         stage('Build') {
           steps {
+            echo env.BRANCH_NAME
             sh "dotnet build -c Release -warnaserror"
           }
         }
@@ -57,12 +59,12 @@ pipeline {
       //           remote.user = SSH_REMOTE_USR
       //           remote.password = SSH_REMOTE_PSW
       //           remote.allowAnyHosts = true
-      //           sshCommand remote: remote, command: "docker stop openttd_discord:${IMAGE_VERSION} || true && docker rm openttd_discord:${IMAGE_VERSION} || true"
-      //           sshCommand remote: remote, command: "docker run -d --name=\"openttd_discord:${IMAGE_VERSION}\" \
+      //           sshCommand remote: remote, command: "docker stop ${IMAGE_NAME} || true && docker rm ${IMAGE_NAME} || true"
+      //           sshCommand remote: remote, command: "docker run -d --name=\"${IMAGE_NAME}\" \
       //                                               -e ottd_discord_token=\"${DISCORD_TOKEN}\" \
       //                                               -e MYSQL_CONN=\"${MYSQL_CONN}\" \
       //                                               --restart always \
-      //                                               \"openttd_discord:${IMAGE_VERSION}\""
+      //                                               \"${IMAGE_NAME}\""
       //         }
       //       }
       //     }

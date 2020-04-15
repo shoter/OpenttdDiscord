@@ -1,17 +1,10 @@
 pipeline {
   agent none
-  parameters {
-        credentials(name: 'DISCORD_TOKEN', description: '', defaultValue: "ottd_discord_token_${env.BRANCH_NAME}", credentialType: "Secret text", required: true)
-        credentials(name: 'MYSQL_CONN', description: '', defaultValue: "ottd_discord_mysql_${env.BRANCH_NAME}", credentialType: "Secret text", required: true)
-        credentials(name: 'SSH_REMOTE', description: '', defaultValue: "ottd_discord_remote_${env.BRANCH_NAME}", credentialType: "Username with password", required: true)
-        string(name: 'IMAGE_VERSION', defaultValue: "${env.BRANCH_NAME}", description: '')
-  }
-
   environment {
-        SSH_REMOTE = credentials("${params.SSH_REMOTE}")
-        IMAGE_VERSION = "${params.IMAGE_VERSION}"
-        DISCORD_TOKEN = credentials("${params.DISCORD_TOKEN}")        
-        MYSQL_CONN = credentials("${params.MYSQL_CONN}")
+        SSH_REMOTE = credentials("ottd_discord_remote_${env.BRANCH_NAME}")
+        IMAGE_VERSION = "${env.BRANCH_NAME}"
+        DISCORD_TOKEN = credentials("ottd_discord_token_${env.BRANCH_NAME}")        
+        MYSQL_CONN = credentials("ottd_discord_mysql_${env.BRANCH_NAME}")
         IMAGE_NAME = "openttd_discord:${params.IMAGE_VERSION}"
     }  
 

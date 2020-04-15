@@ -37,11 +37,11 @@ pipeline {
         stage('Create image') {
         agent any
         stages {
-          // stage('Build') {
-          //   steps {
-          //     sh "./build.sh"
-          //   }
-          // }
+          stage('Build') {
+            steps {
+              sh "./build.sh"
+            }
+          }
           stage('Deploy') {
             agent any
             steps {

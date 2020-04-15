@@ -34,35 +34,35 @@ pipeline {
       }
     }
 
-      //   stage('Create image') {
-      //   agent any
-      //   stages {
-      //     stage('Build') {
-      //       steps {
-      //         sh "./build.sh"
-      //       }
-      //     }
-      //     stage('Deploy') {
-      //       agent any
-      //       steps {
-      //         script {
-      //           def remote = [:]
-      //           remote.name = 'pir'
-      //           remote.host = 'pir.ja.dom'
-      //           remote.user = SSH_REMOTE_USR
-      //           remote.password = SSH_REMOTE_PSW
-      //           remote.allowAnyHosts = true
-      //           sshCommand remote: remote, command: "docker stop ${IMAGE_NAME} || true && docker rm ${IMAGE_NAME} || true"
-      //           sshCommand remote: remote, command: "docker run -d --name=\"${IMAGE_NAME}\" \
-      //                                               -e ottd_discord_token=\"${DISCORD_TOKEN}\" \
-      //                                               -e MYSQL_CONN=\"${MYSQL_CONN}\" \
-      //                                               --restart always \
-      //                                               \"${IMAGE_NAME}\""
-      //         }
-      //       }
-      //     }
-      //   }
-      // }
+        stage('Create image') {
+        agent any
+        stages {
+          stage('Build') {
+            steps {
+              sh "./build.sh"
+            }
+          }
+          stage('Deploy') {
+            agent any
+            steps {
+              script {
+                def remote = [:]
+                remote.name = 'pir'
+                remote.host = 'pir.ja.dom'
+                remote.user = SSH_REMOTE_USR
+                remote.password = SSH_REMOTE_PSW
+                remote.allowAnyHosts = true
+                sshCommand remote: remote, command: "docker stop ${IMAGE_NAME} || true && docker rm ${IMAGE_NAME} || true"
+                sshCommand remote: remote, command: "docker run -d --name=\"${IMAGE_NAME}\" \
+                                                    -e ottd_discord_token=\"${DISCORD_TOKEN}\" \
+                                                    -e MYSQL_CONN=\"${MYSQL_CONN}\" \
+                                                    --restart always \
+                                                    \"${IMAGE_NAME}\""
+              }
+            }
+          }
+        }
+      }
     }
 
     

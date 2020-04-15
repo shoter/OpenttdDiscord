@@ -6,6 +6,7 @@ pipeline {
         DISCORD_TOKEN = credentials("ottd_discord_token_${env.BRANCH_NAME}")        
         MYSQL_CONN = credentials("ottd_discord_mysql_${env.BRANCH_NAME}")
         IMAGE_NAME = "openttd_discord:${params.IMAGE_VERSION}"
+        DOCKER_HUB = credentials("docker_hub")
     }  
 
   stages {

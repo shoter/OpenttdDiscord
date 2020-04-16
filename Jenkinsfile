@@ -38,17 +38,9 @@ pipeline {
         stage('Create image') {
         agent any
         stages {
-          stage('Build Image') {
+          stage('Build') {
             steps {
-              app = docker.build("openttd_discord:${IMAGE_VERSION}")
-            }
-          }
-          stage('Deploy Image') {
-            steps {
-              docker.withRegistry('hub.docker.com', 'docker_hub') {
-                app.push("${env.BUILD_NUMBER}")
-                app.push("${env.BRANCH_NAME}")
-              } 
+              sh "./build.sh"
             }
           }
           stage('Deploy') {

@@ -5,7 +5,7 @@ pipeline {
         IMAGE_VERSION = "${env.BRANCH_NAME}"
         DISCORD_TOKEN = credentials("ottd_discord_token_${env.BRANCH_NAME}")        
         MYSQL_CONN = credentials("ottd_discord_mysql_${env.BRANCH_NAME}")
-        IMAGE_NAME = "openttd_discord:${params.IMAGE_VERSION}"
+        IMAGE_NAME = "openttd_discord_${params.IMAGE_VERSION}"
         DOCKER_HUB = credentials("docker_hub")
     }  
 
@@ -58,7 +58,7 @@ pipeline {
                                                     -e ottd_discord_token=\"${DISCORD_TOKEN}\" \
                                                     -e MYSQL_CONN=\"${MYSQL_CONN}\" \
                                                     --restart always \
-                                                    \"${IMAGE_NAME}\""
+                                                    \"shoter/openttd-discord:${IMAGE_VERSION}\""
               }
             }
           }

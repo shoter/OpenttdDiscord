@@ -1,5 +1,5 @@
 # https://hub.docker.com/_/microsoft-dotnet-core
-FROM mcr.microsoft.com/dotnet/core/sdk:3.1.3-buster-slim-arm32v7 AS build
+FROM mcr.microsoft.com/dotnet/core/sdk:3.1.3 AS build
 WORKDIR /source
 
 # copy csproj and restore as distinct layersi

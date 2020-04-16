@@ -10,30 +10,30 @@ pipeline {
     }  
 
   stages {
-    stage('Build and Test') {
-      agent {
-        dockerfile {
-			    filename "Dockerfile.test"
-		    } 
-      }
-      environment {
-        // https://stackoverflow.com/questions/53556623/dotnet-build-permission-denied-in-docker-container-running-jenkins
-        HOME = '/tmp'
-      } 
-      stages {
-        stage('Build') {
-          steps {
-            echo env.BRANCH_NAME
-            sh "dotnet build -c Release -warnaserror"
-          }
-        }
-        stage('Test') {
-          steps {
-			     sh "dotnet test --no-build --nologo -c Release"
-          }
-        }
-      }
-    }
+    // stage('Build and Test') {
+    //   agent {
+    //     dockerfile {
+		// 	    filename "Dockerfile.test"
+		//     } 
+    //   }
+    //   environment {
+    //     // https://stackoverflow.com/questions/53556623/dotnet-build-permission-denied-in-docker-container-running-jenkins
+    //     HOME = '/tmp'
+    //   } 
+    //   stages {
+    //     stage('Build') {
+    //       steps {
+    //         echo env.BRANCH_NAME
+    //         sh "dotnet build -c Release -warnaserror"
+    //       }
+    //     }
+    //     stage('Test') {
+    //       steps {
+		// 	     sh "dotnet test --no-build --nologo -c Release"
+    //       }
+    //     }
+    //   }
+    // }
 
         stage('Create image') {
         agent any

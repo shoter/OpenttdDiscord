@@ -9,7 +9,8 @@ RUN dotnet restore
 RUN dotnet publish -c release -o /app --no-restore
 
 # final stage/image
-FROM mcr.microsoft.com/dotnet/core/runtime:3.1
+# FROM mcr.microsoft.com/dotnet/core/runtime:3.1
+# FROM mcr.microsoft.com/dotnet/core/runtime:3.1.3-buster-slim-arm32v7
 WORKDIR /app
 COPY --from=build /app .
 ENTRYPOINT ["dotnet", "OpenttdDiscord.dll"]

@@ -58,7 +58,7 @@ pipeline {
                                                     -e ottd_discord_token=\"${DISCORD_TOKEN}\" \
                                                     -e MYSQL_CONN=\"${MYSQL_CONN}\" \
                                                     --restart always \
-                                                    \"shoter/openttd-discord:${IMAGE_VERSION}\""
+                                                    \"d:${IMAGE_VERSION}\""
               }
             }
           }

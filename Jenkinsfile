@@ -54,7 +54,8 @@ pipeline {
                 remote.password = SSH_REMOTE_PSW
                 remote.allowAnyHosts = true
                 sshCommand remote: remote, command: "docker stop ${CONTAINER_NAME} || true && docker rm ${CONTAINER_NAME} || true"
-                sshCommand remote: remote, command: "docker login --username ${DOCKER_HUB_USR} --password ${DOCKER_HUB_PSW} && docker run -d --name=\"${CONTAINER_NAME}\" \
+                sshCommand remote: remote, command: "docker login --username ${DOCKER_HUB_USR} --password ${DOCKER_HUB_PSW}"
+                sshCommand remote: remote, command: "docker run -d --name=\"${CONTAINER_NAME}\" \
                                                     -e ottd_discord_token=\"${DISCORD_TOKEN}\" \
                                                     -e MYSQL_CONN=\"${MYSQL_CONN}\" \
                                                     --restart always \

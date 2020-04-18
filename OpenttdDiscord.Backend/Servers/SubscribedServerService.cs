@@ -27,11 +27,6 @@ namespace OpenttdDiscord.Backend.Servers
 
             Server server = await this.serverRepository.GetServer(ip, port);
 
-            if(server == null)
-            {
-                server = await this.serverRepository.AddServer(ip, port);
-            }
-
             SubscribedServer ss = await this.subscribedServerRepository.Add(server, channelId);
             this.ServerAdded?.Invoke(this, ss);
             return ss;

@@ -134,8 +134,7 @@ namespace OpenttdDiscord.Backend.Servers
 
         public SubscribedServer ReadFromReader(DbDataReader reader)
         {
-            return new SubscribedServer(new Server(
-                reader.ReadU64("id"), reader.ReadString("server_ip"), reader.ReadInt("server_port")),
+            return new SubscribedServer(new Server(reader),
                 reader.Read<DateTimeOffset>("last_update"), reader.ReadU64("channel_id"),
                 reader.ReadNullable<ulong?>("message_id"));
         }

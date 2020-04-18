@@ -40,12 +40,12 @@ namespace OpenttdDiscord.Chatting
         public async Task Start()
         {
             foreach (var s in await this.chatChannelServerService.GetAll())
-                this.chatServers.TryAdd(s.ServerId, s);
+                this.chatServers.TryAdd(s.Server.Id, s);
 
             foreach (var s in await this.serverService.GetAll())
                 this.servers.TryAdd(s.Id, s);
 
-            this.chatChannelServerService.Added += (_, s) => chatServers.AddOrUpdate(s.ServerId, s, (_,__) => s);
+            this.chatChannelServerService.Added += (_, s) => chatServers.AddOrUpdate(s.Server.Id, s, (_,__) => s);
             this.serverService.Added += (_, s) => servers.AddOrUpdate(s.Id, s, (_, __) => s);
 
             ThreadPool.QueueUserWorkItem(new WaitCallback((_) => MainLoop()), null);
@@ -53,7 +53,7 @@ namespace OpenttdDiscord.Chatting
 
         private void AddServer(ChatChannelServer s)
         {
-            this.chatServers.AddOrUpdate(s.ServerId, s, (_, __) => s);
+            this.chatServers.AddOrUpdate(s.Server.Id, s, (_, __) => s);
         }
 
         private void Client_ReceivedChatMessage(object sender, ReceivedChatMessage e)
@@ -69,7 +69,7 @@ namespace OpenttdDiscord.Chatting
                 {
                     foreach (var s in chatServers.Values)
                     {
-                        Server server = servers[s.ServerId];
+                        Server server = servers[s.Server.Id];
 
                         IOttdClient client = ottdClientProvider.Provide(server.ServerIp, server.ServerPort);
 
@@ -86,20 +86,20 @@ namespace OpenttdDiscord.Chatting
                         if (msg.Player.ClientId == 1)
                             continue;
                         Server s = servers.Values.First(s => s.ServerIp == msg.ServerInfo.ServerIp && s.ServerPort == msg.ServerInfo.ServerPort);
-                        IEnumerable<ChatChannelServer> csList = chatServers.Values.Where(x => x.ServerId == s.Id);
+                        IEnumerable<ChatChannelServer> csList = chatServers.Values.Where(x => x.Server.Id == s.Id);
 
                         foreach (var cs in csList)
                         {
                             var channel = discord.GetChannel(cs.ChannelId) as SocketTextChannel;
 
-                            var chatMsg = $"[{cs.ServerName}] {msg.Player.Name}: {msg.Message}";
+                            var chatMsg = $"[{cs.Server.ServerName}] {msg.Player.Name}: {msg.Message}";
 
                             await channel.SendMessageAsync(chatMsg);
 
-                            IEnumerable<ChatChannelServer> others = chatServers.Values.Where(x => x.ChannelId == channel.Id && x.ServerId != s.Id);
+                            IEnumerable<ChatChannelServer> others = chatServers.Values.Where(x => x.ChannelId == channel.Id && x.Server.Id != s.Id);
                             foreach (var o in others)
                             {
-                                Server server = servers[o.ServerId];
+                                Server server = servers[o.Server.Id];
                                 IOttdClient client = ottdClientProvider.Provide(server.ServerIp, server.ServerPort);
 
                                 await client.SendChatMessage(chatMsg);
@@ -114,7 +114,7 @@ namespace OpenttdDiscord.Chatting
                         IEnumerable<ChatChannelServer> others = chatServers.Values.Where(x => x.ChannelId == msg.ChannelId);
                         foreach (var o in others)
                         {
-                            Server server = servers[o.ServerId];
+                            Server server = servers[o.Server.Id];
                             IOttdClient client = ottdClientProvider.Provide(server.ServerIp, server.ServerPort);
 
                             await client.SendChatMessage(chatMsg);

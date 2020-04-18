@@ -25,6 +25,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenttdDiscord.Common", "Op
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenttdDiscord.Common.Tests", "OpenttdDiscord.Common.Tests\OpenttdDiscord.Common.Tests.csproj", "{90B5F497-BE1F-4607-A55F-53372E9CFE2D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenttdDiscord.Testing", "OpenttdDiscord.Testing\OpenttdDiscord.Testing.csproj", "{703CCA37-FD2F-4347-A7C0-1B171F4A179B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenttdDiscord.Backend.Tests", "OpenttdDiscord.Backend.Tests\OpenttdDiscord.Backend.Tests.csproj", "{AC1BDD1C-D7CC-4522-B3D8-930B15D4D7AA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -55,6 +59,14 @@ Global
 		{90B5F497-BE1F-4607-A55F-53372E9CFE2D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{90B5F497-BE1F-4607-A55F-53372E9CFE2D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{90B5F497-BE1F-4607-A55F-53372E9CFE2D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{703CCA37-FD2F-4347-A7C0-1B171F4A179B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{703CCA37-FD2F-4347-A7C0-1B171F4A179B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{703CCA37-FD2F-4347-A7C0-1B171F4A179B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{703CCA37-FD2F-4347-A7C0-1B171F4A179B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AC1BDD1C-D7CC-4522-B3D8-930B15D4D7AA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AC1BDD1C-D7CC-4522-B3D8-930B15D4D7AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AC1BDD1C-D7CC-4522-B3D8-930B15D4D7AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AC1BDD1C-D7CC-4522-B3D8-930B15D4D7AA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

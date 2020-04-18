@@ -17,14 +17,14 @@ namespace OpenttdDiscord.Backend.Servers
             this.serverRepository = serverRepository;
         }
 
-        public async Task<Server> Getsert(string ip, int port)
+        public async Task<Server> Getsert(string ip, int port, string serverName)
         {
             Server server = await this.serverRepository.GetServer(ip, port);
 
             if (server != null)
                 return server;
 
-            server = await this.serverRepository.AddServer(ip, port);
+            server = await this.serverRepository.AddServer(ip, port, serverName);
             Added?.Invoke(this, server);
             return server;
         }

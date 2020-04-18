@@ -23,19 +23,13 @@ namespace OpenttdDiscord.Backend.Chatting
 
         public async Task<ChatChannelServer> Getsert(string ip, int port, ulong channelId,  string serverName)
         {
-            Server server = await this.serverService.Getsert(ip, port);
+            Server server = await this.serverService.Getsert(ip, port, serverName);
 
             ChatChannelServer chatChannelServer = await this.chatChannelServerRepository.Get(server.Id, channelId);
 
             if(chatChannelServer == null)
             {
-                chatChannelServer = await this.chatChannelServerRepository.Insert(new ChatChannelServer()
-                {
-                    ChannelId = channelId,
-                    JoinMessagesEnabled = false,
-                    ServerId = server.Id,
-                    ServerName = serverName
-                });
+                chatChannelServer = await this.chatChannelServerRepository.Insert(server, channelId);
 
                 this.Added?.Invoke(this, chatChannelServer);
             }

@@ -9,7 +9,7 @@ namespace OpenttdDiscord.Backend.Servers
     public interface IServerService
     {
         event EventHandler<Server> Added;
-        Task<Server> Getsert(string ip, int port);
+        Task<Server> Getsert(string ip, int port, string serverName);
         Task<bool> Exists(string ip, int port);
         Task<Server> Get(string ip, int port);
 

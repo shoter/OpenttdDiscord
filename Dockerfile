@@ -14,4 +14,4 @@ FROM mcr.microsoft.com/dotnet/core/runtime:3.1-buster-slim-arm32v7
 WORKDIR /app
 COPY --from=build /app .
 #ENTRYPOINT ["dotnet", "OpenttdDiscord.dll"]
-ENTRYPOINT ["/bin/bash"]
+ENTRYPOINT ["/bin/bash"] 

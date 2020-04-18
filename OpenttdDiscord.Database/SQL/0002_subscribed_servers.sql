@@ -5,4 +5,4 @@
   `message_id` bigint(20) unsigned DEFAULT NULL,
   UNIQUE KEY `UK_subscribed_servers` (`server_id`,`channel_id`),
   CONSTRAINT `FK_subscribed_servers_server_id` FOREIGN KEY (`server_id`) REFERENCES `servers` (`id`) ON DELETE NO ACTION
-) 
+);

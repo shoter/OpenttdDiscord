@@ -10,7 +10,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading.Tasks;
-using OpenttdDiscord.Backend.Servers;
+using OpenttdDiscord.Database.Servers;
 using OpenttdDiscord.Commands;
 using System.Timers;
 using Discord.Rest;

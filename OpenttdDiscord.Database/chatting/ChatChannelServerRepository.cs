@@ -1,7 +1,8 @@
 ﻿using MySql.Data.MySqlClient;
-using OpenttdDiscord.Backend.Chatting;
-using OpenttdDiscord.Backend.Extensions;
-using OpenttdDiscord.Backend.Servers;
+using OpenttdDiscord.Backend;
+using OpenttdDiscord.Database.Chatting;
+using OpenttdDiscord.Database.Extensions;
+using OpenttdDiscord.Database.Servers;
 using System;
 using System.Collections.Generic;
 using System.Data.Common;
@@ -9,7 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OpenttdDiscord.Backend.Chatting
+namespace OpenttdDiscord.Database.Chatting
 {
     public class ChatChannelServerRepository : IChatChannelServerRepository
     {

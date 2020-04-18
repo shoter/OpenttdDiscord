@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OpenttdDiscord.Backend.Extensions
+namespace OpenttdDiscord.Database.Extensions
 {
     public static class MySqlCommandExtensions
     {

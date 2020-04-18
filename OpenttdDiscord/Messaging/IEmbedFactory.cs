@@ -1,5 +1,5 @@
 ﻿using Discord;
-using OpenttdDiscord.Backend.Servers;
+using OpenttdDiscord.Database.Servers;
 using OpenttdDiscord.Openttd.Network.Udp;
 using System;
 using System.Collections.Generic;

@@ -19,7 +19,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		run.sh = run.sh
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenttdDiscord.Backend", "OpenttdDiscord.Backend\OpenttdDiscord.Backend.csproj", "{C948A6D1-2B53-4420-A51C-BF08D7C96F16}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenttdDiscord.Database", "OpenttdDiscord.Database\OpenttdDiscord.Database.csproj", "{C948A6D1-2B53-4420-A51C-BF08D7C96F16}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenttdDiscord.Common", "OpenttdDiscord.Common\OpenttdDiscord.Common.csproj", "{0AF313A2-918B-4FC1-BD7A-38564D27D302}"
 EndProject

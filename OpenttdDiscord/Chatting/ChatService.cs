@@ -1,7 +1,7 @@
 ﻿using Discord.WebSocket;
 using Microsoft.Extensions.Logging;
-using OpenttdDiscord.Backend.Chatting;
-using OpenttdDiscord.Backend.Servers;
+using OpenttdDiscord.Database.Chatting;
+using OpenttdDiscord.Database.Servers;
 using OpenttdDiscord.Openttd.Network;
 using OpenttdDiscord.Openttd.Network.Tcp;
 using System;

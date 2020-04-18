@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OpenttdDiscord.Backend.Servers
+namespace OpenttdDiscord.Database.Servers
 {
     public interface ISubscribedServerRepository
     {

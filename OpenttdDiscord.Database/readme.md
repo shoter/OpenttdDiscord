@@ -1,4 +1,2 @@
-# Database creation process
+﻿# Markdown File
 
-* Execute `servers.sql`
-* Execute `subscribed_servers.sql`

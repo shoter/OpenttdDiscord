@@ -1,5 +1,6 @@
 ﻿using MySql.Data.MySqlClient;
-using OpenttdDiscord.Backend.Extensions;
+using OpenttdDiscord.Backend;
+using OpenttdDiscord.Database.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Data.Common;
@@ -7,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OpenttdDiscord.Backend.Servers
+namespace OpenttdDiscord.Database.Servers
 {
     public class ServerRepository : BaseRepository, IServerRepository
     {

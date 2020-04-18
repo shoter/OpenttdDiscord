@@ -4,7 +4,7 @@ using System;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace OpenttdDiscord.Backend.Tests
+namespace OpenttdDiscord.Database.Tests
 {
     public class UnitTest1
     {

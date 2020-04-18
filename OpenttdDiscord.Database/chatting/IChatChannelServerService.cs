@@ -1,11 +1,11 @@
-﻿using OpenttdDiscord.Backend.Chatting;
+﻿using OpenttdDiscord.Database.Chatting;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OpenttdDiscord.Backend.Chatting
+namespace OpenttdDiscord.Database.Chatting
 {
     public interface IChatChannelServerService
     {

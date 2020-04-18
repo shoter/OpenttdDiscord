@@ -1,7 +1,7 @@
 ﻿using Discord;
 using Discord.Rest;
 using Discord.WebSocket;
-using OpenttdDiscord.Backend.Servers;
+using OpenttdDiscord.Database.Servers;
 using OpenttdDiscord.Messaging;
 using OpenttdDiscord.Openttd.Network;
 using OpenttdDiscord.Openttd.Network.Udp;

@@ -13,4 +13,16 @@
     <ProjectReference Include="..\OpenttdDiscord.Common\OpenttdDiscord.Common.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="SQL\discord_chat_channel_servers.sql">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
+    <None Update="SQL\servers.sql">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
+    <None Update="SQL\subscribed_servers.sql">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

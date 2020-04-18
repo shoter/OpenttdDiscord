@@ -1,6 +1,6 @@
-using OpenttdDiscord.Backend.Servers;
+using OpenttdDiscord.Database.Servers;
 
-namespace OpenttdDiscord.Backend.Chatting
+namespace OpenttdDiscord.Database.Chatting
 {
     public class ChatChannelServer 
     {

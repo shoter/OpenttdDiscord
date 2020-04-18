@@ -6,7 +6,7 @@ using Microsoft.Extensions.Logging;
 using NLog;
 using NLog.Extensions.Logging;
 using OpenttdDiscord.Backend;
-using OpenttdDiscord.Backend.Servers;
+using OpenttdDiscord.Database.Servers;
 using OpenttdDiscord.Chatting;
 using OpenttdDiscord.Commands;
 using OpenttdDiscord.Configuration;

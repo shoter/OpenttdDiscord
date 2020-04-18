@@ -1,4 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using OpenttdDiscord.Database.Chatting;
+using OpenttdDiscord.Database.Servers;
 using OpenttdDiscord.Common;
 using System;
 using System.Collections.Generic;
@@ -6,14 +8,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OpenttdDiscord.Backend.Chatting
+namespace OpenttdDiscord.Backend
 {
-    public class ChattingModule : IModule
+    public class BackendModule : IModule
     {
         public void Register(in IServiceCollection services)
         {
-            services.AddSingleton<IChatChannelServerRepository, ChatChannelServerRepository>();
-            services.AddSingleton<IChatChannelServerService, ChatChannelServerService>();
+            new ChattingModule().Register(services);
+            new ServersModule().Register(services);
         }
     }
 }

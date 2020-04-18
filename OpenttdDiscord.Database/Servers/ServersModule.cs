@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace OpenttdDiscord.Backend.Servers
+namespace OpenttdDiscord.Database.Servers
 {
     public class ServersModule : IModule
     {

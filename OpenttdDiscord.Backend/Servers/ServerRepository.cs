@@ -86,14 +86,6 @@ namespace OpenttdDiscord.Backend.Servers
             }
         }
 
-        public Server ReadFromReader(DbDataReader reader)
-        {
-            return new Server(
-                id: reader.ReadU64("id"),
-                serverIp: reader.ReadString("server_ip"),
-                serverPort: reader.ReadInt("server_port"),
-                serverName: reader.ReadString("server_name")
-                );
-        }
+        public Server ReadFromReader(DbDataReader reader) => new Server(reader);
     }
 }

@@ -1,6 +1,7 @@
 ﻿using MySql.Data.MySqlClient;
 using OpenttdDiscord.Backend.Chatting;
 using OpenttdDiscord.Backend.Extensions;
+using OpenttdDiscord.Backend.Servers;
 using System;
 using System.Collections.Generic;
 using System.Data.Common;
@@ -37,7 +38,7 @@ namespace OpenttdDiscord.Backend.Chatting
             }
         }
 
-        public async Task<ChatChannelServer> Insert(ChatChannelServer server)
+        public async Task<ChatChannelServer> Insert(Server server, ulong channelId)
         {
             using (var conn = new MySqlConnection(this.connectionString))
             {
@@ -47,18 +48,16 @@ namespace OpenttdDiscord.Backend.Chatting
                 {
                     cmd.Connection = conn;
                     cmd.CommandText = "INSERT INTO discord_chat_channel_servers" +
-                        "(server_id, channel_id, server_name) " +
+                        "(server_id, channel_id) " +
                         "VALUES " +
-                        "(@server_id, @channel_id, @server_name)";
-                    cmd.Parameters.AddWithValue("server_id", server.ServerId);
-                    cmd.Parameters.AddWithValue("channel_id", server.ChannelId);
-                    cmd.Parameters.AddWithValue("server_name", server.ServerName);
+                        "(@server_id, @channel_id)";
+                    cmd.Parameters.AddWithValue("server_id", server.Id);
+                    cmd.Parameters.AddWithValue("channel_id", channelId);
 
                     await cmd.ExecuteNonQueryAsync();
                 }
 
-                using (var cmd = new MySqlCommand($@"SELECT * FROM discord_chat_channel_servers
-                                                    where server_id = {server.ServerId} AND channel_id = {server.ChannelId}", conn))
+                using (var cmd = GetServerCommand(server.Id, channelId, conn))
                 using (var reader = await cmd.ExecuteReaderAsync())
                 {
                     await reader.ReadAsync();
@@ -72,8 +71,7 @@ namespace OpenttdDiscord.Backend.Chatting
             using (var conn = new MySqlConnection(this.connectionString))
             {
                 await conn.OpenAsync();
-                using (var cmd = new MySqlCommand($@"SELECT * FROM discord_chat_channel_servers
-                                                    where server_id = {serverId} AND channel_id = {channelId}", conn))
+                using (var cmd = GetServerCommand(serverId, channelId, conn))
                 {
                     return (await cmd.GetCount()) == 1;
                 }
@@ -82,9 +80,8 @@ namespace OpenttdDiscord.Backend.Chatting
 
         public ChatChannelServer ReadFromReader(DbDataReader reader) => new ChatChannelServer()
         {
-            ServerId = reader.ReadU64("server_id"),
-            ChannelId = reader.ReadU64("channel_id"),
-            ServerName = reader.ReadString("server_name"),
+            Server = new Server(reader, "s"),
+            ChannelId = reader.ReadU64("d.channel_id"),
             JoinMessagesEnabled = reader.ReadBool("connect_message_enabled")
         };
 
@@ -106,5 +103,9 @@ namespace OpenttdDiscord.Backend.Chatting
                 }
             }
         }
+
+        private MySqlCommand GetServerCommand(ulong serverId, ulong channelId, MySqlConnection conn) => new MySqlCommand($@"SELECT * FROM discord_chat_channel_servers d
+                                                    JOIN servers s on d.server_id = s.id
+                                                    where d.server_id = {serverId} AND d.channel_id = {channelId}", conn);
     }
 }

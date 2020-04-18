@@ -17,7 +17,7 @@ namespace OpenttdDiscord.Backend.Servers
             this.connectionString = config.ConnectionString;
         }
 
-        public async Task<Server> AddServer(string ip, int port)
+        public async Task<Server> AddServer(string ip, int port, string name)
         {
             using (var conn = new MySqlConnection(this.connectionString))
             {
@@ -27,11 +27,12 @@ namespace OpenttdDiscord.Backend.Servers
                 {
                     cmd.Connection = conn;
                     cmd.CommandText = "INSERT INTO servers" +
-                        "(server_ip, server_port) " +
+                        "(server_ip, server_port, server_name) " +
                         "VALUES " +
-                        "(@ip, @port)";
+                        "(@ip, @port, @name)";
                     cmd.Parameters.AddWithValue("ip", ip);
                     cmd.Parameters.AddWithValue("port", port);
+                    cmd.Parameters.AddWithValue("name", name);
                     await cmd.ExecuteNonQueryAsync();
                 }
 
@@ -90,7 +91,8 @@ namespace OpenttdDiscord.Backend.Servers
             return new Server(
                 id: reader.ReadU64("id"),
                 serverIp: reader.ReadString("server_ip"),
-                serverPort: reader.ReadInt("server_port")
+                serverPort: reader.ReadInt("server_port"),
+                serverName: reader.ReadString("server_name")
                 );
         }
     }

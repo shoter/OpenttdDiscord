@@ -10,13 +10,15 @@ namespace OpenttdDiscord.Backend.Servers
     {
         public ulong Id { get; }
         public string ServerIp { get; }
+        public string ServerName { get; }
         public int ServerPort { get; }
 
-        public Server(ulong id, string serverIp, int serverPort)
+        public Server(ulong id, string serverIp, int serverPort, string serverName)
         {
             this.Id = id;
             this.ServerIp = serverIp;
             this.ServerPort = serverPort;
+            this.ServerName = serverName;
         }
 
     }

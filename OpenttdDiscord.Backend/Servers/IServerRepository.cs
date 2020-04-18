@@ -9,7 +9,7 @@ namespace OpenttdDiscord.Backend.Servers
     public interface IServerRepository
     {
         Task<Server> GetServer(string ip, int port);
-        Task<Server> AddServer(string ip, int port);
+        Task<Server> AddServer(string ip, int port, string name);
         Task<List<Server>> GetAll();
         
     }

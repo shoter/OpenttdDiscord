@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using OpenttdDiscord.Backend;
 using OpenttdDiscord.Common;
+using OpenttdDiscord.Database;
 using System;
 using System.Collections.Generic;
 using System.Linq;

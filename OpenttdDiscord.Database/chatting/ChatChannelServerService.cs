@@ -48,6 +48,6 @@ namespace OpenttdDiscord.Database.Chatting
             return chatChannelServer != null;
         }
 
-        public Task<List<ChatChannelServer>> GetAll() => this.chatChannelServerRepository.GetAllAsync();
+        public Task<List<ChatChannelServer>> GetAll() => this.chatChannelServerRepository.GetAll();
     }
 }

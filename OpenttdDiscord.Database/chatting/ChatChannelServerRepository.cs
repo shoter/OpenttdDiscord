@@ -21,7 +21,7 @@ namespace OpenttdDiscord.Database.Chatting
             this.connectionString = config.ConnectionString;
         }
 
-        public async Task<List<ChatChannelServer>> GetAllAsync()
+        public async Task<List<ChatChannelServer>> GetAll()
         {
             using (var conn = new MySqlConnection(this.connectionString))
             {

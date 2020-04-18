@@ -1,13 +1,15 @@
-﻿using System;
+﻿using RandomAnalyzers.RequiredMember;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OpenttdDiscord.Backend
+namespace OpenttdDiscord.Database
 {
     public class MySqlConfig
     {
-        public string ConnectionString { get; } = Environment.GetEnvironmentVariable("ottd_discord_connectionstring");
+        [RequiredMember]
+        public string ConnectionString { get; set; } 
     }
 }

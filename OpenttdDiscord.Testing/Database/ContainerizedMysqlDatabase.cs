@@ -1,10 +1,13 @@
 ﻿using Docker.DotNet;
 using Docker.DotNet.Models;
+using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
@@ -57,29 +60,14 @@ namespace OpenttdDiscord.Testing.Database
             // https://github.com/dotnet/Docker.DotNet/issues/402 - There is some nice info in this issue with nice real life example.
             this.containerName = containerName;
 
-            var containers = await client.Containers.ListContainersAsync(new ContainersListParameters() { Limit = 1000 });
-            string containerId = null;
+            await RemoveContainerIfExists(containerName);
+            await StartContainer(containerName);
+            await WaitForDatabaseToStart();
+            await InitialiseSchema();
+        }
 
-            this.Port = GetFreeTcpPort();
-
-            foreach (var c in containers)
-            {
-                foreach(var name in c.Names)
-                    if(name.TrimStart('/') == containerName)
-                    {
-                        containerId = c.ID;
-                        break;
-                    }
-                if (containerId != null)
-                    break;
-            }
-
-            if (containerId != null)
-            {
-                await client.Containers.StopContainerAsync(containerId, new ContainerStopParameters() { });
-                await client.Containers.RemoveContainerAsync(containerId, new ContainerRemoveParameters() { Force = true });
-            }
-
+        private async Task StartContainer(string containerName)
+        {
             var response = await client.Containers.CreateContainerAsync(new Docker.DotNet.Models.CreateContainerParameters()
             {
                 Name = containerName,
@@ -115,6 +103,77 @@ namespace OpenttdDiscord.Testing.Database
             });
 
             await client.Containers.StartContainerAsync(response.ID, new ContainerStartParameters() { });
+        }
+
+        private async Task RemoveContainerIfExists(string containerName)
+        {
+            var containers = await client.Containers.ListContainersAsync(new ContainersListParameters() { Limit = 1000 });
+            string containerId = null;
+
+            this.Port = GetFreeTcpPort();
+
+            foreach (var c in containers)
+            {
+                foreach (var name in c.Names)
+                    if (name.TrimStart('/') == containerName)
+                    {
+                        containerId = c.ID;
+                        break;
+                    }
+                if (containerId != null)
+                    break;
+            }
+
+            if (containerId != null)
+            {
+                await client.Containers.StopContainerAsync(containerId, new ContainerStopParameters() { });
+                await client.Containers.RemoveContainerAsync(containerId, new ContainerRemoveParameters() { Force = true });
+            }
+        }
+
+        private async Task InitialiseSchema()
+        {
+            string workingDirectory = Environment.CurrentDirectory;
+            var dir = Path.Combine(Directory.GetParent(workingDirectory).Parent.Parent.Parent.FullName, "OpenttdDiscord.Database/SQL");
+            var files = Directory.GetFiles(dir);
+
+            using var conn = new MySqlConnection(GetConnectionString());
+            await conn.OpenAsync();
+
+            foreach (var f in files.OrderBy(x => x))
+            {
+                var path = Path.Combine(dir, f);
+                string sql = File.ReadAllText(path);
+
+                using var cmd = new MySqlCommand(sql, conn);
+
+                await cmd.ExecuteNonQueryAsync();
+
+            }
+        }
+
+        private async Task WaitForDatabaseToStart()
+        {
+            DateTime waitingTimeEnd = DateTime.Now.AddMinutes(10);
+            while (DateTime.Now < waitingTimeEnd)
+            {
+                try
+                {
+                    using var conn = new MySqlConnection(GetConnectionString());
+                    await conn.OpenAsync();
+                    using var cmd = new MySqlCommand("select 1", conn);
+
+                    await cmd.ExecuteNonQueryAsync();
+                    break;
+                }
+                catch (MySqlException e)
+                {
+                    if (e.ErrorCode != 1042 && e.Message != "Couldn't connect to server" && !e.Message.Contains("Unable to connect to any of the specified MySQL hosts"))
+                    {
+                        throw;
+                    }
+                }
+            }
         }
 
         /// <summary>

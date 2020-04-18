@@ -1,7 +1,7 @@
 CREATE TABLE discord_chat_channel_servers (
   server_id BIGINT(20) UNSIGNED NOT NULL,
   channel_id BIGINT(20) UNSIGNED NOT NULL,
-  server_name VARCHAR(255) DEFAULT NULL,
+  connect_message_enabled BIT(1) NOT NULL DEFAULT b'0',
   PRIMARY KEY (channel_id, server_id)
 );
 

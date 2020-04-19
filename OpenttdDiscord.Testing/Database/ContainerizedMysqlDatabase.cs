@@ -27,7 +27,7 @@ namespace OpenttdDiscord.Testing.Database
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
             {
                 client = new DockerClientConfiguration(
-                new Uri("unix:///var/run/docker.sock"))
+                new Uri("tcp://localhost:2375"))
                 .CreateClient();
 
             }

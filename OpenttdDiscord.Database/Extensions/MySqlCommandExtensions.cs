@@ -9,7 +9,11 @@ namespace OpenttdDiscord.Database.Extensions
 {
     public static class MySqlCommandExtensions
     {
-        public static async Task<ulong> GetCount(this MySqlCommand cmd) => ulong.Parse((await cmd.ExecuteScalarAsync()).ToString());
+        public static async Task<ulong> GetCount(this MySqlCommand cmd)
+        {
+            var result = await cmd.ExecuteScalarAsync();
+            return ulong.Parse(result.ToString());
+        }
         
     }
 }

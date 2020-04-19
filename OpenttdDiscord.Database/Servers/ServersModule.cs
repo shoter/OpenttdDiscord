@@ -10,10 +10,6 @@ namespace OpenttdDiscord.Database.Servers
     {
         public void Register(in IServiceCollection services)
         {
-            services.AddSingleton(new MySqlConfig()
-            {
-                ConnectionString = Environment.GetEnvironmentVariable("ottd_discord_connectionstring")
-            });
             services.AddSingleton<IServerService, ServerService>();
             services.AddSingleton<IServerRepository, ServerRepository>();
             services.AddSingleton<ISubscribedServerRepository, SubscribedServerRepository>();

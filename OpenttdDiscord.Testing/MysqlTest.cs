@@ -8,14 +8,20 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Xunit;
 
 namespace OpenttdDiscord.Testing
 {
     public class MysqlTest : IDisposable
     {
-        private readonly IContainerizedMysqlDatabase mysql = new ContainerizedMysqlDatabase();
+        private readonly IContainerizedMysqlDatabase mysql;
         private bool started = false;
         private Mutex startMutex = new Mutex();
+
+        public MysqlTest(ContainerizedMysqlDatabase mysql, string classname)
+        {
+            this.mysql = mysql;
+        }
 
         public void Dispose()
         {
@@ -26,11 +32,12 @@ namespace OpenttdDiscord.Testing
         {
             if (started == false)
             {
-                lock(startMutex)
+                lock (startMutex)
                 {
                     if (started == false)
                     {
                         mysql.Start($"openttd_{this.GetType().Name}_{methodName}").Wait();
+                        started = true;
                     }
                 }
             }

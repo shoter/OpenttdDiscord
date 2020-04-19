@@ -15,7 +15,10 @@ namespace OpenttdDiscord.Configuration
     {
         public void Register(in IServiceCollection services)
         {
-            services.AddSingleton(new MySqlConfig());
+            services.AddSingleton(new MySqlConfig()
+            {
+                ConnectionString = Environment.GetEnvironmentVariable("ottd_discord_connectionstring")
+            });
             services.AddSingleton(new OpenttdDiscordConfig());
         }
     }

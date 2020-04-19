@@ -1,5 +1,6 @@
 ﻿using OpenttdDiscord.Database.Servers;
 using OpenttdDiscord.Testing;
+using OpenttdDiscord.Testing.Database;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,6 +12,10 @@ namespace OpenttdDiscord.Database.Tests.Servers
 {
     public class ServerRepositoryTests : MysqlTest
     {
+        public ServerRepositoryTests() : base(new ContainerizedMysqlDatabase(), nameof(ServerRepositoryTests))
+        {
+        }
+
         [Fact]
         public async Task InsertTest_ShouldBeAbleToGetItAfterThat()
         {

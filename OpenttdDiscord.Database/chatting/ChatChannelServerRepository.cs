@@ -28,7 +28,8 @@ namespace OpenttdDiscord.Database.Chatting
                 await conn.OpenAsync();
                 var _list = new List<ChatChannelServer>();
 
-                using (var cmd = new MySqlCommand($@"SELECT * FROM discord_chat_channel_servers", conn))
+                using (var cmd = new MySqlCommand($@"SELECT * FROM discord_chat_channel_servers d
+                                                    JOIN servers s on d.server_id = s.id", conn))
                 using (var reader = await cmd.ExecuteReaderAsync())
                 {
                     while (await reader.ReadAsync())
@@ -72,7 +73,8 @@ namespace OpenttdDiscord.Database.Chatting
             using (var conn = new MySqlConnection(this.connectionString))
             {
                 await conn.OpenAsync();
-                using (var cmd = GetServerCommand(serverId, channelId, conn))
+                using (var cmd = new MySqlCommand($@"SELECT count(*) FROM discord_chat_channel_servers d
+                                                    JOIN servers s on d.server_id = s.id", conn))
                 {
                     return (await cmd.GetCount()) == 1;
                 }
@@ -81,9 +83,9 @@ namespace OpenttdDiscord.Database.Chatting
 
         public ChatChannelServer ReadFromReader(DbDataReader reader) => new ChatChannelServer()
         {
-            Server = new Server(reader, "s"),
-            ChannelId = reader.ReadU64("d.channel_id"),
-            JoinMessagesEnabled = reader.ReadBool("connect_message_enabled")
+            Server = new Server(reader, "servers"),
+            ChannelId = reader.ReadU64("channel_id", "discord_chat_channel_servers"),
+            JoinMessagesEnabled = reader.ReadBool("connect_message_enabled", "discord_chat_channel_servers")
         };
 
         public async Task<ChatChannelServer> Get(ulong serverId, ulong channelId)
@@ -93,8 +95,7 @@ namespace OpenttdDiscord.Database.Chatting
                 await conn.OpenAsync();
                 var _list = new List<ChatChannelServer>();
 
-                using (var cmd = new MySqlCommand($@"SELECT * FROM discord_chat_channel_servers
-                                                     WHERE server_id={serverId} AND channel_id={channelId}", conn))
+                using var cmd = GetServerCommand(serverId, channelId, conn);
                 using (var reader = await cmd.ExecuteReaderAsync())
                 {
                     if (await reader.ReadAsync())

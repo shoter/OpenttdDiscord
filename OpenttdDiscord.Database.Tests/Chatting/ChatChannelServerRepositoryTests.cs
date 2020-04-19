@@ -1,6 +1,7 @@
 ﻿using OpenttdDiscord.Database.Chatting;
 using OpenttdDiscord.Database.Servers;
 using OpenttdDiscord.Testing;
+using OpenttdDiscord.Testing.Database;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,6 +13,10 @@ namespace OpenttdDiscord.Database.Tests.Chatting
 {
     public class ChatChannelServerRepositoryTests : MysqlTest
     {
+        public ChatChannelServerRepositoryTests() : base(new ContainerizedMysqlDatabase(), nameof(ChatChannelServerRepositoryTests))
+        {
+        }
+
         [Fact]
         public async Task AfterInsert_ShouldBeAbleToGetData()
         {
@@ -44,7 +49,7 @@ namespace OpenttdDiscord.Database.Tests.Chatting
             var server = await serverRepository.AddServer("127.0.0.1", 123, "test");
             var chatServer = await chatRepository.Insert(server, 133u);
 
-            Assert.False(await chatRepository.Exists(server.Id, 133u));
+            Assert.True(await chatRepository.Exists(server.Id, 133u));
         }
 
         [Fact]

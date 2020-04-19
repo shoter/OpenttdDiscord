@@ -63,7 +63,6 @@ namespace OpenttdDiscord.Testing.Database
             await RemoveContainerIfExists(containerName);
             await StartContainer(containerName);
             await WaitForDatabaseToStart();
-            await InitialiseSchema();
         }
 
         private async Task StartContainer(string containerName)
@@ -71,7 +70,7 @@ namespace OpenttdDiscord.Testing.Database
             var response = await client.Containers.CreateContainerAsync(new Docker.DotNet.Models.CreateContainerParameters()
             {
                 Name = containerName,
-                Image = "mysql",
+                Image = "openttd-discord-mysql",
                 HostConfig = new HostConfig
                 {
                     PortBindings = new Dictionary<string, IList<PortBinding>>
@@ -93,14 +92,8 @@ namespace OpenttdDiscord.Testing.Database
                     {
                         "3306/tcp", new EmptyStruct(){ }
                     }
-                },
-                Env = new string[] {
-                    "MYSQL_ROOT_PASSWORD=test",
-                    "MYSQL_DATABASE=openttd",
-                    "MYSQL_USER=openttd",
-                    "MYSQL_PASSWORD=test"
                 }
-            });
+              });
 
             await client.Containers.StartContainerAsync(response.ID, new ContainerStartParameters() { });
         }

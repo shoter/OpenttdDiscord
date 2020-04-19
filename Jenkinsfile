@@ -10,6 +10,12 @@ pipeline {
     }  
 
   stages {
+    stage("Build MySQL image") {
+      agent any
+      steps {
+        sh "./OpenttdDiscord.Database/SQL/build.sh"
+      }
+    }
     stage('Build and Test') {
       agent {
         dockerfile {

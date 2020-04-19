@@ -32,7 +32,7 @@ pipeline {
         stage('Build') {
           steps {
             echo env.BRANCH_NAME
-            sh "dotnet build -c Release -warnaserror"
+            sh "dotnet build -c Release -warnaserror /p:DefineConstants=TRACE;LINUX"
           }
         }
         stage('Test') {

@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using OpenttdDiscord.Common;
 
 namespace OpenttdDiscord
 {
@@ -40,6 +41,7 @@ namespace OpenttdDiscord
             services.AddSingleton<CommandService>();
             services.AddSingleton<IChatService, ChatService>();
             services.AddSingleton<ServerInfoProcessor>();
+            services.AddSingleton<ITimeProvider, TimeProvider>();
             services.AddLogging(loggingBuilder =>
               {
                   // configure Logging with NLog

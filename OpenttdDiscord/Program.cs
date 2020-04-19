@@ -22,12 +22,13 @@ using OpenttdDiscord.Openttd.Network;
 using OpenttdDiscord.Chatting;
 using OpenttdDiscord.Openttd.Network.AdminPort;
 using Microsoft.Extensions.Logging;
+using OpenttdDiscord.Database.Chatting;
 
 namespace OpenttdDiscord
 {
     internal class Program
     {
-        //private static DiscordSocketClient client;
+        private static DiscordSocketClient client;
 
         public static async Task Main()
         {
@@ -39,18 +40,9 @@ namespace OpenttdDiscord
 
             using var services = DependencyConfig.ServiceProvider;
 
-            var client = new AdminPortClient(new ServerInfo("192.168.2.100", 3982, "admin_pass"), services.GetRequiredService<IAdminPacketService>(), services.GetRequiredService<ILogger<AdminPortClient>>());
-
-            await client.Join();
-
-
-            await Task.Delay(-1);
-            /*
             client = services.GetRequiredService<DiscordSocketClient>();
             client.Log += Log;
             services.GetRequiredService<CommandService>().Log += Log;
-
-
 
             await client.LoginAsync(TokenType.Bot, services.GetRequiredService<OpenttdDiscordConfig>().Token);
             await client.StartAsync();
@@ -59,13 +51,19 @@ namespace OpenttdDiscord
 
             client.Connected += Client_Connected;
 
-            await Task.Delay(-1);*/
+            await Task.Delay(-1);
         }
 
         private static async Task Client_Connected()
         {
             await DependencyConfig.ServiceProvider.GetRequiredService<ServerInfoProcessor>().Start();
             await DependencyConfig.ServiceProvider.GetRequiredService<IChatService>().Start();
+            DependencyConfig.ServiceProvider.GetRequiredService<IChatChannelServerService>().NewChannelInRegistered += Program_NewChannelInRegisterProcess;
+        }
+
+        private static void Program_NewChannelInRegisterProcess(object sender, InRegisterChatChannelServer e)
+        {
+            client.GetUser(e.UserId).SendMessageAsync($"To complete registration of server please provide password to server {e.ServerName} in next message to this bot.");
         }
 
         private static Task Log(LogMessage arg)

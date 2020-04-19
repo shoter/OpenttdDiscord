@@ -31,8 +31,12 @@ namespace OpenttdDiscord.Database.Servers
 
         public async Task<bool> Exists(string ip, int port) => await this.serverRepository.GetServer(ip, port) != null;
 
+        public async Task<bool> Exists(string serverName) => await this.serverRepository.GetServer(serverName) != null;
+
         public Task<Server> Get(string ip, int port) => this.serverRepository.GetServer(ip, port);
 
         public Task<List<Server>> GetAll() => this.serverRepository.GetAll();
+
+        public Task<Server> Get(string serverName) => this.serverRepository.GetServer(serverName);
     }
 }

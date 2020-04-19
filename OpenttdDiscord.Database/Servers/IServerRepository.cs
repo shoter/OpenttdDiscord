@@ -10,6 +10,8 @@ namespace OpenttdDiscord.Database.Servers
     {
         Task<Server> GetServer(string ip, int port);
         Task<Server> AddServer(string ip, int port, string name);
+
+        Task<Server> GetServer(string serverName);
         Task<List<Server>> GetAll();
         
     }

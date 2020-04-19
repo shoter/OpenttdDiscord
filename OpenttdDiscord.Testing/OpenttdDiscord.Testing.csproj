@@ -15,4 +15,8 @@
     <ProjectReference Include="..\OpenttdDiscord.Database\OpenttdDiscord.Database.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Networking\" />
+  </ItemGroup>
+
 </Project>

@@ -29,6 +29,18 @@ namespace OpenttdDiscord.Database.Tests.Servers
         }
 
         [Fact]
+        public async Task GetServer_ShouldBeAbleToGetServerByName()
+        {
+            IServerRepository repo = new ServerRepository(GetMysql());
+            await repo.AddServer("192.168.0.1", 123, "testServerName");
+            var server = await repo.GetServer("testServerName");
+
+            Assert.Equal("192.168.0.1", server.ServerIp);
+            Assert.Equal(123, server.ServerPort);
+            Assert.Equal("testServerName", server.ServerName);
+        }
+
+        [Fact]
         public async Task GetAllShouldGetAllServers()
         {
             Server[] servers = new Server[]

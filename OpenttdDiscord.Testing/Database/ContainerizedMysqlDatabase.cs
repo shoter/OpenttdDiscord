@@ -85,8 +85,9 @@ namespace OpenttdDiscord.Testing.Database
                                 }
                             }
                         }
-                    }
+                    },
                 },
+
                 ExposedPorts = new Dictionary<string, EmptyStruct>
                 {
                     {
@@ -94,6 +95,11 @@ namespace OpenttdDiscord.Testing.Database
                     }
                 }
               });
+
+            await client.Networks.ConnectNetworkAsync("jenkins", new NetworkConnectParameters
+            {
+                Container = response.ID,
+            });
 
             await client.Containers.StartContainerAsync(response.ID, new ContainerStartParameters() { });
         }

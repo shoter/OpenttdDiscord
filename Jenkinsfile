@@ -13,7 +13,6 @@ pipeline {
     stage("Build MySQL image") {
       agent any
       steps {
-        sh "ping docker"
         dir("OpenttdDiscord.Database/SQL") {
           sh "/bin/bash ./build.sh"
         }

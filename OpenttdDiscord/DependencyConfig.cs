@@ -42,6 +42,7 @@ namespace OpenttdDiscord
             services.AddSingleton<IChatService, ChatService>();
             services.AddSingleton<ServerInfoProcessor>();
             services.AddSingleton<ITimeProvider, TimeProvider>();
+            services.AddScoped<IPrivateMessageHandlingService, PrivateMessageHandlingService>();
             services.AddLogging(loggingBuilder =>
               {
                   // configure Logging with NLog

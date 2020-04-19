@@ -58,15 +58,15 @@ namespace OpenttdDiscord
         {
             await DependencyConfig.ServiceProvider.GetRequiredService<ServerInfoProcessor>().Start();
             await DependencyConfig.ServiceProvider.GetRequiredService<IChatService>().Start();
-            DependencyConfig.ServiceProvider.GetRequiredService<IChatChannelServerService>().NewChannelInRegistered += Program_NewChannelInRegisterProcess;
+            DependencyConfig.ServiceProvider.GetRequiredService<IServerService>().NewServerPasswordRequestAdded += Program_NewServerPasswordRequestAdded; ;
         }
 
-        private static void Program_NewChannelInRegisterProcess(object sender, InRegisterChatChannelServer e)
+        private static void Program_NewServerPasswordRequestAdded(object sender, NewServerPassword e)
         {
             client.GetUser(e.UserId).SendMessageAsync($"To complete registration of server please provide password to server {e.ServerName} in next message to this bot.");
         }
 
-        private static Task Log(LogMessage arg)
+         private static Task Log(LogMessage arg)
         {
             Console.WriteLine(arg.Message);
             return Task.CompletedTask;

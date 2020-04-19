@@ -13,6 +13,7 @@ namespace OpenttdDiscord.Openttd.Network.AdminPort
         public void Register(in IServiceCollection services)
         {
             services.AddSingleton<IAdminPacketService>(new AdminPacketService());
+            services.AddSingleton<IAdminPortClientFactory, AdminPortClientFactory>();
         }
     }
 }

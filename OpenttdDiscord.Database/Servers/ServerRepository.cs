@@ -1,5 +1,6 @@
 ﻿using MySql.Data.MySqlClient;
 using OpenttdDiscord.Backend;
+using OpenttdDiscord.Common;
 using OpenttdDiscord.Database.Extensions;
 using System;
 using System.Collections.Generic;
@@ -107,5 +108,24 @@ namespace OpenttdDiscord.Database.Servers
         }
 
         public Server ReadFromReader(DbDataReader reader) => new Server(reader, "servers");
+
+        public async Task UpdatePassword(ulong serverId, string password)
+        {
+            using (var conn = new MySqlConnection(this.connectionString))
+            {
+                await conn.OpenAsync();
+                using (var cmd = new MySqlCommand($@"UPDATE servers
+                                                      SET server_password = @pwd
+                                                      where id = @id", conn))
+                {
+                    cmd.Parameters.AddWithValue("id", serverId);
+                    cmd.Parameters.AddWithValue("pwd", password);
+
+                    int modifiedRows = await cmd.ExecuteNonQueryAsync();
+                    if (modifiedRows != 1)
+                        throw new OttdException($"Something went wrong with updating password for {serverId}");
+                }
+            }
+        }
     }
 }

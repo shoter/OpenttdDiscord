@@ -1,4 +1,5 @@
 ﻿using Moq;
+using OpenttdDiscord.Common;
 using OpenttdDiscord.Database.Servers;
 using System;
 using System.Collections.Generic;
@@ -11,6 +12,7 @@ namespace OpenttdDiscord.Database.Tests.Servers
     public class ServerServiceFixture
     {
         private IServerRepository serverRepository = Mock.Of<IServerRepository>();
+        private ITimeProvider timeProvider = new TimeProvider();
 
         public ServerServiceFixture WithServerRepository(MySqlConfig config)
         {
@@ -18,9 +20,16 @@ namespace OpenttdDiscord.Database.Tests.Servers
             return this;
         }
 
+        public ServerServiceFixture WithMockTime(out Mock<ITimeProvider> mock)
+        {
+            mock = new Mock<ITimeProvider>();
+            this.timeProvider = mock.Object;
+            return this;
+        }
+
         public ServerService Build()
         {
-            return new ServerService(serverRepository);
+            return new ServerService(serverRepository, timeProvider);
         }
 
         public static implicit operator ServerService(ServerServiceFixture fix) => fix.Build();

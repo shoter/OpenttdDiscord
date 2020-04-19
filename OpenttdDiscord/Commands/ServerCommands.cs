@@ -39,39 +39,32 @@ namespace OpenttdDiscord.Commands
             await ReplyAsync("Server has been registered.");
         }
 
-        [Command("register_chat_server")]
+        [Command("change_password")]
         [RequireContext(ContextType.Guild, ErrorMessage = "Sorry, this command must be ran from within a server, not a DM!")]
         [RequireUserPermission(GuildPermission.Administrator)]
         public async Task RegisterChatServer(string serverName)
         {
-            if(this.chatChannelServerService.IsServerInRegisterProcess(Context.User.Id, serverName, Context.Channel.Id))
+            if(this.serverService.IsPasswordRequestInProgress(Context.User.Id))
             {
-                await ReplyAsync($"You are in process of registering {serverName} - please check DM.");
+                var nsp = this.serverService.GetNewPasswordProcess(Context.User.Id);
+                await ReplyAsync($"You are in process of registering {nsp.ServerName} - please check DM.");
                 return;
-
             }
+
             if (!await this.serverService.Exists(serverName))
             {
                 await ReplyAsync($"Server with this name does not exist! Please use {PutServerInfoString} in order to register server with this name!");
                 return;
             }
 
-            if (await this.chatChannelServerService.Exists(serverName, Context.Channel.Id))
+            var inReg = new NewServerPassword()
             {
-                await ReplyAsync("Server is already registered on this chat");
-                return;
-            }
-
-            var inReg = new InRegisterChatChannelServer()
-            {
-                ChannelId = Context.Channel.Id,
                 ServerName = serverName,
                 UserId = Context.User.Id
             };
 
-            this.chatChannelServerService.InformAboutNewChannelInRegisterProcess(inReg);
-
-            await ReplyAsync("Check DM to complete process of registering chat server");
+            this.serverService.InformAboutNewPasswordRequest(inReg);
+            await ReplyAsync("Check DM to complete process of changing password for this server");
         }
     }
 }

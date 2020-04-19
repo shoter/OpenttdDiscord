@@ -168,6 +168,8 @@ namespace OpenttdDiscord.Openttd.Network.AdminPort
                                     this.SendMessage(new AdminUpdateFrequencyMessage(AdminUpdateType.ADMIN_UPDATE_CLIENT_INFO, UpdateFrequency.ADMIN_FREQUENCY_AUTOMATIC));
                                     this.SendMessage(new AdminPollMessage(AdminUpdateType.ADMIN_UPDATE_CLIENT_INFO, uint.MaxValue));
 
+                                    this.ConnectionState = AdminConnectionState.Connected;
+
                                     break;
                                 }
                             case AdminMessageType.ADMIN_PACKET_SERVER_CLIENT_INFO:
@@ -223,10 +225,11 @@ namespace OpenttdDiscord.Openttd.Network.AdminPort
                 ThreadPool.QueueUserWorkItem(new WaitCallback((_) => MainLoop(cancellationTokenSource.Token)), null);
                 ThreadPool.QueueUserWorkItem(new WaitCallback((_) => EventLoop(cancellationTokenSource.Token)), null);
 
-                if ((await TaskHelper.WaitUntil(() => ConnectionState == AdminConnectionState.Connected, delayBetweenChecks: TimeSpan.FromSeconds(0.5), duration: TimeSpan.FromSeconds(10))) == false)
+                if (!(await TaskHelper.WaitUntil(() => ConnectionState == AdminConnectionState.Connected, delayBetweenChecks: TimeSpan.FromSeconds(0.5), duration: TimeSpan.FromSeconds(10))))
                 {
-                    this.cancellationTokenSource = new CancellationTokenSource();
                     this.cancellationTokenSource.Cancel();
+                    this.cancellationTokenSource = new CancellationTokenSource();
+                    throw new OttdConnectionException("Admin port could not connect to the server");
                 }
             }
             catch(Exception e)
@@ -244,15 +247,14 @@ namespace OpenttdDiscord.Openttd.Network.AdminPort
             {
                 this.cancellationTokenSource.Cancel();
 
-                if ((await TaskHelper.WaitUntil(() => ConnectionState == AdminConnectionState.Idle, delayBetweenChecks: TimeSpan.FromSeconds(0.5), duration: TimeSpan.FromSeconds(10))) == false)
+                if (!(await TaskHelper.WaitUntil(() => ConnectionState == AdminConnectionState.Idle, delayBetweenChecks: TimeSpan.FromSeconds(0.5), duration: TimeSpan.FromSeconds(10))))
                 {
                     this.cancellationTokenSource = new CancellationTokenSource();
-                    this.cancellationTokenSource.Cancel();
                 }
             }
             catch (Exception e)
             {
-                throw new OttdConnectionException("Could not join server", e);
+                throw new OttdConnectionException("Error during stopping server", e);
             }
         }
 

@@ -3,6 +3,8 @@ using Discord.Commands;
 using Discord.WebSocket;
 using Microsoft.Extensions.DependencyInjection;
 using OpenttdDiscord.Chatting;
+using OpenttdDiscord.Database.Chatting;
+using OpenttdDiscord.Openttd;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,11 +19,15 @@ namespace OpenttdDiscord.Commands
         private readonly CommandService commands;
         private readonly DiscordSocketClient discord;
         private readonly IChatService chatService;
+        private readonly IChatChannelServerService chatChannelServerService;
         private readonly IServiceProvider services;
 
-        public CommandHandlingService(IServiceProvider services, CommandService commandService, DiscordSocketClient client)
+        private readonly IPrivateMessageHandlingService privateMessageService;
+
+        public CommandHandlingService(IServiceProvider services, IPrivateMessageHandlingService privateMessageService, CommandService commandService, DiscordSocketClient client)
         {
             this.commands = commandService;
+            this.privateMessageService = privateMessageService;
             this.discord = client;
             this.services = services;
 
@@ -45,6 +51,12 @@ namespace OpenttdDiscord.Commands
             // Ignore system messages, or messages from other bots
             if (!(rawMessage is SocketUserMessage message)) return;
             if (message.Source != MessageSource.User) return;
+
+            if(message.Channel is SocketDMChannel dmChannel)
+            {
+                await this.privateMessageService.HandleMessage(message, dmChannel);
+                return;
+            }
 
             // This value holds the offset where the prefix ends
             var argPos = 0;

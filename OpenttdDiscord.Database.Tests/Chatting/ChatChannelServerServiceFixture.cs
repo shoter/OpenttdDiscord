@@ -14,12 +14,6 @@ namespace OpenttdDiscord.Database.Tests.Chatting
     {
         private IChatChannelServerRepository repository = new Mock<IChatChannelServerRepository>().Object;
         private IServerService serverService = Mock.Of<IServerService>();
-        private ITimeProvider timeProvider = Mock.Of<ITimeProvider>();
-
-        public ChatChannelServerServiceFixture()
-        {
-            WithMockTimeProvider(out _);
-        }
 
         public ChatChannelServerServiceFixture WithMockRepository(out Mock<IChatChannelServerRepository> mock )
         {
@@ -35,17 +29,7 @@ namespace OpenttdDiscord.Database.Tests.Chatting
             return this;
         }
 
-        public ChatChannelServerServiceFixture WithMockTimeProvider(out Mock<ITimeProvider> mock)
-        {
-            mock = new Mock<ITimeProvider>();
-            mock.SetupGet(x => x.Now).Returns(DateTime.Now);
-            timeProvider = mock.Object;
-            return this;
-        }
-
         public static implicit operator ChatChannelServerService(ChatChannelServerServiceFixture fix) =>
-            new ChatChannelServerService(fix.repository, fix.serverService, fix.timeProvider);
-
-
+            new ChatChannelServerService(fix.repository, fix.serverService);
     }
 }

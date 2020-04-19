@@ -3,6 +3,7 @@
   server_name VARCHAR(255) NOT NULL,
   server_ip VARCHAR(255) NOT NULL,
   server_port INT(11) NOT NULL,
+  server_password VARCHAR(255) DEFAULT NULL,
   PRIMARY KEY (id)
 );
 

@@ -1,4 +1,5 @@
-﻿using OpenttdDiscord.Database.Servers;
+﻿using OpenttdDiscord.Common;
+using OpenttdDiscord.Database.Servers;
 using OpenttdDiscord.Testing;
 using OpenttdDiscord.Testing.Database;
 using System;
@@ -38,6 +39,24 @@ namespace OpenttdDiscord.Database.Tests.Servers
             Assert.Equal("192.168.0.1", server.ServerIp);
             Assert.Equal(123, server.ServerPort);
             Assert.Equal("testServerName", server.ServerName);
+        }
+
+        [Fact]
+        public async Task UpdatePassword_ShouldChangePassword()
+        {
+            IServerRepository repo = new ServerRepository(GetMysql());
+            var server = await repo.AddServer("192.168.0.1", 123, "testServerName");
+            await repo.UpdatePassword(server.Id, "pwd");
+            server = await repo.GetServer(server.ServerName);
+
+            Assert.Equal("pwd", server.ServerPassword);
+        }
+
+        [Fact]
+        public async Task UpdatePassword_ShouldThrowException_ForNonExistingServer()
+        {
+            IServerRepository repo = new ServerRepository(GetMysql());
+            await Assert.ThrowsAsync<OttdException>(() => repo.UpdatePassword(69, "pwd"));
         }
 
         [Fact]

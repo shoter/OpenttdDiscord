@@ -13,7 +13,9 @@ pipeline {
     stage("Build MySQL image") {
       agent any
       steps {
-        sh "/bin/bash ./OpenttdDiscord.Database/SQL/build.sh"
+        dir("/OpenttdDiscord.Database/SQL") {
+          sh "/bin/bash ./build.sh"
+        }
       }
     }
     stage('Build and Test') {

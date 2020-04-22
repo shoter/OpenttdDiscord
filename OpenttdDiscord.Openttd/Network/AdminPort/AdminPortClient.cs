@@ -86,6 +86,8 @@ namespace OpenttdDiscord.Openttd.Network.AdminPort
                         tcpClient.SendTimeout = 3000;
                         tcpClient.Connect(ServerInfo.ServerIp, ServerInfo.ServerPort);
                         this.SendMessage(new AdminJoinMessage(ServerInfo.Password, "OttdBot", "1.0.0"));
+                        logger.LogInformation($"{ServerInfo} Connecting");
+
                         this.ConnectionState = AdminConnectionState.Connecting;
                     }
 
@@ -96,7 +98,6 @@ namespace OpenttdDiscord.Openttd.Network.AdminPort
                     {
                         if (this.sendMessageQueue.TryDequeue(out IAdminMessage msg))
                         {
-                            logger.LogInformation($"{ServerInfo} sending {msg.MessageType}");
                             Packet packet = this.adminPacketService.CreatePacket(msg);
                             await tcpClient.GetStream().WriteAsync(packet.Buffer, 0, packet.Size);
                         }
@@ -126,7 +127,6 @@ namespace OpenttdDiscord.Openttd.Network.AdminPort
                         sizeTask = null;
 
                         ushort size = BitConverter.ToUInt16(sizeBuffer, 0);
-                        logger.LogInformation($"{ServerInfo} Received {size} bytes.");
 
                         byte[] content = new byte[size];
                         content[0] = sizeBuffer[0];

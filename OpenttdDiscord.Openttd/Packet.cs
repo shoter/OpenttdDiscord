@@ -108,8 +108,6 @@ namespace OpenttdDiscord.Openttd
 
         public long ReadI64() => BitConverter.ToInt64(this.Buffer, (this.Position += 8) - 8);
 
-
-
         public string ReadString()
         {
             List<byte> bytes = new List<byte>();
@@ -120,18 +118,6 @@ namespace OpenttdDiscord.Openttd
             }
 
             this.Position++;
-
-            return Encoding.Default.GetString(bytes.ToArray());
-        }
-
-        public string ReadString(int size)
-        {
-            List<byte> bytes = new List<byte>();
-
-            for (int i = 0;i < size; ++i)
-            {
-                bytes.Add(this.Buffer[this.Position]);
-            }
 
             return Encoding.Default.GetString(bytes.ToArray());
         }

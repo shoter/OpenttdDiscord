@@ -11,16 +11,18 @@ namespace OpenttdDiscord.Openttd.Network.AdminPort
     {
         private readonly IAdminPacketService adminPacketService;
         private readonly ILogger<IAdminPortClient> logger;
+        private readonly IAdminMessageProcessor messageProcessor;
 
-        public AdminPortClientFactory(IAdminPacketService adminPacketService, ILogger<IAdminPortClient> logger)
+        public AdminPortClientFactory(IAdminPacketService adminPacketService, IAdminMessageProcessor messageProcessor, ILogger<IAdminPortClient> logger)
         {
             this.adminPacketService = adminPacketService;
             this.logger = logger;
+            this.messageProcessor = messageProcessor;
         }
 
         public virtual IAdminPortClient Create(ServerInfo info)
         {
-            return new AdminPortClient(info, adminPacketService, logger);
+            return new AdminPortClient(info, adminPacketService, messageProcessor, logger);
         }
     }
 }

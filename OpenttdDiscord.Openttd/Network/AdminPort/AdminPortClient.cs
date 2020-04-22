@@ -18,11 +18,13 @@ namespace OpenttdDiscord.Openttd.Network.AdminPort
 
         public ConcurrentDictionary<uint, Player> Players { get; } = new ConcurrentDictionary<uint, Player>();
 
-        public event EventHandler<IAdminMessage> MessageReceived;
+        public event EventHandler<IAdminEvent> EventReceived;
 
         private readonly Microsoft.Extensions.Logging.ILogger logger;
 
         private readonly IAdminPacketService adminPacketService;
+
+        private readonly IAdminMessageProcessor messageProcessor;
 
         private readonly ConcurrentQueue<IAdminMessage> receivedMessagesQueue = new ConcurrentQueue<IAdminMessage>();
 
@@ -38,11 +40,12 @@ namespace OpenttdDiscord.Openttd.Network.AdminPort
 
 
         public AdminServerInfo AdminServerInfo { get; private set; } = new AdminServerInfo();
-        public AdminPortClient(ServerInfo serverInfo, IAdminPacketService adminPacketService, ILogger<IAdminPortClient> logger)
+        public AdminPortClient(ServerInfo serverInfo, IAdminPacketService adminPacketService, IAdminMessageProcessor messageProcessor, ILogger<IAdminPortClient> logger)
         {
             this.ServerInfo = serverInfo;
             this.logger = logger;
             this.adminPacketService = adminPacketService;
+            this.messageProcessor = messageProcessor;
 
             foreach(var type in Enums.ToArray<AdminUpdateType>())
             {
@@ -56,7 +59,10 @@ namespace OpenttdDiscord.Openttd.Network.AdminPort
             {
                 if(this.receivedMessagesQueue.TryDequeue(out IAdminMessage msg))
                 {
-                    this.MessageReceived?.Invoke(this, msg);
+                    var eventMessage = this.messageProcessor.ProcessMessage(msg, this);
+
+                    if(eventMessage != null)
+                        this.EventReceived?.Invoke(this,eventMessage );
                 }
 
                 await Task.Delay(TimeSpan.FromSeconds(0.1));
@@ -169,6 +175,7 @@ namespace OpenttdDiscord.Openttd.Network.AdminPort
                                     this.SendMessage(new AdminPollMessage(AdminUpdateType.ADMIN_UPDATE_CLIENT_INFO, uint.MaxValue));
 
                                     this.ConnectionState = AdminConnectionState.Connected;
+                                    this.logger.LogInformation($"{ServerInfo.ServerIp}:{ServerInfo.ServerPort} - connected");
 
                                     break;
                                 }

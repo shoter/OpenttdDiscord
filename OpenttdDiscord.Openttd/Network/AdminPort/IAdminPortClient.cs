@@ -18,7 +18,7 @@ namespace OpenttdDiscord.Openttd.Network.AdminPort
 
         AdminServerInfo AdminServerInfo { get; }
 
-        event EventHandler<IAdminMessage> MessageReceived;
+        event EventHandler<IAdminEvent> EventReceived;
 
         ServerInfo ServerInfo { get; }
 

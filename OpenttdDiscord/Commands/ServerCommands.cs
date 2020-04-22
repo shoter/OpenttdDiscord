@@ -42,7 +42,7 @@ namespace OpenttdDiscord.Commands
         [Command("change_password")]
         [RequireContext(ContextType.Guild, ErrorMessage = "Sorry, this command must be ran from within a server, not a DM!")]
         [RequireUserPermission(GuildPermission.Administrator)]
-        public async Task RegisterChatServer(string serverName)
+        public async Task ChangePassword(string serverName)
         {
             if(this.serverService.IsPasswordRequestInProgress(Context.User.Id))
             {
@@ -65,6 +65,30 @@ namespace OpenttdDiscord.Commands
 
             this.serverService.InformAboutNewPasswordRequest(inReg);
             await ReplyAsync("Check DM to complete process of changing password for this server");
+        }
+
+        [Command("subscribe_server")]
+        [RequireContext(ContextType.Guild, ErrorMessage = "Sorry, this command must be ran from within a server, not a DM!")]
+        [RequireUserPermission(GuildPermission.Administrator)]
+        public async Task SubscribeToServer(string serverName, int port)
+        {
+            var server = await serverService.Get(serverName);
+
+            if(server == null)
+            {
+                await ReplyAsync("Server does not exist!");
+                return;
+            }
+
+            if(await SubscribedServerService.Exists(server.ServerIp, port, Context.Channel.Id))
+            {
+                await ReplyAsync("Server is already registered here!");
+                return;
+            }
+
+            await SubscribedServerService.AddServer(server.ServerIp, port, Context.Channel.Id);
+            await ReplyAsync("Done!");
+            return;
         }
     }
 }

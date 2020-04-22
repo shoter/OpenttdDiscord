@@ -235,7 +235,7 @@ namespace OpenttdDiscord.Openttd.Network.AdminPort
                     this.receivedMessagesQueue.Clear();
                     this.ConnectionState = AdminConnectionState.NotConnected;
 
-                    await Task.Delay(TimeSpan.FromSeconds(1));
+                    await Task.Delay(TimeSpan.FromSeconds(30));
                 }
 
             }

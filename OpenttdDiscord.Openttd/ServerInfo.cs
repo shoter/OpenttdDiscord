@@ -21,5 +21,7 @@ namespace OpenttdDiscord.Openttd
             this.ServerPort = serverPort;
             this.Password = password;
         }
+
+        public override string ToString() => $"{ServerIp}:{ServerPort}";
     }
 }

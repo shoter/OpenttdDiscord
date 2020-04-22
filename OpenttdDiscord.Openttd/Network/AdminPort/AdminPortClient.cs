@@ -81,7 +81,10 @@ namespace OpenttdDiscord.Openttd.Network.AdminPort
                 {
                     if (this.ConnectionState == AdminConnectionState.NotConnected)
                     {
-                        tcpClient = new TcpClient(ServerInfo.ServerIp, ServerInfo.ServerPort);
+                        tcpClient = new TcpClient();
+                        tcpClient.ReceiveTimeout = 3000;
+                        tcpClient.SendTimeout = 3000;
+                        tcpClient.Connect(ServerInfo.ServerIp, ServerInfo.ServerPort);
                         this.SendMessage(new AdminJoinMessage(ServerInfo.Password, "OttdBot", "1.0.0"));
                         this.ConnectionState = AdminConnectionState.Connecting;
                     }
@@ -93,6 +96,7 @@ namespace OpenttdDiscord.Openttd.Network.AdminPort
                     {
                         if (this.sendMessageQueue.TryDequeue(out IAdminMessage msg))
                         {
+                            logger.LogInformation($"{ServerInfo} sending {msg.MessageType}");
                             Packet packet = this.adminPacketService.CreatePacket(msg);
                             await tcpClient.GetStream().WriteAsync(packet.Buffer, 0, packet.Size);
                         }
@@ -116,9 +120,14 @@ namespace OpenttdDiscord.Openttd.Network.AdminPort
                         }
 
 
+
+
+
                         sizeTask = null;
 
                         ushort size = BitConverter.ToUInt16(sizeBuffer, 0);
+                        logger.LogInformation($"{ServerInfo} Received {size} bytes.");
+
                         byte[] content = new byte[size];
                         content[0] = sizeBuffer[0];
                         content[1] = sizeBuffer[1];
@@ -127,7 +136,14 @@ namespace OpenttdDiscord.Openttd.Network.AdminPort
                         do
                         {
                             await Task.Delay(TimeSpan.FromMilliseconds(1));
+                            var delayTask = Task.Delay(TimeSpan.FromSeconds(2));
                             Task<int> task = tcpClient.GetStream().ReadAsync(content, contentSize, size - contentSize);
+
+                            await Task.WhenAny(delayTask, task);
+
+                            if (delayTask.IsCompleted)
+                                throw new OttdConnectionException("No data received");
+
                             await task;
                             contentSize += task.Result;
                             if(task.Result == 0)
@@ -184,6 +200,14 @@ namespace OpenttdDiscord.Openttd.Network.AdminPort
                                     var msg = message as AdminServerClientInfoMessage;
                                     var player = new Player(msg.ClientId, msg.ClientName);
                                     this.Players.AddOrUpdate(msg.ClientId, player, (_, __) => player);
+
+                                    break;
+                                }
+                            case AdminMessageType.ADMIN_PACKET_SERVER_CLIENT_UPDATE:
+                                {
+                                    var msg = message as AdminServerClientUpdateMessage;
+                                    var player = this.Players[msg.ClientId];
+                                    player.Name = msg.ClientName;
 
                                     break;
                                 }

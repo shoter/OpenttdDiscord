@@ -20,19 +20,23 @@ namespace OpenttdDiscord.Database.Servers
 
         public event EventHandler<SubscribedServer> ServerAdded;
 
-        public async Task<SubscribedServer> AddServer(string ip, int port, ulong channelId)
+        public async Task<SubscribedServer> AddServer(string name, int port ,ulong channelId)
         {
-            if (await this.subscribedServerRepository.Exists(ip, port, channelId))
-                return await this.subscribedServerRepository.Get(ip, port, channelId);
+            var server = await serverRepository.GetServer(name);
 
-            Server server = await this.serverRepository.GetServer(ip, port);
+            if (await this.subscribedServerRepository.Exists(server, channelId))
+                return await this.subscribedServerRepository.Get(server, port, channelId);
 
-            SubscribedServer ss = await this.subscribedServerRepository.Add(server, channelId);
+            SubscribedServer ss = await this.subscribedServerRepository.Add(server, port, channelId);
             this.ServerAdded?.Invoke(this, ss);
             return ss;
         }
 
-        public Task<bool> Exists(string ip, int port, ulong channelId) => this.subscribedServerRepository.Exists(ip, port, channelId);
+        public async Task<bool> Exists(string name, ulong channelId)
+        {
+            var server = await serverRepository.GetServer(name);
+            return await this.subscribedServerRepository.Exists(server, channelId);
+        }
 
         public Task<IEnumerable<SubscribedServer>> GetAllServers() => this.subscribedServerRepository.GetAll();
         public Task UpdateServer(ulong serverId, ulong channelId, ulong messageId) => this.subscribedServerRepository.UpdateServer(serverId, channelId, messageId);

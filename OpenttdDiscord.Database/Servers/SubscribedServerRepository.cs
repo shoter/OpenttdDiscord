@@ -19,7 +19,7 @@ namespace OpenttdDiscord.Database.Servers
             this.connectionString = config.ConnectionString;
         }
 
-        public async Task<SubscribedServer> Add(Server server, ulong channelId)
+        public async Task<SubscribedServer> Add(Server server, int port, ulong channelId)
         {
             using (var conn = new MySqlConnection(this.connectionString))
             {
@@ -29,10 +29,11 @@ namespace OpenttdDiscord.Database.Servers
                 {
                     cmd.Connection = conn;
                     cmd.CommandText = "INSERT INTO subscribed_servers" +
-                        "(server_id, last_update, channel_id) " +
+                        "(server_id, last_update, channel_id, subscribe_port) " +
                         "VALUES " +
-                        "(@server_id, now(), @channel_id)";
+                        "(@server_id, now(), @channel_id, @sub_port)";
                     cmd.Parameters.AddWithValue("server_id", server.Id);
+                    cmd.Parameters.AddWithValue("sub_port", port);
                     cmd.Parameters.AddWithValue("channel_id", channelId);
                     await cmd.ExecuteNonQueryAsync();
                 }
@@ -48,30 +49,25 @@ namespace OpenttdDiscord.Database.Servers
             }
         }
 
-        public async Task<SubscribedServer> Get(string ip, int port, ulong channelId)
+        public async Task<SubscribedServer> Get(Server server, int port, ulong channelId)
         {
-            using (var conn = new MySqlConnection(this.connectionString))
-            {
-                await conn.OpenAsync();
-
-                using (var cmd = new MySqlCommand($@"
+            using var conn = new MySqlConnection(this.connectionString);
+            await conn.OpenAsync();
+            using var cmd = new MySqlCommand($@"
                     SELECT * FROM subscribed_servers ss
-                       join servers s on ss.server_id = s.id
-                        WHERE s.server_ip = @ip AND s.server_port = @port AND ss.channel_id = @cid ", conn))
-                {
-                    cmd.Parameters.AddWithValue("ip", ip);
-                    cmd.Parameters.AddWithValue("port", port);
-                    cmd.Parameters.AddWithValue("cid", channelId);
-                    using (var reader = await cmd.ExecuteReaderAsync())
-                    {
-                        if (await reader.ReadAsync())
-                        {
-                            return ReadFromReader(reader);
-                        }
-                        return null;
-                    }
-                }
+                    join servers s on ss.server_id = s.id
+                    WHERE ss.server_id = @server_id AND ss.subscribe_port = @port AND ss.channel_id = @cid ", conn);
+
+            cmd.Parameters.AddWithValue("server_id", server.Id);
+            cmd.Parameters.AddWithValue("port", port);
+            cmd.Parameters.AddWithValue("cid", channelId);
+
+            using var reader = await cmd.ExecuteReaderAsync();
+            if (await reader.ReadAsync())
+            {
+                return ReadFromReader(reader);
             }
+            return null;
         }
 
         public async Task<IEnumerable<SubscribedServer>> GetAll()
@@ -93,7 +89,7 @@ namespace OpenttdDiscord.Database.Servers
             }
         }
 
-        public async Task<bool> Exists(string ip, int port, ulong channelId)
+        public async Task<bool> Exists(Server server, ulong channelId)
         {
             using (var conn = new MySqlConnection(this.connectionString))
             {
@@ -103,10 +99,8 @@ namespace OpenttdDiscord.Database.Servers
                 {
                     cmd.Connection = conn;
                     cmd.CommandText = "SELECT COUNT(*) FROM subscribed_servers ss" +
-                        " JOIN servers s on ss.server_id = s.id" +
-                        " WHERE s.server_ip = @ip AND s.server_port = @port AND ss.channel_id = @cid ";
-                    cmd.Parameters.AddWithValue("ip", ip);
-                    cmd.Parameters.AddWithValue("port", port);
+                        " WHERE ss.server_id = @server_id AND ss.channel_id = @cid ";
+                    cmd.Parameters.AddWithValue("sever_id", server);
                     cmd.Parameters.AddWithValue("cid", channelId);
                     return (await cmd.GetCount()) == 1;
                 }
@@ -137,7 +131,7 @@ namespace OpenttdDiscord.Database.Servers
         {
             return new SubscribedServer(new Server(reader),
                 reader.Read<DateTimeOffset>("last_update"), reader.ReadU64("channel_id"),
-                reader.ReadNullable<ulong?>("message_id"));
+                reader.ReadNullable<ulong?>("message_id"), reader.ReadInt("subscribe_port"));
         }
     }
 }

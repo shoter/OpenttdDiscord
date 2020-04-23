@@ -10,6 +10,8 @@ ENV MYSQL_USER=openttd
 ENV MYSQL_PASSWORD=test
 
 COPY *.sql /docker-entrypoint-initdb.d/
+# In future there will be special dockerfile for test database. Right now I am using this only for testing so that's why I am also adding test sql to the image
+COPY TestSQL/*.sql /docker-entrypoint-initdb.d/
 
 # Need to change the datadir to something else that /var/lib/mysql because the parent docker file defines it as a volume.
 # https://docs.docker.com/engine/reference/builder/#volume :

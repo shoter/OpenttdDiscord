@@ -72,7 +72,7 @@ namespace OpenttdDiscord
 
                             await subscribedServerService.UpdateServer(s.Server.Id, s.ChannelId, messageId.Value);
                         }
-                        servers[i] = new SubscribedServer(s.Server, s.LastUpdate, s.ChannelId, messageId);
+                        servers[i] = new SubscribedServer(s.Server, s.LastUpdate, s.ChannelId, messageId, s.Port);
 
                     }
 #if DEBUG

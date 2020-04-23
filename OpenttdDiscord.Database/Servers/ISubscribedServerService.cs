@@ -11,7 +11,7 @@ namespace OpenttdDiscord.Database.Servers
         event EventHandler<SubscribedServer> ServerAdded;
         Task<SubscribedServer> AddServer(string ip, int port, ulong channelId);
 
-        Task<bool> Exists(string ip, int port, ulong channelId);
+        Task<bool> Exists(string ip, ulong channelId);
 
         Task<IEnumerable<SubscribedServer>> GetAllServers();
 

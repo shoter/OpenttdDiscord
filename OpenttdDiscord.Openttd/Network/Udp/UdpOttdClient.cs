@@ -23,9 +23,17 @@ namespace OpenttdDiscord.Openttd.Network.Udp
             var remoteEP = new IPEndPoint(IPAddress.Parse(ip), port);
 
             await client.SendAsync(sendPacket.Buffer, sendPacket.Size, remoteEP);
-            var receiveBytes = await client.ReceiveAsync();
+            Task timeoutTask = Task.Delay(TimeSpan.FromSeconds(10));
+            var receiveBytesTask =  client.ReceiveAsync();
 
-            return this.udpPacketService.ReadPacket(new Packet(receiveBytes.Buffer));
+            await Task.WhenAny(timeoutTask, receiveBytesTask);
+
+            if(timeoutTask.IsCompleted)
+            {
+                throw new OttdConnectionException("Udp server did not respond!");
+            }
+
+            return this.udpPacketService.ReadPacket(new Packet(receiveBytesTask.Result.Buffer));
         }
     }
 }

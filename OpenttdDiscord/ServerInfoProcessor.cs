@@ -60,7 +60,7 @@ namespace OpenttdDiscord
 
                         if (messageId.HasValue)
                         {
-                            var ottdClient = this.ottdClientProvider.Provide(s.Server.ServerIp, s.Server.ServerPort);
+                            var ottdClient = this.ottdClientProvider.Provide(s.Server.ServerIp, s.Port);
                             var r = await ottdClient.AskAboutServerInfo();
 
                             Embed embed = embedFactory.Create(r, s.Server);

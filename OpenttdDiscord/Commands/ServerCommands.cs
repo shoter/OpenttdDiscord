@@ -80,13 +80,13 @@ namespace OpenttdDiscord.Commands
                 return;
             }
 
-            if(await SubscribedServerService.Exists(server.ServerIp, Context.Channel.Id))
+            if(await SubscribedServerService.Exists(server.ServerName, Context.Channel.Id))
             {
                 await ReplyAsync("Server is already registered here!");
                 return;
             }
 
-            await SubscribedServerService.AddServer(server.ServerIp, port, Context.Channel.Id);
+            await SubscribedServerService.AddServer(server.ServerName, port, Context.Channel.Id);
             await ReplyAsync("Done!");
             return;
         }

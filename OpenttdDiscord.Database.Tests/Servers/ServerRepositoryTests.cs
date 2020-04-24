@@ -76,9 +76,9 @@ namespace OpenttdDiscord.Database.Tests.Servers
 
             var response = await repo.GetAll();
 
-            foreach(var s in response)
+            foreach(var s in servers)
             {
-                Assert.NotNull(servers.Single(x => x.ServerIp == s.ServerIp && x.ServerName == s.ServerName && x.ServerPort == s.ServerPort));
+                Assert.NotNull(response.Single(x => x.ServerIp == s.ServerIp && x.ServerName == s.ServerName && x.ServerPort == s.ServerPort));
             }
 
         }

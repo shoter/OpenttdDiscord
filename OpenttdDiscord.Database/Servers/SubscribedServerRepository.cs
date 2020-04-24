@@ -100,8 +100,9 @@ namespace OpenttdDiscord.Database.Servers
                     cmd.Connection = conn;
                     cmd.CommandText = "SELECT COUNT(*) FROM subscribed_servers ss" +
                         " WHERE ss.server_id = @server_id AND ss.channel_id = @cid ";
-                    cmd.Parameters.AddWithValue("sever_id", server);
+                    cmd.Parameters.AddWithValue("server_id", server.Id);
                     cmd.Parameters.AddWithValue("cid", channelId);
+
                     return (await cmd.GetCount()) == 1;
                 }
             }

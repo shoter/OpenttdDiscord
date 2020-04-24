@@ -12,7 +12,7 @@ namespace OpenttdDiscord.Openttd.Tests.Network.AdminPort
 {
     public class AdminPortClientProviderTest
     {
-        private Mock<AdminPortClientFactory> clientFactoryMock = new Mock<AdminPortClientFactory>(Mock.Of<IAdminPacketService>(), Mock.Of<ILogger<IAdminPortClient>>());
+        private Mock<AdminPortClientFactory> clientFactoryMock = new Mock<AdminPortClientFactory>(Mock.Of<IAdminPacketService>(), Mock.Of<IAdminMessageProcessor>(), Mock.Of<ILogger<IAdminPortClient>>());
         private IAdminPortClientProvider provider;
 
         public AdminPortClientProviderTest()

@@ -49,7 +49,7 @@ namespace OpenttdDiscord.Database.Servers
             }
         }
 
-        public async Task<IEnumerable<SubscribedServer>> GetAll()
+        public async Task<IEnumerable<SubscribedServer>> GetAll(ulong guildId)
         {
             using (var conn = new MySqlConnection(this.connectionString))
             {
@@ -57,11 +57,15 @@ namespace OpenttdDiscord.Database.Servers
                 var _list = new List<SubscribedServer>();
 
                 using (var cmd = new MySqlCommand($@"SELECT * FROM subscribed_servers ss
-                                                    join servers s on ss.server_id = s.id", conn))
-                using (var reader = await cmd.ExecuteReaderAsync())
+                                                    JOIN servers s on ss.server_id = s.id
+                                                    WHERE s.guild_id = @gid", conn))
                 {
-                    while (await reader.ReadAsync())
-                        _list.Add(ReadFromReader(reader));
+                    cmd.Parameters.AddWithValue("gid", guildId);
+                    using (var reader = await cmd.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                            _list.Add(ReadFromReader(reader));
+                    }
                 }
 
                 return _list;
@@ -77,8 +81,8 @@ namespace OpenttdDiscord.Database.Servers
                 using (var cmd = new MySqlCommand())
                 {
                     cmd.Connection = conn;
-                    cmd.CommandText = "SELECT COUNT(*) FROM subscribed_servers ss" +
-                        " WHERE ss.server_id = @server_id AND ss.channel_id = @cid ";
+                    cmd.CommandText = @"SELECT COUNT(*) FROM subscribed_servers ss
+                                      WHERE ss.server_id = @server_id AND ss.channel_id = @cid";
                     cmd.Parameters.AddWithValue("server_id", server.Id);
                     cmd.Parameters.AddWithValue("cid", channelId);
 
@@ -143,9 +147,9 @@ namespace OpenttdDiscord.Database.Servers
             using var cmd = new MySqlCommand($@"
                     SELECT * FROM subscribed_servers ss
                     join servers s on ss.server_id = s.id
-                    WHERE s.server_name = @server_name AND ss.channel_id = @cid ", conn);
+                    WHERE s.id = @server_id AND ss.channel_id = @cid ", conn);
 
-            cmd.Parameters.AddWithValue("server_name", server.ServerName);
+            cmd.Parameters.AddWithValue("server_id", server.Id);
             cmd.Parameters.AddWithValue("cid", channelId);
 
             using var reader = await cmd.ExecuteReaderAsync();

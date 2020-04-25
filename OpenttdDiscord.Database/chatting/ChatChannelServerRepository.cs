@@ -21,7 +21,7 @@ namespace OpenttdDiscord.Database.Chatting
             this.connectionString = config.ConnectionString;
         }
 
-        public async Task<List<ChatChannelServer>> GetAll()
+        public async Task<List<ChatChannelServer>> GetAll(ulong guildId)
         {
             using (var conn = new MySqlConnection(this.connectionString))
             {
@@ -29,11 +29,15 @@ namespace OpenttdDiscord.Database.Chatting
                 var _list = new List<ChatChannelServer>();
 
                 using (var cmd = new MySqlCommand($@"SELECT * FROM discord_chat_channel_servers d
-                                                    JOIN servers s on d.server_id = s.id", conn))
-                using (var reader = await cmd.ExecuteReaderAsync())
+                                                    JOIN servers s on d.server_id = s.id
+                                                    WHERE s.guild_id = @gid", conn))
                 {
-                    while (await reader.ReadAsync())
-                        _list.Add(ReadFromReader(reader));
+                    cmd.Parameters.AddWithValue("gid", guildId);
+                    using (var reader = await cmd.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                            _list.Add(ReadFromReader(reader));
+                    }
                 }
 
                 return _list;

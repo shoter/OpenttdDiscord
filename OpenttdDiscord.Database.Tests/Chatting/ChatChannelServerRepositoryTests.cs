@@ -23,7 +23,7 @@ namespace OpenttdDiscord.Database.Tests.Chatting
             var serverRepository = new ServerRepository(GetMysql());
             var chatRepository = new ChatChannelServerRepository(GetMysql());
 
-            var server = await serverRepository.AddServer("127.0.0.1", 123, "test");
+            var server = await serverRepository.AddServer(11u, "127.0.0.1", 123, "test");
             var chatServer = await chatRepository.Insert(server, 133u);
             var response = await chatRepository.Get(server.Id, 133u);
 

@@ -76,7 +76,7 @@ namespace OpenttdDiscord.Database.Servers
 
         public NewServerPassword GetNewPasswordProcess(ulong guildId, ulong userId)
         {
-            if (!NewServerPasswordRequests.ContainsKey((guildId, userId))
+            if (!NewServerPasswordRequests.ContainsKey((guildId, userId)))
                 return null;
 
             var nsp = NewServerPasswordRequests[(guildId, userId)];

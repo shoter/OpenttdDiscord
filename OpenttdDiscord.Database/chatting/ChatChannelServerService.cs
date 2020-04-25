@@ -23,17 +23,17 @@ namespace OpenttdDiscord.Database.Chatting
             this.serverService = serverService;
         }
 
-        public async Task<ChatChannelServer> Insert(string serverName, ulong channelId)
+        public async Task<ChatChannelServer> Insert(ulong guildId, string serverName, ulong channelId)
         {
-            Server server = await this.serverService.Get(serverName);
+            Server server = await this.serverService.Get(guildId, serverName);
             var chatChannelServer = await this.chatChannelServerRepository.Insert(server, channelId);
             this.Added?.Invoke(this, chatChannelServer);
             return chatChannelServer;
         }
 
-        public async Task<bool> Exists(string serverName, ulong channelId)
+        public async Task<bool> Exists(ulong guildId, string serverName, ulong channelId)
         {
-            Server server = await this.serverService.Get(serverName);
+            Server server = await this.serverService.Get(guildId, serverName);
 
             if (server == null) return false;
 
@@ -42,11 +42,11 @@ namespace OpenttdDiscord.Database.Chatting
             return chatChannelServer != null;
         }
 
-        public Task<List<ChatChannelServer>> GetAll() => this.chatChannelServerRepository.GetAll();
+        public Task<List<ChatChannelServer>> GetAll(ulong guildId) => this.chatChannelServerRepository.GetAll(guildId);
 
-        public async Task Remove(string serverName, ulong channelId)
+        public async Task Remove(ulong guildId,string serverName, ulong channelId)
         {
-            Server server = await this.serverService.Get(serverName);
+            Server server = await this.serverService.Get(guildId, serverName);
 
             ChatChannelServer chatChannelServer = await this.chatChannelServerRepository.Get(server.Id, channelId);
             await this.chatChannelServerRepository.Remove(server.Id, channelId);

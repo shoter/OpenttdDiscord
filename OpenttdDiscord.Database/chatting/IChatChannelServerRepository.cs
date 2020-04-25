@@ -6,7 +6,7 @@ namespace OpenttdDiscord.Database.Chatting
 {
     public interface IChatChannelServerRepository
     {
-        Task<List<ChatChannelServer>> GetAll();
+        Task<List<ChatChannelServer>> GetAll(ulong guildId);
 
         Task<ChatChannelServer> Get(ulong serverId, ulong channelId);
 

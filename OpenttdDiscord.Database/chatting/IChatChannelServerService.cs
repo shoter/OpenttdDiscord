@@ -13,9 +13,9 @@ namespace OpenttdDiscord.Database.Chatting
         event EventHandler<ChatChannelServer> Removed;
 
 
-        Task<ChatChannelServer> Insert(string serverName, ulong channelId);
-        Task Remove(string serverName, ulong channelId);
-        Task<List<ChatChannelServer>> GetAll();
-        Task<bool> Exists(string serverName, ulong channelId);
+        Task<ChatChannelServer> Insert(ulong guildId, string serverName, ulong channelId);
+        Task Remove(ulong guildId, string serverName, ulong channelId);
+        Task<List<ChatChannelServer>> GetAll(ulong guildId);
+        Task<bool> Exists(ulong guildId, string serverName, ulong channelId);
     }
 }

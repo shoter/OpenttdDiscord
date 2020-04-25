@@ -12,13 +12,13 @@ namespace OpenttdDiscord.Database.Servers
         event EventHandler<SubscribedServer> ServerRemoved;
 
 
-        Task<SubscribedServer> AddServer(string ip, int port, ulong channelId);
-        Task RemoveServer(string name, ulong channelId);
+        Task<SubscribedServer> AddServer(ulong guildId, string name, int port, ulong channelId);
+        Task RemoveServer(ulong guildId, string name, ulong channelId);
 
 
-        Task<bool> Exists(string ip, ulong channelId);
+        Task<bool> Exists(ulong guildId, string name, ulong channelId);
 
-        Task<IEnumerable<SubscribedServer>> GetAllServers();
+        Task<IEnumerable<SubscribedServer>> GetAllServers(ulong guildId);
 
         Task UpdateServer(ulong serverId, ulong channelId, ulong messageId);
     }

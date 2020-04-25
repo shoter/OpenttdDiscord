@@ -21,10 +21,11 @@ namespace OpenttdDiscord.Database.Tests.Servers
         public async Task InsertTest_ShouldBeAbleToGetItAfterThat()
         {
             IServerRepository repo = new ServerRepository(GetMysql());
-            await repo.AddServer("192.168.0.1", 123, "testServerName");
-            var server = await repo.GetServer("192.168.0.1", 123);
+            await repo.AddServer(11u, "192.168.0.1", 123, "testServerName");
+            var server = await repo.GetServer(11u, "192.168.0.1", 123);
 
             Assert.Equal("192.168.0.1", server.ServerIp);
+            Assert.Equal(11u, server.GuildId);
             Assert.Equal(123, server.ServerPort);
             Assert.Equal("testServerName", server.ServerName);
         }
@@ -33,11 +34,12 @@ namespace OpenttdDiscord.Database.Tests.Servers
         public async Task GetServer_ShouldBeAbleToGetServerByName()
         {
             IServerRepository repo = new ServerRepository(GetMysql());
-            await repo.AddServer("192.168.0.1", 123, "testServerName");
-            var server = await repo.GetServer("testServerName");
+            await repo.AddServer(11u, "192.168.0.1", 123, "testServerName");
+            var server = await repo.GetServer(11u, "testServerName");
 
             Assert.Equal("192.168.0.1", server.ServerIp);
             Assert.Equal(123, server.ServerPort);
+            Assert.Equal(11u, server.GuildId);
             Assert.Equal("testServerName", server.ServerName);
         }
 
@@ -45,9 +47,9 @@ namespace OpenttdDiscord.Database.Tests.Servers
         public async Task UpdatePassword_ShouldChangePassword()
         {
             IServerRepository repo = new ServerRepository(GetMysql());
-            var server = await repo.AddServer("192.168.0.1", 123, "testServerName");
+            var server = await repo.AddServer(11u, "192.168.0.1", 123, "testServerName");
             await repo.UpdatePassword(server.Id, "pwd");
-            server = await repo.GetServer(server.ServerName);
+            server = await repo.GetServer(11u, server.ServerName);
 
             Assert.Equal("pwd", server.ServerPassword);
         }
@@ -64,23 +66,59 @@ namespace OpenttdDiscord.Database.Tests.Servers
         {
             Server[] servers = new Server[]
             {
-                new Server(0, "127.0.0.1", 123, "test"),
-                new Server(0, "24.1.2.1", 123, "test2"),
-                new Server(0, "17.1.0.1", 22, "test3"),
-                new Server(0, "12.0.2.1", 33, "wara4"),
-                new Server(0, "12.0.2.1", 11, "wara"),
+                new Server(11u, 0, "127.0.0.1", 123, "test"),
+                new Server(11u, 0, "24.1.2.1", 123, "test2"),
+                new Server(11u, 0, "17.1.0.1", 22, "test3"),
+                new Server(11u, 0, "12.0.2.1", 33, "wara4"),
+                new Server(11u, 0, "12.0.2.1", 11, "wara"),
             };
             IServerRepository repo = new ServerRepository(GetMysql());
             foreach (var s in servers)
-                await repo.AddServer(s.ServerIp, s.ServerPort, s.ServerName);
+                await repo.AddServer(s.GuildId, s.ServerIp, s.ServerPort, s.ServerName);
 
-            var response = await repo.GetAll();
+            var response = await repo.GetAll(11u);
 
             foreach(var s in servers)
             {
                 Assert.NotNull(response.Single(x => x.ServerIp == s.ServerIp && x.ServerName == s.ServerName && x.ServerPort == s.ServerPort));
             }
+        }
 
+        [Fact]
+        public async Task GetAllShouldGetAllServersFromGivenGuild()
+        {
+            Server[] servers = new Server[]
+            {
+                new Server(11u, 0, "127.0.0.1", 123, "test"),
+                new Server(11u, 0, "24.1.2.1", 123, "test2"),
+                new Server(11u, 0, "17.1.0.1", 22, "test3"),
+                new Server(11u, 0, "12.0.2.1", 33, "wara4"),
+                new Server(11u, 0, "12.0.2.1", 11, "wara"),
+            };
+            IServerRepository repo = new ServerRepository(GetMysql());
+            foreach (var s in servers)
+                await repo.AddServer(s.GuildId, s.ServerIp, s.ServerPort, s.ServerName);
+
+            await repo.AddServer(12u, "10.0.0.1", 123, "different guild");
+            await repo.AddServer(13u, "10.0.0.1", 123, "different guild");
+
+
+            var response = await repo.GetAll(11u);
+
+            foreach (var s in servers)
+            {
+                Assert.NotNull(response.Single(x => x.ServerIp == s.ServerIp && x.ServerName == s.ServerName && x.ServerPort == s.ServerPort));
+            }
+        }
+
+        [Fact]
+        public async Task Insert_ShouldBeAbleToInsertSameServersToDifferentGuilds()
+        {
+            IServerRepository repo = new ServerRepository(GetMysql());
+
+            // this should not trigger any exception - smoke test
+            await repo.AddServer(12u, "10.0.0.1", 123, "same");
+            await repo.AddServer(13u, "10.0.0.1", 123, "same");
         }
 
     }

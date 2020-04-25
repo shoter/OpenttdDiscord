@@ -21,9 +21,9 @@ namespace OpenttdDiscord.Database.Servers
         public event EventHandler<SubscribedServer> ServerAdded;
         public event EventHandler<SubscribedServer> ServerRemoved;
 
-        public async Task<SubscribedServer> AddServer(string name, int port ,ulong channelId)
+        public async Task<SubscribedServer> AddServer(ulong guildId, string name, int port ,ulong channelId)
         {
-            var server = await serverRepository.GetServer(name);
+            var server = await serverRepository.GetServer(guildId, name);
 
             if (await this.subscribedServerRepository.Exists(server, channelId))
                 return await this.subscribedServerRepository.Get(server, channelId);
@@ -33,17 +33,17 @@ namespace OpenttdDiscord.Database.Servers
             return ss;
         }
 
-        public async Task<bool> Exists(string name, ulong channelId)
+        public async Task<bool> Exists(ulong guildId, string name, ulong channelId)
         {
-            var server = await serverRepository.GetServer(name);
+            var server = await serverRepository.GetServer(guildId, name);
             return await this.subscribedServerRepository.Exists(server, channelId);
         }
 
-        public Task<IEnumerable<SubscribedServer>> GetAllServers() => this.subscribedServerRepository.GetAll();
+        public Task<IEnumerable<SubscribedServer>> GetAllServers(ulong guildId) => this.subscribedServerRepository.GetAll(guildId);
 
-        public async Task RemoveServer(string name, ulong channelId)
+        public async Task RemoveServer(ulong guildId, string name, ulong channelId)
         {
-            var server = await serverRepository.GetServer(name);
+            var server = await serverRepository.GetServer(guildId, name);
             var subServer = await subscribedServerRepository.Get(server, channelId);
             await this.subscribedServerRepository.Remove(server, channelId);
             this.ServerRemoved?.Invoke(this, subServer);

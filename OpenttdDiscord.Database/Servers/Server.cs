@@ -18,12 +18,13 @@ namespace OpenttdDiscord.Database.Servers
 
         public ulong GuildId { get; }
 
-        public Server(ulong id, string serverIp, int serverPort, string serverName)
+        public Server(ulong id, ulong guildId, string serverIp, int serverPort, string serverName)
         {
             this.Id = id;
             this.ServerIp = serverIp;
             this.ServerPort = serverPort;
             this.ServerName = serverName;
+            this.GuildId = guildId;
         }
 
         public Server(DbDataReader reader, string prefix = null)

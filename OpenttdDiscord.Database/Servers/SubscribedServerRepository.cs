@@ -49,27 +49,6 @@ namespace OpenttdDiscord.Database.Servers
             }
         }
 
-        public async Task<SubscribedServer> Get(Server server, int port, ulong channelId)
-        {
-            using var conn = new MySqlConnection(this.connectionString);
-            await conn.OpenAsync();
-            using var cmd = new MySqlCommand($@"
-                    SELECT * FROM subscribed_servers ss
-                    join servers s on ss.server_id = s.id
-                    WHERE ss.server_id = @server_id AND ss.subscribe_port = @port AND ss.channel_id = @cid ", conn);
-
-            cmd.Parameters.AddWithValue("server_id", server.Id);
-            cmd.Parameters.AddWithValue("port", port);
-            cmd.Parameters.AddWithValue("cid", channelId);
-
-            using var reader = await cmd.ExecuteReaderAsync();
-            if (await reader.ReadAsync())
-            {
-                return ReadFromReader(reader);
-            }
-            return null;
-        }
-
         public async Task<IEnumerable<SubscribedServer>> GetAll()
         {
             using (var conn = new MySqlConnection(this.connectionString))
@@ -133,6 +112,48 @@ namespace OpenttdDiscord.Database.Servers
             return new SubscribedServer(new Server(reader),
                 reader.Read<DateTimeOffset>("last_update"), reader.ReadU64("channel_id"),
                 reader.ReadNullable<ulong?>("message_id"), reader.ReadInt("subscribe_port"));
+        }
+
+        public async Task Remove(Server server, ulong channelId)
+        {
+            using (var conn = new MySqlConnection(this.connectionString))
+            {
+                await conn.OpenAsync();
+
+                using (var cmd = new MySqlCommand())
+                {
+                    cmd.Connection = conn;
+                    cmd.CommandText = @"DELETE FROM subscribed_servers
+                                       WHERE server_id = @id AND channel_id = @cid";
+                    cmd.Parameters.AddWithValue("id", server.Id);
+                    cmd.Parameters.AddWithValue("cid", channelId);
+
+                    int rows = await cmd.ExecuteNonQueryAsync();
+
+                    if (rows == 0)
+                        throw new Exception($"{nameof(Remove)} for {nameof(SubscribedServerRepository)} did not remove record {server.Id} for channel {channelId}");
+                }
+            }
+        }
+
+        public async Task<SubscribedServer> Get(Server server, ulong channelId)
+        {
+            using var conn = new MySqlConnection(this.connectionString);
+            await conn.OpenAsync();
+            using var cmd = new MySqlCommand($@"
+                    SELECT * FROM subscribed_servers ss
+                    join servers s on ss.server_id = s.id
+                    WHERE s.server_name = @server_name AND ss.channel_id = @cid ", conn);
+
+            cmd.Parameters.AddWithValue("server_name", server.ServerName);
+            cmd.Parameters.AddWithValue("cid", channelId);
+
+            using var reader = await cmd.ExecuteReaderAsync();
+            if (await reader.ReadAsync())
+            {
+                return ReadFromReader(reader);
+            }
+            return null;
         }
     }
 }

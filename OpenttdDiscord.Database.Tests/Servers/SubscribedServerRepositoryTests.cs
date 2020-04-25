@@ -30,7 +30,7 @@ namespace OpenttdDiscord.Database.Tests.Servers
 
             await repo.Add(DefaultTestData.DefaultServer, 123, 321u);
 
-            var sub = await repo.Get(DefaultTestData.DefaultServer, 123, 321u);
+            var sub = await repo.Get(DefaultTestData.DefaultServer, 321u);
 
             Assert.Equal(123, sub.Port);
             Assert.Equal(321u, sub.ChannelId);
@@ -38,13 +38,24 @@ namespace OpenttdDiscord.Database.Tests.Servers
         }
 
         [Fact]
-        public async Task Exists_Insert_ShouldExists()
+        public async Task Exists_AfterInsert_ShouldExists()
         {
             ISubscribedServerRepository repo = new SubscribedServerRepository(GetMysql());
 
             await repo.Add(DefaultTestData.DefaultServer, 123, 321u);
 
             Assert.True(await repo.Exists(DefaultTestData.DefaultServer, 321u));
+        }
+
+        [Fact]
+        public async Task Remove_ShouldRemoveRecord()
+        {
+            ISubscribedServerRepository repo = new SubscribedServerRepository(GetMysql());
+
+            await repo.Add(DefaultTestData.DefaultServer, 123, 321u);
+            await repo.Remove(DefaultTestData.DefaultServer, 321u);
+
+            Assert.False(await repo.Exists(DefaultTestData.DefaultServer, 321u));
         }
     }
 }

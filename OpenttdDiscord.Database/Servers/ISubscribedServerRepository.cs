@@ -13,7 +13,10 @@ namespace OpenttdDiscord.Database.Servers
 
         Task<SubscribedServer> Add(Server server, int port, ulong channelId);
 
-        Task<SubscribedServer> Get(Server server, int port, ulong channelId);
+        Task Remove(Server server, ulong channelId);
+
+        Task<SubscribedServer> Get(Server server, ulong channelId);
+
 
         Task<IEnumerable<SubscribedServer>> GetAll();
 

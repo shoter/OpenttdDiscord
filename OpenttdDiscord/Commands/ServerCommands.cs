@@ -90,5 +90,29 @@ namespace OpenttdDiscord.Commands
             await ReplyAsync("Done!");
             return;
         }
+
+        [Command("unsubscribe_server")]
+        [RequireContext(ContextType.Guild, ErrorMessage = "Sorry, this command must be ran from within a server, not a DM!")]
+        [RequireUserPermission(GuildPermission.Administrator)]
+        public async Task SubscribeToServer(string serverName)
+        {
+            var server = await serverService.Get(serverName);
+
+            if (server == null)
+            {
+                await ReplyAsync("Server does not exist!");
+                return;
+            }
+
+            if (!await SubscribedServerService.Exists(server.ServerName, Context.Channel.Id))
+            {
+                await ReplyAsync("Server is not registered here!");
+                return;
+            }
+
+            await SubscribedServerService.RemoveServer(server.ServerName, Context.Channel.Id);
+            await ReplyAsync("Done!");
+            return;
+        }
     }
 }

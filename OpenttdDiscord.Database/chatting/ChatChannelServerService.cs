@@ -12,6 +12,8 @@ namespace OpenttdDiscord.Database.Chatting
     public class ChatChannelServerService : IChatChannelServerService
     {
         public event EventHandler<ChatChannelServer> Added;
+        public event EventHandler<ChatChannelServer> Removed;
+
         private readonly IChatChannelServerRepository chatChannelServerRepository;
         private readonly IServerService serverService;
 
@@ -41,5 +43,15 @@ namespace OpenttdDiscord.Database.Chatting
         }
 
         public Task<List<ChatChannelServer>> GetAll() => this.chatChannelServerRepository.GetAll();
+
+        public async Task Remove(string serverName, ulong channelId)
+        {
+            Server server = await this.serverService.Get(serverName);
+
+            ChatChannelServer chatChannelServer = await this.chatChannelServerRepository.Get(server.Id, channelId);
+            await this.chatChannelServerRepository.Remove(server.Id, channelId);
+
+            Removed?.Invoke(this, chatChannelServer);
+        }
     }
 }

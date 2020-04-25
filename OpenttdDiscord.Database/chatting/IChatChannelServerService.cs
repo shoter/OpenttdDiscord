@@ -10,8 +10,11 @@ namespace OpenttdDiscord.Database.Chatting
     public interface IChatChannelServerService
     {
         event EventHandler<ChatChannelServer> Added;
+        event EventHandler<ChatChannelServer> Removed;
+
 
         Task<ChatChannelServer> Insert(string serverName, ulong channelId);
+        Task Remove(string serverName, ulong channelId);
         Task<List<ChatChannelServer>> GetAll();
         Task<bool> Exists(string serverName, ulong channelId);
     }

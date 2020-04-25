@@ -13,4 +13,9 @@
     <PackageReference Include="coverlet.collector" Version="1.0.1" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\OpenttdDiscord.Testing\OpenttdDiscord.Testing.csproj" />
+    <ProjectReference Include="..\OpenttdDiscord\OpenttdDiscord.csproj" />
+  </ItemGroup>
+
 </Project>

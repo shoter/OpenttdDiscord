@@ -22,9 +22,10 @@ namespace OpenttdDiscord.Chatting
         private readonly IAdminPortClientProvider adminPortClientProvider;
         private readonly DiscordSocketClient discord;
 
-        private readonly ConcurrentDictionary<ulong, ChatChannelServer> chatServers = new ConcurrentDictionary<ulong, ChatChannelServer>();
+        private readonly ConcurrentDictionary<(ulong, ulong), ChatChannelServer> chatServers = new ConcurrentDictionary<(ulong, ulong), ChatChannelServer>();
         private readonly ConcurrentQueue<IAdminEvent> receivedMessagges = new ConcurrentQueue<IAdminEvent>();
         private readonly ConcurrentQueue<DiscordMessage> discordMessages = new ConcurrentQueue<DiscordMessage>();
+        private readonly ConcurrentQueue<ChatChannelServer> serversToRemove = new ConcurrentQueue<ChatChannelServer>();
 
         public ChatService(ILogger<ChatService> logger, IChatChannelServerService chatChannelServerService, IAdminPortClientProvider adminPortClientProvider, DiscordSocketClient discord)
         {
@@ -37,9 +38,10 @@ namespace OpenttdDiscord.Chatting
         public async Task Start()
         {
             foreach (var s in await this.chatChannelServerService.GetAll())
-                this.chatServers.TryAdd(s.Server.Id, s);
+                this.chatServers.TryAdd((s.Server.Id, s.ChannelId), s);
 
-            this.chatChannelServerService.Added += (_, s) => chatServers.AddOrUpdate(s.Server.Id, s, (_,__) => s);
+            this.chatChannelServerService.Added += (_, s) => chatServers.AddOrUpdate((s.Server.Id, s.ChannelId), s, (_,__) => s);
+            this.chatChannelServerService.Removed += (_, s) => serversToRemove.Enqueue(s);
 
             ThreadPool.QueueUserWorkItem(new WaitCallback((_) => MainLoop()), null);
         }
@@ -50,6 +52,13 @@ namespace OpenttdDiscord.Chatting
             {
                 try
                 {
+                    while(serversToRemove.TryDequeue(out ChatChannelServer s))
+                    {
+                        IAdminPortClient client = await adminPortClientProvider.GetClient(new ServerInfo(s.Server.ServerIp, s.Server.ServerPort, s.Server.ServerPassword));
+                        client.EventReceived -= Client_EventReceived;
+                        chatServers.Remove((s.Server.Id, s.ChannelId), out _);
+                    }
+
                     foreach (var s in chatServers.Values)
                     {
                         Server server = s.Server;
@@ -88,7 +97,7 @@ namespace OpenttdDiscord.Chatting
                             IEnumerable<ChatChannelServer> others = chatServers.Values.Where(x => x.ChannelId == channel.Id && x.Server.Id != s.Id);
                             foreach (var o in others)
                             {
-                                Server server = chatServers[o.Server.Id].Server;
+                                Server server = chatServers[(o.Server.Id, o.ChannelId)].Server;
                                 var info = new ServerInfo(server.ServerIp, server.ServerPort, server.ServerPassword);
                                 IAdminPortClient client = await adminPortClientProvider.GetClient(info);
 
@@ -107,7 +116,7 @@ namespace OpenttdDiscord.Chatting
                         IEnumerable<ChatChannelServer> others = chatServers.Values.Where(x => x.ChannelId == msg.ChannelId);
                         foreach (var o in others)
                         {
-                            Server server = chatServers[o.Server.Id].Server;
+                            Server server = chatServers[(o.Server.Id, o.ChannelId)].Server;
                             var info = new ServerInfo(server.ServerIp, server.ServerPort, server.ServerPassword);
                             IAdminPortClient client = await adminPortClientProvider.GetClient(info);
 
@@ -131,11 +140,6 @@ namespace OpenttdDiscord.Chatting
                     logger.LogError("Error", e);
                 }
             }
-        }
-
-        private void AddServer(ChatChannelServer s)
-        {
-            this.chatServers.AddOrUpdate(s.Server.Id, s, (_, __) => s);
         }
 
         private void Client_EventReceived(object sender, IAdminEvent msg)

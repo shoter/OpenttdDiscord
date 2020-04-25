@@ -53,6 +53,19 @@ namespace OpenttdDiscord.Database.Tests.Chatting
         }
 
         [Fact]
+        public async Task Remove_ShouldRemoveServer()
+        {
+            var serverRepository = new ServerRepository(GetMysql());
+            var chatRepository = new ChatChannelServerRepository(GetMysql());
+
+            var server = await serverRepository.AddServer("127.0.0.1", 123, "test");
+            await chatRepository.Insert(server, 133u);
+            await chatRepository.Remove(server.Id, 133u);
+
+            Assert.False(await chatRepository.Exists(server.Id, 133u));
+        }
+
+        [Fact]
         public async Task GetAll_ShouldReturnAllServers()
         {
             var serverRepository = new ServerRepository(GetMysql());

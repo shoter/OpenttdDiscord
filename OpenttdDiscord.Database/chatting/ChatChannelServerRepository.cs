@@ -109,5 +109,24 @@ namespace OpenttdDiscord.Database.Chatting
         private MySqlCommand GetServerCommand(ulong serverId, ulong channelId, MySqlConnection conn) => new MySqlCommand($@"SELECT * FROM discord_chat_channel_servers d
                                                     JOIN servers s on d.server_id = s.id
                                                     where d.server_id = {serverId} AND d.channel_id = {channelId}", conn);
+
+        public async Task Remove(ulong serverId, ulong channelId)
+        {
+            using (var conn = new MySqlConnection(this.connectionString))
+            {
+                await conn.OpenAsync();
+                var _list = new List<ChatChannelServer>();
+
+                var cmd = new MySqlCommand($@"DELETE FROM discord_chat_channel_servers
+                                                    WHERE server_id = @server_id AND channel_id = @channel_id", conn);
+                cmd.Parameters.AddWithValue("server_id", serverId);
+                cmd.Parameters.AddWithValue("channel_id", channelId);
+
+                int rows = await cmd.ExecuteNonQueryAsync();
+
+                if(rows == 0)
+                    throw new Exception($"{nameof(Remove)} for {nameof(ServerRepository)} did not remove record {serverId} for channel {channelId}");
+            }
+        }
     }
 }

@@ -66,11 +66,11 @@ namespace OpenttdDiscord.Database.Tests.Servers
         {
             Server[] servers = new Server[]
             {
-                new Server(11u, 0, "127.0.0.1", 123, "test"),
-                new Server(11u, 0, "24.1.2.1", 123, "test2"),
-                new Server(11u, 0, "17.1.0.1", 22, "test3"),
-                new Server(11u, 0, "12.0.2.1", 33, "wara4"),
-                new Server(11u, 0, "12.0.2.1", 11, "wara"),
+                new Server(0,11u,  "127.0.0.1", 123, "test"),
+                new Server(0,11u,  "24.1.2.1", 123, "test2"),
+                new Server(0,11u,  "17.1.0.1", 22, "test3"),
+                new Server(0,11u,  "12.0.2.1", 33, "wara4"),
+                new Server(0,11u, "12.0.2.1", 11, "wara"),
             };
             IServerRepository repo = new ServerRepository(GetMysql());
             foreach (var s in servers)
@@ -89,11 +89,11 @@ namespace OpenttdDiscord.Database.Tests.Servers
         {
             Server[] servers = new Server[]
             {
-                new Server(11u, 0, "127.0.0.1", 123, "test"),
-                new Server(11u, 0, "24.1.2.1", 123, "test2"),
-                new Server(11u, 0, "17.1.0.1", 22, "test3"),
-                new Server(11u, 0, "12.0.2.1", 33, "wara4"),
-                new Server(11u, 0, "12.0.2.1", 11, "wara"),
+                new Server(0,11u,  "127.0.0.1", 123, "test"),
+                new Server(0,11u,  "24.1.2.1", 123, "test2"),
+                new Server(0,11u,  "17.1.0.1", 22, "test3"),
+                new Server(0,11u,  "12.0.2.1", 33, "wara4"),
+                new Server(0,11u, "12.0.2.1", 11, "wara"),
             };
             IServerRepository repo = new ServerRepository(GetMysql());
             foreach (var s in servers)

@@ -9,7 +9,4 @@
 );
 
 ALTER TABLE servers 
-  ADD UNIQUE INDEX server_name(server_name);
-
-ALTER TABLE servers 
   ADD UNIQUE INDEX UK_servers(server_ip, server_port, guild_id);

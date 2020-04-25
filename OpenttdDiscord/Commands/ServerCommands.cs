@@ -1,5 +1,6 @@
 ﻿using Discord;
 using Discord.Commands;
+using Discord.WebSocket;
 using OpenttdDiscord.Database.Chatting;
 using OpenttdDiscord.Database.Servers;
 using System;
@@ -16,6 +17,8 @@ namespace OpenttdDiscord.Commands
 
         public ISubscribedServerService SubscribedServerService { get; set; }
         public IChatChannelServerService chatChannelServerService { get; set; }
+
+        public DiscordSocketClient client { get; set; }
 
         public IServerService serverService { get; set; }
 
@@ -122,12 +125,19 @@ namespace OpenttdDiscord.Commands
         {
             var servers = await SubscribedServerService.GetAllServers(Context.Guild.Id);
 
-            foreach(var s in servers)
+            StringBuilder sb = new StringBuilder();
+
+            for(int i = 0;i < servers.Count();++i)
             {
-                await ReplyAsync($"{s.Server.ServerName} - {s.Server.ServerIp}:{s.Port}");
+                var s = servers.ElementAt(i);
+                var channel = client.GetChannel(s.ChannelId) as SocketTextChannel;
+
+                sb.Append($"{s.Server.ServerName} - {channel.Name} - {s.Server.ServerIp}:{s.Port}");
+                if (i != servers.Count() - 1)
+                    sb.Append("\n");
             }
-            
-            return;
+
+            await ReplyAsync(sb.ToString());
         }
     }
 }

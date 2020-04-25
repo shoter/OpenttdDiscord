@@ -1,5 +1,6 @@
 ﻿using Discord;
 using Discord.Commands;
+using Discord.WebSocket;
 using OpenttdDiscord.Database.Chatting;
 using OpenttdDiscord.Database.Servers;
 using System;
@@ -17,6 +18,8 @@ namespace OpenttdDiscord.Commands
 
 
         public IServerService ServerService { get; set; }
+
+        public DiscordSocketClient Client { get; set; }
 
         public IChatChannelServerService ChatChannelServerService { get; set; }
 
@@ -64,6 +67,30 @@ namespace OpenttdDiscord.Commands
 
             await ChatChannelServerService.Remove(Context.Guild.Id, serverName, Context.Channel.Id);
             await ReplyAsync("Done!");
+        }
+
+        [Command("list_chat_servers")]
+        [RequireContext(ContextType.Guild, ErrorMessage = "Sorry, this command must be ran from within a server, not a DM!")]
+        [RequireUserPermission(GuildPermission.Administrator)]
+        public async Task ListChatServers()
+        {
+            var servers = (await ChatChannelServerService.GetAll(Context.Guild.Id)).ToList();
+
+            StringBuilder sb = new StringBuilder();
+
+            for(int i = 0; i < servers.Count; ++i)
+            {
+                var s = servers[i];
+                var channel = Client.GetChannel(s.ChannelId) as SocketTextChannel;
+
+
+                sb.Append($"{s.Server.ServerName} - {channel.Name} - {s.Server.ServerIp}:{s.Server.ServerPort}");
+                if (i != servers.Count() - 1)
+                    sb.Append("\n");
+
+            }
+
+            await ReplyAsync(sb.ToString());
         }
     }
 }

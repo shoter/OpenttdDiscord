@@ -12,20 +12,20 @@ namespace OpenttdDiscord.Database.Servers
         event EventHandler<Server> Added;
         event EventHandler<NewServerPassword> NewServerPasswordRequestAdded;
 
-        Task<Server> Getsert(string ip, int port, string serverName);
-        Task<bool> Exists(string ip, int port);
-        public Task<bool> Exists(string serverName); 
-        Task<Server> Get(string ip, int port);
+        Task<Server> Getsert(ulong guildId, string ip, int port, string serverName);
+        Task<bool> Exists(ulong guildId, string ip, int port);
+        public Task<bool> Exists(ulong guildId, string serverName); 
+        Task<Server> Get(ulong guildId, string ip, int port);
 
-        Task<Server> Get(string serverName);
+        Task<Server> Get(ulong guildId, string serverName);
 
         Task ChangePassword(ulong serverId, string newPassword);
 
-        Task<List<Server>> GetAll();
+        Task<List<Server>> GetAll(ulong guildId);
 
         void InformAboutNewPasswordRequest(NewServerPassword inRegister);
-        NewServerPassword RemoveNewPasswordRequest(ulong userId);
-        bool IsPasswordRequestInProgress(ulong userId);
-        NewServerPassword GetNewPasswordProcess(ulong userId);
+        NewServerPassword RemoveNewPasswordRequest(ulong guildId, ulong userId);
+        bool IsPasswordRequestInProgress(ulong guildId, ulong userId);
+        NewServerPassword GetNewPasswordProcess(ulong guildId, ulong userId);
     }
 }

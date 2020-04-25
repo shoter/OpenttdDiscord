@@ -19,7 +19,7 @@ namespace OpenttdDiscord.Database.Servers
             this.connectionString = config.ConnectionString;
         }
 
-        public async Task<Server> AddServer(string ip, int port, string name)
+        public async Task<Server> AddServer(ulong guildId, string ip, int port, string name)
         {
             using (var conn = new MySqlConnection(this.connectionString))
             {
@@ -29,12 +29,13 @@ namespace OpenttdDiscord.Database.Servers
                 {
                     cmd.Connection = conn;
                     cmd.CommandText = "INSERT INTO servers" +
-                        "(server_ip, server_port, server_name) " +
+                        "(server_ip, server_port, server_name, guild_id) " +
                         "VALUES " +
-                        "(@ip, @port, @name)";
+                        "(@ip, @port, @name, @gid)";
                     cmd.Parameters.AddWithValue("ip", ip);
                     cmd.Parameters.AddWithValue("port", port);
                     cmd.Parameters.AddWithValue("name", name);
+                    cmd.Parameters.AddWithValue("gid", guildId);
                     await cmd.ExecuteNonQueryAsync();
                 }
 
@@ -50,13 +51,14 @@ namespace OpenttdDiscord.Database.Servers
             }
         }
 
-        public async Task<List<Server>> GetAll()
+        public async Task<List<Server>> GetAll(ulong guildId)
         {
             using (var conn = new MySqlConnection(this.connectionString))
             {
                 await conn.OpenAsync();
-                using (var cmd = new MySqlCommand($"SELECT * FROM servers", conn))
+                using (var cmd = new MySqlCommand($"SELECT * FROM servers WHERE guild_id = @gid", conn))
                 {
+                    cmd.Parameters.AddWithValue("gid", guildId);
                     using (var reader = await cmd.ExecuteReaderAsync())
                     {
                         List<Server> servers = new List<Server>();
@@ -68,15 +70,17 @@ namespace OpenttdDiscord.Database.Servers
             }
         }
 
-        public async Task<Server> GetServer(string ip, int port)
+        public async Task<Server> GetServer(ulong guildId, string ip, int port)
         {
             using (var conn = new MySqlConnection(this.connectionString))
             {
                 await conn.OpenAsync();
-                using (var cmd = new MySqlCommand($"SELECT * FROM servers where server_ip = @ip and server_port = @port", conn))
+                using (var cmd = new MySqlCommand($"SELECT * FROM servers where server_ip = @ip and server_port = @port AND guild_id = @gid", conn))
                 {
                     cmd.Parameters.AddWithValue("ip", ip);
                     cmd.Parameters.AddWithValue("port", port);
+                    cmd.Parameters.AddWithValue("gid", guildId);
+
                     using (var reader = await cmd.ExecuteReaderAsync())
                     {
                         if(await reader.ReadAsync())
@@ -88,14 +92,16 @@ namespace OpenttdDiscord.Database.Servers
             }
         }
 
-        public async Task<Server> GetServer(string serverName)
+        public async Task<Server> GetServer(ulong guildId, string serverName)
         {
             using (var conn = new MySqlConnection(this.connectionString))
             {
                 await conn.OpenAsync();
-                using (var cmd = new MySqlCommand($"SELECT * FROM servers where server_name = @name", conn))
+                using (var cmd = new MySqlCommand($"SELECT * FROM servers where server_name = @name AND guild_id = @gid", conn))
                 {
                     cmd.Parameters.AddWithValue("name", serverName);
+                    cmd.Parameters.AddWithValue("gid", guildId);
+
                     using (var reader = await cmd.ExecuteReaderAsync())
                     {
                         if (await reader.ReadAsync())

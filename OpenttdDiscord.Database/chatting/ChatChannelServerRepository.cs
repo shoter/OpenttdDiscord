@@ -44,6 +44,27 @@ namespace OpenttdDiscord.Database.Chatting
             }
         }
 
+        public async Task<List<ChatChannelServer>> GetAll()
+        {
+            using (var conn = new MySqlConnection(this.connectionString))
+            {
+                await conn.OpenAsync();
+                var _list = new List<ChatChannelServer>();
+
+                using (var cmd = new MySqlCommand($@"SELECT * FROM discord_chat_channel_servers d
+                                                    JOIN servers s on d.server_id = s.id", conn))
+                {
+                    using (var reader = await cmd.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                            _list.Add(ReadFromReader(reader));
+                    }
+                }
+
+                return _list;
+            }
+        }
+
         public async Task<ChatChannelServer> Insert(Server server, ulong channelId)
         {
             using (var conn = new MySqlConnection(this.connectionString))

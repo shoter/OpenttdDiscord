@@ -25,8 +25,8 @@ namespace OpenttdDiscord.Database.Tests.Servers
             ServerService service = fix.WithServerRepository(GetMysql());
             Server server = serverFix;
 
-            await service.Getsert(server.ServerIp, server.ServerPort, server.ServerName);
-            Server result = await service.Get(server.ServerIp, server.ServerPort);
+            await service.Getsert(server.GuildId, server.ServerIp, server.ServerPort, server.ServerName);
+            Server result = await service.Get(server.GuildId, server.ServerIp, server.ServerPort);
 
             Assert.Equal(server.ServerIp, result.ServerIp);
             Assert.Equal(server.ServerName, result.ServerName);
@@ -39,9 +39,9 @@ namespace OpenttdDiscord.Database.Tests.Servers
             ServerService service = fix.WithServerRepository(GetMysql());
             Server server = serverFix;
 
-            await service.Getsert(server.ServerIp, server.ServerPort, server.ServerName);
-            Server result = await service.Get(server.ServerIp, server.ServerPort);
-            Server getsert = await service.Getsert(server.ServerIp, server.ServerPort, server.ServerName);
+            await service.Getsert(server.GuildId, server.ServerIp, server.ServerPort, server.ServerName);
+            Server result = await service.Get(server.GuildId, server.ServerIp, server.ServerPort);
+            Server getsert = await service.Getsert(server.GuildId, server.ServerIp, server.ServerPort, server.ServerName);
 
             Assert.Equal(result.Id, getsert.Id);
         }

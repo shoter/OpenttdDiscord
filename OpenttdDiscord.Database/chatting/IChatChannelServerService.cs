@@ -16,6 +16,8 @@ namespace OpenttdDiscord.Database.Chatting
         Task<ChatChannelServer> Insert(ulong guildId, string serverName, ulong channelId);
         Task Remove(ulong guildId, string serverName, ulong channelId);
         Task<List<ChatChannelServer>> GetAll(ulong guildId);
+        Task<List<ChatChannelServer>> GetAll();
+
         Task<bool> Exists(ulong guildId, string serverName, ulong channelId);
     }
 }

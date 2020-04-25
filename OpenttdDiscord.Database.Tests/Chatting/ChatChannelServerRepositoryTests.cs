@@ -46,7 +46,7 @@ namespace OpenttdDiscord.Database.Tests.Chatting
             var serverRepository = new ServerRepository(GetMysql());
             var chatRepository = new ChatChannelServerRepository(GetMysql());
 
-            var server = await serverRepository.AddServer("127.0.0.1", 123, "test");
+            var server = await serverRepository.AddServer(11u, "127.0.0.1", 123, "test");
             var chatServer = await chatRepository.Insert(server, 133u);
 
             Assert.True(await chatRepository.Exists(server.Id, 133u));
@@ -58,7 +58,7 @@ namespace OpenttdDiscord.Database.Tests.Chatting
             var serverRepository = new ServerRepository(GetMysql());
             var chatRepository = new ChatChannelServerRepository(GetMysql());
 
-            var server = await serverRepository.AddServer("127.0.0.1", 123, "test");
+            var server = await serverRepository.AddServer(11u, "127.0.0.1", 123, "test");
             await chatRepository.Insert(server, 133u);
             await chatRepository.Remove(server.Id, 133u);
 
@@ -76,27 +76,27 @@ namespace OpenttdDiscord.Database.Tests.Chatting
                 new ChatChannelServer()
                 {
                     ChannelId = 123u,
-                    Server = new Server(0, "127.0.0.1", 123, "test")
+                    Server = new Server(11u, 0, "127.0.0.1", 123, "test")
                 },
                 new ChatChannelServer()
                 {
                     ChannelId = 122u,
-                    Server = new Server(0, "127.0.0.1", 113, "abc")
+                    Server = new Server(11u, 0, "127.0.0.1", 113, "abc")
                 },
                 new ChatChannelServer()
                 {
                     ChannelId = 124u,
-                    Server = new Server(0, "128.0.0.1", 143, "asdad")
+                    Server = new Server(11u, 0, "128.0.0.1", 143, "asdad")
                 },           
             };
 
             foreach(var c in toCreate)
             {
-                var server = await serverRepository.AddServer(c.Server.ServerIp, c.Server.ServerPort, c.Server.ServerName);
+                var server = await serverRepository.AddServer(c.Server.GuildId, c.Server.ServerIp, c.Server.ServerPort, c.Server.ServerName);
                 var chatServer = await chatRepository.Insert(server, c.ChannelId);
             }
 
-            var all = await chatRepository.GetAll();
+            var all = await chatRepository.GetAll(11u);
 
             foreach(var a in all)
             {

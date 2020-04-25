@@ -19,6 +19,7 @@ namespace OpenttdDiscord.Database.Servers
 
 
         Task<IEnumerable<SubscribedServer>> GetAll(ulong guildId);
+        Task<IEnumerable<SubscribedServer>> GetAll();
 
         Task UpdateServer(ulong serverId, ulong channelId, ulong messageId);
         

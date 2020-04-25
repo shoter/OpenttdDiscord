@@ -41,6 +41,8 @@ namespace OpenttdDiscord.Database.Servers
 
         public Task<IEnumerable<SubscribedServer>> GetAllServers(ulong guildId) => this.subscribedServerRepository.GetAll(guildId);
 
+        public Task<IEnumerable<SubscribedServer>> GetAllServers() => this.subscribedServerRepository.GetAll();
+
         public async Task RemoveServer(ulong guildId, string name, ulong channelId)
         {
             var server = await serverRepository.GetServer(guildId, name);

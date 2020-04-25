@@ -27,7 +27,7 @@ namespace OpenttdDiscord.Commands
             if(serverService.IsPasswordRequestInProgress(message.Author.Id))
             {
                 var nsp = serverService.RemoveNewPasswordRequest(message.Author.Id);
-                var server = await serverService.Get(nsp.ServerName);
+                var server = await serverService.Get(nsp.GuildId, nsp.ServerName);
                 if(server == null)
                 {
                     await channel.SendMessageAsync("Server was removed in the meantime - request invalid");

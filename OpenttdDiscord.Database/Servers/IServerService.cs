@@ -24,8 +24,8 @@ namespace OpenttdDiscord.Database.Servers
         Task<List<Server>> GetAll(ulong guildId);
 
         void InformAboutNewPasswordRequest(NewServerPassword inRegister);
-        NewServerPassword RemoveNewPasswordRequest(ulong guildId, ulong userId);
-        bool IsPasswordRequestInProgress(ulong guildId, ulong userId);
-        NewServerPassword GetNewPasswordProcess(ulong guildId, ulong userId);
+        NewServerPassword RemoveNewPasswordRequest(ulong userId);
+        bool IsPasswordRequestInProgress(ulong userId);
+        NewServerPassword GetNewPasswordProcess(ulong userId);
     }
 }

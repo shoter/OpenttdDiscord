@@ -71,6 +71,27 @@ namespace OpenttdDiscord.Database.Servers
                 return _list;
             }
         }
+        public async Task<IEnumerable<SubscribedServer>> GetAll()
+        {
+            using (var conn = new MySqlConnection(this.connectionString))
+            {
+                await conn.OpenAsync();
+                var _list = new List<SubscribedServer>();
+
+                using (var cmd = new MySqlCommand($@"SELECT * FROM subscribed_servers ss
+                                                    JOIN servers s on ss.server_id = s.id", conn))
+                {
+                    using (var reader = await cmd.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                            _list.Add(ReadFromReader(reader));
+                    }
+                }
+
+                return _list;
+            }
+        }
+
 
         public async Task<bool> Exists(Server server, ulong channelId)
         {
@@ -159,5 +180,6 @@ namespace OpenttdDiscord.Database.Servers
             }
             return null;
         }
+
     }
 }

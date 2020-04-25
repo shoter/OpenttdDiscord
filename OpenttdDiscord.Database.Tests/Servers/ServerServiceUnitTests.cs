@@ -29,7 +29,8 @@ namespace OpenttdDiscord.Database.Tests.Servers
             service.InformAboutNewPasswordRequest(new NewServerPassword
             {
                 ServerName = "test",
-                UserId = 12u
+                UserId = 12u,
+                GuildId = 11u,
             });
 
             Assert.True(service.IsPasswordRequestInProgress(12u));
@@ -43,7 +44,8 @@ namespace OpenttdDiscord.Database.Tests.Servers
             service.InformAboutNewPasswordRequest(new NewServerPassword
             {
                 ServerName = "test",
-                UserId = 12u
+                UserId = 12u,
+                GuildId = 11u,
             });
 
             Assert.False(service.IsPasswordRequestInProgress(14u));
@@ -57,13 +59,15 @@ namespace OpenttdDiscord.Database.Tests.Servers
             service.InformAboutNewPasswordRequest(new NewServerPassword
             {
                 ServerName = "test",
-                UserId = 12u
+                UserId = 12u,
+                GuildId = 11u,
             });
 
             service.InformAboutNewPasswordRequest(new NewServerPassword
             {
                 ServerName = "test",
-                UserId = 13u
+                UserId = 13u,
+                GuildId = 11u
             });
 
             Assert.True(service.IsPasswordRequestInProgress(13u));
@@ -78,7 +82,8 @@ namespace OpenttdDiscord.Database.Tests.Servers
             service.InformAboutNewPasswordRequest(new NewServerPassword
             {
                 ServerName = "test",
-                UserId = 13u
+                UserId = 13u,
+                GuildId = 11u,
             });
 
             var nsp = service.GetNewPasswordProcess(13u);
@@ -98,7 +103,8 @@ namespace OpenttdDiscord.Database.Tests.Servers
             service.InformAboutNewPasswordRequest(new NewServerPassword
             {
                 ServerName = "test",
-                UserId = 12u
+                UserId = 12u,
+                GuildId = 11u,
             });
 
             timeMock.SetupGet(x => x.Now).Returns(now

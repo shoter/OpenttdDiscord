@@ -1,6 +1,7 @@
 ﻿using OpenttdDiscord.Common;
 using OpenttdDiscord.Database.Chatting;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,7 +14,7 @@ namespace OpenttdDiscord.Database.Servers
         public event EventHandler<Server> Added;
         public event EventHandler<NewServerPassword> NewServerPasswordRequestAdded;
 
-        private Dictionary<(ulong, ulong), NewServerPassword> NewServerPasswordRequests { get; } = new Dictionary<(ulong, ulong), NewServerPassword>();
+        private ConcurrentDictionary<ulong, NewServerPassword> NewServerPasswordRequests { get; } = new ConcurrentDictionary<ulong, NewServerPassword>();
 
         private readonly IServerRepository serverRepository;
         private readonly ITimeProvider timeProvider;
@@ -48,38 +49,38 @@ namespace OpenttdDiscord.Database.Servers
 
         public void InformAboutNewPasswordRequest(NewServerPassword newPassword)
         {
-            this.NewServerPasswordRequests.Add((newPassword.GuildId, newPassword.UserId), newPassword);
+            this.NewServerPasswordRequests.TryAdd(newPassword.UserId, newPassword);
             this.NewServerPasswordRequestAdded?.Invoke(this, newPassword);
         }
 
-        public NewServerPassword RemoveNewPasswordRequest(ulong guildId, ulong userId)
+        public NewServerPassword RemoveNewPasswordRequest(ulong userId)
         {
-            var nsp = this.NewServerPasswordRequests[(guildId, userId)];
-            this.NewServerPasswordRequests.Remove((guildId, userId));
+            var nsp = this.NewServerPasswordRequests[userId];
+            this.NewServerPasswordRequests.TryRemove( userId,out var _);
             return nsp;
         }
 
-        public bool IsPasswordRequestInProgress(ulong guildId, ulong userId)
+        public bool IsPasswordRequestInProgress(ulong userId)
         {
-            if (!NewServerPasswordRequests.ContainsKey((guildId, userId)))
+            if (!NewServerPasswordRequests.ContainsKey(userId))
                 return false;
-            var inReg = NewServerPasswordRequests[(guildId, userId)];
+            var inReg = NewServerPasswordRequests[userId];
 
             if (timeProvider.Now > inReg.ExpiryTime)
             {
-                NewServerPasswordRequests.Remove((guildId, userId));
+                NewServerPasswordRequests.Remove(userId, out var _);
                 return false;
             }
             return true;
 
         }
 
-        public NewServerPassword GetNewPasswordProcess(ulong guildId, ulong userId)
+        public NewServerPassword GetNewPasswordProcess(ulong userId)
         {
-            if (!NewServerPasswordRequests.ContainsKey((guildId, userId)))
+            if (!NewServerPasswordRequests.ContainsKey(userId))
                 return null;
 
-            var nsp = NewServerPasswordRequests[(guildId, userId)];
+            var nsp = NewServerPasswordRequests[userId];
             return nsp;
         }
 

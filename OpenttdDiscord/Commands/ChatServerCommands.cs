@@ -25,7 +25,7 @@ namespace OpenttdDiscord.Commands
         [RequireUserPermission(GuildPermission.Administrator)]
         public async Task RegisterChatServer(string serverName)
         {
-            Server server = await ServerService.Get(serverName);
+            Server server = await ServerService.Get(Context.Guild.Id, serverName);
 
             if (server == null)
             {
@@ -33,13 +33,13 @@ namespace OpenttdDiscord.Commands
                 return;
             }
 
-            if (await ChatChannelServerService.Exists(serverName, Context.Channel.Id))
+            if (await ChatChannelServerService.Exists(Context.Guild.Id, serverName, Context.Channel.Id))
             {
                 await ReplyAsync("This server is already registered here!");
                 return;
             }
 
-            await ChatChannelServerService.Insert(serverName, Context.Channel.Id);
+            await ChatChannelServerService.Insert(Context.Guild.Id, serverName, Context.Channel.Id);
             await ReplyAsync("Done!");
         }
 
@@ -48,7 +48,7 @@ namespace OpenttdDiscord.Commands
         [RequireUserPermission(GuildPermission.Administrator)]
         public async Task UnregisterChatServer(string serverName)
         {
-            Server server = await ServerService.Get(serverName);
+            Server server = await ServerService.Get(Context.Guild.Id, serverName);
 
             if (server == null)
             {
@@ -56,13 +56,13 @@ namespace OpenttdDiscord.Commands
                 return;
             }
 
-            if (!await ChatChannelServerService.Exists(serverName, Context.Channel.Id))
+            if (!await ChatChannelServerService.Exists(Context.Guild.Id, serverName, Context.Channel.Id))
             {
                 await ReplyAsync("This server is not registered here!");
                 return;
             }
 
-            await ChatChannelServerService.Remove(serverName, Context.Channel.Id);
+            await ChatChannelServerService.Remove(Context.Guild.Id, serverName, Context.Channel.Id);
             await ReplyAsync("Done!");
         }
     }

@@ -29,12 +29,12 @@ namespace OpenttdDiscord.Commands
         [RequireUserPermission(GuildPermission.Administrator)]
         public async Task PutServerInfo(string ip, int port, string serverName)
         {
-            if (await this.serverService.Exists(ip, port))
+            if (await this.serverService.Exists(Context.Guild.Id, ip, port))
             {
                 await ReplyAsync("This server is already registered with this bot.");
             }
 
-            await this.serverService.Getsert(ip, port, serverName);
+            await this.serverService.Getsert(Context.Guild.Id, ip, port, serverName);
 
             await ReplyAsync("Server has been registered.");
         }
@@ -51,7 +51,7 @@ namespace OpenttdDiscord.Commands
                 return;
             }
 
-            if (!await this.serverService.Exists(serverName))
+            if (!await this.serverService.Exists(Context.Guild.Id, serverName))
             {
                 await ReplyAsync($"Server with this name does not exist! Please use {PutServerInfoString} in order to register server with this name!");
                 return;
@@ -72,7 +72,7 @@ namespace OpenttdDiscord.Commands
         [RequireUserPermission(GuildPermission.Administrator)]
         public async Task SubscribeToServer(string serverName, int port)
         {
-            var server = await serverService.Get(serverName);
+            var server = await serverService.Get(Context.Guild.Id, serverName);
 
             if(server == null)
             {
@@ -80,13 +80,13 @@ namespace OpenttdDiscord.Commands
                 return;
             }
 
-            if(await SubscribedServerService.Exists(server.ServerName, Context.Channel.Id))
+            if(await SubscribedServerService.Exists(Context.Guild.Id, server.ServerName, Context.Channel.Id))
             {
                 await ReplyAsync("Server is already registered here!");
                 return;
             }
 
-            await SubscribedServerService.AddServer(server.ServerName, port, Context.Channel.Id);
+            await SubscribedServerService.AddServer(Context.Guild.Id, server.ServerName, port, Context.Channel.Id);
             await ReplyAsync("Done!");
             return;
         }
@@ -96,7 +96,7 @@ namespace OpenttdDiscord.Commands
         [RequireUserPermission(GuildPermission.Administrator)]
         public async Task SubscribeToServer(string serverName)
         {
-            var server = await serverService.Get(serverName);
+            var server = await serverService.Get(Context.Guild.Id, serverName);
 
             if (server == null)
             {
@@ -104,39 +104,30 @@ namespace OpenttdDiscord.Commands
                 return;
             }
 
-            if (!await SubscribedServerService.Exists(server.ServerName, Context.Channel.Id))
+            if (!await SubscribedServerService.Exists(Context.Guild.Id, server.ServerName, Context.Channel.Id))
             {
                 await ReplyAsync("Server is not registered here!");
                 return;
             }
 
-            await SubscribedServerService.RemoveServer(server.ServerName, Context.Channel.Id);
+            await SubscribedServerService.RemoveServer(Context.Guild.Id, server.ServerName, Context.Channel.Id);
             await ReplyAsync("Done!");
             return;
         }
 
-        //[Command("list_subscribed_servers")]
-        //[RequireContext(ContextType.Guild, ErrorMessage = "Sorry, this command must be ran from within a server, not a DM!")]
-        //[RequireUserPermission(GuildPermission.Administrator)]
-        //public async Task ListSubscribedServers(string serverName)
-        //{
-        //    var server = await serverService.Get(serverName);
+        [Command("list_subscribed_servers")]
+        [RequireContext(ContextType.Guild, ErrorMessage = "Sorry, this command must be ran from within a server, not a DM!")]
+        [RequireUserPermission(GuildPermission.Administrator)]
+        public async Task ListSubscribedServers()
+        {
+            var servers = await SubscribedServerService.GetAllServers(Context.Guild.Id);
 
-        //    if (server == null)
-        //    {
-        //        await ReplyAsync("Server does not exist!");
-        //        return;
-        //    }
-
-        //    if (!await SubscribedServerService.Exists(server.ServerName, Context.Channel.Id))
-        //    {
-        //        await ReplyAsync("Server is not registered here!");
-        //        return;
-        //    }
-
-        //    await SubscribedServerService.RemoveServer(server.ServerName, Context.Channel.Id);
-        //    await ReplyAsync("Done!");
-        //    return;
-        //}
+            foreach(var s in servers)
+            {
+                await ReplyAsync($"{s.Server.ServerName} - {s.Server.ServerIp}:{s.Port}");
+            }
+            
+            return;
+        }
     }
 }

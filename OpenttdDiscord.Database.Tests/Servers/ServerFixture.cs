@@ -10,13 +10,13 @@ namespace OpenttdDiscord.Database.Tests.Servers
 {
     public class ServerFixture
     {
-        private Random rand = new Random();
         private byte lastIp = 0;
 
         private ulong id = 0;
         private string ip;
         private string serverName;
         private int serverPort = 1;
+        private ulong guildId = 11u;
 
         public ServerFixture()
         {
@@ -40,6 +40,7 @@ namespace OpenttdDiscord.Database.Tests.Servers
         {
             var s = new Server(
                 id++,
+                guildId,
                 ip,
                 serverPort++,
                 serverName

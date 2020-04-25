@@ -43,6 +43,8 @@ namespace OpenttdDiscord.Database.Chatting
         }
 
         public Task<List<ChatChannelServer>> GetAll(ulong guildId) => this.chatChannelServerRepository.GetAll(guildId);
+        public Task<List<ChatChannelServer>> GetAll() => this.chatChannelServerRepository.GetAll();
+
 
         public async Task Remove(ulong guildId,string serverName, ulong channelId)
         {

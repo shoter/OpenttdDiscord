@@ -63,7 +63,8 @@ namespace OpenttdDiscord.Commands
             var inReg = new NewServerPassword()
             {
                 ServerName = serverName,
-                UserId = Context.User.Id
+                UserId = Context.User.Id,
+                GuildId = Context.Guild.Id,
             };
 
             this.serverService.InformAboutNewPasswordRequest(inReg);

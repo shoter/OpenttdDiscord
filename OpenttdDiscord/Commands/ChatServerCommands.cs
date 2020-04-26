@@ -83,12 +83,13 @@ namespace OpenttdDiscord.Commands
                 var s = servers[i];
                 var channel = Client.GetChannel(s.ChannelId) as SocketTextChannel;
 
-
                 sb.Append($"{s.Server.ServerName} - {channel.Name} - {s.Server.ServerIp}:{s.Server.ServerPort}");
                 if (i != servers.Count() - 1)
                     sb.Append("\n");
 
             }
+
+
 
             await ReplyAsync(sb.ToString());
         }

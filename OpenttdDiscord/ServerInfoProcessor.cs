@@ -57,13 +57,16 @@ namespace OpenttdDiscord
             {
                 try
                 {
-                    await UpdateMessages();
-                    await RemoveUnusedServers();
 #if DEBUG
                     await Task.Delay(TimeSpan.FromSeconds(5));
 #else
                     await Task.Delay(TimeSpan.FromMinutes(1));
 #endif
+
+                    Console.WriteLine("Test");
+                    await UpdateMessages();
+                    await RemoveUnusedServers();
+
                 }
                 catch (Exception ex)
                 {

@@ -120,10 +120,6 @@ namespace OpenttdDiscord.Openttd.Network.AdminPort
 
                         }
 
-
-
-
-
                         sizeTask = null;
 
                         ushort size = BitConverter.ToUInt16(sizeBuffer, 0);
@@ -227,7 +223,7 @@ namespace OpenttdDiscord.Openttd.Network.AdminPort
                 }
                 catch(Exception e)
                 {
-                    this.logger.LogError($"{ServerInfo.ServerIp}:{ServerInfo.ServerPort} encountered error", e);
+                    this.logger.LogError($"{ServerInfo.ServerIp}:{ServerInfo.ServerPort} encountered error {e.Message}", e);
 
                     this.tcpClient?.Dispose();
                     this.tcpClient = null;

@@ -24,7 +24,7 @@ namespace OpenttdDiscord.Database.Tests.Chatting
             var chatRepository = new ChatChannelServerRepository(GetMysql());
 
             var server = await serverRepository.AddServer(11u, "127.0.0.1", 123, "test");
-            var chatServer = await chatRepository.Insert(server, 133u);
+            await chatRepository.Insert(server, 133u);
             var response = await chatRepository.Get(server.Id, 133u);
 
             Assert.Equal("127.0.0.1", response.Server.ServerIp);
@@ -47,7 +47,7 @@ namespace OpenttdDiscord.Database.Tests.Chatting
             var chatRepository = new ChatChannelServerRepository(GetMysql());
 
             var server = await serverRepository.AddServer(11u, "127.0.0.1", 123, "test");
-            var chatServer = await chatRepository.Insert(server, 133u);
+            await chatRepository.Insert(server, 133u);
 
             Assert.True(await chatRepository.Exists(server.Id, 133u));
         }

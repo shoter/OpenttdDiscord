@@ -20,7 +20,6 @@ namespace OpenttdDiscord.Commands
         private readonly DiscordSocketClient discord;
         private readonly IChatService chatService;
         private readonly IServiceProvider services;
-
         private readonly IPrivateMessageHandlingService privateMessageService;
 
         public CommandHandlingService(IServiceProvider services, IPrivateMessageHandlingService privateMessageService, CommandService commandService, DiscordSocketClient client)

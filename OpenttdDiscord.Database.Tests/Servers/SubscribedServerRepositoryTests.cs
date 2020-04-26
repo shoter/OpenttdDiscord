@@ -57,5 +57,6 @@ namespace OpenttdDiscord.Database.Tests.Servers
 
             Assert.False(await repo.Exists(DefaultTestData.DefaultServer, 321u));
         }
+
     }
 }

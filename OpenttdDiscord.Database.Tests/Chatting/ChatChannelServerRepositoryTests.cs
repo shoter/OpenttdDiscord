@@ -76,17 +76,17 @@ namespace OpenttdDiscord.Database.Tests.Chatting
                 new ChatChannelServer()
                 {
                     ChannelId = 123u,
-                    Server = new Server(11u, 0, "127.0.0.1", 123, "test")
+                    Server = new Server(0, 11u, "127.0.0.1", 123, "test")
                 },
                 new ChatChannelServer()
                 {
                     ChannelId = 122u,
-                    Server = new Server(11u, 0, "127.0.0.1", 113, "abc")
+                    Server = new Server(0, 17u, "127.0.0.1", 113, "abc")
                 },
                 new ChatChannelServer()
                 {
                     ChannelId = 124u,
-                    Server = new Server(11u, 0, "128.0.0.1", 143, "asdad")
+                    Server = new Server(0, 14u, "128.0.0.1", 143, "asdad")
                 },           
             };
 
@@ -96,11 +96,75 @@ namespace OpenttdDiscord.Database.Tests.Chatting
                 var chatServer = await chatRepository.Insert(server, c.ChannelId);
             }
 
-            var all = await chatRepository.GetAll(11u);
+            var all = await chatRepository.GetAll();
 
             foreach(var a in all)
             {
                 Assert.NotNull(toCreate.Single(x => x.ChannelId == a.ChannelId && x.Server.ServerIp == a.Server.ServerIp && x.Server.ServerPort == a.Server.ServerPort && x.Server.ServerName == a.Server.ServerName));
+            }
+        }
+
+        [Fact]
+        public async Task GetAll_ShouldReturnAllServersForGivenGuild()
+        {
+            var serverRepository = new ServerRepository(GetMysql());
+            var chatRepository = new ChatChannelServerRepository(GetMysql());
+
+            var toCreate = new ChatChannelServer[]
+            {
+                new ChatChannelServer()
+                {
+                    ChannelId = 123u,
+                    Server = new Server(0, 11u, "127.0.0.1", 123, "test")
+                },
+                new ChatChannelServer()
+                {
+                    ChannelId = 122u,
+                    Server = new Server(0, 11u, "127.0.0.1", 113, "abc")
+                },
+                new ChatChannelServer()
+                {
+                    ChannelId = 124u,
+                    Server = new Server(0, 11u, "128.0.0.1", 143, "asdad")
+                },
+            };
+
+            var toCreateOther = new ChatChannelServer[]
+            {
+                new ChatChannelServer()
+                {
+                    ChannelId = 123u,
+                    Server = new Server(0, 15u, "127.0.0.1", 123, "test")
+                },
+                new ChatChannelServer()
+                {
+                    ChannelId = 122u,
+                    Server = new Server(0, 13u, "127.0.0.1", 113, "abc")
+                },
+                new ChatChannelServer()
+                {
+                    ChannelId = 124u,
+                    Server = new Server(0, 1832u, "128.0.0.1", 143, "asdad")
+                },
+            };
+
+            foreach (var c in toCreate)
+            {
+                var server = await serverRepository.AddServer(c.Server.GuildId, c.Server.ServerIp, c.Server.ServerPort, c.Server.ServerName);
+                var chatServer = await chatRepository.Insert(server, c.ChannelId);
+            }
+
+            foreach (var c in toCreateOther)
+            {
+                var server = await serverRepository.AddServer(c.Server.GuildId, c.Server.ServerIp, c.Server.ServerPort, c.Server.ServerName);
+                var chatServer = await chatRepository.Insert(server, c.ChannelId);
+            }
+
+            var all = await chatRepository.GetAll(11u);
+
+            foreach (var a in all)
+            {
+                Assert.NotNull(toCreate.Single(x => x.Server.GuildId == 11u && x.ChannelId == a.ChannelId && x.Server.ServerIp == a.Server.ServerIp && x.Server.ServerPort == a.Server.ServerPort && x.Server.ServerName == a.Server.ServerName));
             }
         }
 

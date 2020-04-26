@@ -57,6 +57,90 @@ namespace OpenttdDiscord.Database.Tests.Servers
 
             Assert.False(await repo.Exists(DefaultTestData.DefaultServer, 321u));
         }
+        [Fact]
+        public async Task GetAll_ShouldGetAllServers()
+        {
+            ISubscribedServerRepository repo = new SubscribedServerRepository(GetMysql());
+            IServerRepository serverRepo = new ServerRepository(GetMysql());
+
+            async Task<SubscribedServer> AddServer(SubscribedServer s)
+            {
+                var server = await serverRepo.AddServer(s.Server.GuildId, s.Server.ServerIp, s.Server.ServerPort, s.Server.ServerName);
+                return await repo.Add(server, s.Port, s.ChannelId);
+            }
+
+            var ss = new SubscribedServer[]
+            {
+                new SubscribedServer(
+                    new Server(0, 11u, "10.0.0.1", 123, "GetAll_ShouldGetAllServers"),
+                    DateTimeOffset.Now, 100, null, 150
+                    ),
+                new SubscribedServer(
+                    new Server(1, 14u, "10.0.5.1", 123, "GetAll_ShouldGetAllServers2"),
+                    DateTimeOffset.Now, 100, null, 150
+                    ),
+            };
+
+            var toCheck = new List<SubscribedServer>();
+
+            foreach (var s in ss) toCheck.Add(await AddServer(s));
+            var servers = await repo.GetAll();
+
+            foreach(var s in toCheck)
+            {
+                Assert.NotNull(servers.Single(x => x.ChannelId == s.ChannelId && x.Server.ServerName == s.Server.ServerName && x.Server.ServerIp == s.Server.ServerIp));
+            }
+        }
+
+        [Fact]
+        public async Task GetAll_ShouldGetServersFromSpecificGuild()
+        {
+            ISubscribedServerRepository repo = new SubscribedServerRepository(GetMysql());
+            IServerRepository serverRepo = new ServerRepository(GetMysql());
+
+            async Task<SubscribedServer> AddServer(SubscribedServer s)
+            {
+                var server = await serverRepo.AddServer(s.Server.GuildId, s.Server.ServerIp, s.Server.ServerPort, s.Server.ServerName);
+                return await repo.Add(server, s.Port, s.ChannelId);
+            }
+
+            var ss = new SubscribedServer[]
+            {
+                new SubscribedServer(
+                    new Server(0, 11u, "10.0.0.1", 123, "GetAll_ShouldGetServersFromSpecificGuild"),
+                    DateTimeOffset.Now, 100, null, 150
+                    ),
+                new SubscribedServer(
+                    new Server(1, 11u, "10.0.5.1", 123, "GetAll_ShouldGetServersFromSpecificGuild2"),
+                    DateTimeOffset.Now, 100, null, 150
+                    ),
+            };
+
+           var others = new SubscribedServer[]
+           {
+                new SubscribedServer(
+                    new Server(0, 15u, "10.0.0.1", 123, "GetAll_ShouldGetServersFromSpecificGuild"),
+                    DateTimeOffset.Now, 100, null, 150
+                    ),
+                new SubscribedServer(
+                    new Server(1, 18u, "10.0.5.1", 123, "GetAll_ShouldGetServersFromSpecificGuild2"),
+                    DateTimeOffset.Now, 100, null, 150
+                    ),
+           };
+
+            var toCheck = new List<SubscribedServer>();
+
+            foreach (var s in ss) toCheck.Add(await AddServer(s));
+            foreach (var s in others) await AddServer(s);
+
+
+            var servers = await repo.GetAll(11u);
+
+            foreach (var s in toCheck)
+            {
+                Assert.NotNull(servers.Single(x => x.ChannelId == s.ChannelId && x.Server.Id == s.Server.Id && x.Server.ServerIp == s.Server.ServerIp));
+            }
+        }
 
     }
 }

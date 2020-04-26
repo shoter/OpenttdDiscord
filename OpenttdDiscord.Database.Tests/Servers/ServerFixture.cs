@@ -10,8 +10,8 @@ namespace OpenttdDiscord.Database.Tests.Servers
 {
     public class ServerFixture
     {
+        private Random rand = new Random();
         private byte lastIp = 0;
-
         private ulong id = 0;
         private string ip;
         private string serverName;
@@ -33,6 +33,18 @@ namespace OpenttdDiscord.Database.Tests.Servers
         public ServerFixture WithPort(int port)
         {
             this.serverPort = port;
+            return this;
+        }
+
+        public ServerFixture WithGuild(ulong guild)
+        {
+            this.guildId = guild;
+            return this;
+        }
+
+        public ServerFixture WithRandomGuild()
+        {
+            this.guildId = (ulong)rand.Next(0, int.MaxValue);
             return this;
         }
 

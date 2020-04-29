@@ -10,6 +10,9 @@ namespace OpenttdDiscord.Common
 {
     public static class EnumExtensions
     {
+        [ThreadStatic]
+        private static Random rand = new Random();
+
         public static string Stringify<T>(this T val)
             where T:System.Enum
         {
@@ -22,6 +25,12 @@ namespace OpenttdDiscord.Common
 
             if (attributes != null && attributes.Length > 0) return attributes[0].Description;
             else return val.ToString();
+        }
+
+        public static T GetRandom<T>(this IEnumerable<T> enumerable)
+        {
+            int eln = rand.Next(0, enumerable.Count());
+            return enumerable.ElementAt(eln);
         }
         
     }

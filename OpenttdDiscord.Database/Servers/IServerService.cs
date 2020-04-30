@@ -16,6 +16,8 @@ namespace OpenttdDiscord.Database.Servers
         Task<bool> Exists(ulong guildId, string ip, int port);
         public Task<bool> Exists(ulong guildId, string serverName); 
         Task<Server> Get(ulong guildId, string ip, int port);
+        Task<List<Server>> Get(string ip, int port);
+
 
         Task<Server> Get(ulong guildId, string serverName);
 

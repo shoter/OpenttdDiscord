@@ -19,6 +19,12 @@ namespace OpenttdDiscord.Openttd.Network.AdminPort
 
                         return new AdminChatMessageEvent(player, msg.Message, client.ServerInfo);
                     }
+                case AdminMessageType.ADMIN_PACKET_SERVER_CONSOLE:
+                    {
+                        var msg = adminMessage as AdminServerConsoleMessage;
+
+                        return new AdminConsoleEvent(client.ServerInfo, msg.Origin, msg.Message);
+                    }
                 default:
                     return null;
             }

@@ -8,7 +8,8 @@ namespace OpenttdDiscord.Openttd.Network.AdminPort
 {
     public enum AdminEventType
     {
-        ChatMessageReceived = 1
+        ChatMessageReceived = 1,
+        ConsoleMessage = 2,
         
     }
 }

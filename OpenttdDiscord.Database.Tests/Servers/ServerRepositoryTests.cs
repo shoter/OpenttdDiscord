@@ -121,5 +121,23 @@ namespace OpenttdDiscord.Database.Tests.Servers
             await repo.AddServer(13u, "10.0.0.1", 123, "same");
         }
 
+        [Fact]
+        public async Task GetServers_ShouldBeAbletToGetMultipleServersForSingleIpPortAddress()
+        {
+            IServerRepository repo = new ServerRepository(GetMysql());
+
+            List<Server> added = new List<Server>();
+
+            added.Add(await repo.AddServer(12u, "10.0.0.1", 123, "same"));
+            added.Add(await repo.AddServer(13u, "10.0.0.1", 123, "same"));
+
+            var resp = await repo.GetServers("10.0.0.1", 123);
+            foreach(var s in added)
+            {
+                resp.Single(x => x.Id == s.Id);
+            }
+
+        }
+
     }
 }

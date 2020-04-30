@@ -26,5 +26,7 @@ namespace OpenttdDiscord.Database.Admins
             this.Server = new Server(reader);
             this.ChannelId = reader.ReadU64("channel_id");
         }
+
+        public AdminChannelUniqueValue UniqueValue => new AdminChannelUniqueValue(Server.GuildId, Server.Id, ChannelId);
     }
 }

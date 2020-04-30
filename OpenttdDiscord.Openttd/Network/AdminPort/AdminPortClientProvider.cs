@@ -17,6 +17,8 @@ namespace OpenttdDiscord.Openttd.Network.AdminPort
             this.clientFactory = factory;
         }
 
+        public event EventHandler<IAdminPortClient> NewClientCreated;
+
         public async Task<IAdminPortClient> GetClient(ServerInfo info)
         {
             if (serverInfos.TryGetValue(GetKey(info), out IAdminPortClient client))
@@ -34,6 +36,7 @@ namespace OpenttdDiscord.Openttd.Network.AdminPort
             {
                 client = clientFactory.Create(info);
                 serverInfos.TryAdd(GetKey(info), client);
+                this.NewClientCreated?.Invoke(this, client);
             }
 
             return client;

@@ -14,3 +14,6 @@ dotnet_style_qualification_for_field = false:none
 
 # IDE0040: Add accessibility modifiers
 dotnet_style_require_accessibility_modifiers = for_non_interface_members:warning
+
+# IDE0063: Use simple 'using' statement
+csharp_prefer_simple_using_statement = true:none

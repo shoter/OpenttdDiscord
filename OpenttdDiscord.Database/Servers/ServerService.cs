@@ -85,5 +85,7 @@ namespace OpenttdDiscord.Database.Servers
         }
 
         public Task ChangePassword(ulong serverId, string newPassword) => this.serverRepository.UpdatePassword(serverId, newPassword);
+
+        public Task<List<Server>> Get(string ip, int port) => this.serverRepository.GetServers(ip, port);
     }
 }

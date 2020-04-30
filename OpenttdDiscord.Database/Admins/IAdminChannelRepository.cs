@@ -15,6 +15,8 @@ namespace OpenttdDiscord.Database.Admins
         /// Gets admin channels for specified server.
         /// </summary>
         Task<List<AdminChannel>> GetAdminChannels(Server server);
+        Task<List<AdminChannel>> GetAdminChannelsForChannel(ulong channelId);
+
 
         Task<List<AdminChannel>> GetAdminChannels(ulong guildId);
 

@@ -36,5 +36,7 @@ namespace OpenttdDiscord.Database.Admins
             await this.adminChannelRepository.RemoveChannel(adminChannel.Server.Id, adminChannel.ChannelId);
             this.Removed?.Invoke(this, adminChannel);
         }
+
+        public Task<List<AdminChannel>> GetAll() => this.adminChannelRepository.GetAll();
     }
 }

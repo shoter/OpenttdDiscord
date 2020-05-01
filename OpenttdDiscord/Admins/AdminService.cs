@@ -35,10 +35,12 @@ namespace OpenttdDiscord.Admins
 
         private void ClientProvider_NewClientCreated(object sender, IAdminPortClient e) => e.EventReceived += (_, ev) => EventsQueue.Enqueue(ev);
 
-        public Task Start()
+        public async Task Start()
         {
             ThreadPool.QueueUserWorkItem(new WaitCallback((_) => MainLoop()), null);
-            return Task.CompletedTask;
+            var adminChannels = await adminChannelService.GetAll();
+            foreach (var ac in adminChannels)
+                this.adminChannels.TryAdd(ac.UniqueValue, ac);
         }
 
         private async void MainLoop()

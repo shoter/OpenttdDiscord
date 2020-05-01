@@ -23,6 +23,7 @@ using OpenttdDiscord.Chatting;
 using OpenttdDiscord.Openttd.Network.AdminPort;
 using Microsoft.Extensions.Logging;
 using OpenttdDiscord.Database.Chatting;
+using OpenttdDiscord.Admins;
 
 namespace OpenttdDiscord
 {
@@ -58,6 +59,7 @@ namespace OpenttdDiscord
         {
             await DependencyConfig.ServiceProvider.GetRequiredService<ServerInfoProcessor>().Start();
             await DependencyConfig.ServiceProvider.GetRequiredService<IChatService>().Start();
+            await DependencyConfig.ServiceProvider.GetRequiredService<IAdminService>().Start();
             DependencyConfig.ServiceProvider.GetRequiredService<IServerService>().NewServerPasswordRequestAdded += Program_NewServerPasswordRequestAdded; ;
         }
 

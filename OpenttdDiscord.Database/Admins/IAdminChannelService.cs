@@ -15,6 +15,7 @@ namespace OpenttdDiscord.Database.Admins
         Task<AdminChannel> Add(Server server, ulong channelId, string prefix);
 
         Task<List<AdminChannel>> GetAll(ulong guildId);
+        Task<List<AdminChannel>> GetAll();
         Task<List<AdminChannel>> GetAll(Server server);
         Task<AdminChannel> Get(ulong channelId);
 

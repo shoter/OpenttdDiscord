@@ -37,6 +37,25 @@ namespace OpenttdDiscord.Database.Admins
             }
         }
 
+        public async Task<List<AdminChannel>> GetAll()
+        {
+            using (var conn = new MySqlConnection(this.connectionString))
+            {
+                await conn.OpenAsync();
+                using (var cmd = new MySqlCommand($@"SELECT * FROM discord_admin_channels d
+                                                    JOIN servers s on d.server_id = s.id", conn))
+                {
+                    List<AdminChannel> list = new List<AdminChannel>();
+                    using (var reader = await cmd.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                            list.Add(new AdminChannel(reader));
+                    }
+                    return list;
+                }
+            }
+        }
+
         public async Task<List<AdminChannel>> GetAdminChannels(ulong guildId)
         {
             using (var conn = new MySqlConnection(this.connectionString))

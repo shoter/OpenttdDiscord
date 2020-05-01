@@ -9,7 +9,7 @@ namespace OpenttdDiscord.Database.Admins
 {
     public interface IAdminChannelRepository
     {
-        Task<AdminChannel> Insert(Server server, ulong channelId);
+        Task<AdminChannel> Insert(Server server, ulong channelId, string prefix);
 
         /// <summary>
         /// Gets admin channels for specified server.

@@ -22,10 +22,10 @@ namespace OpenttdDiscord.Database.Tests.Admins
         {
             AdminChannelRepository repo = new AdminChannelRepository(GetMysql());
 
-            await repo.Insert(DefaultTestData.DefaultServer, 11u);
-            await repo.Insert(DefaultTestData.DefaultServer, 25u);
-            await repo.Insert(DefaultTestData.DefaultServer, 33u);
-            await repo.Insert(DefaultTestData.OtherServers.GetRandom(), 33u);
+            await repo.Insert(DefaultTestData.DefaultServer, 11u, "!");
+            await repo.Insert(DefaultTestData.DefaultServer, 25u, "!");
+            await repo.Insert(DefaultTestData.DefaultServer, 33u, "!");
+            await repo.Insert(DefaultTestData.OtherServers.GetRandom(), 33u, "!");
 
             ulong[] expectedChannels = new ulong[] { 11, 25, 33 };
 
@@ -42,14 +42,14 @@ namespace OpenttdDiscord.Database.Tests.Admins
         {
             AdminChannelRepository repo = new AdminChannelRepository(GetMysql());
 
-            await repo.Insert(DefaultTestData.DefaultServer, 11u);
-            await repo.Insert(DefaultTestData.DefaultServer, 25u);
-            await repo.Insert(DefaultTestData.DefaultServer, 33u);
-            await repo.Insert(DefaultTestData.OtherServers.GetRandom(), 33u);
+            await repo.Insert(DefaultTestData.DefaultServer, 11u, "!");
+            await repo.Insert(DefaultTestData.DefaultServer, 25u, "!");
+            await repo.Insert(DefaultTestData.DefaultServer, 33u, "!");
+            await repo.Insert(DefaultTestData.OtherServers.GetRandom(), 33u, "!");
 
             foreach(var s in DefaultTestData.SameGuildServers)
             {
-                await repo.Insert(s, 11u);
+                await repo.Insert(s, 11u, "!");
             }
 
             var channels = await repo.GetAdminChannels(DefaultTestData.SameGuildServers[0].GuildId);
@@ -67,10 +67,10 @@ namespace OpenttdDiscord.Database.Tests.Admins
         {
             AdminChannelRepository repo = new AdminChannelRepository(GetMysql());
 
-            await repo.Insert(DefaultTestData.DefaultServer, 11u);
-            await repo.Insert(DefaultTestData.DefaultServer, 25u);
-            await repo.Insert(DefaultTestData.DefaultServer, 33u);
-            await repo.Insert(DefaultTestData.OtherServers.GetRandom(), 33u);
+            await repo.Insert(DefaultTestData.DefaultServer, 11u, "!");
+            await repo.Insert(DefaultTestData.DefaultServer, 25u, "!");
+            await repo.Insert(DefaultTestData.DefaultServer, 33u, "!");
+            await repo.Insert(DefaultTestData.OtherServers.GetRandom(), 33u, "!");
 
             ulong[] expectedChannels = new ulong[] { 11, 25 };
 

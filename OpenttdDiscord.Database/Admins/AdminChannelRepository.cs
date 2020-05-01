@@ -79,17 +79,19 @@ namespace OpenttdDiscord.Database.Admins
             }
         }
 
-        public async Task<AdminChannel> Insert(Server server, ulong channelId)
+        public async Task<AdminChannel> Insert(Server server, ulong channelId, string prefix)
         {
             using (var conn = new MySqlConnection(this.connectionString))
             {
                 await conn.OpenAsync();
 
-                using (var cmd = new MySqlCommand($@"INSERT INTO discord_admin_channels(server_id, channel_id) 
-                                                     VALUES (@sid, @cid)", conn))
+                using (var cmd = new MySqlCommand($@"INSERT INTO discord_admin_channels(server_id, channel_id, prefix) 
+                                                     VALUES (@sid, @cid, @prefix)", conn))
                 {
                     cmd.Parameters.AddWithValue("sid", server.Id);
                     cmd.Parameters.AddWithValue("cid", channelId);
+                    cmd.Parameters.AddWithValue("prefix", prefix);
+
 
                     await cmd.ExecuteNonQueryAsync();
 

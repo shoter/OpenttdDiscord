@@ -15,16 +15,21 @@ namespace OpenttdDiscord.Database.Admins
 
         public ulong ChannelId { get;  }
 
-        public AdminChannel(Server server, ulong channelId)
+        public string Prefix { get; }
+
+        public AdminChannel(Server server, ulong channelId, string prefix)
         {
             this.Server = server;
             this.ChannelId = channelId;
+            this.Prefix = prefix;
         }
 
         public AdminChannel(DbDataReader reader, string prefix = null)
         {
             this.Server = new Server(reader);
             this.ChannelId = reader.ReadU64("channel_id");
+            this.Prefix = reader.ReadString("prefix");
+
         }
 
         public AdminChannelUniqueValue UniqueValue => new AdminChannelUniqueValue(Server.GuildId, Server.Id, ChannelId);

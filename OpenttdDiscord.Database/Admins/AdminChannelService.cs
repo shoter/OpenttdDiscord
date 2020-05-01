@@ -19,9 +19,9 @@ namespace OpenttdDiscord.Database.Admins
             this.adminChannelRepository = adminChannelRepository;
         }
 
-        public async Task<AdminChannel> Add(Server server, ulong channelId)
+        public async Task<AdminChannel> Add(Server server, ulong channelId, string prefix)
         {
-            AdminChannel channel = await this.adminChannelRepository.Insert(server, channelId);
+            AdminChannel channel = await this.adminChannelRepository.Insert(server, channelId, prefix);
             this.Added?.Invoke(this, channel);
             return channel;
         }

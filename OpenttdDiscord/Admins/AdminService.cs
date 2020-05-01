@@ -17,7 +17,7 @@ namespace OpenttdDiscord.Admins
     {
         private ConcurrentQueue<IAdminEvent> EventsQueue { get; } = new ConcurrentQueue<IAdminEvent>();
         private ConcurrentDictionary<AdminChannelUniqueValue, AdminChannel> adminChannels = new ConcurrentDictionary<AdminChannelUniqueValue, AdminChannel>();
-        private ConcurrentQueue<(ulong ChannelId, string Message)> CommandsToExecute = new ConcurrentQueue<(ulong ChannelId, string Message)>();
+        private ConcurrentQueue<(ulong ChannelId, string Message)> messagesEnqued = new ConcurrentQueue<(ulong ChannelId, string Message)>();
         private readonly IAdminPortClientProvider clientProvider;
         private readonly DiscordSocketClient discord;
         private readonly IAdminChannelService adminChannelService;
@@ -64,12 +64,16 @@ namespace OpenttdDiscord.Admins
                         }
                     }
 
-                    while (CommandsToExecute.TryDequeue(out var cmd))
+                    while (messagesEnqued.TryDequeue(out var msg))
                     {
-                        var adminChannels = await adminChannelService.GetAllForChannel(cmd.ChannelId);
+                        var adminChannels = await adminChannelService.GetAllForChannel(msg.ChannelId);
+
 
                         foreach (var ac in adminChannels)
                         {
+                            if (!msg.Message.StartsWith(ac.Prefix))
+                                continue;
+
                             var client = await clientProvider.GetClient(new ServerInfo(ac.Server.ServerIp, ac.Server.ServerPort, ac.Server.ServerPassword));
 
                             if (client.ConnectionState != AdminConnectionState.Connected)
@@ -77,13 +81,13 @@ namespace OpenttdDiscord.Admins
                                 await client.Join();
                             }
 
-                            client.SendMessage(new AdminRconMessage(cmd.Message));
+                            client.SendMessage(new AdminRconMessage(msg.Message));
 
                         }
 
                     }
                 }
-                catch(Exception e)
+                catch (Exception e)
                 {
                     logger.LogInformation($"Admin Service - {e.Message}", e);
                 }
@@ -91,9 +95,9 @@ namespace OpenttdDiscord.Admins
             }
         }
 
-        public Task ExecuteCommand(ulong channelId, string command)
+        public Task HandleMessage(ulong channelId, string message)
         {
-            CommandsToExecute.Enqueue((channelId, command));
+            messagesEnqued.Enqueue((channelId, message));
             return Task.CompletedTask;
         }
     }

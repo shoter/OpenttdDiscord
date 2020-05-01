@@ -10,7 +10,7 @@ namespace OpenttdDiscord.Admins
     {
         Task Start();
 
-        Task ExecuteCommand(ulong channelId, string command);
+        Task HandleMessage(ulong channelId, string message);
         
     }
 }

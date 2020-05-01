@@ -66,24 +66,22 @@ namespace OpenttdDiscord.Admins
 
                     while (messagesEnqued.TryDequeue(out var msg))
                     {
-                        var adminChannels = await adminChannelService.GetAllForChannel(msg.ChannelId);
+                        var adminChannel = await adminChannelService.Get(msg.ChannelId);
 
+                        if (adminChannel == null)
+                            continue;
 
-                        foreach (var ac in adminChannels)
+                        if (!msg.Message.StartsWith(adminChannel.Prefix))
+                            continue;
+
+                        var client = await clientProvider.GetClient(new ServerInfo(adminChannel.Server.ServerIp, adminChannel.Server.ServerPort, adminChannel.Server.ServerPassword));
+
+                        if (client.ConnectionState != AdminConnectionState.Connected)
                         {
-                            if (!msg.Message.StartsWith(ac.Prefix))
-                                continue;
-
-                            var client = await clientProvider.GetClient(new ServerInfo(ac.Server.ServerIp, ac.Server.ServerPort, ac.Server.ServerPassword));
-
-                            if (client.ConnectionState != AdminConnectionState.Connected)
-                            {
-                                await client.Join();
-                            }
-
-                            client.SendMessage(new AdminRconMessage(msg.Message));
-
+                            await client.Join();
                         }
+
+                        client.SendMessage(new AdminRconMessage(msg.Message));
 
                     }
                 }

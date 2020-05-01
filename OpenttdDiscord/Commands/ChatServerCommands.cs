@@ -1,6 +1,7 @@
 ﻿using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
+using OpenttdDiscord.Admins;
 using OpenttdDiscord.Database.Chatting;
 using OpenttdDiscord.Database.Servers;
 using System;
@@ -18,6 +19,7 @@ namespace OpenttdDiscord.Commands
 
 
         public IServerService ServerService { get; set; }
+
 
         public DiscordSocketClient Client { get; set; }
 

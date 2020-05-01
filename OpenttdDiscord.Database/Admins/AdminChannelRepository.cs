@@ -58,7 +58,7 @@ namespace OpenttdDiscord.Database.Admins
             }
         }
 
-        public async Task<List<AdminChannel>> GetAdminChannelsForChannel(ulong channelId)
+        public async Task<AdminChannel> GetAdminChannelsForChannel(ulong channelId)
         {
             using (var conn = new MySqlConnection(this.connectionString))
             {
@@ -68,13 +68,12 @@ namespace OpenttdDiscord.Database.Admins
                                                     WHERE d.channel_id = @cid", conn))
                 {
                     cmd.Parameters.AddWithValue("cid", channelId);
-                    List<AdminChannel> list = new List<AdminChannel>();
                     using (var reader = await cmd.ExecuteReaderAsync())
                     {
-                        while (await reader.ReadAsync())
-                            list.Add(new AdminChannel(reader));
+                        if (await reader.ReadAsync())
+                            return new AdminChannel(reader);
+                        return null;
                     }
-                    return list;
                 }
             }
         }

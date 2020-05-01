@@ -16,7 +16,7 @@ namespace OpenttdDiscord.Database.Admins
 
         Task<List<AdminChannel>> GetAll(ulong guildId);
         Task<List<AdminChannel>> GetAll(Server server);
-        Task<List<AdminChannel>> GetAllForChannel(ulong channelId);
+        Task<AdminChannel> Get(ulong channelId);
 
         Task Remove(AdminChannel adminChannel);
     }

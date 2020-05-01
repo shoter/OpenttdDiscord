@@ -27,7 +27,7 @@ namespace OpenttdDiscord.Database.Admins
         }
 
         public Task<List<AdminChannel>> GetAll(ulong guildId) => this.adminChannelRepository.GetAdminChannels(guildId);
-        public Task<List<AdminChannel>> GetAllForChannel(ulong channelId) => this.adminChannelRepository.GetAdminChannelsForChannel(channelId);
+        public Task<AdminChannel> Get(ulong channelId) => this.adminChannelRepository.GetAdminChannelsForChannel(channelId);
 
         public Task<List<AdminChannel>> GetAll(Server server) => this.adminChannelRepository.GetAdminChannels(server);
 

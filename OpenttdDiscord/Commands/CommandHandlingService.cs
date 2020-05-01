@@ -2,6 +2,7 @@
 using Discord.Commands;
 using Discord.WebSocket;
 using Microsoft.Extensions.DependencyInjection;
+using OpenttdDiscord.Admins;
 using OpenttdDiscord.Chatting;
 using OpenttdDiscord.Database.Chatting;
 using OpenttdDiscord.Openttd;
@@ -21,13 +22,16 @@ namespace OpenttdDiscord.Commands
         private readonly IChatService chatService;
         private readonly IServiceProvider services;
         private readonly IPrivateMessageHandlingService privateMessageService;
+        private readonly IAdminService adminService;
 
-        public CommandHandlingService(IServiceProvider services, IPrivateMessageHandlingService privateMessageService, CommandService commandService, DiscordSocketClient client)
+
+        public CommandHandlingService(IServiceProvider services, IPrivateMessageHandlingService privateMessageService, IAdminService adminService, CommandService commandService, DiscordSocketClient client)
         {
             this.commands = commandService;
             this.privateMessageService = privateMessageService;
             this.discord = client;
             this.services = services;
+            this.adminService = adminService;
 
             // Hook CommandExecuted to handle post-command-execution logic.
             commands.CommandExecuted += CommandExecutedAsync;
@@ -69,6 +73,9 @@ namespace OpenttdDiscord.Commands
                     Message = message.Content,
                     Username = message.Author.Username
                 });
+
+                // all messages needs to be routed to admin module. Maybe they contain commands - it will be evaluated by admin module.
+                await this.adminService.HandleMessage(message.Channel.Id, message.Content);
 
                 return;
             }

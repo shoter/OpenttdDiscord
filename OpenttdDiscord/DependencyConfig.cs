@@ -20,6 +20,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using OpenttdDiscord.Common;
+using OpenttdDiscord.Admins;
 
 namespace OpenttdDiscord
 {
@@ -36,6 +37,7 @@ namespace OpenttdDiscord
             new CommandsModule().Register(services);
             new MessagingModule().Register(services);
             new OttdModule().Register(services);
+            new AdminModule().Register(services);
 
             services.AddSingleton<DiscordSocketClient>();
             services.AddSingleton<CommandService>();

@@ -52,17 +52,26 @@ namespace OpenttdDiscord.Admins
                     await Task.Delay(TimeSpan.FromSeconds(0.5));
                     while (EventsQueue.TryDequeue(out IAdminEvent e))
                     {
+                        string msg = null;
                         if (e.EventType == AdminEventType.ConsoleMessage)
                         {
                             var consoleEvent = e as AdminConsoleEvent;
-                            var servers = adminChannels.Values.Where(a => a.Server.ServerIp == e.Server.ServerIp && a.Server.ServerPort == e.Server.ServerPort).ToList();
+                            msg = $"{consoleEvent.Origin} - {consoleEvent.Message}";
+                        }
+                        else if (e.EventType == AdminEventType.AdminRcon)
+                        {
+                            var rcon = e as AdminRconEvent;
+                            msg = $"{rcon.Message}";
+                        }
 
+                        if (msg == null)
+                            continue;
 
-                            foreach (var s in servers)
-                            {
-                                var channel = discord.GetChannel(s.ChannelId) as SocketTextChannel;
-                                await channel.SendMessageAsync($"{consoleEvent.Origin} - {consoleEvent.Message}");
-                            }
+                        var servers = adminChannels.Values.Where(a => a.Server.ServerIp == e.Server.ServerIp && a.Server.ServerPort == e.Server.ServerPort).ToList();
+                        foreach (var s in servers)
+                        {
+                            var channel = discord.GetChannel(s.ChannelId) as SocketTextChannel;
+                            await channel.SendMessageAsync(msg);
                         }
                     }
 
@@ -76,6 +85,8 @@ namespace OpenttdDiscord.Admins
                         if (!msg.Message.StartsWith(adminChannel.Prefix))
                             continue;
 
+                        string command = msg.Message.Split(adminChannel.Prefix).Last();
+
                         var client = await clientProvider.GetClient(new ServerInfo(adminChannel.Server.ServerIp, adminChannel.Server.ServerPort, adminChannel.Server.ServerPassword));
 
                         if (client.ConnectionState != AdminConnectionState.Connected)
@@ -83,7 +94,7 @@ namespace OpenttdDiscord.Admins
                             await client.Join();
                         }
 
-                        client.SendMessage(new AdminRconMessage(msg.Message));
+                        client.SendMessage(new AdminRconMessage(command));
 
                     }
                 }

@@ -10,6 +10,7 @@ namespace OpenttdDiscord.Openttd.Network.AdminPort
     {
         ChatMessageReceived = 1,
         ConsoleMessage = 2,
+        AdminRcon = 3,
         
     }
 }

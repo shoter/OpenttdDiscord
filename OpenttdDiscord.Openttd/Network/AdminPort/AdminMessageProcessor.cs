@@ -25,6 +25,12 @@ namespace OpenttdDiscord.Openttd.Network.AdminPort
 
                         return new AdminConsoleEvent(client.ServerInfo, msg.Origin, msg.Message);
                     }
+                case AdminMessageType.ADMIN_PACKET_SERVER_RCON:
+                    {
+                        var msg = adminMessage as AdminServerRconMessage;
+
+                        return new AdminRconEvent(client.ServerInfo, msg.Result);
+                    }
                 default:
                     return null;
             }

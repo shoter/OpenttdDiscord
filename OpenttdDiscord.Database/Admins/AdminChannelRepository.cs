@@ -162,7 +162,7 @@ namespace OpenttdDiscord.Database.Admins
                 {
                     cmd.Parameters.AddWithValue("sid", adminChannel.Server.Id);
                     cmd.Parameters.AddWithValue("cid", adminChannel.ChannelId);
-                    cmd.Parameters.AddWithValue("prefix", adminChannel.Prefix);
+                    cmd.Parameters.AddWithValue("prefix", newPrefix);
 
                     int rows = await cmd.ExecuteNonQueryAsync();
 

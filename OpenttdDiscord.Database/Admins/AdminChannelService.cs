@@ -10,6 +10,7 @@ namespace OpenttdDiscord.Database.Admins
     public class AdminChannelService : IAdminChannelService
     {
         public event EventHandler<AdminChannel> Added;
+        public event EventHandler<AdminChannel> Updated; 
         public event EventHandler<AdminChannel> Removed;
 
         private readonly IAdminChannelRepository adminChannelRepository;
@@ -38,5 +39,12 @@ namespace OpenttdDiscord.Database.Admins
         }
 
         public Task<List<AdminChannel>> GetAll() => this.adminChannelRepository.GetAll();
+
+        public async Task<AdminChannel> ChangePrefix(AdminChannel adminChannel, string newPrefix)
+        {
+            var newAc = await this.adminChannelRepository.ChangePrefix(adminChannel, newPrefix);
+            this.Updated?.Invoke(this, newAc);
+            return newAc;
+        }
     }
 }

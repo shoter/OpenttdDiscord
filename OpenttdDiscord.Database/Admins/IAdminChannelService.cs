@@ -10,6 +10,7 @@ namespace OpenttdDiscord.Database.Admins
     public interface IAdminChannelService
     {
         event EventHandler<AdminChannel> Added;
+        event EventHandler<AdminChannel> Updated;
         event EventHandler<AdminChannel> Removed;
 
         Task<AdminChannel> Add(Server server, ulong channelId, string prefix);
@@ -18,6 +19,8 @@ namespace OpenttdDiscord.Database.Admins
         Task<List<AdminChannel>> GetAll();
         Task<List<AdminChannel>> GetAll(Server server);
         Task<AdminChannel> Get(ulong channelId);
+
+        Task<AdminChannel> ChangePrefix(AdminChannel adminChannel, string newPrefix);
 
         Task Remove(AdminChannel adminChannel);
     }

@@ -16,6 +16,8 @@ namespace OpenttdDiscord.Admins
     public class AdminService : IAdminService
     {
         private ConcurrentQueue<IAdminEvent> EventsQueue { get; } = new ConcurrentQueue<IAdminEvent>();
+        private ConcurrentQueue<AdminChannel> AdminChannelsToRemove { get; } = new ConcurrentQueue<AdminChannel>();
+
         private ConcurrentDictionary<AdminChannelUniqueValue, AdminChannel> adminChannels = new ConcurrentDictionary<AdminChannelUniqueValue, AdminChannel>();
         private ConcurrentQueue<(ulong ChannelId, string Message)> messagesEnqued = new ConcurrentQueue<(ulong ChannelId, string Message)>();
         private readonly IAdminPortClientProvider clientProvider;
@@ -31,6 +33,14 @@ namespace OpenttdDiscord.Admins
             this.logger = logger;
             clientProvider.NewClientCreated += ClientProvider_NewClientCreated;
             adminChannelService.Added += (_, ac) => adminChannels.TryAdd(ac.UniqueValue, ac);
+            adminChannelService.Updated += AdminChannelService_Updated;
+            adminChannelService.Removed += (_, ac) => AdminChannelsToRemove.Enqueue(ac);
+        }
+
+        private void AdminChannelService_Updated(object sender, AdminChannel e)
+        {
+            var old = adminChannels[e.UniqueValue];
+            adminChannels.TryUpdate(e.UniqueValue, e, old);
         }
 
         private void ClientProvider_NewClientCreated(object sender, IAdminPortClient e) => e.EventReceived += (_, ev) => EventsQueue.Enqueue(ev);
@@ -50,6 +60,17 @@ namespace OpenttdDiscord.Admins
                 try
                 {
                     await Task.Delay(TimeSpan.FromSeconds(0.5));
+
+                    foreach(var adminChannel in adminChannels.Values)
+                    {
+                        var client = await clientProvider.GetClient(new ServerInfo(adminChannel.Server.ServerIp, adminChannel.Server.ServerPort, adminChannel.Server.ServerPassword));
+
+                        if (client.ConnectionState != AdminConnectionState.Connected)
+                        {
+                            await client.Join();
+                        }
+                    }
+
                     while (EventsQueue.TryDequeue(out IAdminEvent e))
                     {
                         string msg = null;
@@ -77,8 +98,9 @@ namespace OpenttdDiscord.Admins
 
                     while (messagesEnqued.TryDequeue(out var msg))
                     {
-                        var adminChannel = await adminChannelService.Get(msg.ChannelId);
+                        var adminChannel = adminChannels.Values.FirstOrDefault(ac => ac.ChannelId == msg.ChannelId);
 
+                        // we do not handle this admin channel anymore - it was removed.
                         if (adminChannel == null)
                             continue;
 
@@ -96,6 +118,20 @@ namespace OpenttdDiscord.Admins
 
                         client.SendMessage(new AdminRconMessage(command));
 
+                    }
+
+                    while(AdminChannelsToRemove.TryDequeue(out var adminChannel))
+                    {
+                        var client = await clientProvider.GetClient(new ServerInfo(adminChannel.Server.ServerIp, adminChannel.Server.ServerPort, adminChannel.Server.ServerPassword));
+
+                        // this is super rare situation. Even if there is a chat service that is currently using that then nothing super bad should happen. We will lose maybe few messages or smth.
+                        // the same goes for chat service when chat is being deleted.
+                        // if it will become problem the clientProvider should have ability to remember how many clients reserved specific servers and they should be able to tell client provider
+                        // that they do not need the server anymore.
+                        // But it is troublesome to implement right now as I want to complete this bot and not spend eternity trying to find best solutions xD
+                        await client.Disconnect();
+
+                        adminChannels.TryRemove(adminChannel.UniqueValue, out _);
                     }
                 }
                 catch (Exception e)

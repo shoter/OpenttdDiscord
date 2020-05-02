@@ -40,5 +40,40 @@ namespace OpenttdDiscord.Commands
             await AdminChannelService.Add(server, Context.Channel.Id, prefix);
             await ReplyAsync("Server has been registered!");
         }
+
+        [Command("change_prefix")]
+        [RequireContext(ContextType.Guild, ErrorMessage = "Sorry, this command must be ran from within a server, not a DM!")]
+        [RequireUserPermission(GuildPermission.Administrator)]
+        public async Task ChangePrefix(string newPrefix)
+        {
+            var adminChannel = await AdminChannelService.Get(Context.Channel.Id);
+
+            if (adminChannel == null)
+            {
+                await ReplyAsync($"{adminChannel.Server.ServerName} is not registered on this channel!");
+                return;
+            }
+
+            await AdminChannelService.ChangePrefix(adminChannel, newPrefix);
+            await ReplyAsync("Prefix has been updated!");
+        }
+
+        [Command("unregister_admin_channel")]
+        [RequireContext(ContextType.Guild, ErrorMessage = "Sorry, this command must be ran from within a server, not a DM!")]
+        [RequireUserPermission(GuildPermission.Administrator)]
+        public async Task RegisterChatServer()
+        {
+            var adminChannel = await AdminChannelService.Get(Context.Channel.Id);
+
+            if (adminChannel == null)
+            {
+                await ReplyAsync($"{adminChannel.Server.ServerName} is not registered on this channel!");
+                return;
+            }
+
+            await AdminChannelService.Remove(adminChannel);
+            await ReplyAsync("Admin Channel has been removed!");
+
+        }
     }
 }

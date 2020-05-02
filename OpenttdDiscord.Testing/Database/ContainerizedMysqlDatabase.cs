@@ -51,7 +51,7 @@ namespace OpenttdDiscord.Testing.Database
             {
                 client.Containers.StopContainerAsync(containerName, new ContainerStopParameters()).Wait();
                 client.Containers.RemoveContainerAsync(containerName,
-                    new ContainerRemoveParameters { Force = true }).Wait();
+                    new ContainerRemoveParameters { Force = true, RemoveVolumes = true }).Wait();
                 client.Dispose();
             }
         }

@@ -15,7 +15,7 @@ namespace OpenttdDiscord.Admins
 {
     public class AdminService : IAdminService
     {
-        private ConcurrentQueue<IAdminEvent> EventsQueue { get; } = new ConcurrentQueue<IAdminEvent>();
+        private ConcurrentDictionary<(string ip, int port), ConcurrentQueue<IAdminEvent>> EventsQueue { get; } = new ConcurrentDictionary<(string ip, int port), ConcurrentQueue<IAdminEvent>>();
         private ConcurrentQueue<AdminChannel> AdminChannelsToRemove { get; } = new ConcurrentQueue<AdminChannel>();
 
         private ConcurrentDictionary<AdminChannelUniqueValue, AdminChannel> adminChannels = new ConcurrentDictionary<AdminChannelUniqueValue, AdminChannel>();
@@ -43,7 +43,13 @@ namespace OpenttdDiscord.Admins
             adminChannels.TryUpdate(e.UniqueValue, e, old);
         }
 
-        private void ClientProvider_NewClientCreated(object sender, IAdminPortClient e) => e.EventReceived += (_, ev) => EventsQueue.Enqueue(ev);
+        private void ClientProvider_NewClientCreated(object sender, IAdminPortClient e) => e.EventReceived += E_EventReceived;
+
+        private void E_EventReceived(object sender, IAdminEvent e)
+        {
+            var queue = EventsQueue.GetOrAdd((e.Server.ServerIp, e.Server.ServerPort), (_) => new ConcurrentQueue<IAdminEvent>());
+            queue.Enqueue(e);
+        }
 
         public async Task Start()
         {
@@ -59,9 +65,9 @@ namespace OpenttdDiscord.Admins
             {
                 try
                 {
-                    await Task.Delay(TimeSpan.FromSeconds(0.5));
+                    await Task.Delay(TimeSpan.FromSeconds(1));
 
-                    foreach(var adminChannel in adminChannels.Values)
+                    foreach (var adminChannel in adminChannels.Values)
                     {
                         var client = await clientProvider.GetClient(new ServerInfo(adminChannel.Server.ServerIp, adminChannel.Server.ServerPort, adminChannel.Server.ServerPassword));
 
@@ -71,30 +77,38 @@ namespace OpenttdDiscord.Admins
                         }
                     }
 
-                    while (EventsQueue.TryDequeue(out IAdminEvent e))
-                    {
-                        string msg = null;
-                        if (e.EventType == AdminEventType.ConsoleMessage)
+                    foreach (var key in EventsQueue.Keys)
+                        if (EventsQueue.TryRemove(key, out var events))
                         {
-                            var consoleEvent = e as AdminConsoleEvent;
-                            msg = $"{consoleEvent.Origin} - {consoleEvent.Message}";
-                        }
-                        else if (e.EventType == AdminEventType.AdminRcon)
-                        {
-                            var rcon = e as AdminRconEvent;
-                            msg = $"{rcon.Message}";
-                        }
+                            StringBuilder sb = new StringBuilder();
+                            string msg = null;
 
-                        if (msg == null)
-                            continue;
+                            while (events.TryDequeue(out var e))
+                            {
+                                if (e.EventType == AdminEventType.ConsoleMessage)
+                                {
+                                    var consoleEvent = e as AdminConsoleEvent;
+                                    sb.Append($"{consoleEvent.Origin} - {consoleEvent.Message}\n");
+                                }
+                                else if (e.EventType == AdminEventType.AdminRcon)
+                                {
+                                    var rcon = e as AdminRconEvent;
+                                    sb.Append($"{rcon.Message}\n");
+                                }
+                            }
 
-                        var servers = adminChannels.Values.Where(a => a.Server.ServerIp == e.Server.ServerIp && a.Server.ServerPort == e.Server.ServerPort).ToList();
-                        foreach (var s in servers)
-                        {
-                            var channel = discord.GetChannel(s.ChannelId) as SocketTextChannel;
-                            await channel.SendMessageAsync(msg);
+                            msg = sb.ToString();
+                            if (string.IsNullOrWhiteSpace(msg))
+                                continue;
+
+                            var servers = adminChannels.Values.Where(a => a.Server.ServerIp == key.ip && a.Server.ServerPort == key.port).ToList();
+                            foreach (var s in servers)
+                            {
+                                var channel = discord.GetChannel(s.ChannelId) as SocketTextChannel;
+                                await channel.SendMessageAsync(msg);
+                            }
+
                         }
-                    }
 
                     while (messagesEnqued.TryDequeue(out var msg))
                     {
@@ -120,7 +134,7 @@ namespace OpenttdDiscord.Admins
 
                     }
 
-                    while(AdminChannelsToRemove.TryDequeue(out var adminChannel))
+                    while (AdminChannelsToRemove.TryDequeue(out var adminChannel))
                     {
                         var client = await clientProvider.GetClient(new ServerInfo(adminChannel.Server.ServerIp, adminChannel.Server.ServerPort, adminChannel.Server.ServerPassword));
 

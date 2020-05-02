@@ -11,6 +11,7 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
+using OpenttdDiscord.Common;
 
 namespace OpenttdDiscord.Testing.Database
 {
@@ -153,7 +154,7 @@ namespace OpenttdDiscord.Testing.Database
 
         private async Task WaitForDatabaseToStart()
         {
-            DateTime waitingTimeEnd = DateTime.Now.AddMinutes(10);
+            DateTime waitingTimeEnd = DateTime.Now.AddMinutes(2);
             while (DateTime.Now < waitingTimeEnd)
             {
                 try

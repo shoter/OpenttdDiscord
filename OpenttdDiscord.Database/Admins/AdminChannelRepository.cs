@@ -149,5 +149,29 @@ namespace OpenttdDiscord.Database.Admins
                 }
             }
         }
+
+        public async Task<AdminChannel> ChangePrefix(AdminChannel adminChannel, string newPrefix)
+        {
+            using (var conn = new MySqlConnection(this.connectionString))
+            {
+                await conn.OpenAsync();
+
+                using (var cmd = new MySqlCommand($@"UPDATE discord_admin_channels
+                                                      SET prefix = @prefix
+                                                      WHERE server_id = @sid AND channel_id = @cid", conn))
+                {
+                    cmd.Parameters.AddWithValue("sid", adminChannel.Server.Id);
+                    cmd.Parameters.AddWithValue("cid", adminChannel.ChannelId);
+                    cmd.Parameters.AddWithValue("prefix", adminChannel.Prefix);
+
+                    int rows = await cmd.ExecuteNonQueryAsync();
+
+                    if (rows == 0)
+                        throw new Exception("No rows updated");
+
+                    return new AdminChannel(adminChannel.Server, adminChannel.ChannelId, newPrefix);
+                }
+            }
+        }
     }
 }

@@ -83,5 +83,19 @@ namespace OpenttdDiscord.Database.Tests.Admins
             }
         }
 
+        [Fact]
+        public async Task ChangePrefix_ShouldChangePrefix()
+        {
+            AdminChannelRepository repo = new AdminChannelRepository(GetMysql());
+
+            var ac = await repo.Insert(DefaultTestData.DefaultServer, 11u, "!");
+
+            await repo.ChangePrefix(ac, "$");
+
+            ac = await repo.GetAdminChannelsForChannel(ac.ChannelId);
+
+            Assert.Equal("$", ac.Prefix);
+        }
+
     }
 }

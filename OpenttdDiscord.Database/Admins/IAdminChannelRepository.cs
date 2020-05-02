@@ -18,6 +18,8 @@ namespace OpenttdDiscord.Database.Admins
         Task<List<AdminChannel>> GetAll();
         Task<AdminChannel> GetAdminChannelsForChannel(ulong channelId);
 
+        Task<AdminChannel> ChangePrefix(AdminChannel adminChannel, string newPrefix);
+
 
         Task<List<AdminChannel>> GetAdminChannels(ulong guildId);
 

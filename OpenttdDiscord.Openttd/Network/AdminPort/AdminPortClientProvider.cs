@@ -21,28 +21,15 @@ namespace OpenttdDiscord.Openttd.Network.AdminPort
 
         public async Task<IAdminPortClient> GetClient(ServerInfo info)
         {
-            if (serverInfos.TryGetValue(GetKey(info), out IAdminPortClient client))
+            return serverInfos.GetOrAdd($"{info}", (_) =>
             {
-                if (info.Password != client.ServerInfo.Password)
-                {
-                    serverInfos.Remove(GetKey(info), out _);
-                    if (client.ConnectionState != AdminConnectionState.Idle)
-                        await client.Disconnect();
-                    client = clientFactory.Create(info);
-                    serverInfos.TryAdd(GetKey(info), client);
-                }
-            }
-            else
-            {
-                client = clientFactory.Create(info);
-                serverInfos.TryAdd(GetKey(info), client);
+                var client = clientFactory.Create(info);
                 this.NewClientCreated?.Invoke(this, client);
-            }
-
-            return client;
-
+                return client;
+                });
+            
+            // TODO : Code for password change.
         }
 
-        private string GetKey(ServerInfo info) => $"{info.ServerIp}:{info.ServerPort}";
     }
 }

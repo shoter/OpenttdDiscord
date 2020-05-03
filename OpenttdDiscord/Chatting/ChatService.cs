@@ -75,6 +75,9 @@ namespace OpenttdDiscord.Chatting
                         // for right now it is only event - this needs to be changed later
                         var msg = ev as AdminChatMessageEvent;
 
+                        if (msg == null)
+                            continue;
+
                         if (msg.Player.ClientId == 1)
                             continue;
                         Server s = chatServers.Values.FirstOrDefault(c => c.Server.ServerIp == msg.Server.ServerIp && c.Server.ServerPort == msg.Server.ServerPort)?.Server;

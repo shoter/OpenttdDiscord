@@ -33,6 +33,8 @@ namespace OpenttdDiscord.Openttd.Network.AdminPort
         private DateTime lastMessageSentTime = DateTime.Now;
         private DateTime lastMessageReceivedTime = DateTime.Now;
 
+        private Mutex startMutex = new Mutex();
+
         
 
         private CancellationTokenSource cancellationTokenSource = null;
@@ -260,9 +262,20 @@ namespace OpenttdDiscord.Openttd.Network.AdminPort
             if (this.ConnectionState != AdminConnectionState.Idle)
                 return;
 
+            lock(startMutex)
+            {
+                if(this.ConnectionState == AdminConnectionState.Idle)
+                {
+                    this.ConnectionState = AdminConnectionState.NotConnected;
+                }
+                else
+                {
+                    return;
+                }
+            }
+
             try
             {
-                this.ConnectionState = AdminConnectionState.NotConnected;
                 this.cancellationTokenSource = new CancellationTokenSource();
 
                 ThreadPool.QueueUserWorkItem(new WaitCallback((_) => MainLoop(cancellationTokenSource.Token)), null);

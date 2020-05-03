@@ -91,7 +91,12 @@ namespace OpenttdDiscord.Commands
                 // Perform the execution of the command. In this method,
                 // the command service will perform precondition and parsing check
                 // then execute the command if one is matched.
-                await commands.ExecuteAsync(context, argPos, services);
+                var result = await commands.ExecuteAsync(context, argPos, services);
+
+                if(result.IsSuccess == false)
+                {
+                    logger.LogError($"Error executing {message.Content} on {message.Channel.Name} - {result.Error} - {result.ErrorReason}");
+                }
                 // Note that normally a result will be returned by this format, but here
                 // we will handle the result in CommandExecutedAsync,
             }

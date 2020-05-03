@@ -114,7 +114,7 @@ namespace OpenttdDiscord.Admins
 
                 var client = await clientProvider.GetClient(new ServerInfo(adminChannel.Server.ServerIp, adminChannel.Server.ServerPort, adminChannel.Server.ServerPassword));
 
-                if (client.ConnectionState != AdminConnectionState.Connected)
+                if (client.ConnectionState == AdminConnectionState.Idle)
                 {
                     await client.Join();
                 }
@@ -163,7 +163,7 @@ namespace OpenttdDiscord.Admins
                 {
                     var client = await clientProvider.GetClient(new ServerInfo(adminChannel.Server.ServerIp, adminChannel.Server.ServerPort, adminChannel.Server.ServerPassword));
 
-                    if (client.ConnectionState != AdminConnectionState.Connected)
+                    if (client.ConnectionState == AdminConnectionState.Idle)
                     {
                         await client.Join();
                     }

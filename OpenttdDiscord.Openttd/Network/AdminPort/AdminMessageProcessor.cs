@@ -15,6 +15,8 @@ namespace OpenttdDiscord.Openttd.Network.AdminPort
                 case AdminMessageType.ADMIN_PACKET_SERVER_CHAT:
                     {
                         var msg = adminMessage as AdminServerChatMessage;
+                        if (msg.NetworkAction != NetworkAction.NETWORK_ACTION_SERVER_MESSAGE)
+                            return null;
                         var player = client.Players[msg.ClientId];
 
                         return new AdminChatMessageEvent(player, msg.Message, client.ServerInfo);

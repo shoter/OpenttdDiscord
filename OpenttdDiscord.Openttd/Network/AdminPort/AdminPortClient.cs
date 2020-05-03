@@ -82,6 +82,8 @@ namespace OpenttdDiscord.Openttd.Network.AdminPort
                     if (this.ConnectionState == AdminConnectionState.NotConnected)
                     {
                         tcpClient = new TcpClient();
+                        tcpClient.ReceiveTimeout = 2000;
+                        tcpClient.SendTimeout = 2000;
                         tcpClient.Connect(ServerInfo.ServerIp, ServerInfo.ServerPort);
                         this.SendMessage(new AdminJoinMessage(ServerInfo.Password, "OttdBot", "1.0.0"));
                         logger.LogInformation($"{ServerInfo} Connecting");
@@ -98,7 +100,7 @@ namespace OpenttdDiscord.Openttd.Network.AdminPort
                         {
                             logger.LogInformation($"{ServerInfo} sent {msg.MessageType}");
                             Packet packet = this.adminPacketService.CreatePacket(msg);
-                            await tcpClient.GetStream().WriteAsync(packet.Buffer, 0, packet.Size);
+                            await tcpClient.GetStream().WriteAsync(packet.Buffer, 0, packet.Size).WaitMax(TimeSpan.FromSeconds(2));
                         }
                         else
                             break;
@@ -111,7 +113,7 @@ namespace OpenttdDiscord.Openttd.Network.AdminPort
                         if(receivedBytes != 2)
                         {
                             await Task.Delay(TimeSpan.FromMilliseconds(1));
-                            int bytes = await tcpClient.GetStream().ReadAsync(sizeBuffer, 1, 1);
+                            int bytes = await tcpClient.GetStream().ReadAsync(sizeBuffer, 1, 1).WaitMax(TimeSpan.FromSeconds(2));
                             if (bytes == 0)
                             {
                                 throw new OttdConnectionException("Something went wrong - restarting");
@@ -131,14 +133,7 @@ namespace OpenttdDiscord.Openttd.Network.AdminPort
                         do
                         {
                             await Task.Delay(TimeSpan.FromMilliseconds(1));
-                            var delayTask = Task.Delay(TimeSpan.FromSeconds(2));
-                            Task<int> task = tcpClient.GetStream().ReadAsync(content, contentSize, size - contentSize);
-
-                            await Task.WhenAny(delayTask, task);
-
-                            if (delayTask.IsCompleted)
-                                throw new OttdConnectionException("No data received");
-
+                            Task<int> task = tcpClient.GetStream().ReadAsync(content, contentSize, size - contentSize).WaitMax(TimeSpan.FromSeconds(2), $"{ServerInfo} no data received");
                             await task;
                             contentSize += task.Result;
                             if(task.Result == 0)
@@ -153,7 +148,7 @@ namespace OpenttdDiscord.Openttd.Network.AdminPort
                         if (message == null)
                             break;
 
-                        this.logger.LogInformation($"I received {message.MessageType}");
+                        this.logger.LogInformation($"{ServerInfo} received {message.MessageType}");
 
                         switch (message.MessageType)
                         {
@@ -230,6 +225,7 @@ namespace OpenttdDiscord.Openttd.Network.AdminPort
                     this.tcpClient = null;
                     this.sendMessageQueue.Clear();
                     this.receivedMessagesQueue.Clear();
+                    sizeTask = null;
                     this.ConnectionState = AdminConnectionState.NotConnected;
 
                     await Task.Delay(TimeSpan.FromSeconds(30));

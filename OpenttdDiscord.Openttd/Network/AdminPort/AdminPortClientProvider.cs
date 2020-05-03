@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,10 +12,12 @@ namespace OpenttdDiscord.Openttd.Network.AdminPort
     {
         private readonly ConcurrentDictionary<string, IAdminPortClient> serverInfos = new ConcurrentDictionary<string, IAdminPortClient>();
         private readonly IAdminPortClientFactory clientFactory;
+        private readonly ILogger<IAdminPortClientProvider> logger;
 
-        public AdminPortClientProvider(IAdminPortClientFactory factory)
+        public AdminPortClientProvider(IAdminPortClientFactory factory, ILogger<IAdminPortClientProvider> logger)
         {
             this.clientFactory = factory;
+            this.logger = logger;
         }
 
         public event EventHandler<IAdminPortClient> NewClientCreated;
@@ -25,6 +28,7 @@ namespace OpenttdDiscord.Openttd.Network.AdminPort
             {
                 var client = clientFactory.Create(info);
                 this.NewClientCreated?.Invoke(this, client);
+                logger.LogInformation($"Created admin port client for {info}");
                 return client;
                 });
             

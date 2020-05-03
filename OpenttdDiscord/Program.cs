@@ -55,6 +55,16 @@ namespace OpenttdDiscord
             client.Connected += Client_Connected;
             client.Disconnected += (_) => { quitProgram = true; return Task.CompletedTask; };
 
+
+            // this freakin bots disconnects itself from time to time and it causes to use maximum CPU on raspberry pi where I am hosting my bot.
+            // This causes to completely hang this bot and it's unresponsive as Discord Client will eat every possible CPU cycle to do ... nothing?
+            // That's why I am quiting bot on first disconnection so it will automatically restart and not eat my cpu.
+            // If there is a way to prevent that it would be super cool.
+            // During 3rd of may testing this was happening around every hour.
+            // An important note for sure is that it was not happening in the past (1-2 months ago).
+            // Maybe the cause for this behaviour is that I still try to call discord api client when it is disconnected?
+            // Rewriting parts of code to check if bot is connected or not and then send any messages would be helpfull but will it bring
+            // better performance?
             while(quitProgram == false)
             {
                 await Task.Delay(TimeSpan.FromSeconds(15));

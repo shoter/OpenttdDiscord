@@ -137,7 +137,7 @@ namespace OpenttdDiscord.Chatting
                 }
                 catch (Exception e)
                 {
-                    logger.LogError("Error", e);
+                    logger.LogError($"Error {e.Message}", e);
                 }
             }
         }

@@ -2,6 +2,7 @@
 using Discord.Commands;
 using Discord.WebSocket;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using OpenttdDiscord.Admins;
 using OpenttdDiscord.Chatting;
 using OpenttdDiscord.Database.Chatting;
@@ -23,15 +24,17 @@ namespace OpenttdDiscord.Commands
         private readonly IServiceProvider services;
         private readonly IPrivateMessageHandlingService privateMessageService;
         private readonly IAdminService adminService;
+        private readonly ILogger<CommandHandlingService> logger;
 
 
-        public CommandHandlingService(IServiceProvider services, IPrivateMessageHandlingService privateMessageService, IAdminService adminService, CommandService commandService, DiscordSocketClient client)
+        public CommandHandlingService(IServiceProvider services, IPrivateMessageHandlingService privateMessageService, IAdminService adminService, CommandService commandService, DiscordSocketClient client, ILogger<CommandHandlingService> logger)
         {
             this.commands = commandService;
             this.privateMessageService = privateMessageService;
             this.discord = client;
             this.services = services;
             this.adminService = adminService;
+            this.logger = logger;
 
             // Hook CommandExecuted to handle post-command-execution logic.
             commands.CommandExecuted += CommandExecutedAsync;
@@ -50,43 +53,52 @@ namespace OpenttdDiscord.Commands
 
         public async Task MessageReceivedAsync(SocketMessage rawMessage)
         {
-            // Ignore system messages, or messages from other bots
-            if (!(rawMessage is SocketUserMessage message)) return;
-            if (message.Source != MessageSource.User) return;
-
-            if(message.Channel is SocketDMChannel dmChannel)
+            try
             {
-                await this.privateMessageService.HandleMessage(message, dmChannel);
-                return;
-            }
+                // Ignore system messages, or messages from other bots
+                if (!(rawMessage is SocketUserMessage message)) return;
+                if (message.Source != MessageSource.User) return;
 
-            // This value holds the offset where the prefix ends
-            var argPos = 0;
-            // Perform prefix check. You may want to replace this with
-            // (!message.HasCharPrefix('!', ref argPos))
-            // for a more traditional command format like !help.
-            if (!message.HasMentionPrefix(discord.CurrentUser, ref argPos))
-            {
-                this.chatService.AddMessage(new DiscordMessage()
+                if (message.Channel is SocketDMChannel dmChannel)
                 {
-                    ChannelId = message.Channel.Id,
-                    Message = message.Content,
-                    Username = message.Author.Username
-                });
+                    await this.privateMessageService.HandleMessage(message, dmChannel);
+                    return;
+                }
 
-                // all messages needs to be routed to admin module. Maybe they contain commands - it will be evaluated by admin module.
-                await this.adminService.HandleMessage(message.Channel.Id, message.Content);
+                // This value holds the offset where the prefix ends
+                var argPos = 0;
+                // Perform prefix check. You may want to replace this with
+                // (!message.HasCharPrefix('!', ref argPos))
+                // for a more traditional command format like !help.
+                if (!message.HasMentionPrefix(discord.CurrentUser, ref argPos))
+                {
+                    this.chatService.AddMessage(new DiscordMessage()
+                    {
+                        ChannelId = message.Channel.Id,
+                        Message = message.Content,
+                        Username = message.Author.Username
+                    });
 
-                return;
+                    // all messages needs to be routed to admin module. Maybe they contain commands - it will be evaluated by admin module.
+                    await this.adminService.HandleMessage(message.Channel.Id, message.Content);
+
+                    return;
+                }
+
+                this.logger.LogInformation($"Received command {message.Content} on {message.Channel.Name}");
+
+                var context = new SocketCommandContext(discord, message);
+                // Perform the execution of the command. In this method,
+                // the command service will perform precondition and parsing check
+                // then execute the command if one is matched.
+                await commands.ExecuteAsync(context, argPos, services);
+                // Note that normally a result will be returned by this format, but here
+                // we will handle the result in CommandExecutedAsync,
             }
-
-            var context = new SocketCommandContext(discord, message);
-            // Perform the execution of the command. In this method,
-            // the command service will perform precondition and parsing check
-            // then execute the command if one is matched.
-            await commands.ExecuteAsync(context, argPos, services);
-            // Note that normally a result will be returned by this format, but here
-            // we will handle the result in CommandExecutedAsync,
+            catch(Exception e)
+            {
+                logger.LogError($"{e.Message}");
+            }
         }
 
         public async Task CommandExecutedAsync(Optional<CommandInfo> command, ICommandContext context, IResult result)

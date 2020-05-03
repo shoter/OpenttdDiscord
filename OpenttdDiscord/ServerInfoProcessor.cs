@@ -63,7 +63,6 @@ namespace OpenttdDiscord
                     await Task.Delay(TimeSpan.FromMinutes(1));
 #endif
 
-                    Console.WriteLine("Test");
                     await UpdateMessages();
                     await RemoveUnusedServers();
 

@@ -85,12 +85,7 @@ namespace OpenttdDiscord.Admins
 
                             while (events.TryDequeue(out var e))
                             {
-                                if (e.EventType == AdminEventType.ConsoleMessage)
-                                {
-                                    var consoleEvent = e as AdminConsoleEvent;
-                                    sb.Append($"{consoleEvent.Origin} - {consoleEvent.Message}\n");
-                                }
-                                else if (e.EventType == AdminEventType.AdminRcon)
+                                if (e.EventType == AdminEventType.AdminRcon)
                                 {
                                     var rcon = e as AdminRconEvent;
                                     sb.Append($"{rcon.Message}\n");

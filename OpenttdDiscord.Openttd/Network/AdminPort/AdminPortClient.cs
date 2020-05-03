@@ -237,6 +237,7 @@ namespace OpenttdDiscord.Openttd.Network.AdminPort
 
             }
 
+            this.logger.LogInformation($"{ServerInfo} disconnected");
             this.ConnectionState = AdminConnectionState.Idle;
         }
 

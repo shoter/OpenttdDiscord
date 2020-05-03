@@ -1,5 +1,6 @@
 ﻿using Discord;
 using Discord.Commands;
+using Discord.WebSocket;
 using OpenttdDiscord.Admins;
 using OpenttdDiscord.Database.Admins;
 using OpenttdDiscord.Database.Servers;
@@ -14,6 +15,8 @@ namespace OpenttdDiscord.Commands
     public class AdminCommands : ModuleBase<SocketCommandContext>
     {
         public IAdminChannelService AdminChannelService { get; set; }
+        public DiscordSocketClient Client { get; set; }
+
         public IServerService ServerService { get; set; }
 
         [Command("register_admin_channel")]
@@ -74,6 +77,24 @@ namespace OpenttdDiscord.Commands
             await AdminChannelService.Remove(adminChannel);
             await ReplyAsync("Admin Channel has been removed!");
 
+        }
+
+        [Command("list_admin_channels")]
+        [RequireContext(ContextType.Guild, ErrorMessage = "Sorry, this command must be ran from within a server, not a DM!")]
+        [RequireUserPermission(GuildPermission.Administrator)]
+        public async Task ListAdminChannels()
+        {
+            var adminChannel = await AdminChannelService.GetAll(Context.Guild.Id);
+            StringBuilder sb = new StringBuilder();
+
+            foreach (var ac in adminChannel)
+            {
+                var channel = Client.GetChannel(ac.ChannelId) as SocketTextChannel;
+
+                sb.Append($"{ac.Server.ServerName} - {channel.Name} - {ac.Server.ServerIp}:{ac.Server.ServerPort}\n");
+            }
+
+            await ReplyAsync($"{sb}");
         }
     }
 }

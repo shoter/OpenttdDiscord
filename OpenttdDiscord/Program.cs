@@ -30,6 +30,7 @@ namespace OpenttdDiscord
     internal class Program
     {
         private static DiscordSocketClient client;
+        private static bool initialized = false;
 
         public static async Task Main()
         {
@@ -57,10 +58,14 @@ namespace OpenttdDiscord
 
         private static async Task Client_Connected()
         {
-            await DependencyConfig.ServiceProvider.GetRequiredService<ServerInfoProcessor>().Start();
-            await DependencyConfig.ServiceProvider.GetRequiredService<IChatService>().Start();
-            await DependencyConfig.ServiceProvider.GetRequiredService<IAdminService>().Start();
-            DependencyConfig.ServiceProvider.GetRequiredService<IServerService>().NewServerPasswordRequestAdded += Program_NewServerPasswordRequestAdded; ;
+            if (initialized == false)
+            {
+                initialized = true;
+                await DependencyConfig.ServiceProvider.GetRequiredService<ServerInfoProcessor>().Start();
+                await DependencyConfig.ServiceProvider.GetRequiredService<IChatService>().Start();
+                await DependencyConfig.ServiceProvider.GetRequiredService<IAdminService>().Start();
+                DependencyConfig.ServiceProvider.GetRequiredService<IServerService>().NewServerPasswordRequestAdded += Program_NewServerPasswordRequestAdded; ;
+            }
         }
 
         private static void Program_NewServerPasswordRequestAdded(object sender, NewServerPassword e)

@@ -60,11 +60,7 @@ namespace OpenttdDiscord
             {
                 try
                 {
-#if DEBUG
-                    await Task.Delay(TimeSpan.FromSeconds(5));
-#else
                     await Task.Delay(TimeSpan.FromMinutes(1));
-#endif
 
                     await UpdateMessages();
                     await RemoveUnusedServers();

@@ -30,6 +30,9 @@ namespace OpenttdDiscord.Openttd.Network.AdminPort
 
         private readonly ConcurrentQueue<IAdminMessage> sendMessageQueue = new ConcurrentQueue<IAdminMessage>();
 
+        private DateTime lastMessageSentTime = DateTime.Now;
+        private DateTime lastMessageReceivedTime = DateTime.Now;
+
         
 
         private CancellationTokenSource cancellationTokenSource = null;
@@ -84,6 +87,8 @@ namespace OpenttdDiscord.Openttd.Network.AdminPort
                         tcpClient = new TcpClient();
                         tcpClient.ReceiveTimeout = 2000;
                         tcpClient.SendTimeout = 2000;
+                        lastMessageSentTime = DateTime.Now;
+                        lastMessageReceivedTime = DateTime.Now;
                         tcpClient.Connect(ServerInfo.ServerIp, ServerInfo.ServerPort);
                         this.SendMessage(new AdminJoinMessage(ServerInfo.Password, "OttdBot", "1.0.0"));
                         logger.LogInformation($"{ServerInfo} Connecting");
@@ -94,6 +99,16 @@ namespace OpenttdDiscord.Openttd.Network.AdminPort
                     if (this.tcpClient == null)
                         continue;
 
+                    if((DateTime.Now - lastMessageSentTime) > TimeSpan.FromSeconds(10))
+                    {
+                        this.SendMessage(new AdminPingMessage());
+                    }
+
+                    if(DateTime.Now - lastMessageReceivedTime > TimeSpan.FromMinutes(1))
+                    {
+                        throw new OttdException("No messages received for 60 seconds!");
+                    }
+
                     for(int i = 0;i < 100; ++i)
                     {
                         if (this.sendMessageQueue.TryDequeue(out IAdminMessage msg))
@@ -101,6 +116,7 @@ namespace OpenttdDiscord.Openttd.Network.AdminPort
                             logger.LogInformation($"{ServerInfo} sent {msg.MessageType}");
                             Packet packet = this.adminPacketService.CreatePacket(msg);
                             await tcpClient.GetStream().WriteAsync(packet.Buffer, 0, packet.Size).WaitMax(TimeSpan.FromSeconds(2));
+                            lastMessageSentTime = DateTime.Now;
                         }
                         else
                             break;
@@ -129,6 +145,8 @@ namespace OpenttdDiscord.Openttd.Network.AdminPort
                         content[0] = sizeBuffer[0];
                         content[1] = sizeBuffer[1];
                         int contentSize = 2;
+
+                        lastMessageReceivedTime = DateTime.Now;
 
                         do
                         {

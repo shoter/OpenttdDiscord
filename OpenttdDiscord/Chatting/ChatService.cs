@@ -53,68 +53,79 @@ namespace OpenttdDiscord.Chatting
             {
                 try
                 {
-                    while(serversToRemove.TryDequeue(out ChatChannelServer s))
+#if DEBUG
+                    await Task.Delay(TimeSpan.FromSeconds(0.05));
+#else
+                    await Task.Delay(TimeSpan.FromSeconds(0.3));
+#endif
+
+                    await RemoveServers();
+                    await JoinUnjoinedClients();
+                    await HandleGameMessages();
+                    await HandleDiscordMessages();
+
+                }
+                catch (Exception e)
+                {
+                    logger.LogError($"Error {e.Message}", e);
+                }
+            }
+        }
+
+        private async Task HandleDiscordMessages()
+        {
+            while (discordMessages.TryDequeue(out DiscordMessage msg))
+            {
+                var chatMsg = $"[Discord] {msg.Username}: {msg.Message}";
+
+                IEnumerable<ChatChannelServer> others = chatServers.Values.Where(x => x.ChannelId == msg.ChannelId);
+                foreach (var o in others)
+                {
+                    Server server = chatServers[(o.Server.Id, o.ChannelId)].Server;
+                    var info = new ServerInfo(server.ServerIp, server.ServerPort, server.ServerPassword);
+                    IAdminPortClient client = await adminPortClientProvider.GetClient(info);
+
+                    if (client.ConnectionState == AdminConnectionState.Connected)
                     {
-                        IAdminPortClient client = await adminPortClientProvider.GetClient(new ServerInfo(s.Server.ServerIp, s.Server.ServerPort, s.Server.ServerPassword));
-                        chatServers.Remove((s.Server.Id, s.ChannelId), out _);
+                        client.SendMessage(new AdminChatMessage(NetworkAction.NETWORK_ACTION_CHAT, ChatDestination.DESTTYPE_BROADCAST, 0, chatMsg));
                     }
+                }
 
-                    foreach (var s in chatServers.Values)
+
+            }
+        }
+
+        private async Task HandleGameMessages()
+        {
+            while (receivedMessagges.TryDequeue(out IAdminEvent ev))
+            {
+                // for right now it is only event - this needs to be changed later
+                var msg = ev as AdminChatMessageEvent;
+
+                if (msg == null)
+                    continue;
+
+                if (msg.Player.ClientId == 1)
+                    continue;
+                Server s = chatServers.Values.FirstOrDefault(c => c.Server.ServerIp == msg.Server.ServerIp && c.Server.ServerPort == msg.Server.ServerPort)?.Server;
+
+                if (s == null)
+                    continue;
+
+                IEnumerable<ChatChannelServer> csList = chatServers.Values.Where(x => x.Server.Id == s.Id);
+
+                foreach (var cs in csList)
+                {
+                    SocketTextChannel channel = null;
+                    try
                     {
-                        Server server = s.Server;
-                        ServerInfo info = new ServerInfo(server.ServerIp, server.ServerPort, server.ServerPassword);
-                        IAdminPortClient client = await adminPortClientProvider.GetClient(info);
-                        if (client.ConnectionState == AdminConnectionState.Idle)
-                        {
-                            await client.Join();
-                        }
-                    }
+                        channel = discord.GetChannel(cs.ChannelId) as SocketTextChannel;
 
-                    while (receivedMessagges.TryDequeue(out IAdminEvent ev))
-                    {
-                        // for right now it is only event - this needs to be changed later
-                        var msg = ev as AdminChatMessageEvent;
+                        var chatMsg = $"[{cs.Server.ServerName}] {msg.Player.Name}: {msg.Message}";
 
-                        if (msg == null)
-                            continue;
+                        await channel.SendMessageAsync(chatMsg);
 
-                        if (msg.Player.ClientId == 1)
-                            continue;
-                        Server s = chatServers.Values.FirstOrDefault(c => c.Server.ServerIp == msg.Server.ServerIp && c.Server.ServerPort == msg.Server.ServerPort)?.Server;
-
-                        if (s == null)
-                            continue;
-
-                        IEnumerable<ChatChannelServer> csList = chatServers.Values.Where(x => x.Server.Id == s.Id);
-
-                        foreach (var cs in csList)
-                        {
-                            var channel = discord.GetChannel(cs.ChannelId) as SocketTextChannel;
-
-                            var chatMsg = $"[{cs.Server.ServerName}] {msg.Player.Name}: {msg.Message}";
-
-                            await channel.SendMessageAsync(chatMsg);
-
-                            IEnumerable<ChatChannelServer> others = chatServers.Values.Where(x => x.ChannelId == channel.Id && x.Server.Id != s.Id);
-                            foreach (var o in others)
-                            {
-                                Server server = chatServers[(o.Server.Id, o.ChannelId)].Server;
-                                var info = new ServerInfo(server.ServerIp, server.ServerPort, server.ServerPassword);
-                                IAdminPortClient client = await adminPortClientProvider.GetClient(info);
-
-                                if(client.ConnectionState == AdminConnectionState.Connected)
-                                {
-                                    client.SendMessage(new AdminChatMessage(NetworkAction.NETWORK_ACTION_CHAT, ChatDestination.DESTTYPE_BROADCAST, 0, chatMsg));
-                                }
-                            }
-                        }
-                    }
-
-                    while(discordMessages.TryDequeue(out DiscordMessage msg))
-                    {
-                        var chatMsg = $"[Discord] {msg.Username}: {msg.Message}";
-
-                        IEnumerable<ChatChannelServer> others = chatServers.Values.Where(x => x.ChannelId == msg.ChannelId);
+                        IEnumerable<ChatChannelServer> others = chatServers.Values.Where(x => x.ChannelId == channel.Id && x.Server.Id != s.Id);
                         foreach (var o in others)
                         {
                             Server server = chatServers[(o.Server.Id, o.ChannelId)].Server;
@@ -126,20 +137,42 @@ namespace OpenttdDiscord.Chatting
                                 client.SendMessage(new AdminChatMessage(NetworkAction.NETWORK_ACTION_CHAT, ChatDestination.DESTTYPE_BROADCAST, 0, chatMsg));
                             }
                         }
-
-
                     }
+                    catch(Exception e)
+                    {
+                        logger.LogError($"Could not send message to channel {channel?.Name ?? "null"} - {e.Message}");
+                    }
+                }
+            }
+        }
 
-#if DEBUG
-                    await Task.Delay(TimeSpan.FromSeconds(0.05));
-#else
-                    await Task.Delay(TimeSpan.FromSeconds(0.3));
-#endif
-                }
-                catch (Exception e)
+        private async Task JoinUnjoinedClients()
+        {
+            foreach (var s in chatServers.Values)
+            {
+                try
                 {
-                    logger.LogError($"Error {e.Message}", e);
+                    Server server = s.Server;
+                    ServerInfo info = new ServerInfo(server.ServerIp, server.ServerPort, server.ServerPassword);
+                    IAdminPortClient client = await adminPortClientProvider.GetClient(info);
+                    if (client.ConnectionState == AdminConnectionState.Idle)
+                    {
+                        await client.Join();
+                    }
                 }
+                catch(Exception e)
+                {
+                    logger.LogError($"{s.Server.ServerIp}:{s.Server.ServerPort} - cannot join - {e.Message}");
+                }
+            }
+        }
+
+        private async Task RemoveServers()
+        {
+            while (serversToRemove.TryDequeue(out ChatChannelServer s))
+            {
+                IAdminPortClient client = await adminPortClientProvider.GetClient(new ServerInfo(s.Server.ServerIp, s.Server.ServerPort, s.Server.ServerPassword));
+                chatServers.Remove((s.Server.Id, s.ChannelId), out _);
             }
         }
 

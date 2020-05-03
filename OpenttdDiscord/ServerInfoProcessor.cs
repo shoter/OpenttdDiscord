@@ -1,6 +1,7 @@
 ﻿using Discord;
 using Discord.Rest;
 using Discord.WebSocket;
+using Microsoft.Extensions.Logging;
 using OpenttdDiscord.Database.Servers;
 using OpenttdDiscord.Messaging;
 using OpenttdDiscord.Openttd.Network;
@@ -21,17 +22,19 @@ namespace OpenttdDiscord
         private readonly IOttdClientProvider ottdClientProvider;
         private readonly IEmbedFactory embedFactory;
         private readonly DiscordSocketClient client;
+        private readonly ILogger<ServerInfoProcessor> logger;
 
         private readonly ConcurrentDictionary<(ulong, ulong), SubscribedServer> servers = new ConcurrentDictionary<(ulong, ulong), SubscribedServer>();
         private readonly ConcurrentQueue<SubscribedServer> removedServers = new ConcurrentQueue<SubscribedServer>();
 
         public ServerInfoProcessor(DiscordSocketClient client, ISubscribedServerService subscribedServerService,
-            IOttdClientProvider ottdClientProvider, IEmbedFactory embedFactory)
+            IOttdClientProvider ottdClientProvider, IEmbedFactory embedFactory, ILogger<ServerInfoProcessor> logger)
         {
             this.subscribedServerService = subscribedServerService;
             this.client = client;
             this.ottdClientProvider = ottdClientProvider;
             this.embedFactory = embedFactory;
+            this.logger = logger;
 
             this.subscribedServerService.ServerAdded += (_, ss) => servers.TryAdd((ss.Server.Id, ss.ChannelId), ss);
             this.subscribedServerService.ServerRemoved += SubscribedServerService_ServerRemoved;
@@ -69,7 +72,7 @@ namespace OpenttdDiscord
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine("Exception " + ex.ToString());
+                    logger.LogError("Exception " + ex.ToString());
                 }
             }
         }
@@ -96,29 +99,36 @@ namespace OpenttdDiscord
             {
                 var s = kp.Value;
 
-                var channel = client.GetChannel(s.ChannelId) as SocketTextChannel;
-                ulong? messageId = s.MessageId;
-                if (messageId.HasValue == false || (await channel.GetMessageAsync(messageId.Value)) == null)
+                try
                 {
-                    messageId = (await channel.SendMessageAsync("Getting server info")).Id;
-                }
-
-                if (messageId.HasValue)
-                {
-                    var ottdClient = this.ottdClientProvider.Provide(s.Server.ServerIp, s.Port);
-                    var r = await ottdClient.AskAboutServerInfo();
-
-                    Embed embed = embedFactory.Create(r, s.Server);
-                    var msg = await channel.GetMessageAsync(messageId.Value) as RestUserMessage;
-                    await msg.ModifyAsync(x =>
+                    var channel = client.GetChannel(s.ChannelId) as SocketTextChannel;
+                    ulong? messageId = s.MessageId;
+                    if (messageId.HasValue == false || (await channel.GetMessageAsync(messageId.Value)) == null)
                     {
-                        x.Embed = embed;
-                    });
+                        messageId = (await channel.SendMessageAsync("Getting server info")).Id;
+                    }
 
-                    await subscribedServerService.UpdateServer(s.Server.Id, s.ChannelId, messageId.Value);
+                    if (messageId.HasValue)
+                    {
+                        var ottdClient = this.ottdClientProvider.Provide(s.Server.ServerIp, s.Port);
+                        var r = await ottdClient.AskAboutServerInfo();
+
+                        Embed embed = embedFactory.Create(r, s.Server);
+                        var msg = await channel.GetMessageAsync(messageId.Value) as RestUserMessage;
+                        await msg.ModifyAsync(x =>
+                        {
+                            x.Embed = embed;
+                        });
+
+                        await subscribedServerService.UpdateServer(s.Server.Id, s.ChannelId, messageId.Value);
+                    }
+                    var nv = new SubscribedServer(s.Server, s.LastUpdate, s.ChannelId, messageId, s.Port);
+                    servers.TryUpdate((s.Server.Id, s.ChannelId), nv, s);
                 }
-                var nv = new SubscribedServer(s.Server, s.LastUpdate, s.ChannelId, messageId, s.Port);
-                servers.TryUpdate((s.Server.Id, s.ChannelId), nv, s); 
+                catch(Exception e)
+                {
+                    this.logger.LogError($"{s.Server.ServerIp}:{s.Port} - {e.Message}");
+                }
             }
         }
     }

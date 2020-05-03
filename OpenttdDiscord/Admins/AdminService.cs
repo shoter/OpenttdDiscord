@@ -67,87 +67,111 @@ namespace OpenttdDiscord.Admins
                 {
                     await Task.Delay(TimeSpan.FromSeconds(1));
 
-                    foreach (var adminChannel in adminChannels.Values)
-                    {
-                        var client = await clientProvider.GetClient(new ServerInfo(adminChannel.Server.ServerIp, adminChannel.Server.ServerPort, adminChannel.Server.ServerPassword));
-
-                        if (client.ConnectionState != AdminConnectionState.Connected)
-                        {
-                            await client.Join();
-                        }
-                    }
-
-                    foreach (var key in EventsQueue.Keys)
-                        if (EventsQueue.TryRemove(key, out var events))
-                        {
-                            StringBuilder sb = new StringBuilder();
-                            string msg = null;
-
-                            while (events.TryDequeue(out var e))
-                            {
-                                if (e.EventType == AdminEventType.AdminRcon)
-                                {
-                                    var rcon = e as AdminRconEvent;
-                                    sb.Append($"{rcon.Message}\n");
-                                }
-                            }
-
-                            msg = sb.ToString();
-                            if (string.IsNullOrWhiteSpace(msg))
-                                continue;
-
-                            var servers = adminChannels.Values.Where(a => a.Server.ServerIp == key.ip && a.Server.ServerPort == key.port).ToList();
-                            foreach (var s in servers)
-                            {
-                                var channel = discord.GetChannel(s.ChannelId) as SocketTextChannel;
-                                await channel.SendMessageAsync(msg);
-                            }
-
-                        }
-
-                    while (messagesEnqued.TryDequeue(out var msg))
-                    {
-                        var adminChannel = adminChannels.Values.FirstOrDefault(ac => ac.ChannelId == msg.ChannelId);
-
-                        // we do not handle this admin channel anymore - it was removed.
-                        if (adminChannel == null)
-                            continue;
-
-                        if (!msg.Message.StartsWith(adminChannel.Prefix))
-                            continue;
-
-                        string command = msg.Message.Split(adminChannel.Prefix).Last();
-
-                        var client = await clientProvider.GetClient(new ServerInfo(adminChannel.Server.ServerIp, adminChannel.Server.ServerPort, adminChannel.Server.ServerPassword));
-
-                        if (client.ConnectionState != AdminConnectionState.Connected)
-                        {
-                            await client.Join();
-                        }
-
-                        client.SendMessage(new AdminRconMessage(command));
-
-                    }
-
-                    while (AdminChannelsToRemove.TryDequeue(out var adminChannel))
-                    {
-                        var client = await clientProvider.GetClient(new ServerInfo(adminChannel.Server.ServerIp, adminChannel.Server.ServerPort, adminChannel.Server.ServerPassword));
-
-                        // this is super rare situation. Even if there is a chat service that is currently using that then nothing super bad should happen. We will lose maybe few messages or smth.
-                        // the same goes for chat service when chat is being deleted.
-                        // if it will become problem the clientProvider should have ability to remember how many clients reserved specific servers and they should be able to tell client provider
-                        // that they do not need the server anymore.
-                        // But it is troublesome to implement right now as I want to complete this bot and not spend eternity trying to find best solutions xD
-                        await client.Disconnect();
-
-                        adminChannels.TryRemove(adminChannel.UniqueValue, out _);
-                    }
+                    await JoinUnjoinedClients();
+                    await ProcessEvents();
+                    await ProcessDiscordMessages();
+                    await ProcessRemovedServers();
                 }
                 catch (Exception e)
                 {
                     logger.LogInformation($"Admin Service - {e.Message}", e);
                 }
 
+            }
+        }
+
+        private async Task ProcessRemovedServers()
+        {
+            while (AdminChannelsToRemove.TryDequeue(out var adminChannel))
+            {
+                var client = await clientProvider.GetClient(new ServerInfo(adminChannel.Server.ServerIp, adminChannel.Server.ServerPort, adminChannel.Server.ServerPassword));
+
+                // this is super rare situation. Even if there is a chat service that is currently using that then nothing super bad should happen. We will lose maybe few messages or smth.
+                // the same goes for chat service when chat is being deleted.
+                // if it will become problem the clientProvider should have ability to remember how many clients reserved specific servers and they should be able to tell client provider
+                // that they do not need the server anymore.
+                // But it is troublesome to implement right now as I want to complete this bot and not spend eternity trying to find best solutions xD
+                await client.Disconnect();
+
+                adminChannels.TryRemove(adminChannel.UniqueValue, out _);
+            }
+        }
+
+        private async Task ProcessDiscordMessages()
+        {
+            while (messagesEnqued.TryDequeue(out var msg))
+            {
+                var adminChannel = adminChannels.Values.FirstOrDefault(ac => ac.ChannelId == msg.ChannelId);
+
+                // we do not handle this admin channel anymore - it was removed.
+                if (adminChannel == null)
+                    continue;
+
+                if (!msg.Message.StartsWith(adminChannel.Prefix))
+                    continue;
+
+                string command = msg.Message.Split(adminChannel.Prefix).Last();
+
+                var client = await clientProvider.GetClient(new ServerInfo(adminChannel.Server.ServerIp, adminChannel.Server.ServerPort, adminChannel.Server.ServerPassword));
+
+                if (client.ConnectionState != AdminConnectionState.Connected)
+                {
+                    await client.Join();
+                }
+
+                client.SendMessage(new AdminRconMessage(command));
+
+            }
+        }
+
+        private async Task ProcessEvents()
+        {
+            foreach (var key in EventsQueue.Keys)
+                if (EventsQueue.TryRemove(key, out var events))
+                {
+                    StringBuilder sb = new StringBuilder();
+                    string msg = null;
+
+                    while (events.TryDequeue(out var e))
+                    {
+                        if (e.EventType == AdminEventType.AdminRcon)
+                        {
+                            var rcon = e as AdminRconEvent;
+                            sb.Append($"{rcon.Message}\n");
+                        }
+                    }
+
+                    msg = sb.ToString();
+                    if (string.IsNullOrWhiteSpace(msg))
+                        continue;
+
+                    var servers = adminChannels.Values.Where(a => a.Server.ServerIp == key.ip && a.Server.ServerPort == key.port).ToList();
+                    foreach (var s in servers)
+                    {
+                        var channel = discord.GetChannel(s.ChannelId) as SocketTextChannel;
+                        await channel.SendMessageAsync(msg);
+                    }
+
+                }
+        }
+
+        private async Task JoinUnjoinedClients()
+        {
+            foreach (var adminChannel in adminChannels.Values)
+            {
+                try
+                {
+                    var client = await clientProvider.GetClient(new ServerInfo(adminChannel.Server.ServerIp, adminChannel.Server.ServerPort, adminChannel.Server.ServerPassword));
+
+                    if (client.ConnectionState != AdminConnectionState.Connected)
+                    {
+                        await client.Join();
+                    }
+                }
+                catch(Exception e)
+                {
+                    logger.LogError($"{adminChannel.Server.ServerIp}:{adminChannel.Server.ServerPort} - cannot join - {e.Message}");
+                }
             }
         }
 

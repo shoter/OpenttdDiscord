@@ -16,7 +16,7 @@ Openttd Discord bot.
 Debugging process is the same excluding the fact that you need to launch your project instead of docker instance. It should work out of the box with environment variables set.
 
 
-## Usage
+## Usage (outdated)
 
 ### Creating message updating server status
 

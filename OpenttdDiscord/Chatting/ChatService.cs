@@ -32,6 +32,7 @@ namespace OpenttdDiscord.Chatting
             this.logger = logger;
             this.chatChannelServerService = chatChannelServerService;
             this.adminPortClientProvider = adminPortClientProvider;
+            this.adminPortClientProvider.NewClientCreated += (_, client) => client.EventReceived += Client_EventReceived;
             this.discord = discord;
         }
 
@@ -55,7 +56,6 @@ namespace OpenttdDiscord.Chatting
                     while(serversToRemove.TryDequeue(out ChatChannelServer s))
                     {
                         IAdminPortClient client = await adminPortClientProvider.GetClient(new ServerInfo(s.Server.ServerIp, s.Server.ServerPort, s.Server.ServerPassword));
-                        client.EventReceived -= Client_EventReceived;
                         chatServers.Remove((s.Server.Id, s.ChannelId), out _);
                     }
 
@@ -67,8 +67,6 @@ namespace OpenttdDiscord.Chatting
                         if (client.ConnectionState == AdminConnectionState.Idle)
                         {
                             await client.Join();
-                            client.EventReceived -= Client_EventReceived;
-                            client.EventReceived += Client_EventReceived;
                         }
                     }
 

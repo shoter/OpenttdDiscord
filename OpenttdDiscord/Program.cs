@@ -31,6 +31,7 @@ namespace OpenttdDiscord
     {
         private static DiscordSocketClient client;
         private static bool initialized = false;
+        private static bool quitProgram = false;
 
         public static async Task Main()
         {
@@ -52,8 +53,12 @@ namespace OpenttdDiscord
             await services.GetRequiredService<CommandHandlingService>().InitializeAsync();
 
             client.Connected += Client_Connected;
+            client.Disconnected += (_) => { quitProgram = true; return Task.CompletedTask; };
 
-            await Task.Delay(-1);
+            while(quitProgram == false)
+            {
+                await Task.Delay(TimeSpan.FromSeconds(15));
+            }
         }
 
         private static async Task Client_Connected()

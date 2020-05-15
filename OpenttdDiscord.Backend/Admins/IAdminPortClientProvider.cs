@@ -11,13 +11,13 @@ namespace OpenttdDiscord.Backend.Admins
 {
     public interface IAdminPortClientProvider
     {
-        Task Register(object owner, Server server);
+        Task Register(IAdminPortClientUser owner, Server server);
 
-        IAdminPortClient GetClient(object owner, Server server);
+        IAdminPortClient GetClient(IAdminPortClientUser owner, Server server);
 
-        Task Unregister(object owner, Server server);
+        Task Unregister(IAdminPortClientUser owner, Server server);
 
-        bool IsRegistered(object owner, Server server);
+        bool IsRegistered(IAdminPortClientUser owner, Server server);
         
     }
 }

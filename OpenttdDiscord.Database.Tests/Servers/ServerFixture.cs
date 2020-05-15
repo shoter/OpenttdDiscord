@@ -10,7 +10,7 @@ namespace OpenttdDiscord.Database.Tests.Servers
 {
     public class ServerFixture
     {
-        private Random rand = new Random();
+        private readonly Random rand = new Random();
         private byte lastIp = 0;
         private ulong id = 0;
         private string ip;
@@ -28,6 +28,16 @@ namespace OpenttdDiscord.Database.Tests.Servers
         public ServerFixture WithServerName(string serverName)
         {
             this.serverName = serverName;
+            return this;
+        }
+
+        public ServerFixture BasedOn(Server server)
+        {
+            this.id = server.Id;
+            this.serverPort = server.ServerPort;
+            this.password = server.ServerPassword;
+            this.ip = server.ServerIp;
+            this.guildId = server.GuildId;
             return this;
         }
 

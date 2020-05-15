@@ -17,27 +17,27 @@ namespace OpenttdDiscord.Backend.Admins
             this.Client = client;
         }
 
-        public void AddUser(object user)
+        public void AddUser(IAdminPortClientUser user)
         {
             RegisteredUsers.TryAdd(user, true);
         }
 
-        public void RemoveUser(object user)
+        public void RemoveUser(IAdminPortClientUser user)
         {
             RegisteredUsers.TryRemove(user, out _);
         }
 
         public bool HasAnyUsers() => RegisteredUsers.Count != 0;
 
-        public bool IsRegistered(object user) => RegisteredUsers.ContainsKey(user);
+        public bool IsRegistered(IAdminPortClientUser user) => RegisteredUsers.ContainsKey(user);
 
-        public IEnumerable<object> GetRegisteredUsers() => RegisteredUsers.Keys;
+        public IEnumerable<IAdminPortClientUser> GetRegisteredUsers() => RegisteredUsers.Keys;
 
         public Server Server { get; }
 
         public IAdminPortClient Client { get; }
 
-        private ConcurrentDictionary<object, bool> RegisteredUsers { get; } = new ConcurrentDictionary<object, bool>();
+        private ConcurrentDictionary<IAdminPortClientUser, bool> RegisteredUsers { get; } = new ConcurrentDictionary<IAdminPortClientUser, bool>();
 
         public string GetKey() => $"{Server.GetUniqueKey()}";
 

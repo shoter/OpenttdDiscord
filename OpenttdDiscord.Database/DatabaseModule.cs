@@ -11,7 +11,7 @@ using OpenttdDiscord.Database.Admins;
 
 namespace OpenttdDiscord.Backend
 {
-    public class BackendModule : IModule
+    public class DatabaseModule : IModule
     {
         public void Register(in IServiceCollection services)
         {

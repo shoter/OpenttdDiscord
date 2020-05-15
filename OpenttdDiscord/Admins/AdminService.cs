@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using OpenttdDiscord.Backend.Admins;
 using OpenttdDiscord.Database.Admins;
+using OpenttdDiscord.Database.Servers;
 using OpenttdDiscord.Openttd;
 using OpenttdDiscord.Openttd.Network.AdminPort;
 using System;
@@ -14,7 +15,7 @@ using System.Threading.Tasks;
 
 namespace OpenttdDiscord.Admins
 {
-    public class AdminService : IAdminService
+    public class AdminService : IAdminService, IAdminPortClientUser
     {
         private ConcurrentDictionary<(string ip, int port), ConcurrentQueue<IAdminEvent>> EventsQueue { get; } = new ConcurrentDictionary<(string ip, int port), ConcurrentQueue<IAdminEvent>>();
         private ConcurrentQueue<AdminChannel> AdminChannelsToRemove { get; } = new ConcurrentQueue<AdminChannel>();
@@ -41,14 +42,6 @@ namespace OpenttdDiscord.Admins
         {
             var old = adminChannels[e.UniqueValue];
             adminChannels.TryUpdate(e.UniqueValue, e, old);
-        }
-
-        private void ClientProvider_NewClientCreated(object sender, IAdminPortClient e) => e.EventReceived += E_EventReceived;
-
-        private void E_EventReceived(object sender, IAdminEvent e)
-        {
-            var queue = EventsQueue.GetOrAdd((e.Server.ServerIp, e.Server.ServerPort), (_) => new ConcurrentQueue<IAdminEvent>());
-            queue.Enqueue(e);
         }
 
         public async Task Start()
@@ -164,6 +157,12 @@ namespace OpenttdDiscord.Admins
         {
             messagesEnqued.Enqueue((channelId, message));
             return Task.CompletedTask;
+        }
+
+        public void ParseServerEvent(Server server, IAdminEvent adminEvent)
+        {
+            var queue = EventsQueue.GetOrAdd((server.ServerIp, server.ServerPort), (_) => new ConcurrentQueue<IAdminEvent>());
+            queue.Enqueue(adminEvent);
         }
     }
 }

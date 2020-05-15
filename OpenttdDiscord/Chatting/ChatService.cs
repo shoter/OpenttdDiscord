@@ -16,7 +16,7 @@ using System.Threading.Tasks;
 
 namespace OpenttdDiscord.Chatting
 {
-    public class ChatService : IChatService
+    public class ChatService : IChatService, IAdminPortClientUser
     {
         private readonly ILogger<ChatService> logger;
         private readonly IChatChannelServerService chatChannelServerService;
@@ -72,7 +72,7 @@ namespace OpenttdDiscord.Chatting
             }
         }
 
-        private async Task HandleDiscordMessages()
+        private Task HandleDiscordMessages()
         {
             while (discordMessages.TryDequeue(out DiscordMessage msg))
             {
@@ -89,9 +89,8 @@ namespace OpenttdDiscord.Chatting
                         client.SendMessage(new AdminChatMessage(NetworkAction.NETWORK_ACTION_CHAT, ChatDestination.DESTTYPE_BROADCAST, 0, chatMsg));
                     }
                 }
-
-
             }
+            return Task.CompletedTask;
         }
 
         private async Task HandleGameMessages()
@@ -168,14 +167,14 @@ namespace OpenttdDiscord.Chatting
             }
         }
 
-        private void Client_EventReceived(object sender, IAdminEvent msg)
-        {
-            this.receivedMessagges.Enqueue(msg);
-        }
-
         public void AddMessage(DiscordMessage message)
         {
             this.discordMessages.Enqueue(message);
+        }
+
+        public void ParseServerEvent(Server server, IAdminEvent adminEvent)
+        {
+            this.receivedMessagges.Enqueue(adminEvent);
         }
     }
 }

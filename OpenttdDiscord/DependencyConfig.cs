@@ -37,6 +37,7 @@ namespace OpenttdDiscord
             new CommandsModule().Register(services);
             new MessagingModule().Register(services);
             new OttdModule().Register(services);
+            new BackendModule().Register(services);
             new AdminModule().Register(services);
 
             services.AddSingleton<DiscordSocketClient>();

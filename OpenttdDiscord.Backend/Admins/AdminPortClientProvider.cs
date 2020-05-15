@@ -82,5 +82,14 @@ namespace OpenttdDiscord.Backend.Admins
                 }
             }
         }
+
+        public bool IsRegistered(object owner, Server server)
+        {
+            if (RegisterInfo.TryGetValue(server.GetUniqueKey(), out AdminClientRegisterInfo info))
+            {
+                return info.IsRegistered(owner);
+            }
+            return false;
+        }
     }
 }

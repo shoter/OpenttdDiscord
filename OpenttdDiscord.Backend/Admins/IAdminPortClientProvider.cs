@@ -16,6 +16,8 @@ namespace OpenttdDiscord.Backend.Admins
         IAdminPortClient GetClient(object owner, Server server);
 
         Task Unregister(object owner, Server server);
+
+        bool IsRegistered(object owner, Server server);
         
     }
 }

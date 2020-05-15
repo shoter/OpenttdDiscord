@@ -1,5 +1,6 @@
 ﻿using Discord.WebSocket;
 using Microsoft.Extensions.Logging;
+using OpenttdDiscord.Backend.Admins;
 using OpenttdDiscord.Database.Admins;
 using OpenttdDiscord.Openttd;
 using OpenttdDiscord.Openttd.Network.AdminPort;
@@ -31,7 +32,6 @@ namespace OpenttdDiscord.Admins
             this.discord = discord;
             this.adminChannelService = adminChannelService;
             this.logger = logger;
-            clientProvider.NewClientCreated += ClientProvider_NewClientCreated;
             adminChannelService.Added += (_, ac) => adminChannels.TryAdd(ac.UniqueValue, ac);
             adminChannelService.Updated += AdminChannelService_Updated;
             adminChannelService.Removed += (_, ac) => AdminChannelsToRemove.Enqueue(ac);
@@ -84,20 +84,12 @@ namespace OpenttdDiscord.Admins
         {
             while (AdminChannelsToRemove.TryDequeue(out var adminChannel))
             {
-                var client = await clientProvider.GetClient(new ServerInfo(adminChannel.Server.ServerIp, adminChannel.Server.ServerPort, adminChannel.Server.ServerPassword));
-
-                // this is super rare situation. Even if there is a chat service that is currently using that then nothing super bad should happen. We will lose maybe few messages or smth.
-                // the same goes for chat service when chat is being deleted.
-                // if it will become problem the clientProvider should have ability to remember how many clients reserved specific servers and they should be able to tell client provider
-                // that they do not need the server anymore.
-                // But it is troublesome to implement right now as I want to complete this bot and not spend eternity trying to find best solutions xD
-                await client.Disconnect();
-
+                await clientProvider.Unregister(this, adminChannel.Server);
                 adminChannels.TryRemove(adminChannel.UniqueValue, out _);
             }
         }
 
-        private async Task ProcessDiscordMessages()
+        private Task ProcessDiscordMessages()
         {
             while (messagesEnqued.TryDequeue(out var msg))
             {
@@ -112,16 +104,11 @@ namespace OpenttdDiscord.Admins
 
                 string command = msg.Message.Split(adminChannel.Prefix).Last();
 
-                var client = await clientProvider.GetClient(new ServerInfo(adminChannel.Server.ServerIp, adminChannel.Server.ServerPort, adminChannel.Server.ServerPassword));
-
-                if (client.ConnectionState != AdminConnectionState.Connected)
-                {
-                    await client.Join();
-                }
-
+                var client = clientProvider.GetClient(this, adminChannel.Server);
                 client.SendMessage(new AdminRconMessage(command));
-
             }
+            return Task.CompletedTask;
+
         }
 
         private async Task ProcessEvents()
@@ -161,16 +148,14 @@ namespace OpenttdDiscord.Admins
             {
                 try
                 {
-                    var client = await clientProvider.GetClient(new ServerInfo(adminChannel.Server.ServerIp, adminChannel.Server.ServerPort, adminChannel.Server.ServerPassword));
-
-                    if (client.ConnectionState != AdminConnectionState.Connected)
+                    if (clientProvider.IsRegistered(this, adminChannel.Server) == false)
                     {
-                        await client.Join();
+                        await clientProvider.Register(this, adminChannel.Server);
                     }
                 }
-                catch(Exception e)
+                catch (Exception e)
                 {
-                    logger.LogError($"{adminChannel.Server.ServerIp}:{adminChannel.Server.ServerPort} - cannot join - {e.Message}");
+                    logger.LogError($"{adminChannel.Server.ServerIp}:{adminChannel.Server.ServerPort} - cannot register - {e.Message}");
                 }
             }
         }

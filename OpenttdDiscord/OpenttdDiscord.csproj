@@ -31,6 +31,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\OpenttdDiscord.Backend\OpenttdDiscord.Backend.csproj" />
     <ProjectReference Include="..\OpenttdDiscord.Database\OpenttdDiscord.Database.csproj" />
     <ProjectReference Include="..\OpenttdDiscord.Openttd\OpenttdDiscord.Openttd.csproj" />
   </ItemGroup>

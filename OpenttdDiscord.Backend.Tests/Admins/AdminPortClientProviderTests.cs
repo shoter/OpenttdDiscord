@@ -149,5 +149,32 @@ namespace OpenttdDiscord.Backend.Tests.Admins
             client.Verify(x => x.Disconnect(), Times.Never);
         }
 
+        [Fact]
+        public void BeAbleToTell_IfUserIsNotRegistered()
+        {
+            Server server = new ServerFixture().WithPassword("123").Build();
+            Assert.False(provider.IsRegistered(new object(), server));
+        }
+
+        [Fact]
+        public async Task BeAbleToTell_IfUserIsRegistered()
+        {
+            Server server = new ServerFixture().WithPassword("123").Build();
+            object user = new object();
+            await provider.Register(user, server);
+            Assert.True(provider.IsRegistered(new object(), server));
+        }
+
+        [Fact]
+        public async Task BeAbleToTell_ThatUserIsUnregistered_AfterUnregisteringUser()
+        {
+            Server server = new ServerFixture().WithPassword("123").Build();
+            object user = new object();
+            await provider.Register(user, server);
+            await provider.Unregister(user, server);
+            Assert.False(provider.IsRegistered(new object(), server));
+        }
+
+
     }
 }

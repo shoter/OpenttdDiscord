@@ -44,6 +44,19 @@ namespace OpenttdDiscord.Database.Tests.Servers
         }
 
         [Fact]
+        public async Task GetServer_ShouldBeAbleToGetServerById()
+        {
+            IServerRepository repo = new ServerRepository(GetMysql());
+            Server s = await repo.AddServer(11u, "192.168.0.1", 123, "testServerName");
+            var server = await repo.GetServer(s.Id);
+
+            Assert.Equal("192.168.0.1", server.ServerIp);
+            Assert.Equal(123, server.ServerPort);
+            Assert.Equal(11u, server.GuildId);
+            Assert.Equal("testServerName", server.ServerName);
+        }
+
+        [Fact]
         public async Task UpdatePassword_ShouldChangePassword()
         {
             IServerRepository repo = new ServerRepository(GetMysql());

@@ -33,10 +33,11 @@ namespace OpenttdDiscord
             var services = new ServiceCollection();
 
             new ConfigModule().Register(services);
-            new BackendModule().Register(services);
+            new DatabaseModule().Register(services);
             new CommandsModule().Register(services);
             new MessagingModule().Register(services);
             new OttdModule().Register(services);
+            new BackendModule().Register(services);
             new AdminModule().Register(services);
 
             services.AddSingleton<DiscordSocketClient>();

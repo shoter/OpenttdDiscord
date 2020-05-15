@@ -1,6 +1,8 @@
 ﻿using Discord.WebSocket;
 using Microsoft.Extensions.Logging;
+using OpenttdDiscord.Backend.Admins;
 using OpenttdDiscord.Database.Admins;
+using OpenttdDiscord.Database.Servers;
 using OpenttdDiscord.Openttd;
 using OpenttdDiscord.Openttd.Network.AdminPort;
 using System;
@@ -13,7 +15,7 @@ using System.Threading.Tasks;
 
 namespace OpenttdDiscord.Admins
 {
-    public class AdminService : IAdminService
+    public class AdminService : IAdminService, IAdminPortClientUser
     {
         private ConcurrentDictionary<(string ip, int port), ConcurrentQueue<IAdminEvent>> EventsQueue { get; } = new ConcurrentDictionary<(string ip, int port), ConcurrentQueue<IAdminEvent>>();
         private ConcurrentQueue<AdminChannel> AdminChannelsToRemove { get; } = new ConcurrentQueue<AdminChannel>();
@@ -31,7 +33,6 @@ namespace OpenttdDiscord.Admins
             this.discord = discord;
             this.adminChannelService = adminChannelService;
             this.logger = logger;
-            clientProvider.NewClientCreated += ClientProvider_NewClientCreated;
             adminChannelService.Added += (_, ac) => adminChannels.TryAdd(ac.UniqueValue, ac);
             adminChannelService.Updated += AdminChannelService_Updated;
             adminChannelService.Removed += (_, ac) => AdminChannelsToRemove.Enqueue(ac);
@@ -41,14 +42,6 @@ namespace OpenttdDiscord.Admins
         {
             var old = adminChannels[e.UniqueValue];
             adminChannels.TryUpdate(e.UniqueValue, e, old);
-        }
-
-        private void ClientProvider_NewClientCreated(object sender, IAdminPortClient e) => e.EventReceived += E_EventReceived;
-
-        private void E_EventReceived(object sender, IAdminEvent e)
-        {
-            var queue = EventsQueue.GetOrAdd((e.Server.ServerIp, e.Server.ServerPort), (_) => new ConcurrentQueue<IAdminEvent>());
-            queue.Enqueue(e);
         }
 
         public async Task Start()
@@ -84,20 +77,12 @@ namespace OpenttdDiscord.Admins
         {
             while (AdminChannelsToRemove.TryDequeue(out var adminChannel))
             {
-                var client = await clientProvider.GetClient(new ServerInfo(adminChannel.Server.ServerIp, adminChannel.Server.ServerPort, adminChannel.Server.ServerPassword));
-
-                // this is super rare situation. Even if there is a chat service that is currently using that then nothing super bad should happen. We will lose maybe few messages or smth.
-                // the same goes for chat service when chat is being deleted.
-                // if it will become problem the clientProvider should have ability to remember how many clients reserved specific servers and they should be able to tell client provider
-                // that they do not need the server anymore.
-                // But it is troublesome to implement right now as I want to complete this bot and not spend eternity trying to find best solutions xD
-                await client.Disconnect();
-
+                await clientProvider.Unregister(this, adminChannel.Server);
                 adminChannels.TryRemove(adminChannel.UniqueValue, out _);
             }
         }
 
-        private async Task ProcessDiscordMessages()
+        private Task ProcessDiscordMessages()
         {
             while (messagesEnqued.TryDequeue(out var msg))
             {
@@ -112,16 +97,11 @@ namespace OpenttdDiscord.Admins
 
                 string command = msg.Message.Split(adminChannel.Prefix).Last();
 
-                var client = await clientProvider.GetClient(new ServerInfo(adminChannel.Server.ServerIp, adminChannel.Server.ServerPort, adminChannel.Server.ServerPassword));
-
-                if (client.ConnectionState == AdminConnectionState.Idle)
-                {
-                    await client.Join();
-                }
-
+                var client = clientProvider.GetClient(this, adminChannel.Server);
                 client.SendMessage(new AdminRconMessage(command));
-
             }
+            return Task.CompletedTask;
+
         }
 
         private async Task ProcessEvents()
@@ -161,16 +141,14 @@ namespace OpenttdDiscord.Admins
             {
                 try
                 {
-                    var client = await clientProvider.GetClient(new ServerInfo(adminChannel.Server.ServerIp, adminChannel.Server.ServerPort, adminChannel.Server.ServerPassword));
-
-                    if (client.ConnectionState == AdminConnectionState.Idle)
+                    if (clientProvider.IsRegistered(this, adminChannel.Server) == false)
                     {
-                        await client.Join();
+                        await clientProvider.Register(this, adminChannel.Server);
                     }
                 }
-                catch(Exception e)
+                catch (Exception e)
                 {
-                    logger.LogError($"{adminChannel.Server.ServerIp}:{adminChannel.Server.ServerPort} - cannot join - {e.Message}");
+                    logger.LogError($"{adminChannel.Server.ServerIp}:{adminChannel.Server.ServerPort} - cannot register - {e.Message}");
                 }
             }
         }
@@ -179,6 +157,12 @@ namespace OpenttdDiscord.Admins
         {
             messagesEnqued.Enqueue((channelId, message));
             return Task.CompletedTask;
+        }
+
+        public void ParseServerEvent(Server server, IAdminEvent adminEvent)
+        {
+            var queue = EventsQueue.GetOrAdd((server.ServerIp, server.ServerPort), (_) => new ConcurrentQueue<IAdminEvent>());
+            queue.Enqueue(adminEvent);
         }
     }
 }

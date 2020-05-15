@@ -1,5 +1,6 @@
 ﻿using Discord.WebSocket;
 using Microsoft.Extensions.Logging;
+using OpenttdDiscord.Backend.Admins;
 using OpenttdDiscord.Database.Chatting;
 using OpenttdDiscord.Database.Servers;
 using OpenttdDiscord.Openttd;
@@ -15,7 +16,7 @@ using System.Threading.Tasks;
 
 namespace OpenttdDiscord.Chatting
 {
-    public class ChatService : IChatService
+    public class ChatService : IChatService, IAdminPortClientUser
     {
         private readonly ILogger<ChatService> logger;
         private readonly IChatChannelServerService chatChannelServerService;
@@ -32,7 +33,6 @@ namespace OpenttdDiscord.Chatting
             this.logger = logger;
             this.chatChannelServerService = chatChannelServerService;
             this.adminPortClientProvider = adminPortClientProvider;
-            this.adminPortClientProvider.NewClientCreated += (_, client) => client.EventReceived += Client_EventReceived;
             this.discord = discord;
         }
 
@@ -72,7 +72,7 @@ namespace OpenttdDiscord.Chatting
             }
         }
 
-        private async Task HandleDiscordMessages()
+        private Task HandleDiscordMessages()
         {
             while (discordMessages.TryDequeue(out DiscordMessage msg))
             {
@@ -82,17 +82,15 @@ namespace OpenttdDiscord.Chatting
                 foreach (var o in others)
                 {
                     Server server = chatServers[(o.Server.Id, o.ChannelId)].Server;
-                    var info = new ServerInfo(server.ServerIp, server.ServerPort, server.ServerPassword);
-                    IAdminPortClient client = await adminPortClientProvider.GetClient(info);
+                    IAdminPortClient client = adminPortClientProvider.GetClient(this, server);
 
                     if (client.ConnectionState == AdminConnectionState.Connected)
                     {
                         client.SendMessage(new AdminChatMessage(NetworkAction.NETWORK_ACTION_CHAT, ChatDestination.DESTTYPE_BROADCAST, 0, chatMsg));
                     }
                 }
-
-
             }
+            return Task.CompletedTask;
         }
 
         private async Task HandleGameMessages()
@@ -129,8 +127,7 @@ namespace OpenttdDiscord.Chatting
                         foreach (var o in others)
                         {
                             Server server = chatServers[(o.Server.Id, o.ChannelId)].Server;
-                            var info = new ServerInfo(server.ServerIp, server.ServerPort, server.ServerPassword);
-                            IAdminPortClient client = await adminPortClientProvider.GetClient(info);
+                            IAdminPortClient client = adminPortClientProvider.GetClient(this, server);
 
                             if (client.ConnectionState == AdminConnectionState.Connected)
                             {
@@ -152,13 +149,7 @@ namespace OpenttdDiscord.Chatting
             {
                 try
                 {
-                    Server server = s.Server;
-                    ServerInfo info = new ServerInfo(server.ServerIp, server.ServerPort, server.ServerPassword);
-                    IAdminPortClient client = await adminPortClientProvider.GetClient(info);
-                    if (client.ConnectionState == AdminConnectionState.Idle)
-                    {
-                        await client.Join();
-                    }
+                    await adminPortClientProvider.Register(this, s.Server);
                 }
                 catch(Exception e)
                 {
@@ -171,19 +162,19 @@ namespace OpenttdDiscord.Chatting
         {
             while (serversToRemove.TryDequeue(out ChatChannelServer s))
             {
-                IAdminPortClient client = await adminPortClientProvider.GetClient(new ServerInfo(s.Server.ServerIp, s.Server.ServerPort, s.Server.ServerPassword));
+                await adminPortClientProvider.Unregister(this, s.Server);
                 chatServers.Remove((s.Server.Id, s.ChannelId), out _);
             }
-        }
-
-        private void Client_EventReceived(object sender, IAdminEvent msg)
-        {
-            this.receivedMessagges.Enqueue(msg);
         }
 
         public void AddMessage(DiscordMessage message)
         {
             this.discordMessages.Enqueue(message);
+        }
+
+        public void ParseServerEvent(Server server, IAdminEvent adminEvent)
+        {
+            this.receivedMessagges.Enqueue(adminEvent);
         }
     }
 }

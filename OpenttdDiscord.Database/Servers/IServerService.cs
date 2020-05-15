@@ -10,6 +10,7 @@ namespace OpenttdDiscord.Database.Servers
     public interface IServerService
     {
         event EventHandler<Server> Added;
+        event EventHandler<Server> PasswordChanged;
         event EventHandler<NewServerPassword> NewServerPasswordRequestAdded;
 
         Task<Server> Getsert(ulong guildId, string ip, int port, string serverName);

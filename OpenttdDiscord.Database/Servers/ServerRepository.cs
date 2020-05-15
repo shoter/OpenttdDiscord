@@ -113,6 +113,26 @@ namespace OpenttdDiscord.Database.Servers
             }
         }
 
+        public async Task<Server> GetServer(ulong serverId)
+        {
+            using (var conn = new MySqlConnection(this.connectionString))
+            {
+                await conn.OpenAsync();
+                using (var cmd = new MySqlCommand($"SELECT * FROM servers where id=@sid", conn))
+                {
+                    cmd.Parameters.AddWithValue("sid", serverId);
+
+                    using (var reader = await cmd.ExecuteReaderAsync())
+                    {
+                        if (await reader.ReadAsync())
+                            return ReadFromReader(reader);
+                        else
+                            return null;
+                    }
+                }
+            }
+        }
+
         public async Task<List<Server>> GetServers(string ip, int port)
         {
             using (var conn = new MySqlConnection(this.connectionString))

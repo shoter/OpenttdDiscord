@@ -9,6 +9,7 @@ namespace OpenttdDiscord.Database.Servers
     public interface IServerRepository
     {
         Task<Server> GetServer(ulong guildId, string ip, int port);
+        Task<Server> GetServer(ulong serverId);
         Task<List<Server>> GetServers(string ip, int port);
         Task<Server> AddServer(ulong guildId, string ip, int port, string name);
 

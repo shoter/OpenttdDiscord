@@ -13,6 +13,7 @@ namespace OpenttdDiscord.Database.Servers
     {
         public event EventHandler<Server> Added;
         public event EventHandler<NewServerPassword> NewServerPasswordRequestAdded;
+        public event EventHandler<Server> PasswordChanged;
 
         private ConcurrentDictionary<ulong, NewServerPassword> NewServerPasswordRequests { get; } = new ConcurrentDictionary<ulong, NewServerPassword>();
 
@@ -84,7 +85,12 @@ namespace OpenttdDiscord.Database.Servers
             return nsp;
         }
 
-        public Task ChangePassword(ulong serverId, string newPassword) => this.serverRepository.UpdatePassword(serverId, newPassword);
+        public async Task ChangePassword(ulong serverId, string newPassword)
+        {
+            await this.serverRepository.UpdatePassword(serverId, newPassword);
+            Server server = await this.serverRepository.GetServer(serverId);
+            PasswordChanged?.Invoke(this, server);
+        }
 
         public Task<List<Server>> Get(string ip, int port) => this.serverRepository.GetServers(ip, port);
     }

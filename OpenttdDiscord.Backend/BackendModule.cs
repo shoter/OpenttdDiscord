@@ -1,13 +1,11 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using OpenttdDiscord.Database.Chatting;
-using OpenttdDiscord.Database.Servers;
+using OpenttdDiscord.Backend.Admins;
 using OpenttdDiscord.Common;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using OpenttdDiscord.Database.Admins;
 
 namespace OpenttdDiscord.Backend
 {
@@ -15,9 +13,7 @@ namespace OpenttdDiscord.Backend
     {
         public void Register(in IServiceCollection services)
         {
-            new ChattingModule().Register(services);
-            new ServersModule().Register(services);
-            new AdminModule().Register(services);
+            new AdminsModule().Register(services);
         }
     }
 }

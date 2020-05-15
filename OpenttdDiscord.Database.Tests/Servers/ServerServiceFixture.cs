@@ -20,6 +20,13 @@ namespace OpenttdDiscord.Database.Tests.Servers
             return this;
         }
 
+        public ServerServiceFixture WithMockServerRepository(out Mock<IServerRepository> mockServerRepository)
+        {
+            mockServerRepository = new Mock<IServerRepository>();
+            serverRepository = mockServerRepository.Object;
+            return this;
+        }
+
         public ServerServiceFixture WithMockTime(out Mock<ITimeProvider> mock)
         {
             mock = new Mock<ITimeProvider>();

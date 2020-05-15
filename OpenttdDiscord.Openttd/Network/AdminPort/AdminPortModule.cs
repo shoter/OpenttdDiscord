@@ -15,7 +15,6 @@ namespace OpenttdDiscord.Openttd.Network.AdminPort
             services.AddSingleton<IAdminPacketService>(new AdminPacketService());
             services.AddSingleton<IAdminPortClientFactory, AdminPortClientFactory>();
             services.AddSingleton<IAdminMessageProcessor, AdminMessageProcessor>();
-            services.AddSingleton<IAdminPortClientProvider, AdminPortClientProvider>();
         }
     }
 }

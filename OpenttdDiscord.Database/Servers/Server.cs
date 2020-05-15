@@ -18,13 +18,14 @@ namespace OpenttdDiscord.Database.Servers
 
         public ulong GuildId { get; }
 
-        public Server(ulong id, ulong guildId, string serverIp, int serverPort, string serverName)
+        public Server(ulong id, ulong guildId, string serverIp, int serverPort, string serverName, string password = "")
         {
             this.Id = id;
             this.ServerIp = serverIp;
             this.ServerPort = serverPort;
             this.ServerName = serverName;
             this.GuildId = guildId;
+            this.ServerPassword = password;
         }
 
         public Server(DbDataReader reader, string prefix = null)
@@ -36,6 +37,8 @@ namespace OpenttdDiscord.Database.Servers
             ServerPassword = reader.ReadString("server_password", prefix);
             GuildId = reader.ReadU64("guild_id", prefix);
         }
+
+        public string GetUniqueKey() => $"{Id}-{ServerIp}-{ServerPort}";
 
     }
 }

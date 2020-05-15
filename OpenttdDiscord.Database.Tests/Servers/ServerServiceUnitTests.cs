@@ -1,4 +1,6 @@
-﻿using OpenttdDiscord.Database.Chatting;
+﻿using Moq;
+using Moq.Internals;
+using OpenttdDiscord.Database.Chatting;
 using OpenttdDiscord.Database.Servers;
 using System;
 using System.Collections.Generic;
@@ -113,6 +115,24 @@ namespace OpenttdDiscord.Database.Tests.Servers
 
 
             Assert.False(service.IsPasswordRequestInProgress(12u));
+        }
+
+        [Fact]
+        public async Task PasswordChanged_ShouldBeInvoked_WhenPasswordForSpecificServerWasChanged()
+        {
+            ServerService ss = fix.WithMockServerRepository(out var repo);
+            Server s = new ServerFixture();
+
+            int order = 0;
+
+            repo.Setup(x => x.UpdatePassword(s.Id, It.IsAny<string>())).Callback(() => Assert.Equal(0, order++));
+            repo.Setup(x => x.GetServer(s.Id)).Callback(() => Assert.Equal(1, order)).ReturnsAsync(s);
+
+            Server eventServer = null;
+            ss.PasswordChanged += (_, es) => eventServer = es;
+            await ss.ChangePassword(s.Id, "newPassword");
+
+            Assert.Equal(s, eventServer);
         }
     }
 }

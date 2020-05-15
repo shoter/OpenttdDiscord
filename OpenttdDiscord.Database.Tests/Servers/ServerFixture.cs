@@ -17,6 +17,7 @@ namespace OpenttdDiscord.Database.Tests.Servers
         private string serverName;
         private int serverPort = 1;
         private ulong guildId = 11u;
+        private string password = "";
 
         public ServerFixture()
         {
@@ -27,6 +28,12 @@ namespace OpenttdDiscord.Database.Tests.Servers
         public ServerFixture WithServerName(string serverName)
         {
             this.serverName = serverName;
+            return this;
+        }
+
+        public ServerFixture WithPassword(string password)
+        {
+            this.password = password;
             return this;
         }
 
@@ -55,7 +62,8 @@ namespace OpenttdDiscord.Database.Tests.Servers
                 guildId,
                 ip,
                 serverPort++,
-                serverName
+                serverName,
+                password
                 );
             ip = NewIp();
             serverName = Guid.NewGuid().ToString();

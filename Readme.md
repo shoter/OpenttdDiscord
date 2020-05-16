@@ -19,7 +19,7 @@ It contains the same information as OpenTTD client on server browser screen.
 * run build.sh to build docker image
 * load discord bot token into environment variable `ottd_discord_token`
 * Load MySQL connection string into environment variable `ottd_discord_connectionstring`
-	* Database creation process is described inside `OpenttdDiscord.Database`
+	* Database creation process is described inside [OpenttdDiscord.Database](https://github.com/shoter/OpenttdDiscord/tree/master/OpenttdDiscord.Database)
 	* example: `Server=1.2.3.256;User ID=openttd;Password=yoursupersecretpassword;Database=openttd`
 * run run.sh to launch docker with openttd bot loaded. It will automatically take your environment variables.
     * It's advised to set automatic restart for the bot in the case it fails (it is already set in run.sh).

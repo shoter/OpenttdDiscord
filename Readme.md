@@ -1,7 +1,18 @@
 ﻿# Openttd Discord
 
-Openttd Discord bot.
+Provides ability to integrate Discord with your OpenTTD servers.
 
+## Functionalities
+
+* Connects Discord channel to the Openttd Servers enabling communication between multiple servers and Discord.
+* Ability to execute rcon commands on server from Discord.
+* Ability to gather short reports from players about malicious behaviour of other players
+    * Contains information about connected clients
+    * Contains last chat messages
+    * Contains reason for the report
+    * Some additional information
+* Creating auto-updated messages which can show status of current server.
+It contains the same information as OpenTTD client on server browser screen.
 
 ## Compilation/Installation
 
@@ -52,6 +63,7 @@ ServerName needs to be without spaces.
 
 ℹ By using this command you will register this server on given channel.
 Every chat message that will be written on this channel will be sent to Discord and other servers registered on this channel.
+Every discord message written here will be sent to the server.
 
 ```
 @BotMention register_chat_server ServerName

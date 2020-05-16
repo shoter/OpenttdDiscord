@@ -48,6 +48,27 @@ namespace OpenttdDiscord.Database.Reporting
             }
         }
 
+        public async Task<ReportServer> Get(ulong serverId, ulong channelId)
+        {
+            using (var conn = new MySqlConnection(this.connectionString))
+            {
+                await conn.OpenAsync();
+                using (var cmd = new MySqlCommand($@"SELECT * FROM report_servers r
+                                                    JOIN servers s on r.server_id = s.id
+                                                    WHERE r.channel_id = @cid AND r.server_id = @sid", conn))
+                {
+                    cmd.Parameters.AddWithValue("cid", channelId);
+                    cmd.Parameters.AddWithValue("sid", serverId);
+                    using (var reader = await cmd.ExecuteReaderAsync())
+                    {
+                        if (await reader.ReadAsync())
+                            return new ReportServer(reader);
+                        return null;
+                    }
+                }
+            }
+        }
+
         public async Task<List<ReportServer>> GetAll(ulong channelId)
         {
             using (var conn = new MySqlConnection(this.connectionString))
@@ -58,6 +79,25 @@ namespace OpenttdDiscord.Database.Reporting
                                                     WHERE r.channel_id = @cid", conn))
                 {
                     cmd.Parameters.AddWithValue("cid", channelId);
+                    using (var reader = await cmd.ExecuteReaderAsync())
+                    {
+                        List<ReportServer> servers = new List<ReportServer>();
+                        while (await reader.ReadAsync())
+                            servers.Add(new ReportServer(reader));
+                        return servers;
+                    }
+                }
+            }
+        }
+
+        public async Task<List<ReportServer>> GetAll()
+        {
+            using (var conn = new MySqlConnection(this.connectionString))
+            {
+                await conn.OpenAsync();
+                using (var cmd = new MySqlCommand($@"SELECT * FROM report_servers r
+                                                    JOIN servers s on r.server_id = s.id", conn))
+                {
                     using (var reader = await cmd.ExecuteReaderAsync())
                     {
                         List<ReportServer> servers = new List<ReportServer>();

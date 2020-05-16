@@ -21,6 +21,7 @@ using System.Text;
 using System.Threading.Tasks;
 using OpenttdDiscord.Common;
 using OpenttdDiscord.Admins;
+using OpenttdDiscord.Reporting;
 
 namespace OpenttdDiscord
 {
@@ -43,6 +44,7 @@ namespace OpenttdDiscord
             services.AddSingleton<DiscordSocketClient>();
             services.AddSingleton<CommandService>();
             services.AddSingleton<IChatService, ChatService>();
+            services.AddSingleton<IReportService, ReportService>();
             services.AddSingleton<ServerInfoProcessor>();
             services.AddSingleton<ITimeProvider, TimeProvider>();
             services.AddScoped<IPrivateMessageHandlingService, PrivateMessageHandlingService>();

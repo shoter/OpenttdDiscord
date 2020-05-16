@@ -33,6 +33,12 @@ namespace OpenttdDiscord.Openttd.Network.AdminPort
 
                         return new AdminRconEvent(client.ServerInfo, msg.Result);
                     }
+                case AdminMessageType.ADMIN_PACKET_SERVER_PONG:
+                    {
+                        var msg = adminMessage as AdminServerPongMessage;
+
+                        return new AdminPongEvent(client.ServerInfo, msg.Argument);
+                    }
                 default:
                     return null;
             }

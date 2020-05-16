@@ -174,6 +174,11 @@ namespace OpenttdDiscord.Testing.Database
                     }
                 }
             }
+
+            if(DateTime.Now > waitingTimeEnd)
+            {
+                throw new Exception($"Could not connect to database {GetConnectionString()} in specified time.");
+            }    
         }
 
         /// <summary>

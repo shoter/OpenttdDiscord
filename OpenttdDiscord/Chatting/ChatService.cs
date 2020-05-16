@@ -41,7 +41,7 @@ namespace OpenttdDiscord.Chatting
             foreach (var s in await this.chatChannelServerService.GetAll())
                 this.chatServers.TryAdd((s.Server.Id, s.ChannelId), s);
 
-            this.chatChannelServerService.Added += (_, s) => chatServers.AddOrUpdate((s.Server.Id, s.ChannelId), s, (_,__) => s);
+            this.chatChannelServerService.Added += (_, s) => chatServers.AddOrUpdate((s.Server.Id, s.ChannelId), s, (_, __) => s);
             this.chatChannelServerService.Removed += (_, s) => serversToRemove.Enqueue(s);
 
             ThreadPool.QueueUserWorkItem(new WaitCallback((_) => MainLoop()), null);
@@ -135,7 +135,7 @@ namespace OpenttdDiscord.Chatting
                             }
                         }
                     }
-                    catch(Exception e)
+                    catch (Exception e)
                     {
                         logger.LogError($"Could not send message to channel {channel?.Name ?? "null"} - {e.Message}");
                     }
@@ -149,9 +149,10 @@ namespace OpenttdDiscord.Chatting
             {
                 try
                 {
-                    await adminPortClientProvider.Register(this, s.Server);
+                    if (adminPortClientProvider.IsRegistered(this, s.Server) == false)
+                        await adminPortClientProvider.Register(this, s.Server);
                 }
-                catch(Exception e)
+                catch (Exception e)
                 {
                     logger.LogError($"{s.Server.ServerIp}:{s.Server.ServerPort} - cannot join - {e.Message}");
                 }

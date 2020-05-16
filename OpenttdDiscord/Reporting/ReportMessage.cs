@@ -1,4 +1,5 @@
-﻿using OpenttdDiscord.Openttd;
+﻿using OpenttdDiscord.Database.Servers;
+using OpenttdDiscord.Openttd;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,19 +12,19 @@ namespace OpenttdDiscord.Reporting
     {
         public List<ReportSection> Sections { get; } = new List<ReportSection>();
 
-        public ServerInfo ServerInfo { get; }
+        public Server Server { get; }
 
         public DateTime ReportTime { get; } = DateTime.Now;
+        
+        public string Reason { get; }
 
         public string ReporterName { get; }
 
-        public string ReporterIp { get; }
-
-        public ReportMessage(ServerInfo serverInfo, string reporterName, string reporterIp)
+        public ReportMessage(Server server, string reporterName, string reason)
         {
-            this.ServerInfo = serverInfo;
-            this.ReporterIp = reporterIp;
+            this.Server = server;
             this.ReporterName = reporterName;
+            this.Reason = reason;
         }
 
         public void AddSection(ReportSection s) => Sections.Add(s);

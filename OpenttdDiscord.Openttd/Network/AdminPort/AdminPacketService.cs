@@ -221,6 +221,10 @@ namespace OpenttdDiscord.Openttd.Network.AdminPort
                     {
                         return new AdminServerConsoleMessage(packet.ReadString(), packet.ReadString());
                     }
+                case AdminMessageType.ADMIN_PACKET_SERVER_PONG:
+                    {
+                        return new AdminServerPongMessage(packet.ReadU32());
+                    }
 
                 case AdminMessageType.ADMIN_PACKET_SERVER_NEWGAME:
                 case AdminMessageType.ADMIN_PACKET_SERVER_SHUTDOWN:
@@ -228,7 +232,6 @@ namespace OpenttdDiscord.Openttd.Network.AdminPort
                 case AdminMessageType.ADMIN_PACKET_SERVER_CMD_LOGGING:
                 case AdminMessageType.ADMIN_PACKET_SERVER_GAMESCRIPT:
                 case AdminMessageType.ADMIN_PACKET_SERVER_RCON_END:
-                case AdminMessageType.ADMIN_PACKET_SERVER_PONG:
                 case AdminMessageType.ADMIN_PACKET_SERVER_COMPANY_STATS: // I do not need this packet for now.
                     {
                         return new GenericAdminMessage(type);

@@ -33,5 +33,9 @@ namespace OpenttdDiscord.Database.Reporting
             await reportServerRepository.Remove(reportServer);
             this.Removed?.Invoke(this, reportServer);
         }
+
+        public Task<ReportServer> Get(ulong serverId, ulong channelId) => this.reportServerRepository.Get(serverId, channelId);
+
+        public Task<List<ReportServer>> GetAll() => this.reportServerRepository.GetAll();
     }
 }

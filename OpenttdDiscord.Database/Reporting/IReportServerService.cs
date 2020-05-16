@@ -16,6 +16,10 @@ namespace OpenttdDiscord.Database.Reporting
 
         Task<List<ReportServer>> GetAllForGuild(ulong guildId);
 
+        Task<List<ReportServer>> GetAll();
+
+        Task<ReportServer> Get(ulong serverId, ulong channelId);
+
         Task Remove(ReportServer reportServer);
     }
 }

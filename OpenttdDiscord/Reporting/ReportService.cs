@@ -110,7 +110,7 @@ namespace OpenttdDiscord.Reporting
                                 rso.ServerState = ReportServerState.GatheringCompanies;
                                 rso.Report.AddSection(rso.CurrentNewSection);
                                 rso.CurrentNewSection = new ReportSection("Companies");
-                                client.SendMessage(new AdminRconMessage("clients"));
+                                client.SendMessage(new AdminRconMessage("companies"));
                                 rso.CurrentPingValue = (uint)random.Next(0, 1_000_000);
                                 client.SendMessage(new AdminPingMessage(rso.CurrentPingValue));
 

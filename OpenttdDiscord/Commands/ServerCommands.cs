@@ -1,6 +1,7 @@
 ﻿using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
+using OpenttdDiscord.Common.Networking;
 using OpenttdDiscord.Database.Chatting;
 using OpenttdDiscord.Database.Servers;
 using System;
@@ -35,6 +36,18 @@ namespace OpenttdDiscord.Commands
             if (await this.serverService.Exists(Context.Guild.Id, ip, port))
             {
                 await ReplyAsync("This server is already registered with this bot.");
+            }
+
+            if(!System.Net.IPAddress.TryParse(ip, out _))
+            {
+                await ReplyAsync("Wrong IP address!");
+                return;
+            }
+
+            if(NetworkPort.IsCorrect(port) == false)
+            {
+                await ReplyAsync("Wrong port!");
+                return;
             }
 
             await this.serverService.Getsert(Context.Guild.Id, ip, port, serverName);
@@ -87,6 +100,12 @@ namespace OpenttdDiscord.Commands
             if(await SubscribedServerService.Exists(Context.Guild.Id, server.ServerName, Context.Channel.Id))
             {
                 await ReplyAsync("Server is already registered here!");
+                return;
+            }
+
+            if (NetworkPort.IsCorrect(port) == false)
+            {
+                await ReplyAsync("Wrong port!");
                 return;
             }
 

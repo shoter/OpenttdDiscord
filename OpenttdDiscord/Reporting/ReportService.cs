@@ -83,7 +83,7 @@ namespace OpenttdDiscord.Reporting
                     if (eventInfo.adminEvent.EventType == AdminEventType.ChatMessageReceived)
                     {
                         var chatMsg = eventInfo.adminEvent as AdminChatMessageEvent;
-                        rso.AddMessage($"[{DateTime.Now.ToShortTimeString()}] {chatMsg.Player.Name} : {chatMsg.Message}");
+                        rso.AddMessage($"[{DateTimeOffset.Now:HH:mm zz}] {chatMsg.Player.Name} : {chatMsg.Message}");
                         if (chatMsg.Message.StartsWith("!report"))
                         {
                             logger.LogInformation($"{chatMsg.Player.Name} started report process on {rso.ReportServer.Server.ServerName}");

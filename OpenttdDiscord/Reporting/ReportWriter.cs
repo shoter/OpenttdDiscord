@@ -17,7 +17,7 @@ namespace OpenttdDiscord.Reporting
 
         public async Task WriteReport(ReportMessage report)
         {
-            await writer.WriteLineAsync($"Report creation date: dd/MM/yyyy {DateTimeOffset.Now:HH:mm zz}");
+            await writer.WriteLineAsync($"Report creation date: {DateTimeOffset.Now:dd/MM/yyyy HH:mm zz}");
             await writer.WriteLineAsync($"Reporting player: {report.ReporterName}");
             await writer.WriteLineAsync($"Reason: {report.Reason}");
             await writer.WriteLineAsync(string.Empty);

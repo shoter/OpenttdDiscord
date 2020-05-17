@@ -85,7 +85,7 @@ Every discord message written here will be sent to the server.
 
 ℹ  They are used to send rcon commands to the server.
 
-⚠ Only one server can use discord channel for admin purposes.
+⚠ Only one server can be registered per discord channel for admin purposes.
 
 ❗️You should register admin channels only on discord channels to which moderators/admins of your server have access to.
 There is no role check when it comes to executing rcon commands as of now. It's very easy to use it maliciously if someone

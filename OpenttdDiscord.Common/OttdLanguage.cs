@@ -9,6 +9,8 @@ namespace OpenttdDiscord.Common
 {
     public enum OttdLanguage
     {
+        [Description("-")]
+        STR_NETWORK_LANG_UNKNOWN = 0,
         [Description("ENGLISH")]
         STR_NETWORK_LANG_ENGLISH = 1,
         [Description("GERMAN")]

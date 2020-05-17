@@ -154,14 +154,14 @@ namespace OpenttdDiscord.Chatting
                 }
                 catch (Exception e)
                 {
-                    logger.LogError($"{s.Server.ServerIp}:{s.Server.ServerPort} - cannot join - {e.Message}");
+                    logger.LogError($"{s.Server.ServerIp}:{s.Server.ServerPort.ToString()} - cannot join - {e.Message}");
                 }
             }
         }
 
         private async Task RemoveServers()
         {
-            while (serversToRemove.TryDequeue(out ChatChannelServer s))
+            while (serversToRemove.TryDequeue(out var s))
             {
                 await adminPortClientProvider.Unregister(this, s.Server);
                 chatServers.Remove((s.Server.Id, s.ChannelId), out _);

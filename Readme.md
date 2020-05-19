@@ -30,6 +30,10 @@ It contains the same information as OpenTTD client on server browser screen.
 Debugging process is the same excluding the fact that you need to launch your project instead of docker instance. 
 It should work out of the box with environment variables set.
 
+## Usage Overview
+
+[![Youtube video tutorial](https://img.youtube.com/vi/He2qtUTibV0/0.jpg)](https://www.youtube.com/watch?v=He2qtUTibV0)
+
 
 ## Usage
 

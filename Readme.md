@@ -1,5 +1,7 @@
 ﻿# Openttd Discord
 
+![GitHub](https://img.shields.io/github/license/shoter/OpenttdDiscord?style=plastic)
+
 Provides ability to integrate Discord with your OpenTTD servers.
 
 ## Functionalities

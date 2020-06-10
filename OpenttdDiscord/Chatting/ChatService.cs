@@ -1,6 +1,8 @@
-﻿using Discord.WebSocket;
+﻿using Discord;
+using Discord.WebSocket;
 using Microsoft.Extensions.Logging;
 using OpenttdDiscord.Backend.Admins;
+using OpenttdDiscord.Common;
 using OpenttdDiscord.Database.Chatting;
 using OpenttdDiscord.Database.Servers;
 using OpenttdDiscord.Openttd;
@@ -27,6 +29,8 @@ namespace OpenttdDiscord.Chatting
         private readonly ConcurrentQueue<IAdminEvent> receivedMessagges = new ConcurrentQueue<IAdminEvent>();
         private readonly ConcurrentQueue<DiscordMessage> discordMessages = new ConcurrentQueue<DiscordMessage>();
         private readonly ConcurrentQueue<ChatChannelServer> serversToRemove = new ConcurrentQueue<ChatChannelServer>();
+
+        private readonly EmojiAsciiTranslator emojiTranslator = new EmojiAsciiTranslator();
 
         public ChatService(ILogger<ChatService> logger, IChatChannelServerService chatChannelServerService, IAdminPortClientProvider adminPortClientProvider, DiscordSocketClient discord)
         {
@@ -76,7 +80,8 @@ namespace OpenttdDiscord.Chatting
         {
             while (discordMessages.TryDequeue(out DiscordMessage msg))
             {
-                var chatMsg = $"[Discord] {msg.Username}: {msg.Message}";
+                string message = emojiTranslator.TranslateEmojisToAscii(msg.Message);
+                var chatMsg = $"[Discord] {msg.Username}: {message}";
 
                 IEnumerable<ChatChannelServer> others = chatServers.Values.Where(x => x.ChannelId == msg.ChannelId);
                 foreach (var o in others)
@@ -119,7 +124,8 @@ namespace OpenttdDiscord.Chatting
                     {
                         channel = discord.GetChannel(cs.ChannelId) as SocketTextChannel;
 
-                        var chatMsg = $"[{cs.Server.ServerName}] {msg.Player.Name}: {msg.Message}";
+                        string message = emojiTranslator.TranslateAsciiToEmojis(msg.Message);
+                        var chatMsg = $"[{cs.Server.ServerName}] {msg.Player.Name}: {message}";
 
                         await channel.SendMessageAsync(chatMsg);
 

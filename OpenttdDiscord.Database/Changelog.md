@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 0.1.2
+
+- Server to Server Emoji chatting was broken
+
 ## Version 0.1.1
 
 - Added EmojiAsciiTranslator

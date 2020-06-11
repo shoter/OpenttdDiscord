@@ -129,6 +129,9 @@ namespace OpenttdDiscord.Chatting
 
                         await channel.SendMessageAsync(chatMsg);
 
+                        chatMsg = $"[{cs.Server.ServerName}] {msg.Player.Name}: {msg.Message}";
+
+
                         IEnumerable<ChatChannelServer> others = chatServers.Values.Where(x => x.ChannelId == channel.Id && x.Server.Id != s.Id);
                         foreach (var o in others)
                         {

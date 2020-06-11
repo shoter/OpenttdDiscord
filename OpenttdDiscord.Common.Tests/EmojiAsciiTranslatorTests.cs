@@ -22,9 +22,9 @@ namespace OpenttdDiscord.Common.Tests
         [Fact]
         public void ShouldBeAbleToTranslateTextIntoEmojis()
         {
-            string emojis = "test :P to :) jest :D";
+            string emojis = "test :P to :) jest :D >:(";
 
-            Assert.Equal("test 😛 to 🙂 jest 😄", translator.TranslateAsciiToEmojis(emojis));
+            Assert.Equal("test 😛 to 🙂 jest 😄 😠", translator.TranslateAsciiToEmojis(emojis));
         }
 
 

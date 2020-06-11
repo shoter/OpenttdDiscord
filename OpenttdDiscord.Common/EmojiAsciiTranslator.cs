@@ -10,6 +10,7 @@ namespace OpenttdDiscord.Common
     {
         public Dictionary<string, string> EmojisToAscii = new Dictionary<string, string>()
         {
+            { "😠", ">:(" },
             { "😛", ":P" },
             { "🙂", ":)" },
             { "😄", ":D" },
@@ -18,7 +19,6 @@ namespace OpenttdDiscord.Common
             { "😮", ":O" },
             { "😉", ";)" },
             { "😐", ":|" },
-            { "😠", ">:(" },
             { "❤️", "<3" },
             { "😡", ":@" },
         };

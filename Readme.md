@@ -7,6 +7,7 @@ Provides ability to integrate Discord with your OpenTTD servers.
 ## Functionalities
 
 * Connects Discord channel to the Openttd Servers enabling communication between multiple servers and Discord.
+    * Automatically translates ASCII emojis into Discord emojis and vice-versa.
 * Ability to execute rcon commands on server from Discord.
 * Ability to gather short reports from players about malicious behaviour of other players
     * Contains information about connected clients

@@ -6,7 +6,7 @@
 
   <ItemGroup>
     <PackageReference Include="Docker.DotNet" Version="3.125.2" />
-    <PackageReference Include="MySqlConnector" Version="0.64.0" />
+    <PackageReference Include="MySqlConnector" Version="0.69.3" />
     <PackageReference Include="xunit" Version="2.4.1" />
     <PackageReference Include="xunit.extensibility.core" Version="2.4.1" />
   </ItemGroup>

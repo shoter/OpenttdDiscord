@@ -1,6 +1,6 @@
-﻿using OpenttdDiscord.Database.Servers;
+﻿using OpenTTDAdminPort;
+using OpenttdDiscord.Database.Servers;
 using OpenttdDiscord.Openttd;
-using OpenttdDiscord.Openttd.Network.AdminPort;
 using System;
 using System.Collections.Generic;
 using System.Linq;

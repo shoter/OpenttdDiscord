@@ -1,7 +1,8 @@
-﻿using OpenttdDiscord.Common;
+﻿using OpenTTDAdminPort;
+using OpenTTDAdminPort.Events;
+using OpenttdDiscord.Common;
 using OpenttdDiscord.Database.Servers;
 using OpenttdDiscord.Openttd;
-using OpenttdDiscord.Openttd.Network.AdminPort;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -14,22 +15,21 @@ namespace OpenttdDiscord.Backend.Admins
     public class AdminPortClientProvider : IAdminPortClientProvider
     {
         private readonly IServerService serverService;
-        private readonly IAdminPortClientFactory adminPortClientFactory;
 
         private ConcurrentDictionary<string, AdminClientRegisterInfo> RegisterInfo { get; } = new ConcurrentDictionary<string, AdminClientRegisterInfo>();
 
-        public AdminPortClientProvider(IServerService serverService, IAdminPortClientFactory adminPortClientFactory)
+        public AdminPortClientProvider(IServerService serverService)
         {
             this.serverService = serverService;
-            this.adminPortClientFactory = adminPortClientFactory;
 
             this.serverService.PasswordChanged += ServerService_PasswordChanged;
         }
 
         private void ServerService_PasswordChanged(object sender, Server server)
         {
-            AdminClientRegisterInfo newInfo = new AdminClientRegisterInfo(server, adminPortClientFactory.Create(new ServerInfo(
+            AdminClientRegisterInfo newInfo = new AdminClientRegisterInfo(server, new AdminPortClient(new OpenTTDAdminPort.ServerInfo(
                 server.ServerIp, server.ServerPort, server.ServerPassword)));
+
             newInfo.Client.EventReceived += this.Client_EventReceived;
 
             this.RegisterInfo.AddOrUpdate(server.GetUniqueKey(),
@@ -59,9 +59,8 @@ namespace OpenttdDiscord.Backend.Admins
         {
             AdminClientRegisterInfo info = RegisterInfo.GetOrAdd(server.GetUniqueKey(), (_) =>
              {
-                 IAdminPortClient client = this.adminPortClientFactory.Create(
-                    new ServerInfo(server.ServerIp, server.ServerPort, server.ServerPassword)
-                    );
+                 IAdminPortClient client = new AdminPortClient(new OpenTTDAdminPort.ServerInfo(
+                server.ServerIp, server.ServerPort, server.ServerPassword));
 
                  client.EventReceived += Client_EventReceived;
 
@@ -69,15 +68,16 @@ namespace OpenttdDiscord.Backend.Admins
              });
 
             if (info.Client.ConnectionState == AdminConnectionState.Idle)
-                await info.Client.Join();
+                await info.Client.Connect();
 
             info.AddUser(owner);
         }
 
         private void Client_EventReceived(object sender, IAdminEvent adminEvent)
         {
+            IAdminPortClient client = (IAdminPortClient)sender;
             List<(IEnumerable<IAdminPortClientUser> users, Server server)> serverUsers = new List<(IEnumerable<IAdminPortClientUser> users, Server server)>(); 
-            foreach(var info in RegisterInfo.Values.Where(x => x.Server.ServerIp == adminEvent.Server.ServerIp && x.Server.ServerPort == adminEvent.Server.ServerPort))
+            foreach(var info in RegisterInfo.Values.Where(x => x.Server.ServerIp == client.ServerInfo.ServerIp && x.Server.ServerPort == client.ServerInfo.ServerPort))
             {
                 serverUsers.Add((info.GetRegisteredUsers(), info.Server));
             }

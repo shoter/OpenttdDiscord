@@ -5,6 +5,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="OpenTTDAdminPort" Version="0.1.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\OpenttdDiscord.Common\OpenttdDiscord.Common.csproj" />
     <ProjectReference Include="..\OpenttdDiscord.Database\OpenttdDiscord.Database.csproj" />
     <ProjectReference Include="..\OpenttdDiscord.Openttd\OpenttdDiscord.Openttd.csproj" />

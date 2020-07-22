@@ -1,10 +1,11 @@
 ﻿using Discord.WebSocket;
 using Microsoft.Extensions.Logging;
+using OpenTTDAdminPort.Events;
+using OpenTTDAdminPort.Messages;
 using OpenttdDiscord.Backend.Admins;
 using OpenttdDiscord.Database.Admins;
 using OpenttdDiscord.Database.Servers;
 using OpenttdDiscord.Openttd;
-using OpenttdDiscord.Openttd.Network.AdminPort;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;

@@ -1,0 +1,19 @@
+version: '3.8'
+services:
+    bot:
+        build: .
+        environment: 
+            ottd_discord_connectionstring: "Server=mysql;User ID=openttd;Password=secret-pw;Database=openttd"
+            mysql_ip: "mysql"
+            mysql_port: "3306"
+        depends_on: 
+            - mysql
+        restart: always
+    mysql:
+        build: ./OpenttdDiscord.Database/SQL/.
+        volumes:
+            - "mysql_data:/var/lib/mysql"
+        ports:
+            - 3306:3306
+volumes:
+    mysql_data:

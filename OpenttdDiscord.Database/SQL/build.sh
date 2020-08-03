@@ -1,1 +1,1 @@
-docker build -t "openttd-discord-mysql" .
+docker build -t "openttd-discord-mysql-test" -f Dockerfile.test .

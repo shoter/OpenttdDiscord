@@ -137,3 +137,7 @@ _UpgradeReport_Files/
 Thumbs.db
 Desktop.ini
 .DS_Store
+
+
+# specific to docker-compose
+.env

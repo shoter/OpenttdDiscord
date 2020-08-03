@@ -1,1 +1,2 @@
-docker-compose up -d -e ottd_discord_token="$ottd_discord_token"
+docker-compose build --build-arg IMG=mysql
+docker-compose up -d 

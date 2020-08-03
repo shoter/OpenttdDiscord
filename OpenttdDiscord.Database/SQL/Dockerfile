@@ -1,4 +1,5 @@
-FROM mysql:latest
+ARG IMG=
+FROM ${IMG}:latest
 # needed for intialization
 ENV MYSQL_ROOT_PASSWORD=root
 ENV MYSQL_DATABASE=openttd

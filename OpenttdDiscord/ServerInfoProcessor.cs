@@ -113,6 +113,7 @@ namespace OpenttdDiscord
                         var msg = await channel.GetMessageAsync(messageId.Value) as RestUserMessage;
                         await msg.ModifyAsync(x =>
                         {
+                            x.Content = null;
                             x.Embed = embed;
                         });
 

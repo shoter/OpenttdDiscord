@@ -1,6 +1,6 @@
 ﻿using Docker.DotNet;
 using Docker.DotNet.Models;
-using MySql.Data.MySqlClient;
+using MySqlConnector;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -168,7 +168,7 @@ namespace OpenttdDiscord.Testing.Database
                 }
                 catch (MySqlException e)
                 {
-                    if (e.ErrorCode != 1042 && e.Message != "Couldn't connect to server" && !e.Message.Contains("Unable to connect to any of the specified MySQL hosts"))
+                    if (e.ErrorCode != MySqlErrorCode.UnableToConnectToHost && e.Message != "Couldn't connect to server" && !e.Message.Contains("Unable to connect to any of the specified MySQL hosts"))
                     {
                         throw;
                     }

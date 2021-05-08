@@ -1,4 +1,4 @@
-﻿using MySql.Data.MySqlClient;
+﻿using MySqlConnector;
 using OpenttdDiscord.Backend;
 using OpenttdDiscord.Common;
 using OpenttdDiscord.Database.Extensions;

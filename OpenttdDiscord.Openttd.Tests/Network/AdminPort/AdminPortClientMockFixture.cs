@@ -1,9 +1,5 @@
 ﻿using Moq;
 using OpenTTDAdminPort;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace OpenttdDiscord.Openttd.Tests.Network.AdminPort

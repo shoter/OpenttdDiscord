@@ -103,10 +103,7 @@ namespace OpenttdDiscord.Chatting
         {
             while (receivedMessagges.TryDequeue(out ServerEvent serverEvent))
             {
-                // for right now it is only event - this needs to be changed later
-                var msg = serverEvent.AdminEvent as AdminChatMessageEvent;
-
-                if (msg == null)
+                if (!(serverEvent.AdminEvent is AdminChatMessageEvent msg))
                     continue;
 
                 if (msg.Player.ClientId == 1)

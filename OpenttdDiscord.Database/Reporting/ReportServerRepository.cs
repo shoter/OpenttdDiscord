@@ -1,4 +1,4 @@
-﻿using MySql.Data.MySqlClient;
+﻿using MySqlConnector;
 using OpenttdDiscord.Database.Servers;
 using System;
 using System.Collections.Generic;

@@ -1,10 +1,10 @@
 ﻿using Discord.WebSocket;
 using Microsoft.Extensions.Logging;
+using OpenTTDAdminPort.Events;
+using OpenTTDAdminPort.Messages;
 using OpenttdDiscord.Backend.Admins;
 using OpenttdDiscord.Database.Reporting;
 using OpenttdDiscord.Database.Servers;
-using OpenttdDiscord.Openttd;
-using OpenttdDiscord.Openttd.Network.AdminPort;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -26,7 +26,7 @@ namespace OpenttdDiscord.Reporting
 
         private ConcurrentDictionary<string, ReportServerInfo> ReportServers { get; } = new ConcurrentDictionary<string, ReportServerInfo>();
         private ConcurrentQueue<ReportServer> ServersToRemove { get; } = new ConcurrentQueue<ReportServer>();
-        private ConcurrentQueue<(Server server, IAdminEvent adminEvent)> ReceivedEvents { get; } = new ConcurrentQueue<(Server server, IAdminEvent adminEvent)>();
+        private ConcurrentQueue<ServerEvent> ReceivedEvents { get; } = new ConcurrentQueue<ServerEvent>();
 
         public ReportService(IReportServerService reportServerService, IAdminPortClientProvider adminPortClientProvider, DiscordSocketClient discord, ILogger<ReportService> logger)
         {
@@ -77,12 +77,12 @@ namespace OpenttdDiscord.Reporting
         private async Task HandleEvents()
         {
             while (ReceivedEvents.TryDequeue(out var eventInfo))
-                if (ReportServers.TryGetValue(eventInfo.server.GetUniqueKey(), out ReportServerInfo rso))
+                if (ReportServers.TryGetValue(eventInfo.Server.GetUniqueKey(), out ReportServerInfo rso))
                 {
                     var client = clientProvider.GetClient(this, rso.ReportServer.Server);
-                    if (eventInfo.adminEvent.EventType == AdminEventType.ChatMessageReceived)
+                    if (eventInfo.AdminEvent.EventType == AdminEventType.ChatMessageReceived)
                     {
-                        var chatMsg = eventInfo.adminEvent as AdminChatMessageEvent;
+                        var chatMsg = eventInfo.AdminEvent as AdminChatMessageEvent;
                         rso.AddMessage($"[{DateTimeOffset.Now:HH:mm zz}] {chatMsg.Player.Name} : {chatMsg.Message}");
                         if (chatMsg.Message.StartsWith("!report"))
                         {
@@ -100,7 +100,7 @@ namespace OpenttdDiscord.Reporting
                             client.SendMessage(new AdminPingMessage(rso.CurrentPingValue));
                         }
                     }
-                    else if (rso.ServerState != ReportServerState.Listening && eventInfo.adminEvent is AdminPongEvent pongEvent)
+                    else if (rso.ServerState != ReportServerState.Listening && eventInfo.AdminEvent is AdminPongEvent pongEvent)
                     {
                         if (rso.CurrentPingValue == pongEvent.PongValue)
                         {
@@ -159,7 +159,7 @@ namespace OpenttdDiscord.Reporting
                             }
                         }
                     }
-                    else if (rso.ServerState != ReportServerState.Listening && eventInfo.adminEvent is AdminRconEvent rconEvent)
+                    else if (rso.ServerState != ReportServerState.Listening && eventInfo.AdminEvent is AdminRconEvent rconEvent)
                     {
                         rso.CurrentNewSection.AddData(rconEvent.Message);
                     }
@@ -190,6 +190,6 @@ namespace OpenttdDiscord.Reporting
 
 
         public void ParseServerEvent(Server server, IAdminEvent adminEvent) =>
-            this.ReceivedEvents.Enqueue((server, adminEvent));
+            this.ReceivedEvents.Enqueue(new ServerEvent(server, adminEvent));
     }
 }

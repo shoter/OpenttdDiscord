@@ -6,7 +6,6 @@ using Microsoft.Extensions.Logging;
 using OpenttdDiscord.Admins;
 using OpenttdDiscord.Chatting;
 using OpenttdDiscord.Database.Chatting;
-using OpenttdDiscord.Openttd;
 using System;
 using System.Collections.Generic;
 using System.Linq;

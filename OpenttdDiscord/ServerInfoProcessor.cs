@@ -19,7 +19,7 @@ namespace OpenttdDiscord
     public class ServerInfoProcessor
     {
         private readonly ISubscribedServerService subscribedServerService;
-        private readonly IOttdClientProvider ottdClientProvider;
+        private readonly IUdpOttdClient udpOttdClientProvider;
         private readonly IEmbedFactory embedFactory;
         private readonly DiscordSocketClient client;
         private readonly ILogger<ServerInfoProcessor> logger;
@@ -28,11 +28,11 @@ namespace OpenttdDiscord
         private readonly ConcurrentQueue<SubscribedServer> removedServers = new ConcurrentQueue<SubscribedServer>();
 
         public ServerInfoProcessor(DiscordSocketClient client, ISubscribedServerService subscribedServerService,
-            IOttdClientProvider ottdClientProvider, IEmbedFactory embedFactory, ILogger<ServerInfoProcessor> logger)
+            IEmbedFactory embedFactory, ILogger<ServerInfoProcessor> logger, IUdpOttdClient udpOttdClient)
         {
             this.subscribedServerService = subscribedServerService;
             this.client = client;
-            this.ottdClientProvider = ottdClientProvider;
+            this.udpOttdClientProvider = udpOttdClient;
             this.embedFactory = embedFactory;
             this.logger = logger;
 
@@ -106,8 +106,7 @@ namespace OpenttdDiscord
 
                     if (messageId.HasValue)
                     {
-                        var ottdClient = this.ottdClientProvider.Provide(s.Server.ServerIp, s.Port);
-                        var r = await ottdClient.AskAboutServerInfo();
+                        var r = await udpOttdClientProvider.SendMessage(new PacketUdpClientFindServer(), s.Server.ServerIp, s.Port) as PacketUdpServerResponse;
 
                         Embed embed = embedFactory.Create(r, s.Server);
                         var msg = await channel.GetMessageAsync(messageId.Value) as RestUserMessage;

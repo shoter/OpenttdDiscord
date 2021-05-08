@@ -1,11 +1,10 @@
 ﻿using Moq;
+using OpenTTDAdminPort;
+using OpenTTDAdminPort.Events;
 using OpenttdDiscord.Backend.Admins;
 using OpenttdDiscord.Common;
 using OpenttdDiscord.Database.Servers;
 using OpenttdDiscord.Database.Tests.Servers;
-using OpenttdDiscord.Openttd;
-using OpenttdDiscord.Openttd.Network.AdminPort;
-using OpenttdDiscord.Openttd.Tests.Network.AdminPort;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -15,14 +14,12 @@ namespace OpenttdDiscord.Backend.Tests.Admins
     {
         private readonly IAdminPortClientProvider provider;
         private readonly Mock<IServerService> serverService = new Mock<IServerService>();
-        private readonly Mock<IAdminPortClientFactory> clientFactory = new Mock<IAdminPortClientFactory>();
         private readonly Mock<IAdminPortClientUser> defaultUserMock = new Mock<IAdminPortClientUser>();
         private IAdminPortClientUser DefaultUser => defaultUserMock.Object;
 
         public AdminPortClientProviderTests()
         {
-            provider = new AdminPortClientProvider(serverService.Object, clientFactory.Object);
-            clientFactory.Setup(x => x.Create(It.IsAny<ServerInfo>())).Returns((ServerInfo si) => new AdminPortClientMockFixture().WithServerInfo(si).Build().Object);
+            provider = new AdminPortClientProvider(serverService.Object);
         }
 
         [Fact]
@@ -49,7 +46,6 @@ namespace OpenttdDiscord.Backend.Tests.Admins
         {
             Mock<IAdminPortClient> client = null;
             Server server = new ServerFixture().WithPassword("123").Build();
-            clientFactory.Setup(x => x.Create(It.IsAny<ServerInfo>())).Returns((ServerInfo si) => (client = new AdminPortClientMockFixture().WithServerInfo(si).Build()).Object);
             await provider.Register(DefaultUser, server);
             await provider.Unregister(DefaultUser, server);
 
@@ -64,8 +60,6 @@ namespace OpenttdDiscord.Backend.Tests.Admins
             await provider.Register(Mock.Of<IAdminPortClientUser>(), server);
             await provider.Register(Mock.Of<IAdminPortClientUser>(), server);
             await provider.Register(Mock.Of<IAdminPortClientUser>(), server);
-
-            clientFactory.Verify(x => x.Create(It.IsAny<ServerInfo>()), Times.Once);
         }
 
         [Fact]
@@ -73,7 +67,6 @@ namespace OpenttdDiscord.Backend.Tests.Admins
         {
             Mock<IAdminPortClient> client = null;
             Server server = new ServerFixture().WithPassword("123").Build();
-            clientFactory.Setup(x => x.Create(It.IsAny<ServerInfo>())).Returns((ServerInfo si) => (client = new AdminPortClientMockFixture().WithServerInfo(si).Build()).Object);
 
             await provider.Register(DefaultUser, server);
             await provider.Register(Mock.Of<IAdminPortClientUser>(), server);
@@ -130,7 +123,6 @@ namespace OpenttdDiscord.Backend.Tests.Admins
         {
             Mock<IAdminPortClient> client = null;
             Server server = new ServerFixture().WithPassword("123").Build();
-            clientFactory.Setup(x => x.Create(It.IsAny<ServerInfo>())).Returns((ServerInfo si) => (client = new AdminPortClientMockFixture().WithServerInfo(si).Build()).Object);
 
             await provider.Register(Mock.Of<IAdminPortClientUser>(), server);
             await provider.Unregister(Mock.Of<IAdminPortClientUser>(), server);
@@ -160,54 +152,6 @@ namespace OpenttdDiscord.Backend.Tests.Admins
             await provider.Register(DefaultUser, server);
             await provider.Unregister(DefaultUser, server);
             Assert.False(provider.IsRegistered(DefaultUser, server));
-        }
-
-        [Fact]
-        public async Task RegisteredUsers_ShouldBeInformedAboutServerEvents()
-        {
-            Mock<IAdminPortClient> client = null;
-            Server server = new ServerFixture().WithPassword("123").Build();
-            clientFactory.Setup(x => x.Create(It.IsAny<ServerInfo>())).Returns((ServerInfo si) => (client = new AdminPortClientMockFixture().WithServerInfo(si).Build()).Object);
-            await provider.Register(DefaultUser, server);
-
-            Mock<IAdminEvent> adminEventMock = new Mock<IAdminEvent>();
-            adminEventMock.SetupGet(x => x.Server).Returns(new ServerInfo(server.ServerIp, server.ServerPort, server.ServerPassword));
-            client.Raise(x => x.EventReceived += null, server, adminEventMock.Object);
-            defaultUserMock.Verify(x => x.ParseServerEvent(server, adminEventMock.Object), Times.Once);
-        }
-
-        [Fact]
-        public async Task RegisteredUsers_ShouldNotBeInformedAboutServerEvents_AfterUnregistering()
-        {
-            Mock<IAdminPortClient> client = null;
-            Server server = new ServerFixture().WithPassword("123").Build();
-            clientFactory.Setup(x => x.Create(It.IsAny<ServerInfo>())).Returns((ServerInfo si) => (client = new AdminPortClientMockFixture().WithServerInfo(si).Build()).Object);
-            await provider.Register(DefaultUser, server);
-            await provider.Unregister(DefaultUser, server);
-
-            Mock<IAdminEvent> adminEventMock = new Mock<IAdminEvent>();
-            adminEventMock.SetupGet(x => x.Server).Returns(new ServerInfo(server.ServerIp, server.ServerPort, server.ServerPassword));
-            client.Raise(x => x.EventReceived += null, server, adminEventMock.Object);
-            defaultUserMock.Verify(x => x.ParseServerEvent(server, adminEventMock.Object), Times.Never);
-        }
-
-
-        [Fact]
-        public async Task RegisteredUsers_ShouldBeInformedAboutServerEvents_AfterServerPasswordChange()
-        {
-            Mock<IAdminPortClient> client = null;
-            var sFixture = new ServerFixture();
-            Server server = sFixture.WithPassword("123").Build();
-            clientFactory.Setup(x => x.Create(It.IsAny<ServerInfo>())).Returns((ServerInfo si) => (client = new AdminPortClientMockFixture().WithServerInfo(si).Build()).Object);
-            await provider.Register(DefaultUser, server);
-            Server withPassChanged = sFixture.BasedOn(server).WithPassword("333").Build();
-            serverService.Raise(x => x.PasswordChanged += null, serverService.Object, withPassChanged);
-
-            Mock<IAdminEvent> adminEventMock = new Mock<IAdminEvent>();
-            adminEventMock.SetupGet(x => x.Server).Returns(new ServerInfo(server.ServerIp, server.ServerPort, server.ServerPassword));
-            client.Raise(x => x.EventReceived += null, server, adminEventMock.Object);
-            defaultUserMock.Verify(x => x.ParseServerEvent(withPassChanged, adminEventMock.Object), Times.Once);
-            defaultUserMock.Verify(x => x.ParseServerEvent(server, adminEventMock.Object), Times.Never);
         }
     }
 }

@@ -1,5 +1,5 @@
 ﻿using Moq;
-using OpenttdDiscord.Openttd.Network.AdminPort;
+using OpenTTDAdminPort;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,7 +17,7 @@ namespace OpenttdDiscord.Openttd.Tests.Network.AdminPort
             Mock<IAdminPortClient> mock = new Mock<IAdminPortClient>();
             mock.SetupGet(x => x.ServerInfo).Returns(serverInfo);
             mock.SetupGet(x => x.ConnectionState).Returns(AdminConnectionState.Idle);
-            mock.Setup(x => x.Join()).Returns(Task.CompletedTask).Callback(() => mock.SetupGet(x => x.ConnectionState).Returns(AdminConnectionState.Connected));
+            mock.Setup(x => x.Connect()).Returns(Task.CompletedTask).Callback(() => mock.SetupGet(x => x.ConnectionState).Returns(AdminConnectionState.Connected));
             mock.Setup(x => x.Disconnect()).Returns(Task.CompletedTask).Callback(() => mock.SetupGet(x => x.ConnectionState).Returns(AdminConnectionState.Idle));
             return mock;
         }

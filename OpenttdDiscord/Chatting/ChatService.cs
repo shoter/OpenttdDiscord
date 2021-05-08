@@ -1,13 +1,14 @@
 ﻿using Discord;
 using Discord.WebSocket;
 using Microsoft.Extensions.Logging;
+using OpenTTDAdminPort;
+using OpenTTDAdminPort.Events;
+using OpenTTDAdminPort.Game;
+using OpenTTDAdminPort.Messages;
 using OpenttdDiscord.Backend.Admins;
 using OpenttdDiscord.Common;
 using OpenttdDiscord.Database.Chatting;
 using OpenttdDiscord.Database.Servers;
-using OpenttdDiscord.Openttd;
-using OpenttdDiscord.Openttd.Network;
-using OpenttdDiscord.Openttd.Network.AdminPort;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -26,7 +27,7 @@ namespace OpenttdDiscord.Chatting
         private readonly DiscordSocketClient discord;
 
         private readonly ConcurrentDictionary<(ulong, ulong), ChatChannelServer> chatServers = new ConcurrentDictionary<(ulong, ulong), ChatChannelServer>();
-        private readonly ConcurrentQueue<IAdminEvent> receivedMessagges = new ConcurrentQueue<IAdminEvent>();
+        private readonly ConcurrentQueue<ServerEvent> receivedMessagges = new ConcurrentQueue<ServerEvent>();
         private readonly ConcurrentQueue<DiscordMessage> discordMessages = new ConcurrentQueue<DiscordMessage>();
         private readonly ConcurrentQueue<ChatChannelServer> serversToRemove = new ConcurrentQueue<ChatChannelServer>();
 
@@ -100,17 +101,17 @@ namespace OpenttdDiscord.Chatting
 
         private async Task HandleGameMessages()
         {
-            while (receivedMessagges.TryDequeue(out IAdminEvent ev))
+            while (receivedMessagges.TryDequeue(out ServerEvent serverEvent))
             {
                 // for right now it is only event - this needs to be changed later
-                var msg = ev as AdminChatMessageEvent;
+                var msg = serverEvent.AdminEvent as AdminChatMessageEvent;
 
                 if (msg == null)
                     continue;
 
                 if (msg.Player.ClientId == 1)
                     continue;
-                Server s = chatServers.Values.FirstOrDefault(c => c.Server.ServerIp == msg.Server.ServerIp && c.Server.ServerPort == msg.Server.ServerPort)?.Server;
+                Server s = chatServers.Values.FirstOrDefault(c => c.Server.ServerIp == serverEvent.Server.ServerIp && c.Server.ServerPort == serverEvent.Server.ServerPort)?.Server;
 
                 if (s == null)
                     continue;
@@ -184,7 +185,7 @@ namespace OpenttdDiscord.Chatting
 
         public void ParseServerEvent(Server server, IAdminEvent adminEvent)
         {
-            this.receivedMessagges.Enqueue(adminEvent);
+            this.receivedMessagges.Enqueue(new ServerEvent(server, adminEvent));
         }
     }
 }

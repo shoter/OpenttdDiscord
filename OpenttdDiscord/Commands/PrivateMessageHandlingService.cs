@@ -1,7 +1,6 @@
 ﻿using Discord.WebSocket;
+using OpenTTDAdminPort;
 using OpenttdDiscord.Database.Servers;
-using OpenttdDiscord.Openttd;
-using OpenttdDiscord.Openttd.Network.AdminPort;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,12 +12,10 @@ namespace OpenttdDiscord.Commands
     public class PrivateMessageHandlingService : IPrivateMessageHandlingService
     {
         private readonly IServerService serverService;
-        private readonly IAdminPortClientFactory adminPortClientFactory;
 
-        public PrivateMessageHandlingService(IServerService serverService, IAdminPortClientFactory adminPortClientFactory)
+        public PrivateMessageHandlingService(IServerService serverService)
         {
             this.serverService = serverService;
-            this.adminPortClientFactory = adminPortClientFactory;
         }
 
 
@@ -33,11 +30,11 @@ namespace OpenttdDiscord.Commands
                     await channel.SendMessageAsync("Server was removed in the meantime - request invalid");
                     return;
                 }
-                IAdminPortClient client = adminPortClientFactory.Create(new ServerInfo(server.ServerIp, server.ServerPort, message.Content));
+                IAdminPortClient client = new AdminPortClient(new ServerInfo(server.ServerIp, server.ServerPort, message.Content));
 
                 try
                 {
-                    await client.Join();
+                    await client.Connect();
                 }
                 catch
                 {

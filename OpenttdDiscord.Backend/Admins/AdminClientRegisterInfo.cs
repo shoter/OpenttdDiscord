@@ -1,5 +1,5 @@
-﻿using OpenttdDiscord.Database.Servers;
-using OpenttdDiscord.Openttd.Network.AdminPort;
+﻿using OpenTTDAdminPort;
+using OpenttdDiscord.Database.Servers;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;

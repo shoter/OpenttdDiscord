@@ -5,10 +5,6 @@ VisualStudioVersion = 16.0.29709.97
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenttdDiscord", "OpenttdDiscord\OpenttdDiscord.csproj", "{9D260E45-64E0-4D3B-B3A8-FB4C2D232FB2}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenttdDiscord.Openttd", "OpenttdDiscord.Openttd\OpenttdDiscord.Openttd.csproj", "{E2A2AC12-8407-4FD8-A099-968DE219D78E}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenttdDiscord.Openttd.Tests", "OpenttdDiscord.Openttd.Tests\OpenttdDiscord.Openttd.Tests.csproj", "{A2726B0F-FC23-483F-AE08-03F62EE4D05B}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{2ABE6986-06D2-491D-852D-0B15E65AEAF8}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
@@ -33,7 +29,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenttdDiscord.Database.Tes
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenttdDiscord.Tests", "OpenttdDiscord.Tests\OpenttdDiscord.Tests.csproj", "{3CAEB0E4-7C59-41FD-889E-2A1DB2304344}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenttdDiscord.Backend", "OpenttdDiscord.Backend\OpenttdDiscord.Backend.csproj", "{E6DD72DF-D387-4F14-8134-A09C31461027}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenttdDiscord.Backend", "OpenttdDiscord.Backend\OpenttdDiscord.Backend.csproj", "{E6DD72DF-D387-4F14-8134-A09C31461027}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,14 +41,6 @@ Global
 		{9D260E45-64E0-4D3B-B3A8-FB4C2D232FB2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9D260E45-64E0-4D3B-B3A8-FB4C2D232FB2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9D260E45-64E0-4D3B-B3A8-FB4C2D232FB2}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E2A2AC12-8407-4FD8-A099-968DE219D78E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E2A2AC12-8407-4FD8-A099-968DE219D78E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E2A2AC12-8407-4FD8-A099-968DE219D78E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E2A2AC12-8407-4FD8-A099-968DE219D78E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A2726B0F-FC23-483F-AE08-03F62EE4D05B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A2726B0F-FC23-483F-AE08-03F62EE4D05B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A2726B0F-FC23-483F-AE08-03F62EE4D05B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A2726B0F-FC23-483F-AE08-03F62EE4D05B}.Release|Any CPU.Build.0 = Release|Any CPU
 		{C948A6D1-2B53-4420-A51C-BF08D7C96F16}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C948A6D1-2B53-4420-A51C-BF08D7C96F16}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C948A6D1-2B53-4420-A51C-BF08D7C96F16}.Release|Any CPU.ActiveCfg = Release|Any CPU

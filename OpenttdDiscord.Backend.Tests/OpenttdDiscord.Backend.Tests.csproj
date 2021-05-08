@@ -21,7 +21,6 @@
   <ItemGroup>
     <ProjectReference Include="..\OpenttdDiscord.Backend\OpenttdDiscord.Backend.csproj" />
     <ProjectReference Include="..\OpenttdDiscord.Database.Tests\OpenttdDiscord.Database.Tests.csproj" />
-    <ProjectReference Include="..\OpenttdDiscord.Openttd.Tests\OpenttdDiscord.Openttd.Tests.csproj" />
     <ProjectReference Include="..\OpenttdDiscord.Testing\OpenttdDiscord.Testing.csproj" />
   </ItemGroup>
 

@@ -71,7 +71,7 @@ namespace OpenttdDiscord.Testing.Database
             var response = await client.Containers.CreateContainerAsync(new Docker.DotNet.Models.CreateContainerParameters()
             {
                 Name = containerName,
-                Image = "openttd-discord-mysql",
+                Image = "openttd-discord-mysql-test",
                 HostConfig = new HostConfig
                 {
                     PortBindings = new Dictionary<string, IList<PortBinding>>
@@ -97,7 +97,7 @@ namespace OpenttdDiscord.Testing.Database
                 }
               });
 
-            await client.Networks.ConnectNetworkAsync("jenkins", new NetworkConnectParameters
+            await client.Networks.ConnectNetworkAsync("bridge", new NetworkConnectParameters
             {
                 Container = response.ID,
             });

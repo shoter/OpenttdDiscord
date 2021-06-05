@@ -9,10 +9,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
 		build.sh = build.sh
+		docker-compose.yml = docker-compose.yml
 		JenkinsFile = JenkinsFile
 		LICENSE.txt = LICENSE.txt
 		Readme.md = Readme.md
 		run.sh = run.sh
+		run_mysql.ps1 = run_mysql.ps1
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenttdDiscord.Database", "OpenttdDiscord.Database\OpenttdDiscord.Database.csproj", "{C948A6D1-2B53-4420-A51C-BF08D7C96F16}"

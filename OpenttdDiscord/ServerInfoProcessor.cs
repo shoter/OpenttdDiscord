@@ -28,11 +28,11 @@ namespace OpenttdDiscord
         private readonly ConcurrentQueue<SubscribedServer> removedServers = new ConcurrentQueue<SubscribedServer>();
 
         public ServerInfoProcessor(DiscordSocketClient client, ISubscribedServerService subscribedServerService,
-            IEmbedFactory embedFactory, ILogger<ServerInfoProcessor> logger, IUdpOttdClient udpOttdClient)
+            IEmbedFactory embedFactory, ILogger<ServerInfoProcessor> logger, IUdpOttdClientFactory udpOttdClientFactory)
         {
             this.subscribedServerService = subscribedServerService;
             this.client = client;
-            this.udpOttdClientProvider = udpOttdClient;
+            this.udpOttdClientProvider = udpOttdClientFactory.Create();
             this.embedFactory = embedFactory;
             this.logger = logger;
 

@@ -12,6 +12,7 @@ using OpenttdDiscord.Chatting;
 using OpenttdDiscord.Database.Chatting;
 using OpenttdDiscord.Admins;
 using OpenttdDiscord.Reporting;
+using Microsoft.Extensions.Logging;
 
 namespace OpenttdDiscord
 {
@@ -20,6 +21,7 @@ namespace OpenttdDiscord
         private static DiscordSocketClient client;
         private static bool initialized = false;
         private static bool quitProgram = false;
+        private static ILogger logger;
 
         public static async Task Main()
         {
@@ -32,6 +34,7 @@ namespace OpenttdDiscord
             using var services = DependencyConfig.ServiceProvider;
 
             client = services.GetRequiredService<DiscordSocketClient>();
+            logger = services.GetRequiredService<ILogger<Program>>();
             client.Log += Log;
             services.GetRequiredService<CommandService>().Log += Log;
 
@@ -63,12 +66,20 @@ namespace OpenttdDiscord
         {
             if (initialized == false)
             {
-                initialized = true;
-                await DependencyConfig.ServiceProvider.GetRequiredService<ServerInfoProcessor>().Start();
-                await DependencyConfig.ServiceProvider.GetRequiredService<IChatService>().Start();
-                await DependencyConfig.ServiceProvider.GetRequiredService<IAdminService>().Start();
-                await DependencyConfig.ServiceProvider.GetRequiredService<IReportService>().Start();
-                DependencyConfig.ServiceProvider.GetRequiredService<IServerService>().NewServerPasswordRequestAdded += Program_NewServerPasswordRequestAdded; ;
+                try
+                {
+                    initialized = true;
+                    await DependencyConfig.ServiceProvider.GetRequiredService<ServerInfoProcessor>().Start();
+                    await DependencyConfig.ServiceProvider.GetRequiredService<IChatService>().Start();
+                    await DependencyConfig.ServiceProvider.GetRequiredService<IAdminService>().Start();
+                    await DependencyConfig.ServiceProvider.GetRequiredService<IReportService>().Start();
+                    DependencyConfig.ServiceProvider.GetRequiredService<IServerService>().NewServerPasswordRequestAdded += Program_NewServerPasswordRequestAdded; ;
+                }
+                catch(Exception e)
+                {
+                    logger.LogError(e, e.Message);
+                    throw e;
+                }
             }
         }
 

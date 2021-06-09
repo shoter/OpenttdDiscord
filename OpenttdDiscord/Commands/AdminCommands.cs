@@ -1,6 +1,7 @@
 ﻿using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
+using Microsoft.Extensions.Logging;
 using OpenttdDiscord.Admins;
 using OpenttdDiscord.Database.Admins;
 using OpenttdDiscord.Database.Servers;
@@ -18,6 +19,13 @@ namespace OpenttdDiscord.Commands
         public DiscordSocketClient Client { get; set; }
 
         public IServerService ServerService { get; set; }
+
+        private readonly ILogger logger;
+
+        public AdminCommands(ILogger<AdminCommands> logger)
+        {
+            this.logger = logger;
+        }
 
         [Command("register_admin_channel")]
         [RequireContext(ContextType.Guild, ErrorMessage = "Sorry, this command must be ran from within a server, not a DM!")]
@@ -84,17 +92,28 @@ namespace OpenttdDiscord.Commands
         [RequireUserPermission(GuildPermission.Administrator)]
         public async Task ListAdminChannels()
         {
-            var adminChannel = await AdminChannelService.GetAll(Context.Guild.Id);
-            StringBuilder sb = new StringBuilder();
 
-            foreach (var ac in adminChannel)
+            try
             {
-                var channel = Client.GetChannel(ac.ChannelId) as SocketTextChannel;
+                var adminChannel = await AdminChannelService.GetAll(Context.Guild.Id);
+                StringBuilder sb = new StringBuilder();
 
-                sb.Append($"{ac.Server.ServerName} - {channel.Name} - {ac.Server.ServerIp}:{ac.Server.ServerPort}\n");
+                sb.Append("Following servers are registered on this guild:\n");
+
+                foreach (var ac in adminChannel)
+                {
+                    var channel = Client.GetChannel(ac.ChannelId) as SocketTextChannel;
+
+                    sb.Append($"{ac.Server.ServerName} - {channel.Name} - {ac.Server.ServerIp}:{ac.Server.ServerPort}\n");
+                }
+
+                await ReplyAsync($"{sb}");
             }
-
-            await ReplyAsync($"{sb}");
+            catch(Exception e)
+            {
+                logger.LogError(e, e.Message);
+                throw;
+            }
         }
     }
 }

@@ -13,6 +13,7 @@ namespace OpenttdDiscord.Backend.Admins
         public void Register(in IServiceCollection services)
         {
             services.AddSingleton<IAdminPortClientProvider, AdminPortClientProvider>();
+            services.AddSingleton<IAdminPortClientFactory, AdminPortClientFactory>();
         }
     }
 }

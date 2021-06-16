@@ -24,8 +24,11 @@ It contains the same information as OpenTTD client on server browser screen.
     * Bot automatically creates persistent SQL database on the computer where bot is being run.
 
 
-Debugging process is the same excluding the fact that you need to launch your project instead of docker instance. 
-It should work out of the box with environment variables set.
+* Debugging process is the same excluding the fact that you need to launch your project instead of docker instance. 
+It should work out of the box with environment variables set. Remember to load MySql connection string into `ottd_discord_connectionstring` before debugging.
+  * Database creation process is described inside [OpenttdDiscord.Database](https://github.com/shoter/OpenttdDiscord/tree/master/OpenttdDiscord.Database)
+  * example: `Server=1.2.3.256;User ID=openttd;Password=yoursupersecretpassword;Database=openttd`
+
 
 ## Usage Overview
 

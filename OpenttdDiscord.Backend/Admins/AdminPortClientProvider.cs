@@ -1,5 +1,7 @@
 ﻿using OpenTTDAdminPort;
 using OpenTTDAdminPort.Events;
+using OpenTTDAdminPort.Game;
+using OpenTTDAdminPort.Messages;
 using OpenttdDiscord.Common;
 using OpenttdDiscord.Database.Servers;
 using System;
@@ -69,12 +71,21 @@ namespace OpenttdDiscord.Backend.Admins
             });
 
             if (info.Client.ConnectionState == AdminConnectionState.Idle)
+            {
                 await info.Client.Connect();
+
+                info.Client.SendMessage(new AdminUpdateFrequencyMessage(AdminUpdateType.ADMIN_UPDATE_CHAT, UpdateFrequency.ADMIN_FREQUENCY_AUTOMATIC));
+                info.Client.SendMessage(new AdminUpdateFrequencyMessage(AdminUpdateType.ADMIN_UPDATE_CONSOLE, UpdateFrequency.ADMIN_FREQUENCY_AUTOMATIC));
+                info.Client.SendMessage(new AdminUpdateFrequencyMessage(AdminUpdateType.ADMIN_UPDATE_CLIENT_INFO, UpdateFrequency.ADMIN_FREQUENCY_AUTOMATIC));
+                info.Client.SendMessage(new AdminPollMessage(AdminUpdateType.ADMIN_UPDATE_CLIENT_INFO, uint.MaxValue));
+            }
+
+            
 
             info.AddUser(owner);
         }
 
-        private void Client_EventReceived(object sender, IAdminEvent adminEvent)
+        private void Client_EventReceived(object sender, IAdminEvent adminEvent) 
         {
             IAdminPortClient client = sender as IAdminPortClient;
             List<(IEnumerable<IAdminPortClientUser> users, Server server)> serverUsers = new List<(IEnumerable<IAdminPortClientUser> users, Server server)>();

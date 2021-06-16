@@ -1,5 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using OpenTTDAdminPort;
+using OpenTTDAdminPort.Game;
+using OpenTTDAdminPort.Messages;
 
 namespace OpenttdDiscord.Backend.Admins
 {
@@ -18,7 +20,8 @@ namespace OpenttdDiscord.Backend.Admins
         public virtual IAdminPortClient Create(ServerInfo info)
         {
             logger.LogInformation($"Creating admin port client for {info}");
-            return new AdminPortClient(info, clientLogger);
+            var client = new AdminPortClient(info, clientLogger);
+            return client;
         }
     }
 }

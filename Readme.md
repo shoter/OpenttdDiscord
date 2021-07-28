@@ -30,6 +30,15 @@ It should work out of the box with environment variables set. Remember to load M
   * example: `Server=1.2.3.256;User ID=openttd;Password=yoursupersecretpassword;Database=openttd`
 
 
+## Bots required permissions
+
+- View channels
+- Send Messages
+- Embed files
+
+Read more about permissions in [official Discord documentation](https://discord.com/developers/docs/topics/permissions)
+
+
 ## Usage Overview
 
 [![Youtube video tutorial](https://img.youtube.com/vi/He2qtUTibV0/0.jpg)](https://www.youtube.com/watch?v=He2qtUTibV0)

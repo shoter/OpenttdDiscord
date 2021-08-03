@@ -27,7 +27,7 @@ namespace OpenttdDiscord.Database.AntiGrief
                                                      VALUES (@ip, @pt)", conn))
                 {
                     cmd.Parameters.AddWithValue("ip", trustedIp.IpAddress);
-                    cmd.Parameters.AddWithValue("pt", trustedIp.PlayingTime);
+                    cmd.Parameters.AddWithValue("pt", (int)trustedIp.PlayingTime.TotalMinutes);
 
 
                     await cmd.ExecuteNonQueryAsync();

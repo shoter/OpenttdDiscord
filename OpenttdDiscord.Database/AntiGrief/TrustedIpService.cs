@@ -13,7 +13,7 @@ namespace OpenttdDiscord.Database.AntiGrief
     {
         private ITrustedIpRepository trustedIpRepository { get; }
 
-        private ConcurrentDictionary<string, TrustedIp> Cache { get; set; }
+        private ConcurrentDictionary<string, TrustedIp> Cache { get; set; } = new ConcurrentDictionary<string, TrustedIp>();
 
         public TrustedIpService(ITrustedIpRepository trustedIpRepository)
         {

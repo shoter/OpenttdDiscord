@@ -12,6 +12,7 @@ using Microsoft.Extensions.Logging;
 
 using OpenTTDAdminPort;
 using OpenTTDAdminPort.Events;
+using OpenTTDAdminPort.Game;
 using OpenTTDAdminPort.Messages;
 
 using OpenttdDiscord.Backend.Admins;
@@ -129,10 +130,24 @@ namespace OpenttdDiscord.AntiGrief
         {
             while (receivedEvents.TryDequeue(out ServerEvent serverEvent))
             {
-                if (!(serverEvent.AdminEvent is AdminClientUpdateEvent msg))
-                    continue;
+                Player player = null;
+                if (serverEvent.AdminEvent is AdminClientUpdateEvent msg)
+                {
+                    player = msg.Player;
 
-                if (msg.Player.ClientId == 1)
+                }
+                else if (serverEvent.AdminEvent is AdminClientInfoEvent info)
+                {
+                    player = info.Player;
+
+                }
+
+                if(player == null)
+                {
+                    continue;
+                }
+
+                if (player.ClientId == 1)
                     continue;
 
                 AntiGriefServer s = agServers.Values.FirstOrDefault(c => c.Server.ServerIp == serverEvent.Server.ServerIp && c.Server.ServerPort == serverEvent.Server.ServerPort);
@@ -140,11 +155,11 @@ namespace OpenttdDiscord.AntiGrief
                 if (s == null)
                     continue;
 
-                TrustedIp tip = await trustedIpService.Get(msg.Player.Hostname);
+                TrustedIp tip = await trustedIpService.Get(player.Hostname);
 
                 if (tip == null)
                 {
-                    tip = await trustedIpService.Add(new TrustedIp(msg.Player.Hostname, TimeSpan.Zero));
+                    tip = await trustedIpService.Add(new TrustedIp(player.Hostname, TimeSpan.Zero));
                 }
 
                 var client = adminPortClientProvider.GetClient(this, s.Server);
@@ -153,8 +168,8 @@ namespace OpenttdDiscord.AntiGrief
                 {
                     int minutesRequired = (int)(s.RequiredMinsToPlay - tip.PlayingTime.TotalMinutes);
 
-                    client.SendMessage(new AdminRconMessage($"move {msg.Player.ClientId} 255"));
-                    client.SendMessage(new AdminRconMessage($"say_client {msg.Player.ClientId} \"You need {minutesRequired} minutes to be able to join companies. {s.Reason}\""));
+                    client.SendMessage(new AdminRconMessage($"move {player.ClientId} 255"));
+                    client.SendMessage(new AdminRconMessage($"say_client {player.ClientId} \"You need {minutesRequired} minutes to be able to join companies. {s.Reason}\""));
                 }
 
             }
@@ -167,7 +182,10 @@ namespace OpenttdDiscord.AntiGrief
                 try
                 {
                     if (adminPortClientProvider.IsRegistered(this, s.Server) == false)
+                    {
                         await adminPortClientProvider.Register(this, s.Server);
+                        var client = adminPortClientProvider.GetClient(this, s.Server);
+                    }
                 }
                 catch (Exception e)
                 {

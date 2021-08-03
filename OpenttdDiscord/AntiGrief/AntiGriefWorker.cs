@@ -72,7 +72,7 @@ namespace OpenttdDiscord.AntiGrief
                     TrustedIp ip = await this.trustedIpService.Get(result.IpAddres);
                     if (ip != null)
                     {
-                        await this.trustedIpService.Remove(ip);
+                        await this.trustedIpService.Remove(ip.IpAddress);
                     }
 
                     TimeSpan playingTime = ip?.PlayingTime ?? TimeSpan.Zero;

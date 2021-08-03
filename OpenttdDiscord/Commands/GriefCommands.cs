@@ -89,5 +89,22 @@ namespace OpenttdDiscord.Commands
 
             await ReplyAsync("Server removed from AntiGrief system!");
         }
+
+        [Command("add_trustedip_time")]
+        [RequireContext(ContextType.Guild, ErrorMessage = "Sorry, this command must be ran from within a server, not a DM!")]
+        [RequireUserPermission(GuildPermission.Administrator)]
+        public async Task RemoveAntiGriefServer(string ipAddress, int timeInMinutes)
+        {
+            var trustedIp = await TrustedIpService.Get(ipAddress);
+            TimeSpan playTime = trustedIp?.PlayingTime ?? TimeSpan.Zero;
+
+            if (trustedIp != null)
+            {
+                await TrustedIpService.Remove(ipAddress);
+            }
+            await TrustedIpService.Add(new TrustedIp(ipAddress, playTime.Add(TimeSpan.FromMinutes(timeInMinutes))));
+
+            await ReplyAsync($"IP Address {ipAddress} added {timeInMinutes} minutes of playing time!");
+        }
     }
 }

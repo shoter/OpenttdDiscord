@@ -84,7 +84,7 @@ namespace OpenttdDiscord.Database.AntiGrief
             }
         }
 
-        public async Task Remove(TrustedIp trustedIp)
+        public async Task Remove(string ipAddress)
         {
             using (var conn = new MySqlConnection(this.connectionString))
             {
@@ -93,7 +93,7 @@ namespace OpenttdDiscord.Database.AntiGrief
                 using (var cmd = new MySqlCommand($@"DELETE FROM trusted_ips ti
                                                      WHERE ip_address = @ip", conn))
                 {
-                    cmd.Parameters.AddWithValue("ip", trustedIp.IpAddress);
+                    cmd.Parameters.AddWithValue("ip", ipAddress);
 
                     int rows = await cmd.ExecuteNonQueryAsync();
 

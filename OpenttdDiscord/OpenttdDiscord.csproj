@@ -28,7 +28,7 @@
     <PackageReference Include="Microsoft.Extensions.Options" Version="5.0.0" />
     <PackageReference Include="NLog" Version="4.7.10" />
     <PackageReference Include="NLog.Extensions.Logging" Version="1.7.2" />
-    <PackageReference Include="Shoter.OpenTTD.AdminPort" Version="0.2.2-run-39" />
+    <PackageReference Include="Shoter.OpenTTD.AdminPort" Version="0.2.2-run-40" />
   </ItemGroup>
 
   <ItemGroup>

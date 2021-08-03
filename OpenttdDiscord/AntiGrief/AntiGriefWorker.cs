@@ -147,7 +147,7 @@ namespace OpenttdDiscord.AntiGrief
                     continue;
                 }
 
-                if (player.ClientId == 1 && player.PlayingAs == 255)
+                if (player.ClientId == 1 || player.PlayingAs == 255)
                     continue;
 
                 AntiGriefServer s = agServers.Values.FirstOrDefault(c => c.Server.ServerIp == serverEvent.Server.ServerIp && c.Server.ServerPort == serverEvent.Server.ServerPort);

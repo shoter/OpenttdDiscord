@@ -108,6 +108,10 @@ namespace OpenttdDiscord.Chatting
 
                 if (msg.Player.ClientId == 1)
                     continue;
+
+                if (msg.NetworkAction != NetworkAction.NETWORK_ACTION_CHAT)
+                    continue;
+
                 Server s = chatServers.Values.FirstOrDefault(c => c.Server.ServerIp == serverEvent.Server.ServerIp && c.Server.ServerPort == serverEvent.Server.ServerPort)?.Server;
 
                 if (s == null)

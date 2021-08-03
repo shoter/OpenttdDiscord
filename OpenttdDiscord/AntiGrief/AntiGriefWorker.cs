@@ -169,7 +169,7 @@ namespace OpenttdDiscord.AntiGrief
                     int minutesRequired = (int)(s.RequiredMinsToPlay - tip.PlayingTime.TotalMinutes);
 
                     client.SendMessage(new AdminRconMessage($"move {player.ClientId} 255"));
-                    client.SendMessage(new AdminRconMessage($"say_client {player.ClientId} \"You need {minutesRequired} minutes to be able to join companies. {s.Reason}\""));
+                    client.SendMessage(new AdminRconMessage($"say_client {player.ClientId} \"You need to play {minutesRequired} minutes more on this server to be able to join companies. {s.Reason}\""));
                 }
 
             }

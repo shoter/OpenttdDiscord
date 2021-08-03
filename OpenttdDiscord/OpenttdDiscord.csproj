@@ -28,7 +28,7 @@
     <PackageReference Include="Microsoft.Extensions.Options" Version="5.0.0" />
     <PackageReference Include="NLog" Version="4.7.10" />
     <PackageReference Include="NLog.Extensions.Logging" Version="1.7.2" />
-    <PackageReference Include="Shoter.OpenTTD.AdminPort" Version="0.2.0-run-28" />
+    <PackageReference Include="Shoter.OpenTTD.AdminPort" Version="0.2.1-run-34" />
   </ItemGroup>
 
   <ItemGroup>
@@ -44,10 +44,6 @@
     <None Update="nlog.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="AntiGrief\" />
   </ItemGroup>
 
 </Project>

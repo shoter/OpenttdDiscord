@@ -15,7 +15,10 @@ namespace OpenttdDiscord.Database.Servers
 
         Task<Server> Getsert(ulong guildId, string ip, int port, string serverName);
         Task<bool> Exists(ulong guildId, string ip, int port);
-        public Task<bool> Exists(ulong guildId, string serverName); 
+        public Task<bool> Exists(ulong guildId, string serverName);
+
+        Task<Server> Get(ulong serverId);
+
         Task<Server> Get(ulong guildId, string ip, int port);
         Task<List<Server>> Get(string ip, int port);
 

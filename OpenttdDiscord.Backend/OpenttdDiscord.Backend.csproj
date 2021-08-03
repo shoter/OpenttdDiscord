@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Shoter.OpenTTD.AdminPort" Version="0.2.0-run-26" />
+    <PackageReference Include="Shoter.OpenTTD.AdminPort" Version="0.2.1-run-34" />
   </ItemGroup>
 
   <ItemGroup>

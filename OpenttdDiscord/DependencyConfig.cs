@@ -13,6 +13,8 @@ using OpenttdDiscord.Openttd;
 using OpenttdDiscord.Common;
 using OpenttdDiscord.Admins;
 using OpenttdDiscord.Reporting;
+using OpenttdDiscord.Database.AntiGrief;
+using OpenttdDiscord.AntiGrief;
 
 namespace OpenttdDiscord
 {
@@ -31,11 +33,13 @@ namespace OpenttdDiscord
             new OttdModule().Register(services);
             new BackendModule().Register(services);
             new AdminModule().Register(services);
+            new AntiGriefModule().Register(services);
 
             services.AddSingleton<DiscordSocketClient>();
             services.AddSingleton<CommandService>();
             services.AddSingleton<IChatService, ChatService>();
             services.AddSingleton<IReportService, ReportService>();
+            services.AddSingleton<IAntiGriefWorker, AntiGriefWorker>();
             services.AddSingleton<ServerInfoProcessor>();
             services.AddSingleton<ITimeProvider, TimeProvider>();
             services.AddScoped<IPrivateMessageHandlingService, PrivateMessageHandlingService>();

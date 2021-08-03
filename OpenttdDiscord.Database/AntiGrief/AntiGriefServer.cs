@@ -12,23 +12,23 @@ namespace OpenttdDiscord.Database.AntiGrief
 {
     public class AntiGriefServer
     {
-        public ulong serverId { get; }
+        public Server Server { get; }
 
 
         public int RequiredMinsToPlay { get; }
 
         public string Reason { get;  }
 
-        public AntiGriefServer(ulong serverId,  int requiredMinsToPlay, string reason)
+        public AntiGriefServer(Server server,  int requiredMinsToPlay, string reason)
         {
-            this.serverId = serverId;
+            this.Server = server;
             this.RequiredMinsToPlay = requiredMinsToPlay;
             this.Reason = reason;
         }
 
         public AntiGriefServer(DbDataReader reader, string prefix = null)
         {
-            this.serverId = reader.ReadU64("server_id", prefix);
+            this.Server = new Server(reader);
             this.RequiredMinsToPlay = reader.ReadInt("required_mins_to_play", prefix);
             this.Reason = reader.ReadString("reason", prefix);
         }

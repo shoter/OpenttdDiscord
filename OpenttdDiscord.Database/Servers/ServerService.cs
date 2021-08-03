@@ -93,5 +93,7 @@ namespace OpenttdDiscord.Database.Servers
         }
 
         public Task<List<Server>> Get(string ip, int port) => this.serverRepository.GetServers(ip, port);
+
+        public Task<Server> Get(ulong serverId) => this.serverRepository.GetServer(serverId);
     }
 }

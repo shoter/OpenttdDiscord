@@ -13,6 +13,7 @@ using OpenttdDiscord.Database.Chatting;
 using OpenttdDiscord.Admins;
 using OpenttdDiscord.Reporting;
 using Microsoft.Extensions.Logging;
+using OpenttdDiscord.AntiGrief;
 
 namespace OpenttdDiscord
 {
@@ -73,6 +74,8 @@ namespace OpenttdDiscord
                     await DependencyConfig.ServiceProvider.GetRequiredService<IChatService>().Start();
                     await DependencyConfig.ServiceProvider.GetRequiredService<IAdminService>().Start();
                     await DependencyConfig.ServiceProvider.GetRequiredService<IReportService>().Start();
+                    await DependencyConfig.ServiceProvider.GetRequiredService<IAntiGriefWorker>().Start();
+
                     DependencyConfig.ServiceProvider.GetRequiredService<IServerService>().NewServerPasswordRequestAdded += Program_NewServerPasswordRequestAdded; ;
                 }
                 catch(Exception e)

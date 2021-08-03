@@ -39,8 +39,11 @@ namespace OpenttdDiscord.Database.AntiGrief
             return ips;
         }
 
-        public Task Remove(TrustedIp trustedIp)
-            => trustedIpRepository.Remove(trustedIp);
+        public async Task Remove(TrustedIp trustedIp)
+        {
+            await trustedIpRepository.Remove(trustedIp);
+            Cache.TryRemove(trustedIp.IpAddress, out _);
+        }
 
         public async Task<TrustedIp> Get(string ipAddress)
         {
@@ -51,5 +54,7 @@ namespace OpenttdDiscord.Database.AntiGrief
 
             return await trustedIpRepository.Get(ipAddress);
         }
+
+        public async Task<bool> Exists(string ipAddress) => await Get(ipAddress) != null;
     }
 }

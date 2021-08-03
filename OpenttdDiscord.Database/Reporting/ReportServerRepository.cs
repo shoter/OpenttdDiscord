@@ -23,7 +23,7 @@ namespace OpenttdDiscord.Database.Reporting
             {
                 await conn.OpenAsync();
 
-                using (var cmd = new MySqlCommand($@"INSERT INTO report_servers(server_id, channel_id) 
+                using (var cmd = new MySqlCommand($@"INSERT INTO antigrief_servers(server_id, channel_id) 
                                                      VALUES (@sid, @cid)", conn))
                 {
                     cmd.Parameters.AddWithValue("sid", server.Id);
@@ -33,9 +33,9 @@ namespace OpenttdDiscord.Database.Reporting
                     await cmd.ExecuteNonQueryAsync();
                 }
 
-                using (var cmd = new MySqlCommand($@"SELECT * FROM report_servers r
-                                                    JOIN servers s on r.server_id = s.id
-                                                    WHERE s.id = @sid AND r.channel_id = @cid", conn))
+                using (var cmd = new MySqlCommand($@"SELECT * FROM antigrief_servers ag
+                                                    JOIN servers s on ag.server_id = s.id
+                                                    WHERE s.id = @sid AND ag.channel_id = @cid", conn))
                 {
                     cmd.Parameters.AddWithValue("sid", server.Id);
                     cmd.Parameters.AddWithValue("cid", channelId);
@@ -53,9 +53,9 @@ namespace OpenttdDiscord.Database.Reporting
             using (var conn = new MySqlConnection(this.connectionString))
             {
                 await conn.OpenAsync();
-                using (var cmd = new MySqlCommand($@"SELECT * FROM report_servers r
-                                                    JOIN servers s on r.server_id = s.id
-                                                    WHERE r.channel_id = @cid AND r.server_id = @sid", conn))
+                using (var cmd = new MySqlCommand($@"SELECT * FROM antigrief_servers ag
+                                                    JOIN servers s on ag.server_id = s.id
+                                                    WHERE ag.channel_id = @cid AND ag.server_id = @sid", conn))
                 {
                     cmd.Parameters.AddWithValue("cid", channelId);
                     cmd.Parameters.AddWithValue("sid", serverId);
@@ -74,9 +74,9 @@ namespace OpenttdDiscord.Database.Reporting
             using (var conn = new MySqlConnection(this.connectionString))
             {
                 await conn.OpenAsync();
-                using (var cmd = new MySqlCommand($@"SELECT * FROM report_servers r
-                                                    JOIN servers s on r.server_id = s.id
-                                                    WHERE r.channel_id = @cid", conn))
+                using (var cmd = new MySqlCommand($@"SELECT * FROM antigrief_servers ag
+                                                    JOIN servers s on ag.server_id = s.id
+                                                    WHERE ag.channel_id = @cid", conn))
                 {
                     cmd.Parameters.AddWithValue("cid", channelId);
                     using (var reader = await cmd.ExecuteReaderAsync())
@@ -95,8 +95,8 @@ namespace OpenttdDiscord.Database.Reporting
             using (var conn = new MySqlConnection(this.connectionString))
             {
                 await conn.OpenAsync();
-                using (var cmd = new MySqlCommand($@"SELECT * FROM report_servers r
-                                                    JOIN servers s on r.server_id = s.id", conn))
+                using (var cmd = new MySqlCommand($@"SELECT * FROM antigrief_servers ag
+                                                    JOIN servers s on ag.server_id = s.id", conn))
                 {
                     using (var reader = await cmd.ExecuteReaderAsync())
                     {
@@ -114,8 +114,8 @@ namespace OpenttdDiscord.Database.Reporting
             using (var conn = new MySqlConnection(this.connectionString))
             {
                 await conn.OpenAsync();
-                using (var cmd = new MySqlCommand($@"SELECT * FROM report_servers r
-                                                    JOIN servers s on r.server_id = s.id
+                using (var cmd = new MySqlCommand($@"SELECT * FROM antigrief_servers ag
+                                                    JOIN servers s on ag.server_id = s.id
                                                     WHERE s.guild_id = @gid", conn))
                 {
                     cmd.Parameters.AddWithValue("gid", guildId);
@@ -136,7 +136,7 @@ namespace OpenttdDiscord.Database.Reporting
             {
                 await conn.OpenAsync();
 
-                using (var cmd = new MySqlCommand($@"DELETE FROM report_servers 
+                using (var cmd = new MySqlCommand($@"DELETE FROM antigrief_servers 
                                                      WHERE server_id = @sid AND channel_id = @cid", conn))
                 {
                     cmd.Parameters.AddWithValue("sid", reportServer.Server.Id);

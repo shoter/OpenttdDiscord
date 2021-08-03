@@ -19,17 +19,18 @@ namespace OpenttdDiscord.Database.AntiGrief
             this.connectionString = config.ConnectionString;
         }
 
-        public async Task<AntiGriefServer> Add(Server server)
+        public async Task<AntiGriefServer> Add(Server server, TimeSpan requiredTimeToPlay, string reason)
         {
             using (var conn = new MySqlConnection(this.connectionString))
             {
                 await conn.OpenAsync();
 
-                using (var cmd = new MySqlCommand($@"INSERT INTO antigrief_servers(server_id) 
-                                                     VALUES (@sid)", conn))
+                using (var cmd = new MySqlCommand($@"INSERT INTO antigrief_servers(server_id, required_mins_to_play, reason) 
+                                                     VALUES (@sid, @req, @reason)", conn))
                 {
                     cmd.Parameters.AddWithValue("sid", server.Id);
-
+                    cmd.Parameters.AddWithValue("req", (int)requiredTimeToPlay.TotalMinutes);
+                    cmd.Parameters.AddWithValue("reason", reason);
 
                     await cmd.ExecuteNonQueryAsync();
                 }

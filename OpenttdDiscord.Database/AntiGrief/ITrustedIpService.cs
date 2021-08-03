@@ -14,6 +14,9 @@ namespace OpenttdDiscord.Database.AntiGrief
 
         Task<TrustedIp> Get(string ipAddress);
 
+        Task<bool> Exists(string ipAddress);
+
+
         Task<List<TrustedIp>> GetAll();
 
         Task Remove(TrustedIp trustedIp);

@@ -18,9 +18,9 @@ namespace OpenttdDiscord.Database.AntiGrief
             this.antiGriefRepository = antiGriefRepository;
         }
 
-        public async Task<AntiGriefServer> Add(Server server)
+        public async Task<AntiGriefServer> Add(Server server, TimeSpan requiredTimeToPlay, string reason)
         {
-            AntiGriefServer reportServer = await antiGriefRepository.Add(server);
+            AntiGriefServer reportServer = await antiGriefRepository.Add(server, requiredTimeToPlay, reason);
             this.Added?.Invoke(this, reportServer);
             return reportServer;
         }
@@ -36,5 +36,8 @@ namespace OpenttdDiscord.Database.AntiGrief
         public Task<AntiGriefServer> Get(ulong serverId) => this.antiGriefRepository.Get(serverId);
 
         public Task<List<AntiGriefServer>> GetAll() => this.antiGriefRepository.GetAll();
+
+        public async Task<bool> Exists(ulong serverId)
+            => await Get(serverId) != null;
     }
 }

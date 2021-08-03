@@ -10,7 +10,7 @@ namespace OpenttdDiscord.Database.AntiGrief
 {
     public interface IAntiGriefRepository
     {
-        Task<AntiGriefServer> Add(Server server);
+        Task<AntiGriefServer> Add(Server server, TimeSpan requiredTimeToPlay, string reason);
         Task<List<AntiGriefServer>> GetAll();
         Task<AntiGriefServer> Get(ulong serverId);
         Task<List<AntiGriefServer>> GetAllForGuild(ulong guildId);

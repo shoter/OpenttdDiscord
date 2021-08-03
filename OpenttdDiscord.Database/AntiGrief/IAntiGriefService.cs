@@ -13,13 +13,16 @@ namespace OpenttdDiscord.Database.AntiGrief
         event EventHandler<AntiGriefServer> Added;
         event EventHandler<AntiGriefServer> Removed;
 
-        Task<AntiGriefServer> Add(Server server);
+        Task<AntiGriefServer> Add(Server server, TimeSpan requiredTimeToPlay, string reason);
 
         Task<List<AntiGriefServer>> GetAllForGuild(ulong guildId);
 
         Task<List<AntiGriefServer>> GetAll();
 
         Task<AntiGriefServer> Get(ulong serverId);
+
+        Task<bool> Exists(ulong serverId);
+
 
         Task Remove(AntiGriefServer reportServer);
 

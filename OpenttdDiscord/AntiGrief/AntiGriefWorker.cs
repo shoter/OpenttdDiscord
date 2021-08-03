@@ -65,19 +65,26 @@ namespace OpenttdDiscord.AntiGrief
         {
             while (true)
             {
-                await Task.Delay(TimeSpan.FromSeconds(1));
-
-                if (ReputationToAdd.TryPop(out ReputationAdd result))
+                try
                 {
-                    TrustedIp ip = await this.trustedIpService.Get(result.IpAddres);
-                    if (ip != null)
+                    await Task.Delay(TimeSpan.FromSeconds(1));
+
+                    if (ReputationToAdd.TryPop(out ReputationAdd result))
                     {
-                        await this.trustedIpService.Remove(ip.IpAddress);
+                        TrustedIp ip = await this.trustedIpService.Get(result.IpAddres);
+                        if (ip != null)
+                        {
+                            await this.trustedIpService.Remove(ip.IpAddress);
+                        }
+
+                        TimeSpan playingTime = ip?.PlayingTime ?? TimeSpan.Zero;
+
+                        await this.trustedIpService.Add(new TrustedIp(result.IpAddres, playingTime.Add(TimeSpan.FromMinutes(result.Minutes))));
                     }
-
-                    TimeSpan playingTime = ip?.PlayingTime ?? TimeSpan.Zero;
-
-                    await this.trustedIpService.Add(new TrustedIp(result.IpAddres, playingTime.Add(TimeSpan.FromMinutes(result.Minutes))));
+                }
+                catch(Exception ex)
+                {
+                    this.logger.LogError(ex, ex.ToString());
                 }
             }
         }

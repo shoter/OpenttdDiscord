@@ -14,18 +14,18 @@ namespace OpenttdDiscord.Database.AntiGrief
     {
         public Server Server { get; }
 
-        public ulong ChannelId { get; }
+        public ulong GuildId { get; }
 
-        public AntiGriefServer(Server server, ulong channelId)
+        public AntiGriefServer(Server server, ulong guildId)
         {
             this.Server = server;
-            this.ChannelId = channelId;
+            this.GuildId = guildId;
         }
 
         public AntiGriefServer(DbDataReader reader, string prefix = null)
         {
             this.Server = new Server(reader);
-            this.ChannelId = reader.ReadU64("channel_id", prefix);
+            this.GuildId = reader.ReadU64("guild_id", prefix);
         }
     }
 }

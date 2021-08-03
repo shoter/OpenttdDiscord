@@ -19,17 +19,16 @@ namespace OpenttdDiscord.Database.AntiGrief
             this.connectionString = config.ConnectionString;
         }
 
-        public async Task<AntiGriefServer> Add(Server server, ulong channelId)
+        public async Task<AntiGriefServer> Add(Server server)
         {
             using (var conn = new MySqlConnection(this.connectionString))
             {
                 await conn.OpenAsync();
 
-                using (var cmd = new MySqlCommand($@"INSERT INTO report_servers(server_id, channel_id) 
-                                                     VALUES (@sid, @cid)", conn))
+                using (var cmd = new MySqlCommand($@"INSERT INTO antigrief_servers(server_id) 
+                                                     VALUES (@sid)", conn))
                 {
                     cmd.Parameters.AddWithValue("sid", server.Id);
-                    cmd.Parameters.AddWithValue("cid", channelId);
 
 
                     await cmd.ExecuteNonQueryAsync();
@@ -37,10 +36,9 @@ namespace OpenttdDiscord.Database.AntiGrief
 
                 using (var cmd = new MySqlCommand($@"SELECT * FROM report_servers r
                                                     JOIN servers s on r.server_id = s.id
-                                                    WHERE s.id = @sid AND r.channel_id = @cid", conn))
+                                                    WHERE s.id = @sid", conn))
                 {
                     cmd.Parameters.AddWithValue("sid", server.Id);
-                    cmd.Parameters.AddWithValue("cid", channelId);
                     using (var reader = await cmd.ExecuteReaderAsync())
                     {
                         await reader.ReadAsync();
@@ -50,16 +48,15 @@ namespace OpenttdDiscord.Database.AntiGrief
             }
         }
 
-        public async Task<AntiGriefServer> Get(ulong serverId, ulong channelId)
+        public async Task<AntiGriefServer> Get(ulong serverId)
         {
             using (var conn = new MySqlConnection(this.connectionString))
             {
                 await conn.OpenAsync();
                 using (var cmd = new MySqlCommand($@"SELECT * FROM report_servers r
                                                     JOIN servers s on r.server_id = s.id
-                                                    WHERE r.channel_id = @cid AND r.server_id = @sid", conn))
+                                                    WHERE s.id = @sid", conn))
                 {
-                    cmd.Parameters.AddWithValue("cid", channelId);
                     cmd.Parameters.AddWithValue("sid", serverId);
                     using (var reader = await cmd.ExecuteReaderAsync())
                     {
@@ -71,16 +68,16 @@ namespace OpenttdDiscord.Database.AntiGrief
             }
         }
 
-        public async Task<List<AntiGriefServer>> GetAll(ulong channelId)
+        public async Task<List<AntiGriefServer>> GetAllForGuild(ulong guildId)
         {
             using (var conn = new MySqlConnection(this.connectionString))
             {
                 await conn.OpenAsync();
                 using (var cmd = new MySqlCommand($@"SELECT * FROM report_servers r
                                                     JOIN servers s on r.server_id = s.id
-                                                    WHERE r.channel_id = @cid", conn))
+                                                    WHERE s.guild_id = @gid", conn))
                 {
-                    cmd.Parameters.AddWithValue("cid", channelId);
+                    cmd.Parameters.AddWithValue("gid", guildId);
                     using (var reader = await cmd.ExecuteReaderAsync())
                     {
                         List<AntiGriefServer> servers = new List<AntiGriefServer>();
@@ -111,27 +108,6 @@ namespace OpenttdDiscord.Database.AntiGrief
             }
         }
 
-        public async Task<List<AntiGriefServer>> GetAllForGuild(ulong guildId)
-        {
-            using (var conn = new MySqlConnection(this.connectionString))
-            {
-                await conn.OpenAsync();
-                using (var cmd = new MySqlCommand($@"SELECT * FROM report_servers r
-                                                    JOIN servers s on r.server_id = s.id
-                                                    WHERE s.guild_id = @gid", conn))
-                {
-                    cmd.Parameters.AddWithValue("gid", guildId);
-                    using (var reader = await cmd.ExecuteReaderAsync())
-                    {
-                        List<AntiGriefServer> servers = new List<AntiGriefServer>();
-                        while (await reader.ReadAsync())
-                            servers.Add(new AntiGriefServer(reader));
-                        return servers;
-                    }
-                }
-            }
-        }
-
         public async Task Remove(AntiGriefServer reportServer)
         {
             using (var conn = new MySqlConnection(this.connectionString))
@@ -139,10 +115,9 @@ namespace OpenttdDiscord.Database.AntiGrief
                 await conn.OpenAsync();
 
                 using (var cmd = new MySqlCommand($@"DELETE FROM report_servers 
-                                                     WHERE server_id = @sid AND channel_id = @cid", conn))
+                                                     WHERE server_id = @sid", conn))
                 {
                     cmd.Parameters.AddWithValue("sid", reportServer.Server.Id);
-                    cmd.Parameters.AddWithValue("cid", reportServer.ChannelId);
 
                     int rows = await cmd.ExecuteNonQueryAsync();
 

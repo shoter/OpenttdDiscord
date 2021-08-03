@@ -90,7 +90,7 @@ namespace OpenttdDiscord.Database.AntiGrief
             {
                 await conn.OpenAsync();
 
-                using (var cmd = new MySqlCommand($@"DELETE FROM trusted_ips ti
+                using (var cmd = new MySqlCommand($@"DELETE FROM trusted_ips
                                                      WHERE ip_address = @ip", conn))
                 {
                     cmd.Parameters.AddWithValue("ip", ipAddress);

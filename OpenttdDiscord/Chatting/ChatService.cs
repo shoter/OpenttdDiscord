@@ -109,7 +109,7 @@ namespace OpenttdDiscord.Chatting
                 if (msg.Player.ClientId == 1)
                     continue;
 
-                if (msg.Message?.Trim() ?? string.Empty == string.Empty)
+                if ((msg.Message?.Trim() ?? string.Empty) == string.Empty)
                     continue;
 
                 Server s = chatServers.Values.FirstOrDefault(c => c.Server.ServerIp == serverEvent.Server.ServerIp && c.Server.ServerPort == serverEvent.Server.ServerPort)?.Server;

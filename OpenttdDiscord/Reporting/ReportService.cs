@@ -24,6 +24,10 @@ namespace OpenttdDiscord.Reporting
         private readonly ILogger<ReportService> logger;
         private readonly Random random = new Random();
 
+        private Dictionary<string, int> reportCounts = new Dictionary<string, int>();
+
+
+
         private ConcurrentDictionary<string, ReportServerInfo> ReportServers { get; } = new ConcurrentDictionary<string, ReportServerInfo>();
         private ConcurrentQueue<ReportServer> ServersToRemove { get; } = new ConcurrentQueue<ReportServer>();
         private ConcurrentQueue<ServerEvent> ReceivedEvents { get; } = new ConcurrentQueue<ServerEvent>();
@@ -86,6 +90,23 @@ namespace OpenttdDiscord.Reporting
                         rso.AddMessage($"[{DateTimeOffset.Now:HH:mm zz}] {chatMsg.Player.Name} : {chatMsg.Message}");
                         if (chatMsg.Message.StartsWith("!report"))
                         {
+
+                            string ip = chatMsg.Player.Hostname;
+
+                            if(!reportCounts.ContainsKey(ip))
+                            {
+                                reportCounts[ip] = 0;
+                            }
+
+                            reportCounts[ip]++;
+
+                            if(reportCounts[ip] > 5)
+                            {
+                                client.SendMessage(new AdminRconMessage($"ban {chatMsg.Player.ClientId}"));
+                                continue;
+                            }
+
+
                             logger.LogInformation($"{chatMsg.Player.Name} started report process on {rso.ReportServer.Server.ServerName}");
                             string reason = string.Empty;
                             var parts = chatMsg.Message.Split("!report");

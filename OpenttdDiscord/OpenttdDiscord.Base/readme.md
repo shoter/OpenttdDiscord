@@ -1,0 +1,1 @@
+Contains common code and base libraries that whole project is going to use

@@ -1,7 +1,10 @@
-﻿namespace OpenttdDiscord.Domain.Ottd
+﻿using LanguageExt;
+using LanguageExt.Common;
+
+namespace OpenttdDiscord.Domain.Ottd
 {
     public interface IRegisterOttdServerUseCase : IUseCase
     {
-        Task Execute(OttdServer server);
+        Task<Result<Unit>> Execute(OttdServer server);
     }
 }

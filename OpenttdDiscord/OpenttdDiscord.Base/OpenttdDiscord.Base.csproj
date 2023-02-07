@@ -6,4 +6,9 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Akka" Version="1.4.49" />
+    <PackageReference Include="LanguageExt.Core" Version="4.4.2" />
+  </ItemGroup>
+
 </Project>

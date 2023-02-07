@@ -11,6 +11,20 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenttdDiscord.Infrastructu
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenttdDiscord.Base", "OpenttdDiscord.Base\OpenttdDiscord.Base.csproj", "{5374E8CB-0CC3-4CC6-8A9E-7FC9BFB94AF1}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "OpenttdDiscord.Database", "OpenttdDiscord.Database", "{3A99D39F-C2B5-42AF-BF49-9A70FD755E04}"
+	ProjectSection(SolutionItems) = preProject
+		.dockerignore = .dockerignore
+		Dockerfile = Dockerfile
+		Readme.md = Readme.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "sql", "sql", "{2138A064-2B04-4A33-9F8B-98F8EEDAE983}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{A2C51779-426B-46E0-AF4B-7B2F05C3A80F}"
+	ProjectSection(SolutionItems) = preProject
+		docker-compose.yml = docker-compose.yml
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -36,6 +50,9 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{2138A064-2B04-4A33-9F8B-98F8EEDAE983} = {3A99D39F-C2B5-42AF-BF49-9A70FD755E04}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E49BE0BA-49A5-4D0D-B91D-01CA312FDD26}

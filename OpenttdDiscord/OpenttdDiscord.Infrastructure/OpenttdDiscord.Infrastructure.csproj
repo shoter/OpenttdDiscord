@@ -10,4 +10,8 @@
     <ProjectReference Include="..\OpenttdDiscord.Domain\OpenttdDiscord.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Ottd\" />
+  </ItemGroup>
+
 </Project>

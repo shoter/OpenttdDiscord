@@ -174,3 +174,11 @@ some additional information and it will be uploaded as a file on discord channel
 @BotMention list_subscribed_servers
 ```
 
+## Architecture
+
+### Actors hierarchy
+
+
+### Database diagram
+
+![Database diagram](./docs/database.drawio.png)

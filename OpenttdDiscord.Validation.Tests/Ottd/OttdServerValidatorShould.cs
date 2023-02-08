@@ -27,7 +27,7 @@ namespace OpenttdDiscord.Validation.Tests.Ottd
         {
             var server = correctServer with { PublicPort = port };
             var result = validator.Validate(server);
-            Assert.True(result.IsValid);
+            Assert.False(result.IsValid);
         }
 
         [Theory]

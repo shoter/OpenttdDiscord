@@ -22,11 +22,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		docker-compose.yml = docker-compose.yml
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenttdDiscord.Validation", "OpenttdDiscord.Validation\OpenttdDiscord.Validation.csproj", "{390F24BA-93A0-4105-B72F-C5334919FD20}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenttdDiscord.Validation", "OpenttdDiscord.Validation\OpenttdDiscord.Validation.csproj", "{390F24BA-93A0-4105-B72F-C5334919FD20}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{1029E915-ADC4-4365-9E59-FC59C822350B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenttdDiscord.Validation.Tests", "OpenttdDiscord.Validation.Tests\OpenttdDiscord.Validation.Tests.csproj", "{5C31467F-F60B-4C1F-A78E-17869D44F5C8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenttdDiscord.Validation.Tests", "OpenttdDiscord.Validation.Tests\OpenttdDiscord.Validation.Tests.csproj", "{5C31467F-F60B-4C1F-A78E-17869D44F5C8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -1,5 +1,5 @@
 ﻿using FluentValidation;
-using OpenttdDiscord.Domain.Ottd;
+using OpenttdDiscord.Domain.Servers;
 using System.Net;
 
 namespace OpenttdDiscord.Validation.Ottd

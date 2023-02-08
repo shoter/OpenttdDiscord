@@ -1,7 +1,7 @@
 ﻿using LanguageExt;
 using LanguageExt.Common;
 
-namespace OpenttdDiscord.Domain.Ottd
+namespace OpenttdDiscord.Domain.Servers
 {
     public interface IRegisterOttdServerUseCase : IUseCase
     {

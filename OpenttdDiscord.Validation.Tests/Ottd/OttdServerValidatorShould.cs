@@ -1,4 +1,4 @@
-﻿using OpenttdDiscord.Domain.Ottd;
+﻿using OpenttdDiscord.Domain.Servers;
 using OpenttdDiscord.Validation.Ottd;
 using System;
 using Xunit;

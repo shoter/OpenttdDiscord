@@ -1,4 +1,4 @@
-﻿namespace OpenttdDiscord.Domain.Ottd;
+﻿namespace OpenttdDiscord.Domain.Servers;
 
 public record OttdServer(
     Guid Id,

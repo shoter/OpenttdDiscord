@@ -1,6 +1,7 @@
 ﻿# Openttd Discord
 
 ![GitHub](https://img.shields.io/github/license/shoter/OpenttdDiscord?style=plastic)
+![Test badge](https://github.com/shoter/OpenttdDiscord/actions/workflows/test.yml/badge.svg)
 
 Provides ability to integrate Discord with your OpenTTD servers.
 

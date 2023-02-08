@@ -7,12 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\OpenttdDiscord.Domain\OpenttdDiscord.Domain.csproj" />
-    <ProjectReference Include="..\OpenttdDiscord.Validation\OpenttdDiscord.Validation.csproj" />
+    <PackageReference Include="FluentValidation" Version="11.4.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Ottd\" />
+    <ProjectReference Include="..\OpenttdDiscord.Domain\OpenttdDiscord.Domain.csproj" />
   </ItemGroup>
 
 </Project>

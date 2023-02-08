@@ -9,9 +9,9 @@ namespace OpenttdDiscord
 {
     public class Application
     {
-        public Host CreateHost()
-        {
-            return Host.CreateDefaultBuilder();
-        }
+        //public Host CreateHost()
+        //{
+        //    return Host.CreateDefaultBuilder();
+        //}
     }
 }

@@ -3,22 +3,19 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.4.33205.214
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenttdDiscord.Discord", "OpenttdDiscord.Discord\OpenttdDiscord.Discord.csproj", "{69ABCB52-8725-4B18-BC70-9BB3E6AC9CAB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenttdDiscord.Discord", "OpenttdDiscord.Discord\OpenttdDiscord.Discord.csproj", "{69ABCB52-8725-4B18-BC70-9BB3E6AC9CAB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenttdDiscord.Domain", "OpenttdDiscord.Domain\OpenttdDiscord.Domain.csproj", "{E825953F-1CFF-4479-8199-35610CD66D88}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenttdDiscord.Domain", "OpenttdDiscord.Domain\OpenttdDiscord.Domain.csproj", "{E825953F-1CFF-4479-8199-35610CD66D88}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenttdDiscord.Infrastructure", "OpenttdDiscord.Infrastructure\OpenttdDiscord.Infrastructure.csproj", "{3580FA79-4A0A-4169-8837-1CCB13A317DF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenttdDiscord.Infrastructure", "OpenttdDiscord.Infrastructure\OpenttdDiscord.Infrastructure.csproj", "{3580FA79-4A0A-4169-8837-1CCB13A317DF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenttdDiscord.Base", "OpenttdDiscord.Base\OpenttdDiscord.Base.csproj", "{5374E8CB-0CC3-4CC6-8A9E-7FC9BFB94AF1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenttdDiscord.Base", "OpenttdDiscord.Base\OpenttdDiscord.Base.csproj", "{5374E8CB-0CC3-4CC6-8A9E-7FC9BFB94AF1}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "OpenttdDiscord.Database", "OpenttdDiscord.Database", "{3A99D39F-C2B5-42AF-BF49-9A70FD755E04}"
 	ProjectSection(SolutionItems) = preProject
-		.dockerignore = .dockerignore
-		Dockerfile = Dockerfile
-		Readme.md = Readme.md
+		OpenttdDiscord.Database\.dockerignore = OpenttdDiscord.Database\.dockerignore
+		OpenttdDiscord.Database\Dockerfile = OpenttdDiscord.Database\Dockerfile
 	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "sql", "sql", "{2138A064-2B04-4A33-9F8B-98F8EEDAE983}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{A2C51779-426B-46E0-AF4B-7B2F05C3A80F}"
 	ProjectSection(SolutionItems) = preProject
@@ -50,9 +47,6 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
-		{2138A064-2B04-4A33-9F8B-98F8EEDAE983} = {3A99D39F-C2B5-42AF-BF49-9A70FD755E04}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E49BE0BA-49A5-4D0D-B91D-01CA312FDD26}

@@ -25,6 +25,18 @@ string AdminPortPassword
     {
     }
 
+    public OttdServer ToOttdServer()
+    {
+        return new(
+            Id,
+            GuildId,
+            Ip,
+            Name,
+            PublicPort,
+            AdminPort,
+            AdminPortPassword);
+    }
+
     public static void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<OttdServerEntity>()

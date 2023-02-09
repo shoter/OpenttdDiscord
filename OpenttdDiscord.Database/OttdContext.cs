@@ -6,7 +6,7 @@ namespace OpenttdDiscord.Database
 {
     internal class OttdContext : DbContext
     {
-        public DbSet<OttdServerEntity> Students { get; set; }
+        public DbSet<OttdServerEntity> Servers { get; set; }
 
         public OttdContext(DbContextOptions<OttdContext> options) : base(options)
         {

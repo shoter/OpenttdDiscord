@@ -11,5 +11,7 @@ namespace OpenttdDiscord.Database.Servers
         Task<Result<Unit>> UpdateServer(OttdServer server);
 
         Task<Result<Unit>> DeleteServer(Guid serverId);
+
+        Task<Result<IReadOnlyList<OttdServer>>> GetServersForGuild(long guildId);
     }
 }

@@ -1,5 +1,6 @@
 ﻿using LanguageExt;
 using LanguageExt.Common;
+using Microsoft.EntityFrameworkCore;
 using OpenttdDiscord.Database.Ottd.Servers;
 using OpenttdDiscord.Domain.Servers;
 using System;
@@ -36,6 +37,21 @@ namespace OpenttdDiscord.Database.Servers
         public Task<Result<Unit>> UpdateServer(OttdServer server)
         {
             throw new NotImplementedException();
+        }
+
+        public async Task<Result<IReadOnlyList<OttdServer>>> GetServersForGuild(long guildId)
+        {
+            return await new TryAsync<IReadOnlyList<OttdServer>>(async () =>
+            {
+                List<OttdServerEntity> serverEntities = await Db
+                .Servers
+                .Where(s => s.GuildId == guildId)
+                .ToListAsync();
+
+                return serverEntities
+                .Select(s => s.ToOttdServer())
+                .ToList();
+            })();
         }
     }
 }

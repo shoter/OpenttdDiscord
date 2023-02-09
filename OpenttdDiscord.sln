@@ -11,12 +11,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenttdDiscord.Infrastructu
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenttdDiscord.Base", "OpenttdDiscord.Base\OpenttdDiscord.Base.csproj", "{5374E8CB-0CC3-4CC6-8A9E-7FC9BFB94AF1}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "OpenttdDiscord.Database", "OpenttdDiscord.Database", "{3A99D39F-C2B5-42AF-BF49-9A70FD755E04}"
-	ProjectSection(SolutionItems) = preProject
-		OpenttdDiscord.Database\.dockerignore = OpenttdDiscord.Database\.dockerignore
-		OpenttdDiscord.Database\Dockerfile = OpenttdDiscord.Database\Dockerfile
-	EndProjectSection
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{A2C51779-426B-46E0-AF4B-7B2F05C3A80F}"
 	ProjectSection(SolutionItems) = preProject
 		docker-compose.yml = docker-compose.yml
@@ -27,6 +21,8 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{1029E915-ADC4-4365-9E59-FC59C822350B}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenttdDiscord.Validation.Tests", "OpenttdDiscord.Validation.Tests\OpenttdDiscord.Validation.Tests.csproj", "{5C31467F-F60B-4C1F-A78E-17869D44F5C8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenttdDiscord.Database", "OpenttdDiscord.Database\OpenttdDiscord.Database.csproj", "{79B1A333-38E4-4CC7-949D-9D75B09F10F4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -58,6 +54,10 @@ Global
 		{5C31467F-F60B-4C1F-A78E-17869D44F5C8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5C31467F-F60B-4C1F-A78E-17869D44F5C8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5C31467F-F60B-4C1F-A78E-17869D44F5C8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{79B1A333-38E4-4CC7-949D-9D75B09F10F4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{79B1A333-38E4-4CC7-949D-9D75B09F10F4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{79B1A333-38E4-4CC7-949D-9D75B09F10F4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{79B1A333-38E4-4CC7-949D-9D75B09F10F4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

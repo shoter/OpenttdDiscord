@@ -11,4 +11,8 @@
     <ProjectReference Include="..\OpenttdDiscord.Validation\OpenttdDiscord.Validation.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Ottd\" />
+  </ItemGroup>
+
 </Project>

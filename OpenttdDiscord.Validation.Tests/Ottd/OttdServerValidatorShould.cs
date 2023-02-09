@@ -9,6 +9,7 @@ namespace OpenttdDiscord.Validation.Tests.Ottd
     {
         private OttdServer correctServer = new OttdServer(
             Guid.NewGuid(),
+            123,
             "127.0.0.1",
             "SuperServer",
             1234,

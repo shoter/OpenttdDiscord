@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DotNet.Testcontainers.Builders;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,9 +11,15 @@ namespace OpenttdDiscord.Database.Tests.Servers
     public class OttdServerRepositoryShould
     {
         [Fact]
-        public void test()
+        public async Task test()
         {
+            var container = new ContainerBuilder()
+                .WithImage("ottd_discord_test_database")
+                .WithAutoRemove(true)
+                .WithPortBinding(5432, assignRandomHostPort: true)
+                .Build();
 
+            var _ = container.StartAsync();
         }
     }
 }

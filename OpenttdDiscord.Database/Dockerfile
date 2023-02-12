@@ -5,8 +5,6 @@ ENV MYSQL_DATABASE=openttd
 ENV MYSQL_USER=openttd
 ENV MYSQL_PASSWORD=secret-pw
 
-COPY ./sql/*.sql /docker-entrypoint-initdb.d/
-
 # initialize database
 
-FROM postgres:15.1 AS run
+#FROM postgres:15.1 AS run

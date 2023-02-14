@@ -6,12 +6,15 @@ namespace OpenttdDiscord.Database.Servers
 {
     public interface IOttdServerRepository
     {
-        Task<Result<Unit>> InsertServer(OttdServer server);
+        Task<Either<IError, Result<Unit>>> InsertServer(OttdServer server);
 
-        Task<Result<Unit>> UpdateServer(OttdServer server);
+        Task<Either<IError, Result<Unit>>> UpdateServer(OttdServer server);
 
-        Task<Result<Unit>> DeleteServer(Guid serverId);
+        Task<Either<IError, Result<Unit>>> DeleteServer(Guid serverId);
 
         Task<Result<IReadOnlyList<OttdServer>>> GetServersForGuild(long guildId);
+
+        Task<Either<IError, Result<OttdServer>>> GetServer(Guid serverId);
+
     }
 }

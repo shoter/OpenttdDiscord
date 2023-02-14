@@ -1,48 +1,62 @@
-﻿using DotNet.Testcontainers.Builders;
+﻿using AutoFixture;
+using DotNet.Testcontainers.Builders;
+using LanguageExt;
 using Microsoft.EntityFrameworkCore;
+using OpenttdDiscord.Database.Ottd.Servers;
+using OpenttdDiscord.Database.Servers;
+using OpenttdDiscord.Domain.Servers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 
 namespace OpenttdDiscord.Database.Tests.Servers
 {
-    public class OttdServerRepositoryShould
+    public class OttdServerRepositoryShould : DatabaseBaseTest
     {
-        [Fact]
-        public async Task test()
+        public OttdServerRepositoryShould(PostgressDatabaseFixture databaseFixture) : base(databaseFixture)
         {
-            var container = new ContainerBuilder()
-                .WithName("moja_dupa")
-                .WithImage("ottd_discord_test_database")
-                .WithAutoRemove(true)
-                .WithCleanUp(true)
-                .WithPortBinding(5432, true)
-                .Build();
+        }
 
-            await container.StartAsync().ConfigureAwait(false);
+        [Fact]
+        public async Task InsertServerToDatabase()
+        {
+            var repository = await CreateRpeository();
+            var expectedServer = fix.Create<OttdServer>();
 
-            var port = container.GetMappedPublicPort(5432);
+            await repository.InsertServer(expectedServer);
+            var retrievedServer = (await repository.GetServer(expectedServer.Id));
 
-            var connectionString = "User ID=openttd;" +
-                "Password=secret-pw;" +
-                $"Host=localhost;Port={port};" +
-                "Database=test;Pooling=true;Min Pool Size=0;" +
-                "Max Pool Size=100;Connection Lifetime=0;";
+            retrievedServer.Match(
+                server => Assert.Equal(expectedServer, server),
+                failure => throw new Exception(failure.Reason)
+           );
+        }
 
-            var optionsBuilder = new DbContextOptionsBuilder<OttdContext>();
-            optionsBuilder.UseNpgsql(Environment.GetEnvironmentVariable(connectionString), x =>
-            {
-                x.MigrationsHistoryTable("__MigrationHistory");
-            });
+        [Fact]
+        public async Task RemoveServerFromDatabase()
+        {
+            var repository = await CreateRpeository();
+            var expectedServer = fix.Create<OttdServer>();
 
-            var context = new OttdContext(optionsBuilder.Options);
+            await repository.InsertServer(expectedServer);
+            await repository.DeleteServer(expectedServer.Id);
+            var retrievedServer = (await repository.GetServer(expectedServer.Id));
 
-            await context.Database.EnsureCreatedAsync();
+            retrievedServer.Match(
+                server => Assert.Equal(expectedServer, server),
+                failure => throw new Exception(failure.Reason)
+           );
+        }
 
-            int a = 5;
+
+        private async Task<OttdServerRepository> CreateRpeository([CallerMemberName] string? databaseName = null)
+        {
+            var context = await CreateContext(databaseName);
+            return new OttdServerRepository(context);
         }
     }
 }

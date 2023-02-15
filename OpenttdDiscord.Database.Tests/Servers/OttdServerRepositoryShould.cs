@@ -52,6 +52,30 @@ namespace OpenttdDiscord.Database.Tests.Servers
            );
         }
 
+        [Fact]
+        public async Task UpdateServerInDatabase()
+        {
+            var repository = await CreateRpeository();
+            var insertedServer = fix.Create<OttdServer>();
+
+            await repository.InsertServer(insertedServer);
+            await repository.DeleteServer(insertedServer.Id);
+
+            var updatedServerr = fix.Create<OttdServer>() with
+            {
+                Id = insertedServer.Id,
+                GuildId = insertedServer.GuildId
+            };
+
+            await repository.UpdateServer(updatedServerr);
+
+            var retrievedServer = (await repository.GetServer(insertedServer.Id));
+
+            retrievedServer.Match(
+                server => Assert.Equal(updatedServerr, server),
+                failure => throw new Exception(failure.Reason)
+           );
+        }
 
         private async Task<OttdServerRepository> CreateRpeository([CallerMemberName] string? databaseName = null)
         {

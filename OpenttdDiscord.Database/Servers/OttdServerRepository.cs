@@ -23,9 +23,9 @@ namespace OpenttdDiscord.Database.Servers
             this.Db = dbContext;
         }
 
-        public async Task<Either<IError, Result<Unit>>> DeleteServer(Guid serverId)
+        public async Task<EitherUnit> DeleteServer(Guid serverId)
         {
-            return await new TryAsync<Unit>(async () =>
+            return (await new TryAsync<Unit>(async () =>
             {
                 var entity = new OttdServerEntity(
                     serverId,
@@ -42,10 +42,14 @@ namespace OpenttdDiscord.Database.Servers
                 entry.State = EntityState.Deleted;
                 await Db.SaveChangesAsync();
                 return Unit.Default;
-            })();
+            }))
+           .Match(
+               entity => EitherUnit.Right(Unit.Default),
+               ex => Left<IError>(new ExceptionError(ex))
+           );
         }
 
-        public async Task<Either<IError, Result<Unit>>> InsertServer(OttdServer server)
+        public async Task<EitherUnit> InsertServer(OttdServer server)
         {
             return (await TryAsync(async () =>
             {
@@ -54,15 +58,15 @@ namespace OpenttdDiscord.Database.Servers
                 return Unit.Default;
             }))
            .Match(
-               entity => Right(new Result<Unit>(Unit.Default)),
-               ex => Left<IError>(new ExceptionError(ex))
+               entity => EitherUnit.Right(Unit.Default),
+               ex => EitherUnit.Left(new ExceptionError(ex))
            );
 
         }
 
-        public async Task<Either<IError, Result<Unit>>> UpdateServer(OttdServer server)
+        public async Task<EitherUnit> UpdateServer(OttdServer server)
         {
-            return (await TryAsync<Either<IError, Result<Unit>>>(async () =>
+            return (await TryAsync<EitherUnit>(async () =>
             {
                 var foundServer = await Db.Servers.FindAsync(server.Id);
                 if (foundServer == null)
@@ -72,11 +76,11 @@ namespace OpenttdDiscord.Database.Servers
 
                 Db.Entry(foundServer).CurrentValues.SetValues(new OttdServerEntity(server));
                 await Db.SaveChangesAsync();
-                return Right(new Result<Unit>(Unit.Default));
+                return Right(Unit.Default);
             }))
             .Match(
                 task => task,
-                ex => Left<IError>(new ExceptionError(ex))
+                ex => EitherUnit.Left(new ExceptionError(ex))
             );
         }
 
@@ -95,14 +99,14 @@ namespace OpenttdDiscord.Database.Servers
             })();
         }
 
-        public async Task<Either<IError, Result<OttdServer>>> GetServer(Guid serverId)
+        public async Task<Either<IError, OttdServer>> GetServer(Guid serverId)
         {
             return (await TryAsync(async () => await Db.FindAsync<OttdServerEntity>(serverId)))
             .Match(
                 entity => entity == null
-                    ? Either<IError, Result<OttdServer>>.Left(new HumanReadableError("Server was not found"))
-                    : Either<IError, Result<OttdServer>>.Right(entity.ToOttdServer()),
-                ex => Either<IError, Result<OttdServer>>.Left(new ExceptionError(ex))
+                    ? Either<IError, OttdServer>.Left(new HumanReadableError("Server was not found"))
+                    : Either<IError, OttdServer>.Right(entity.ToOttdServer()),
+                ex => Either<IError, OttdServer>.Left(new ExceptionError(ex))
             );
         }
     }

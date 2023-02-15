@@ -12,6 +12,7 @@ namespace OpenttdDiscord.Discord.Services
     internal class DiscordService : BackgroundService
     {
         private readonly DiscordSocketClient client = new();
+
         private readonly ILogger logger;
         private readonly DiscordOptions options;
 
@@ -25,8 +26,7 @@ namespace OpenttdDiscord.Discord.Services
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             Console.WriteLine("I am hosted service which was run :)");
-            logger.LogInformation("DUPA");
-            await client.LoginAsync(TokenType.Bot, options.ToString());
+            await client.LoginAsync(TokenType.Bot, options.Token);
             await client.StartAsync();
         }
 

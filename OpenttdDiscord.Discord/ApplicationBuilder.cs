@@ -48,7 +48,7 @@ namespace OpenttdDiscord
         public static IServiceCollection ConfigureOptions(this IServiceCollection services, HostBuilderContext context)
         {
             return services
-                .Configure<DiscordOptions>(context.Configuration.GetSection("SubscriptionOptions"));
+                .Configure<DiscordOptions>(context.Configuration.GetSection("Discord"));
         }
     }
 }

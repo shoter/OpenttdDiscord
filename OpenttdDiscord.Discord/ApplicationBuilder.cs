@@ -1,10 +1,10 @@
 ﻿using Microsoft.Extensions.Hosting;
-using OpenttdDiscord.Discord;
 using OpenttdDiscord.Infrastructure;
 using Serilog;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using OpenttdDiscord.Discord.Options;
+using OpenttdDiscord.Discord.Services;
 
 namespace OpenttdDiscord
 {
@@ -49,7 +49,6 @@ namespace OpenttdDiscord
         {
             return services
                 .Configure<DiscordOptions>(context.Configuration.GetSection("SubscriptionOptions"));
-
         }
     }
 }

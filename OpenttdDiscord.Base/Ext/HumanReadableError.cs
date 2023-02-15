@@ -1,4 +1,6 @@
-﻿namespace OpenttdDiscord.Base.Ext
+﻿using LanguageExt;
+
+namespace OpenttdDiscord.Base.Ext
 {
     public class HumanReadableError : IError
     {
@@ -8,5 +10,7 @@
         {
             this.Reason = reason;
         }
+
+        public static EitherUnit EitherUnit(string reason) => Either<IError, Unit>.Left(new HumanReadableError(reason));
     }
 }

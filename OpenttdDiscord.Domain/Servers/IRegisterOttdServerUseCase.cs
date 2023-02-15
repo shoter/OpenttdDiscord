@@ -1,10 +1,11 @@
 ﻿using LanguageExt;
 using LanguageExt.Common;
+using OpenttdDiscord.Domain.Security;
 
 namespace OpenttdDiscord.Domain.Servers
 {
     public interface IRegisterOttdServerUseCase : IUseCase
     {
-        Task<Result<Unit>> Execute(OttdServer server);
+        Task<EitherUnit> Execute(UserRights userRights, OttdServer server);
     }
 }

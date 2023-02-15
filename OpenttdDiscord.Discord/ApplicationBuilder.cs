@@ -3,6 +3,8 @@ using OpenttdDiscord.Discord;
 using OpenttdDiscord.Infrastructure;
 using Serilog;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Configuration;
+using OpenttdDiscord.Discord.Options;
 
 namespace OpenttdDiscord
 {
@@ -28,10 +30,12 @@ namespace OpenttdDiscord
 
         public static IHostBuilder RegisterDependencies(this IHostBuilder hostBuilder)
         {
-            return hostBuilder.ConfigureServices(services =>
+            return hostBuilder.ConfigureServices((HostBuilderContext context, IServiceCollection services) =>
             {
-                services.RegisterModules();
-                services.AddHostedServices();
+                services
+                    .RegisterModules()
+                    .AddHostedServices()
+                    .ConfigureOptions(context);
             });
         }
 
@@ -39,6 +43,13 @@ namespace OpenttdDiscord
         {
             return services
                 .AddHostedService<DiscordService>();
+        }
+
+        public static IServiceCollection ConfigureOptions(this IServiceCollection services, HostBuilderContext context)
+        {
+            return services
+                .Configure<DiscordOptions>(context.Configuration.GetSection("SubscriptionOptions"));
+
         }
     }
 }

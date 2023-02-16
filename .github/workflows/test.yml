@@ -20,5 +20,7 @@ jobs:
         run: dotnet restore
       - name: Build
         run: dotnet build --configuration Release --no-restore
+      - name: Build docker database
+        run: docker build -t ottd_discord_test_database ./OpenttdDiscord.Database
       - name: Test
         run: dotnet test --no-restore --verbosity normal

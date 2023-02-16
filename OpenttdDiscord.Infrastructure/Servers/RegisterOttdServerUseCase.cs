@@ -31,7 +31,6 @@ namespace OpenttdDiscord.Infrastructure.Servers
             }
 
             var existing = await ottdServerRepository.GetServerByName(server.Name);
-
             if(existing.IsRight)
             {
                 return new HumanReadableError("Server with this name already exists!");

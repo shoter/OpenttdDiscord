@@ -5,11 +5,10 @@ namespace OpenttdDiscord.Database.Ottd.Servers;
 
 public record OttdServerEntity(
 Guid Id,
-long GuildId,
+ulong GuildId,
 string Ip,
 string Name,
-int? PublicPort,
-int? AdminPort,
+int AdminPort,
 string AdminPortPassword
 )
 {
@@ -19,7 +18,6 @@ string AdminPortPassword
         ottdServer.GuildId,
         ottdServer.Ip,
         ottdServer.Name,
-        ottdServer.PublicPort,
         ottdServer.AdminPort,
         ottdServer.AdminPortPassword)
     {
@@ -32,7 +30,6 @@ string AdminPortPassword
             GuildId,
             Ip,
             Name,
-            PublicPort,
             AdminPort,
             AdminPortPassword);
     }
@@ -41,5 +38,9 @@ string AdminPortPassword
     {
         modelBuilder.Entity<OttdServerEntity>()
             .HasKey(x => x.Id);
+
+        modelBuilder.Entity<OttdServerEntity>()
+            .HasIndex(x => x.Name)
+            .IsUnique(true);
     }
 }

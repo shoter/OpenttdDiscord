@@ -25,9 +25,16 @@ namespace OpenttdDiscord.Infrastructure.Servers
         public async Task<EitherUnit> Execute(UserRights userRights, OttdServer server)
         {
             logger.LogTrace("Executing with {0} for\n{1}", userRights, server);
-            if(userRights.userLevel != UserLevel.Admin)
+            if(userRights.UserLevel != UserLevel.Admin)
             {
                 return HumanReadableError.EitherUnit("Cannot execute this command as non-admin user!");
+            }
+
+            var existing = await ottdServerRepository.GetServerByName(server.Name);
+
+            if(existing.IsRight)
+            {
+                return new HumanReadableError("Server with this name already exists!");
             }
 
             return await ottdServerRepository.InsertServer(server);

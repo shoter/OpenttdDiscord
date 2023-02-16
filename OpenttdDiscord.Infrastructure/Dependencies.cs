@@ -1,6 +1,7 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using OpenttdDiscord.Database;
-using OpenttdDiscord.Infrastructure.Discord;
 using OpenttdDiscord.Infrastructure.Modularity;
 using OpenttdDiscord.Infrastructure.Servers;
 
@@ -10,7 +11,15 @@ namespace OpenttdDiscord.Infrastructure
     {
         public static IServiceCollection RegisterModules(this IServiceCollection services)
         {
-            services.AddDbContext<OttdContext>();
+            services.AddDbContextFactory<OttdContext>((IServiceProvider sp, DbContextOptionsBuilder builder) =>
+            {
+                string connectionString = sp.GetRequiredService<IOptions<DatabaseOptions>>().Value.ConnectionString;
+                builder.UseNpgsql(connectionString, x =>
+                {
+                    x.MigrationsHistoryTable("__MigrationHistory");
+                });
+            });
+
             services
                 .RegisterDependencies<ServersModule>();
 

@@ -1,13 +1,54 @@
 ﻿using Discord.WebSocket;
+using LanguageExt;
+using LanguageExt.Common;
+using OpenttdDiscord.Base.Ext;
+using OpenttdDiscord.Domain.Security;
+using OpenttdDiscord.Domain.Servers;
 using OpenttdDiscord.Infrastructure.Discord;
 
 namespace OpenttdDiscord.Infrastructure.Servers
 {
     internal class RegisterServerHandler : IOttdSlashCommandRunner
     {
-        public async Task Run(SocketSlashCommand command)
+        private readonly IRegisterOttdServerUseCase useCase;
+
+        public RegisterServerHandler(IRegisterOttdServerUseCase useCase)
         {
-            await command.RespondAsync($"You executed {command.Data.Name}");
+            this.useCase = useCase;
+
+        }
+        public async Task<EitherString> Run(SocketSlashCommand command)
+        {
+            return (await new TryAsync<EitherString>(async () =>
+            {
+                if (command.GuildId == null)
+                {
+                    return EitherString.Left(new HumanReadableError("GuildId is Null - wtf?"));
+                }
+
+                var options = command.Data.Options.ToDictionary(o => o.Name, o => o.Value);
+                string name = (string)options["name"];
+                string password = (string)options["password"];
+                string ip = (string)options["ip"];
+                int port = (int)(long)options["port"];
+
+                var rights = new UserRights(UserLevel.Admin);
+
+                var server = new OttdServer(
+                    Guid.NewGuid(),
+                    command.GuildId.Value,
+                    ip,
+                    name,
+                    port,
+                    password
+                    );
+
+                return (await useCase.Execute(rights, server))
+                    .Select(x => $"Created Server {name} - {ip}:{port}");
+            })).Match(
+                succ => succ,
+                ex => EitherString.Left(new ExceptionError(ex))
+            );
         }
     }
 }

@@ -28,15 +28,15 @@ namespace OpenttdDiscord.Database.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<int?>("AdminPort")
+                    b.Property<int>("AdminPort")
                         .HasColumnType("integer");
 
                     b.Property<string>("AdminPortPassword")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<long>("GuildId")
-                        .HasColumnType("bigint");
+                    b.Property<decimal>("GuildId")
+                        .HasColumnType("numeric(20,0)");
 
                     b.Property<string>("Ip")
                         .IsRequired()
@@ -46,12 +46,12 @@ namespace OpenttdDiscord.Database.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int?>("PublicPort")
-                        .HasColumnType("integer");
-
                     b.HasKey("Id");
 
-                    b.ToTable("Students");
+                    b.HasIndex("Name")
+                        .IsUnique();
+
+                    b.ToTable("Servers");
                 });
 #pragma warning restore 612, 618
         }

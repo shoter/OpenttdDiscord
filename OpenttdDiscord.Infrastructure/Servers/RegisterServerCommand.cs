@@ -21,6 +21,12 @@ namespace OpenttdDiscord.Infrastructure.Servers
 
             builder.AddOption(new SlashCommandOptionBuilder()
                 .WithRequired(true)
+                .WithName("password")
+                .WithDescription("Admin port password.")
+                .WithType(ApplicationCommandOptionType.String));
+
+            builder.AddOption(new SlashCommandOptionBuilder()
+                .WithRequired(true)
                 .WithName("ip")
                 .WithDescription("Ip address of the server")
                 .WithType(ApplicationCommandOptionType.String));

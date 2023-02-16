@@ -1,4 +1,4 @@
 ﻿namespace OpenttdDiscord.Domain.Security;
 
-public record UserRights(UserLevel userLevel);
+public record UserRights(UserLevel UserLevel);
 

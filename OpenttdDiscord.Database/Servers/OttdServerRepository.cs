@@ -33,7 +33,6 @@ namespace OpenttdDiscord.Database.Servers
                     default!,
                     default!,
                     default!,
-                    default!,
                     default!
                     );
 
@@ -84,7 +83,7 @@ namespace OpenttdDiscord.Database.Servers
             );
         }
 
-        public async Task<Result<IReadOnlyList<OttdServer>>> GetServersForGuild(long guildId)
+        public async Task<Result<IReadOnlyList<OttdServer>>> GetServersForGuild(ulong guildId)
         {
             return await new TryAsync<IReadOnlyList<OttdServer>>(async () =>
             {
@@ -102,6 +101,17 @@ namespace OpenttdDiscord.Database.Servers
         public async Task<Either<IError, OttdServer>> GetServer(Guid serverId)
         {
             return (await TryAsync(async () => await Db.FindAsync<OttdServerEntity>(serverId)))
+            .Match(
+                entity => entity == null
+                    ? Either<IError, OttdServer>.Left(new HumanReadableError("Server was not found"))
+                    : Either<IError, OttdServer>.Right(entity.ToOttdServer()),
+                ex => Either<IError, OttdServer>.Left(new ExceptionError(ex))
+            );
+        }
+
+        public async Task<Either<IError, OttdServer>> GetServerByName(string serverName)
+        {
+            return (await TryAsync(async () => await Db.Servers.SingleOrDefaultAsync(s => s.Name == serverName)))
             .Match(
                 entity => entity == null
                     ? Either<IError, OttdServer>.Left(new HumanReadableError("Server was not found"))

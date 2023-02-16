@@ -9,22 +9,14 @@ namespace OpenttdDiscord.Validation.Ottd
         public OttdServerValidator()
         {
             RuleFor(server => server.AdminPort)
-                .Must(port => !port.HasValue || port >= 0 && port <= 65536);
-
-            RuleFor(server => server.PublicPort)
-                .Must(port => !port.HasValue || port >= 0 && port <= 65536);
+                .Must(port => port >= 0 && port <= 65536);
 
             RuleFor(server => server.Name)
                 .MinimumLength(1)
                 .MaximumLength(30);
 
             RuleFor(server => server.AdminPortPassword)
-                .Must(password => !string.IsNullOrWhiteSpace(password))
-                .When(server => server.AdminPort.HasValue);
-
-            RuleFor(server => server.AdminPort)
-                .Must((server, adminPort, _) => server.PublicPort != adminPort)
-                .When(server => server.AdminPort.HasValue);
+                .Must(password => !string.IsNullOrWhiteSpace(password));
 
             RuleFor(server => server.Ip)
                 .Must(ip =>

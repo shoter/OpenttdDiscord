@@ -13,23 +13,9 @@ namespace OpenttdDiscord.Validation.Tests.Ottd
             "127.0.0.1",
             "SuperServer",
             1234,
-            1235,
             "psst-secretPassword");
 
         private OttdServerValidator validator = new();
-
-        [Theory]
-        [InlineData(0)]
-        [InlineData(65536)]
-        [InlineData(2137)]
-        [InlineData(420)]
-        [InlineData(69)]
-        public void AllowCorrectPorts_ForPublicPort(int port)
-        {
-            var server = correctServer with { PublicPort = port };
-            var result = validator.Validate(server);
-            Assert.True(result.IsValid);
-        }
 
         [Theory]
         [InlineData(0)]
@@ -42,16 +28,6 @@ namespace OpenttdDiscord.Validation.Tests.Ottd
             var server = correctServer with { AdminPort = port };
             var result = validator.Validate(server);
             Assert.True(result.IsValid);
-        }
-
-        [Theory]
-        [InlineData(-1)]
-        [InlineData(65537)]
-        public void DisallowIncorrectPort_ForPublicPort(int port)
-        {
-            var server = correctServer with { PublicPort = port };
-            var result = validator.Validate(server);
-            Assert.False(result.IsValid);
         }
 
         [Theory]
@@ -100,14 +76,6 @@ namespace OpenttdDiscord.Validation.Tests.Ottd
         public void DisallowCorrectIpAddress(string ip)
         {
             var server = correctServer with { Ip = ip };
-            var result = validator.Validate(server);
-            Assert.False(result.IsValid);
-        }
-
-        [Fact]
-        public void DisallowSamePort_ForAdminAndPublicPort()
-        {
-            var server = correctServer with { AdminPort = correctServer.PublicPort };
             var result = validator.Validate(server);
             Assert.False(result.IsValid);
         }

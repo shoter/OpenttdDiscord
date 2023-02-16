@@ -15,7 +15,7 @@ namespace OpenttdDiscord.Database
             string connectionString = config["ConnectionString"] ?? throw new NullReferenceException();
 
             var optionsBuilder = new DbContextOptionsBuilder<OttdContext>();
-            optionsBuilder.UseNpgsql(Environment.GetEnvironmentVariable(connectionString), x =>
+            optionsBuilder.UseNpgsql(connectionString, x =>
             {
                 x.MigrationsHistoryTable("__MigrationHistory");
             });

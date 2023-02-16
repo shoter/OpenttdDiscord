@@ -5,6 +5,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using OpenttdDiscord.Base.Discord;
+using OpenttdDiscord.Base.Ext;
 using OpenttdDiscord.Discord.Options;
 using OpenttdDiscord.Infrastructure.Discord;
 using Serilog.Core;
@@ -45,7 +46,25 @@ namespace OpenttdDiscord.Discord.Services
 
             using var scope = sp.CreateScope();
             var runner = command.CreateRunner(scope.ServiceProvider);
-            await runner.Run(arg);
+            var result = await runner.Run(arg);
+
+            if(result.IsLeft)
+            {
+                var error = result.Left();
+                if(error is HumanReadableError)
+                {
+                    await arg.RespondAsync($"Error: {error.Reason}");
+                }
+                else
+                {
+                    await arg.RespondAsync("Something went wrong :(");
+                }
+            }
+            else
+            {
+                string msg = result.Right();
+                await arg.RespondAsync(msg);
+            }
         }
 
         private async Task Client_Ready()

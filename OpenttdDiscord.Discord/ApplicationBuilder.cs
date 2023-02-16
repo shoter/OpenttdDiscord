@@ -5,6 +5,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using OpenttdDiscord.Discord.Options;
 using OpenttdDiscord.Discord.Services;
+using Microsoft.EntityFrameworkCore.Migrations.Operations;
+using OpenttdDiscord.Database;
 
 namespace OpenttdDiscord
 {
@@ -48,7 +50,8 @@ namespace OpenttdDiscord
         public static IServiceCollection ConfigureOptions(this IServiceCollection services, HostBuilderContext context)
         {
             return services
-                .Configure<DiscordOptions>(context.Configuration.GetSection("Discord"));
+                .Configure<DiscordOptions>(context.Configuration.GetSection("Discord"))
+                .Configure<DatabaseOptions>(context.Configuration.GetSection("Database"));
         }
     }
 }

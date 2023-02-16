@@ -2,10 +2,9 @@
 
 public record OttdServer(
     Guid Id,
-    long GuildId,
+    ulong GuildId,
     string Ip,
     string Name,
-    int? PublicPort,
-    int? AdminPort,
+    int AdminPort,
     string AdminPortPassword
     );

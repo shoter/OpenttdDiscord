@@ -1,4 +1,5 @@
-﻿namespace OpenttdDiscord.Base.Ext
+﻿
+namespace OpenttdDiscord.Base.Ext
 {
     public interface IError
     {

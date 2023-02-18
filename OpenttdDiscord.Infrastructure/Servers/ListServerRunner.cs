@@ -1,8 +1,10 @@
-﻿using Discord.WebSocket;
+﻿using Discord;
+using Discord.WebSocket;
 using LanguageExt;
 using OpenttdDiscord.Base.Ext;
 using OpenttdDiscord.Database.Servers;
 using OpenttdDiscord.Domain.Security;
+using OpenttdDiscord.Domain.Servers;
 using OpenttdDiscord.Infrastructure.Discord;
 using System;
 using System.Collections.Generic;
@@ -23,14 +25,32 @@ namespace OpenttdDiscord.Infrastructure.Servers
 
         public async Task<Either<IError, ISlashCommandResponse>> Run(SocketSlashCommand command)
         {
-            if(command.GuildId.HasValue == false)
+            if (command.GuildId.HasValue == false)
             {
                 return new HumanReadableError("This command can only be executed within a guild!");
             }
 
-            var servers = await listServersUseCase.Execute(new UserRights(UserLevel.Admin), command.GuildId.Value);
+            return (await listServersUseCase.Execute(new UserRights(UserLevel.Admin), command.GuildId.Value))
+                .Select(CreateEmbed)
+                .Select<ISlashCommandResponse>(embed => new EmbedCommandResponse(embed));
+        }
 
-            throw new Exception();
+        private Embed CreateEmbed(List<OttdServer> servers)
+        {
+            EmbedBuilder embedBuilder = new();
+
+            embedBuilder
+                .WithTitle("List of servers")
+                .WithDescription("");
+
+            foreach (var server in servers)
+            {
+                embedBuilder.AddField("Server Name", server.Name);
+                embedBuilder.AddField("Server IP", server.Ip, true);
+                embedBuilder.AddField("Server Port", server.AdminPort, true);
+            }
+
+            return embedBuilder.Build();
         }
     }
 }

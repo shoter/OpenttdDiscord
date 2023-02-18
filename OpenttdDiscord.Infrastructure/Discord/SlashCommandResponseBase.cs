@@ -5,7 +5,7 @@ using static LanguageExt.Prelude;
 
 namespace OpenttdDiscord.Infrastructure.Discord
 {
-    internal abstract class SlashCommandResponseBase : ISlashCommandResponse
+    public abstract class SlashCommandResponseBase : ISlashCommandResponse
     {
         public async Task<EitherUnit> Execute(SocketSlashCommand command)
         {

@@ -10,5 +10,15 @@ namespace OpenttdDiscord.Base.Ext
 
         public static L Left<L, R>(this Either<L, R> either)
             => (L)either.Case;
+
+        public static Either<IError, R> ThrowIfError<R>(this Either<IError, R> either)
+        {
+            if(either.IsLeft)
+            {
+                throw new Exception(either.Left().Reason);
+            }
+
+            return either;
+        }
     }
 }

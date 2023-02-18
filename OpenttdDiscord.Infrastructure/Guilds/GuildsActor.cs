@@ -1,4 +1,5 @@
 ﻿using Akka.Actor;
+using LanguageExt;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using OpenttdDiscord.Base.Ext;
@@ -29,15 +30,10 @@ namespace OpenttdDiscord.Infrastructure.Guilds
 
         private async Task InitGuildActorMessage(InitGuildActorMessage _)
         {
-            var guildsResult = await getAllGuildsUseCase.Execute();
-
-            if (guildsResult.IsLeft)
-            {
-                throw new Exception(guildsResult.Left().Reason);
-            }
-
-            var guilds = guildsResult.Right();
-            this.Self.TellMany(guilds.Select(g => new AddNewGuildActorMessage(g)));
+            (await getAllGuildsUseCase.Execute())
+                .ThrowIfError()
+                .Select(guilds => guilds.Select(g => new AddNewGuildActorMessage(g)))
+                .Map(msgs => Self.TellMany(msgs));
         }
 
         private void AddNewGuildActorMessage(AddNewGuildActorMessage msg)

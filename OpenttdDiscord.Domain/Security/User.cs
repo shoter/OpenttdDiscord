@@ -8,5 +8,7 @@ public record User(string Name, UserLevel UserLevel)
         : this(user.Username, UserLevel.Admin)
     { }
     public override string ToString() => $"{Name}({UserLevel})";
+
+    public static User Master => new User("Master", UserLevel.Admin);
 }
 

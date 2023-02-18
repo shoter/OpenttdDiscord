@@ -30,7 +30,7 @@ namespace OpenttdDiscord.Infrastructure.Servers
                 return new HumanReadableError("This command can only be executed within a guild!");
             }
 
-            return (await listServersUseCase.Execute(new UserRights(UserLevel.Admin), command.GuildId.Value))
+            return (await listServersUseCase.Execute(new User(UserLevel.Admin), command.GuildId.Value))
                 .Select(CreateEmbed)
                 .Select<ISlashCommandResponse>(embed => new EmbedCommandResponse(embed));
         }

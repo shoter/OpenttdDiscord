@@ -7,6 +7,6 @@ namespace OpenttdDiscord.Infrastructure.Servers
 {
     public interface IListOttdServersUseCase
     {
-        Task<Either<IError, List<OttdServer>>> Execute(UserRights rights, ulong guildId);
+        Task<Either<IError, List<OttdServer>>> Execute(User rights, ulong guildId);
     }
 }

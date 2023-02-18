@@ -22,7 +22,7 @@ namespace OpenttdDiscord.Infrastructure.Servers
             this.ottdServerRepository = ottdServerRepository;
         }
 
-        public async Task<Either<IError, List<OttdServer>>> Execute(UserRights rights, ulong guildId)
+        public async Task<Either<IError, List<OttdServer>>> Execute(User rights, ulong guildId)
         {
             logger.LogTrace("Executing with {0} for\n{1}", rights, guildId);
             if (rights.UserLevel != UserLevel.Admin)

@@ -8,7 +8,7 @@ using OpenttdDiscord.Infrastructure.Discord;
 
 namespace OpenttdDiscord.Infrastructure.Servers
 {
-    internal class RegisterServerRunner : IOttdSlashCommandRunner
+    internal class RegisterServerRunner : OttdSlashCommandRunnerBase, IOttdSlashCommandRunner
     {
         private readonly IRegisterOttdServerUseCase useCase;
 
@@ -17,7 +17,7 @@ namespace OpenttdDiscord.Infrastructure.Servers
             this.useCase = useCase;
 
         }
-        public async Task<Either<IError,  ISlashCommandResponse>> Run(SocketSlashCommand command)
+        protected override async Task<Either<IError,  ISlashCommandResponse>> RunInternal(SocketSlashCommand command, Dictionary<string, object> options)
         {
             return (await new TryAsync<Either<IError, ISlashCommandResponse>> (async () =>
             {
@@ -26,13 +26,12 @@ namespace OpenttdDiscord.Infrastructure.Servers
                     return Either<IError, ISlashCommandResponse>.Left(new HumanReadableError("GuildId is Null - wtf?"));
                 }
 
-                var options = command.Data.Options.ToDictionary(o => o.Name, o => o.Value);
                 string name = (string)options["name"];
                 string password = (string)options["password"];
                 string ip = (string)options["ip"];
                 int port = (int)(long)options["port"];
 
-                var rights = new UserRights(UserLevel.Admin);
+                var rights = new User(command.User);
 
                 var server = new OttdServer(
                     Guid.NewGuid(),

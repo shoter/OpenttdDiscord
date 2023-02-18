@@ -10,7 +10,7 @@ using OpenttdDiscord.Validation.Ottd;
 
 namespace OpenttdDiscord.Infrastructure.Servers
 {
-    public class RegisterOttdServerUseCase : IRegisterOttdServerUseCase
+    internal class RegisterOttdServerUseCase : UseCaseBase, IRegisterOttdServerUseCase
     {
         private readonly IOttdServerRepository ottdServerRepository;
         private readonly ILogger logger;
@@ -25,18 +25,12 @@ namespace OpenttdDiscord.Infrastructure.Servers
             this.logger = logger;
         }
 
-        public async Task<EitherUnit> Execute(UserRights userRights, OttdServer server)
+        public async Task<EitherUnit> Execute(User userRights, OttdServer server)
         {
+            logger.LogTrace("Executing with {0} for\n{1}", userRights, server);
+
             return await validator.Validate(server)
-                .Bind(_ =>
-                {
-                    logger.LogTrace("Executing with {0} for\n{1}", userRights, server);
-                    if (userRights.UserLevel != UserLevel.Admin)
-                    {
-                        return HumanReadableError.EitherUnit("Cannot execute this command as non-admin user!");
-                    }
-                    return Unit.Default;
-                })
+                .Bind(_ => this.CheckIfHasCorrectUserLEvel(userRights, UserLevel.Admin))
                 .BindAsync<IError, Unit, Unit>(async _ =>
                 {
                     var existing = await ottdServerRepository.GetServerByName(server.Name);

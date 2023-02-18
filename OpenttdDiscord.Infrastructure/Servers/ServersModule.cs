@@ -13,7 +13,7 @@ namespace OpenttdDiscord.Infrastructure.Servers
             services.AddScoped<IOttdServerRepository, OttdServerRepository>();
             services.AddScoped<IRegisterOttdServerUseCase, RegisterOttdServerUseCase>();
             services.AddSingleton<IOttdSlashCommand, RegisterServerCommand>();
-            services.AddScoped<RegisterServerHandler>();
+            services.AddScoped<RegisterServerRunner>();
         }
     }
 }

@@ -8,22 +8,22 @@ using OpenttdDiscord.Infrastructure.Discord;
 
 namespace OpenttdDiscord.Infrastructure.Servers
 {
-    internal class RegisterServerHandler : IOttdSlashCommandRunner
+    internal class RegisterServerRunner : IOttdSlashCommandRunner
     {
         private readonly IRegisterOttdServerUseCase useCase;
 
-        public RegisterServerHandler(IRegisterOttdServerUseCase useCase)
+        public RegisterServerRunner(IRegisterOttdServerUseCase useCase)
         {
             this.useCase = useCase;
 
         }
-        public async Task<EitherString> Run(SocketSlashCommand command)
+        public async Task<Either<IError,  ISlashCommandResponse>> Run(SocketSlashCommand command)
         {
-            return (await new TryAsync<EitherString>(async () =>
+            return (await new TryAsync<Either<IError, ISlashCommandResponse>> (async () =>
             {
                 if (command.GuildId == null)
                 {
-                    return EitherString.Left(new HumanReadableError("GuildId is Null - wtf?"));
+                    return Either<IError, ISlashCommandResponse>.Left(new HumanReadableError("GuildId is Null - wtf?"));
                 }
 
                 var options = command.Data.Options.ToDictionary(o => o.Name, o => o.Value);
@@ -44,10 +44,10 @@ namespace OpenttdDiscord.Infrastructure.Servers
                     );
 
                 return (await useCase.Execute(rights, server))
-                    .Select(x => $"Created Server {name} - {ip}:{port}");
+                    .Select<ISlashCommandResponse>(x => new TextCommandResponse($"Created Server {name} - {ip}:{port}"));
             })).Match(
                 succ => succ,
-                ex => EitherString.Left(new ExceptionError(ex))
+                ex => Left<IError>(new ExceptionError(ex))
             );
         }
     }

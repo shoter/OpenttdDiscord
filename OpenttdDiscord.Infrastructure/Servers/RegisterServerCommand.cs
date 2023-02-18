@@ -3,7 +3,7 @@ using OpenttdDiscord.Infrastructure.Discord;
 
 namespace OpenttdDiscord.Infrastructure.Servers
 {
-    internal class RegisterServerCommand : OttdSlashCommandBase<RegisterServerHandler>
+    internal class RegisterServerCommand : OttdSlashCommandBase<RegisterServerRunner>
     {
         public RegisterServerCommand() : base("register-ottd-server")
         {

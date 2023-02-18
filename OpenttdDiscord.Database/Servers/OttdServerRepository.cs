@@ -22,18 +22,7 @@ namespace OpenttdDiscord.Database.Servers
         {
             return (await new TryAsync<Unit>(async () =>
             {
-                var entity = new OttdServerEntity(
-                    serverId,
-                    default!,
-                    default!,
-                    default!,
-                    default!,
-                    default!
-                    );
-
-                var entry = Db.Entry(entity);
-
-                entry.State = EntityState.Deleted;
+                await Db.Servers.Where(s => s.Id == serverId).DeleteFromQueryAsync();
                 await Db.SaveChangesAsync();
                 return Unit.Default;
             }))

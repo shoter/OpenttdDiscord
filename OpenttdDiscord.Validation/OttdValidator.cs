@@ -19,6 +19,7 @@ namespace OpenttdDiscord.Validation
             try
             {
                 ValidationResult validationResult = validator.Validate(t);
+
                 if (validationResult.IsValid)
                 {
                     return Unit.Default;

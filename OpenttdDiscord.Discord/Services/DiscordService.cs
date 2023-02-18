@@ -9,6 +9,7 @@ using OpenttdDiscord.Base.Discord;
 using OpenttdDiscord.Base.Ext;
 using OpenttdDiscord.Discord.Options;
 using OpenttdDiscord.Infrastructure.Discord;
+using OpenttdDiscord.Validation;
 using Serilog.Core;
 using System.Collections.Generic;
 
@@ -20,6 +21,7 @@ namespace OpenttdDiscord.Discord.Services
 
         private readonly ILogger logger;
         private readonly DiscordOptions options;
+        private readonly ValidationErrorEmbedBuilder validationEmbedBuilder = new();
         private readonly Dictionary<string, IOttdSlashCommand> commands = new();
         private readonly IServiceProvider sp;
 
@@ -70,6 +72,11 @@ namespace OpenttdDiscord.Discord.Services
             if(error is ExceptionError ee)
             {
                 logger.LogError(ee.Exception, $"Something went wrong while executing some command {arg.CommandName}.");
+            }
+
+            if(error is ValidationError ve)
+            {
+                return new EmbedCommandResponse(validationEmbedBuilder.BuildEmbed(ve));
             }
 
             return new TextCommandResponse(text);

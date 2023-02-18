@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using OpenttdDiscord.Database;
+using OpenttdDiscord.Infrastructure.Guilds;
 using OpenttdDiscord.Infrastructure.Modularity;
 using OpenttdDiscord.Infrastructure.Servers;
 
@@ -21,7 +22,8 @@ namespace OpenttdDiscord.Infrastructure
             });
 
             services
-                .RegisterDependencies<ServersModule>();
+                .RegisterDependencies<ServersModule>()
+                .RegisterDependencies<GuildsModule>();
 
             return services;
         }

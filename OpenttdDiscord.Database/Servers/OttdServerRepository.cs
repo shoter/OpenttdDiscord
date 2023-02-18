@@ -98,5 +98,22 @@ namespace OpenttdDiscord.Database.Servers
                 ex => Either<IError, OttdServer>.Left(new ExceptionError(ex))
             );
         }
+
+        public async Task<Either<IError, List<ulong>>> GetAllGuilds()
+        {
+            try
+            {
+                return await Db
+                    .Servers
+                    .Select(x => x.GuildId)
+                    .Distinct()
+                    .ToListAsync();
+            }
+            catch(Exception ex)
+            {
+                return new ExceptionError(ex);
+            }
+
+        }
     }
 }

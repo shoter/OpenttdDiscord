@@ -12,5 +12,6 @@ namespace OpenttdDiscord.Database.Servers
         Task<Either<IError, List<OttdServer>>> GetServersForGuild(ulong guildId);
         Task<Either<IError, OttdServer>> GetServer(Guid serverId);
         Task<Either<IError, OttdServer>> GetServerByName(string serverName);
+        Task<Either<IError, List<ulong>>> GetAllGuilds();
     }
 }

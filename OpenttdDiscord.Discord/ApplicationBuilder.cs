@@ -7,6 +7,7 @@ using OpenttdDiscord.Discord.Options;
 using OpenttdDiscord.Discord.Services;
 using Microsoft.EntityFrameworkCore.Migrations.Operations;
 using OpenttdDiscord.Database;
+using Akka.Actor;
 
 namespace OpenttdDiscord
 {
@@ -35,6 +36,7 @@ namespace OpenttdDiscord
             return hostBuilder.ConfigureServices((HostBuilderContext context, IServiceCollection services) =>
             {
                 services
+                    .AddSingleton(ActorSystem.Create("OttdDiscord"))
                     .RegisterModules()
                     .AddHostedServices()
                     .ConfigureOptions(context);
@@ -44,7 +46,8 @@ namespace OpenttdDiscord
         public static IServiceCollection AddHostedServices(this IServiceCollection services)
         {
             return services
-                .AddHostedService<DiscordService>();
+                .AddHostedService<DiscordService>()
+                .AddHostedService<AkkaStarterService>();
         }
 
         public static IServiceCollection ConfigureOptions(this IServiceCollection services, HostBuilderContext context)

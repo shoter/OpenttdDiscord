@@ -16,7 +16,9 @@ namespace OpenttdDiscord.Infrastructure.Servers
                 .AddOption(new SlashCommandOptionBuilder()
                     .WithName("server-name")
                     .WithRequired(true)
-                    .WithDescription("Name of the server"));
+                    .WithDescription("Name of the server")
+                    .WithType(ApplicationCommandOptionType.String));
+                
         }
     }
 }

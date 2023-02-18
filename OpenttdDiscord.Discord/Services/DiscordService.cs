@@ -48,17 +48,29 @@ namespace OpenttdDiscord.Discord.Services
             using var scope = sp.CreateScope();
             var runner = command.CreateRunner(scope.ServiceProvider);
             var response = (await runner.Run(arg))
-                           .IfLeft(GenerateErrorResponse);
+                           .IfLeft(err => GenerateErrorResponse(err, arg));
 
-            await response.Execute(arg);
+            (await response.Execute(arg))
+                .IfLeft((IError error) =>
+                {
+                    if (error is ExceptionError ee)
+                    {
+                        logger.LogError(ee.Exception, $"Something went wrong while executing some command {arg.CommandName}.");
+                    }
+                });
         }
 
-        private ISlashCommandResponse GenerateErrorResponse(IError error)
+        private ISlashCommandResponse GenerateErrorResponse(IError error, SocketSlashCommand arg)
         {
             string text =
                 error is HumanReadableError ?
                 $"Error: {error.Reason}" :
                 "Something went wrong :(";
+
+            if(error is ExceptionError ee)
+            {
+                logger.LogError(ee.Exception, $"Something went wrong while executing some command {arg.CommandName}.");
+            }
 
             return new TextCommandResponse(text);
         }

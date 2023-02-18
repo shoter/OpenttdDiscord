@@ -1,7 +1,6 @@
 ﻿using Discord.WebSocket;
 using LanguageExt;
 using OpenttdDiscord.Base.Ext;
-using static LanguageExt.Prelude;
 
 namespace OpenttdDiscord.Infrastructure.Discord
 {
@@ -9,13 +8,15 @@ namespace OpenttdDiscord.Infrastructure.Discord
     {
         public async Task<EitherUnit> Execute(SocketSlashCommand command)
         {
-            return (await TryAsync(async () =>
+            try
             {
                 await InternalExecute(command);
-            })).Match(
-                _ =>    Right(Unit.Default),
-                fail => Left<IError>(new HumanReadableError("Command execution failed"))
-           );
+                return Unit.Default;
+            }
+            catch (Exception ex)
+            {
+                return new ExceptionError(ex);
+            }
         }
 
         protected abstract Task InternalExecute(SocketSlashCommand command);

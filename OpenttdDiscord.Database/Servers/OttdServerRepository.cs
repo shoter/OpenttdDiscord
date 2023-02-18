@@ -44,7 +44,6 @@ namespace OpenttdDiscord.Database.Servers
                entity => EitherUnit.Right(Unit.Default),
                ex => EitherUnit.Left(new ExceptionError(ex))
            );
-
         }
 
         public async Task<EitherUnit> UpdateServer(OttdServer server)

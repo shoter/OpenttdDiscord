@@ -30,7 +30,8 @@ namespace OpenttdDiscord.Infrastructure.Servers
                 return HumanReadableError.Left("Cannot execute this command as non-admin user!");
             }
 
-            return await ottdServerRepository.GetServersForGuild(guildId);
+            var servers = await ottdServerRepository.GetServersForGuild(guildId);
+            return servers;
         }
     }
 }

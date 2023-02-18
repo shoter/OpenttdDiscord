@@ -4,7 +4,9 @@ using Microsoft.Extensions.DependencyInjection;
 using OpenttdDiscord.Base.Ext;
 using OpenttdDiscord.Domain.Security;
 using OpenttdDiscord.Infrastructure.Guilds.Messages;
+using OpenttdDiscord.Infrastructure.Ottd;
 using OpenttdDiscord.Infrastructure.Servers;
+using System.Linq;
 
 namespace OpenttdDiscord.Infrastructure.Guilds
 {
@@ -35,11 +37,7 @@ namespace OpenttdDiscord.Infrastructure.Guilds
             (await listOttdServersUseCase.Execute(User.Master, guildId))
                 .ThrowIfError()
                 .Select(servers => servers.Select(s => GuildServerActor.Create(SP, s)))
-                .SelectMany(x => x.Right, (_, props) =>
-                {
-                    Context.ActorOf(props);
-                    return Unit.Default;
-                });
+                .Select(props => props.Select(p => Context.ActorOf(p)).ToList());
         }
     }
 }

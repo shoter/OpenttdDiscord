@@ -16,6 +16,5 @@ namespace OpenttdDiscord.Base.Ext
         public static EitherString EitherString(string reason) => Either<IError, string>.Left(new HumanReadableError(reason));
 
         public static EitherLeft<IError> Left(string reason) => LanguageExt.Prelude.Left((IError) new HumanReadableError(reason));
-
     }
 }

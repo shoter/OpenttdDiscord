@@ -2,7 +2,7 @@
 
 namespace OpenttdDiscord.Infrastructure.Discord
 {
-    internal class TextCommandResponse : SlashCommandResponseBase
+    public class TextCommandResponse : SlashCommandResponseBase
     {
         private readonly string response;
 

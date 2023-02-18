@@ -21,20 +21,16 @@ namespace OpenttdDiscord.Infrastructure.Servers
             this.listServersUseCase = listOttdServersUseCase;
         }
 
-        public async Task<EitherString> Run(SocketSlashCommand command)
+        public async Task<Either<IError, ISlashCommandResponse>> Run(SocketSlashCommand command)
         {
             if(command.GuildId.HasValue == false)
             {
-                return HumanReadableError.EitherString("This command can only be executed within a guild!");
+                return new HumanReadableError("This command can only be executed within a guild!");
             }
 
             var servers = await listServersUseCase.Execute(new UserRights(UserLevel.Admin), command.GuildId.Value);
 
-            servers.Bind<string>(server =>
-            {
-
-                command.respon
-            });
+            throw new Exception();
         }
     }
 }

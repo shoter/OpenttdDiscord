@@ -2,14 +2,9 @@
 using LanguageExt.Common;
 using LanguageExt.Pipes;
 using Microsoft.EntityFrameworkCore;
-using OpenttdDiscord.Base.Ext;
 using OpenttdDiscord.Database.Ottd.Servers;
 using OpenttdDiscord.Domain.Servers;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using static LanguageExt.Prelude;
 
 namespace OpenttdDiscord.Database.Servers
@@ -56,7 +51,7 @@ namespace OpenttdDiscord.Database.Servers
                 await Db.SaveChangesAsync();
                 return Unit.Default;
             }))
-           .Match(
+            .Match(
                entity => EitherUnit.Right(Unit.Default),
                ex => EitherUnit.Left(new ExceptionError(ex))
            );
@@ -76,16 +71,12 @@ namespace OpenttdDiscord.Database.Servers
                 Db.Entry(foundServer).CurrentValues.SetValues(new OttdServerEntity(server));
                 await Db.SaveChangesAsync();
                 return Right(Unit.Default);
-            }))
-            .Match(
-                task => task,
-                ex => EitherUnit.Left(new ExceptionError(ex))
-            );
+            })).IfFail(ex => new ExceptionError(ex));
         }
 
-        public async Task<Result<IReadOnlyList<OttdServer>>> GetServersForGuild(ulong guildId)
+        public async Task<Either<IError, List<OttdServer>>> GetServersForGuild(ulong guildId)
         {
-            return await new TryAsync<IReadOnlyList<OttdServer>>(async () =>
+            return (await TryAsync<Either<IError, List<OttdServer>>>(async () =>
             {
                 List<OttdServerEntity> serverEntities = await Db
                 .Servers
@@ -95,7 +86,7 @@ namespace OpenttdDiscord.Database.Servers
                 return serverEntities
                 .Select(s => s.ToOttdServer())
                 .ToList();
-            })();
+            })).IfFail(ex => new ExceptionError(ex));
         }
 
         public async Task<Either<IError, OttdServer>> GetServer(Guid serverId)

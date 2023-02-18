@@ -21,7 +21,7 @@ namespace OpenttdDiscord.Infrastructure.Servers
             this.ottdServerRepository = ottdServerRepository;
         }
 
-        public async Task<Either<IError, IReadOnlyList<OttdServer>>> Execute(UserRights rights, ulong guildId)
+        public async Task<Either<IError, List<OttdServer>>> Execute(UserRights rights, ulong guildId)
         {
             logger.LogTrace("Executing with {0} for\n{1}", rights, guildId);
             if (rights.UserLevel != UserLevel.Admin)
@@ -29,11 +29,7 @@ namespace OpenttdDiscord.Infrastructure.Servers
                 return HumanReadableError.Left("Cannot execute this command as non-admin user!");
             }
 
-            return (await ottdServerRepository.GetServersForGuild(guildId))
-                .Match(
-                     result => Right(result),
-                     error => Left<IError>(ExceptionError.FromError(error))
-                );
+            return await ottdServerRepository.GetServersForGuild(guildId);
         }
     }
 }

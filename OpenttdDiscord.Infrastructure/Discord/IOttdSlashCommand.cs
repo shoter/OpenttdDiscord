@@ -3,7 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace OpenttdDiscord.Infrastructure.Discord
 {
-    internal interface IOttdSlashCommand
+    public interface IOttdSlashCommand
     {
         string Name { get; }
 

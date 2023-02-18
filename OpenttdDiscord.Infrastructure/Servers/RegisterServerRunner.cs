@@ -45,10 +45,7 @@ namespace OpenttdDiscord.Infrastructure.Servers
 
                 return (await useCase.Execute(rights, server))
                     .Select<ISlashCommandResponse>(x => new TextCommandResponse($"Created Server {name} - {ip}:{port}"));
-            })).Match(
-                succ => succ,
-                ex => Left<IError>(new ExceptionError(ex))
-            );
+            })).IfFail(ex => new ExceptionError(ex));
         }
     }
 }

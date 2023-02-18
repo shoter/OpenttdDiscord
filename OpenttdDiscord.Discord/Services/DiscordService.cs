@@ -1,5 +1,6 @@
 ﻿using Discord;
 using Discord.WebSocket;
+using LanguageExt;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -46,25 +47,20 @@ namespace OpenttdDiscord.Discord.Services
 
             using var scope = sp.CreateScope();
             var runner = command.CreateRunner(scope.ServiceProvider);
-            var result = await runner.Run(arg);
+            var response = (await runner.Run(arg))
+                           .IfLeft(GenerateErrorResponse);
 
-            if(result.IsLeft)
-            {
-                var error = result.Left();
-                if(error is HumanReadableError)
-                {
-                    await arg.RespondAsync($"Error: {error.Reason}");
-                }
-                else
-                {
-                    await arg.RespondAsync("Something went wrong :(");
-                }
-            }
-            else
-            {
-                string msg = result.Right();
-                await arg.RespondAsync(msg);
-            }
+            await response.Execute(arg);
+        }
+
+        private ISlashCommandResponse GenerateErrorResponse(IError error)
+        {
+            string text =
+                error is HumanReadableError ?
+                $"Error: {error.Reason}" :
+                "Something went wrong :(";
+
+            return new TextCommandResponse(text);
         }
 
         private async Task Client_Ready()

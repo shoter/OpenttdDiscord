@@ -11,12 +11,41 @@ namespace OpenttdDiscord.Infrastructure.Servers
         public void RegisterDependencies(IServiceCollection services)
         {
             services.AddScoped<IOttdServerRepository, OttdServerRepository>();
+            services
+                .RegisterUseCases()
+                .RegisterCommands()
+                .RegisterRunners();
+        }
+
+    }
+
+    internal static class ServersModuleExtensions
+    {
+        public static IServiceCollection RegisterUseCases(this IServiceCollection services)
+        {
             services.AddScoped<IRegisterOttdServerUseCase, RegisterOttdServerUseCase>();
             services.AddScoped<IListOttdServersUseCase, ListOttdServersUseCase>();
-            services.AddSingleton<IOttdSlashCommand, RegisterServerCommand>();
-            services.AddSingleton<IOttdSlashCommand, ListServersCommand>();
+            services.AddScoped<IRemoveOttdServerUseCase, RemoveOttdServerUseCase>();
+
+            return services;
+        }
+
+        public static IServiceCollection RegisterRunners(this IServiceCollection services)
+        {
             services.AddScoped<RegisterServerRunner>();
             services.AddScoped<ListServerRunner>();
+            services.AddScoped<RemoveOttdServerRunner>();
+
+            return services;
+        }
+
+        public static IServiceCollection RegisterCommands(this IServiceCollection services)
+        {
+            services.AddSingleton<IOttdSlashCommand, RegisterServerCommand>();
+            services.AddSingleton<IOttdSlashCommand, ListServersCommand>();
+            services.AddSingleton<IOttdSlashCommand, RemoveOttdServerCommand>();
+
+            return services;
         }
     }
 }

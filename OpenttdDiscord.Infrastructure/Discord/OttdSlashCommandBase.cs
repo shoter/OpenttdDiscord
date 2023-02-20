@@ -23,7 +23,6 @@ namespace OpenttdDiscord.Infrastructure.Discord
 
         public abstract void Configure(SlashCommandBuilder builder);
 
-
         public IOttdSlashCommandRunner CreateRunner(IServiceProvider sp)
             => sp.GetRequiredService<TRunner>();
     }

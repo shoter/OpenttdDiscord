@@ -17,92 +17,34 @@ namespace OpenttdDiscord.Discord.Services
 {
     internal class DiscordService : BackgroundService
     {
-        private readonly DiscordSocketClient client = new();
-
+        private readonly DiscordSocketClient client;
         private readonly ILogger logger;
         private readonly DiscordOptions options;
-        private readonly ValidationErrorEmbedBuilder validationEmbedBuilder = new();
-        private readonly Dictionary<string, IOttdSlashCommand> commands = new();
-        private readonly IServiceProvider sp;
+        private readonly IDiscordCommandService discordCommandService;
 
         public DiscordService(
+            DiscordSocketClient client,
             ILogger<DiscordService> logger,
-            IEnumerable<IOttdSlashCommand> commands,
-            IServiceProvider sp,
+            IDiscordCommandService discordCommandService,
             IOptions<DiscordOptions> options)
         {
+            this.client = client;
             this.logger = logger;
+            this.discordCommandService = discordCommandService;
+            this.options = options.Value;
             client.Log += OnDiscordLog;
             client.Ready += Client_Ready;
-            client.SlashCommandExecuted += Client_SlashCommandExecuted;
-            this.options = options.Value;
-            this.sp = sp;
-            foreach(var c in commands)
-            {
-                this.commands.Add(c.Name, c);
-            }
         }
 
-        private async Task Client_SlashCommandExecuted(SocketSlashCommand arg)
-        {
-            var command = this.commands[arg.Data.Name];
-
-            using var scope = sp.CreateScope();
-            var runner = command.CreateRunner(scope.ServiceProvider);
-            var response = (await runner.Run(arg))
-                           .IfLeft(err => GenerateErrorResponse(err, arg));
-
-            (await response.Execute(arg))
-                .IfLeft((IError error) =>
-                {
-                    if (error is ExceptionError ee)
-                    {
-                        logger.LogError(ee.Exception, $"Something went wrong while executing some command {arg.CommandName}.");
-                    }
-                });
-        }
-
-        private ISlashCommandResponse GenerateErrorResponse(IError error, SocketSlashCommand arg)
-        {
-            string text =
-                error is HumanReadableError ?
-                $"Error: {error.Reason}" :
-                "Something went wrong :(";
-
-            if(error is ExceptionError ee)
-            {
-                logger.LogError(ee.Exception, $"Something went wrong while executing some command {arg.CommandName}.");
-            }
-
-            if(error is ValidationError ve)
-            {
-                return new EmbedCommandResponse(validationEmbedBuilder.BuildEmbed(ve));
-            }
-
-            return new TextCommandResponse(text);
-        }
+     
 
         private async Task Client_Ready()
         {
-            foreach(var c in commands.Values)
-            {
-                try
-                {
-                    var parameters = c.Build();
-                    await client.CreateGlobalApplicationCommandAsync(parameters);
-                    logger.LogInformation($"Registered {c}");
-                    
-                }
-                catch(Exception ex)
-                {
-                    logger.LogError(ex, $"Something when wrong while registering {c}");
-                }
-            }
+            await this.discordCommandService.Register();
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            Console.WriteLine("I am hosted service which was run :)");
             await client.LoginAsync(TokenType.Bot, options.Token);
             await client.StartAsync();
         }

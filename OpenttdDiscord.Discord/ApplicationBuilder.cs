@@ -8,6 +8,7 @@ using OpenttdDiscord.Discord.Services;
 using Microsoft.EntityFrameworkCore.Migrations.Operations;
 using OpenttdDiscord.Database;
 using Akka.Actor;
+using Discord.WebSocket;
 
 namespace OpenttdDiscord
 {
@@ -37,6 +38,7 @@ namespace OpenttdDiscord
             {
                 services
                     .AddSingleton(ActorSystem.Create("OttdDiscord"))
+                    .AddSingleton(new DiscordSocketClient())
                     .RegisterModules()
                     .AddHostedServices()
                     .ConfigureOptions(context);

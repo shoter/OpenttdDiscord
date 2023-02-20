@@ -43,7 +43,7 @@ namespace OpenttdDiscord.Infrastructure.Ottd.Actors
         private async Task InitGuildServerActorMessage(InitGuildServerActorMessage _)
         {
             logger.LogInformation($"Connecting to {server.Name} on {server.Ip}:{server.AdminPort}");
-            await client.Connect();
+            //await client.Connect();
         }
     }
 }

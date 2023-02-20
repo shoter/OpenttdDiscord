@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using OpenttdDiscord.Database;
+using OpenttdDiscord.Infrastructure.Akkas;
 using OpenttdDiscord.Infrastructure.Guilds;
 using OpenttdDiscord.Infrastructure.Modularity;
 using OpenttdDiscord.Infrastructure.Servers;
@@ -20,6 +21,8 @@ namespace OpenttdDiscord.Infrastructure
                     x.MigrationsHistoryTable("__MigrationHistory");
                 });
             });
+
+            services.AddSingleton<IAkkaService, AkkaService>();
 
             services
                 .RegisterDependencies<ServersModule>()

@@ -3,6 +3,7 @@ using LanguageExt;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using OpenttdDiscord.Base.Ext;
+using OpenttdDiscord.Infrastructure.Akkas;
 using OpenttdDiscord.Infrastructure.Guilds.Messages;
 
 namespace OpenttdDiscord.Infrastructure.Guilds
@@ -39,7 +40,7 @@ namespace OpenttdDiscord.Infrastructure.Guilds
         private void AddNewGuildActorMessage(AddNewGuildActorMessage msg)
         {
             logger.LogInformation($"Creating GuildActor for {msg.GuildId}");
-            Context.ActorOf(GuildActor.Create(SP, msg.GuildId), $"Guild-{msg.GuildId}");
+            Context.ActorOf(GuildActor.Create(SP, msg.GuildId), MainActors.Names.Guild(msg.GuildId));
         }
     }
 }

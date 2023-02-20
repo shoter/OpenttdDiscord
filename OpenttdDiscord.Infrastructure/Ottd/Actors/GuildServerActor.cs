@@ -6,7 +6,7 @@ using OpenttdDiscord.Domain.Servers;
 using OpenttdDiscord.Infrastructure.Ottd.Messages;
 using Serilog;
 
-namespace OpenttdDiscord.Infrastructure.Ottd
+namespace OpenttdDiscord.Infrastructure.Ottd.Actors
 {
     internal class GuildServerActor : ReceiveActorBase
     {

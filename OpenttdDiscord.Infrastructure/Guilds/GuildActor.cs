@@ -4,7 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using OpenttdDiscord.Base.Ext;
 using OpenttdDiscord.Domain.Security;
 using OpenttdDiscord.Infrastructure.Guilds.Messages;
-using OpenttdDiscord.Infrastructure.Ottd;
+using OpenttdDiscord.Infrastructure.Ottd.Actors;
 using OpenttdDiscord.Infrastructure.Servers;
 using System.Linq;
 

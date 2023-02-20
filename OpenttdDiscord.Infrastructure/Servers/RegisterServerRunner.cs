@@ -1,6 +1,7 @@
 ﻿using Discord.WebSocket;
 using LanguageExt;
 using LanguageExt.Common;
+using OpenttdDiscord.Base.Basics;
 using OpenttdDiscord.Base.Ext;
 using OpenttdDiscord.Domain.Security;
 using OpenttdDiscord.Domain.Servers;
@@ -17,7 +18,7 @@ namespace OpenttdDiscord.Infrastructure.Servers
             this.useCase = useCase;
 
         }
-        protected override async Task<Either<IError,  ISlashCommandResponse>> RunInternal(SocketSlashCommand command, Dictionary<string, object> options)
+        protected override async Task<Either<IError,  ISlashCommandResponse>> RunInternal(SocketSlashCommand command, ExtDictionary<string, object> options)
         {
             return (await new TryAsync<Either<IError, ISlashCommandResponse>> (async () =>
             {
@@ -26,10 +27,10 @@ namespace OpenttdDiscord.Infrastructure.Servers
                     return Either<IError, ISlashCommandResponse>.Left(new HumanReadableError("GuildId is Null - wtf?"));
                 }
 
-                string name = (string)options["name"];
-                string password = (string)options["password"];
-                string ip = (string)options["ip"];
-                int port = (int)(long)options["port"];
+                string name = options.GetValueAs<string>("name");
+                string password = options.GetValueAs<string>("password");
+                string ip = options.GetValueAs<string>("ip");
+                int port = (int)options.GetValueAs<long>("port");
 
                 var rights = new User(command.User);
 

@@ -88,9 +88,9 @@ namespace OpenttdDiscord.Database.Servers
             );
         }
 
-        public async Task<Either<IError, OttdServer>> GetServerByName(string serverName)
+        public async Task<Either<IError, OttdServer>> GetServerByName(ulong guildId, string serverName)
         {
-            return (await TryAsync(async () => await Db.Servers.SingleOrDefaultAsync(s => s.Name == serverName)))
+            return (await TryAsync(async () => await Db.Servers.SingleOrDefaultAsync(s => s.GuildId == guildId && s.Name == serverName)))
             .Match(
                 entity => entity == null
                     ? Either<IError, OttdServer>.Left(new HumanReadableError("Server was not found"))

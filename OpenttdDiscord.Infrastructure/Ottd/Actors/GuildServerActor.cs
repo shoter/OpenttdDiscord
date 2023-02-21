@@ -8,10 +8,12 @@ using Serilog;
 
 namespace OpenttdDiscord.Infrastructure.Ottd.Actors
 {
-    internal class GuildServerActor : ReceiveActorBase
+    internal class GuildServerActor : ReceiveActorBase, IWithTimers
     {
         private readonly OttdServer server;
         private readonly AdminPortClient client;
+
+        public ITimerScheduler Timers { get; set; } = default!;
 
         public GuildServerActor(IServiceProvider serviceProvider, OttdServer server) : base(serviceProvider)
         {
@@ -30,6 +32,8 @@ namespace OpenttdDiscord.Infrastructure.Ottd.Actors
         private void Ready()
         {
             ReceiveAsync<InitGuildServerActorMessage>(InitGuildServerActorMessage);
+            Receive<ExecuteServerAction>(ExecuteServerAction);
+            Receive<KillDanglingAction>(KillDanglingAction);
         }
 
         public static Props Create(IServiceProvider sp, OttdServer server)
@@ -43,7 +47,20 @@ namespace OpenttdDiscord.Infrastructure.Ottd.Actors
         private async Task InitGuildServerActorMessage(InitGuildServerActorMessage _)
         {
             logger.LogInformation($"Connecting to {server.Name} on {server.Ip}:{server.AdminPort}");
-            //await client.Connect();
+            await client.Connect();
+        }
+
+        private void ExecuteServerAction(ExecuteServerAction cmd)
+        {
+            Props props = cmd.CreateCommandActorProps(SP, server, client);
+            var commandActor = Context.ActorOf(props);
+            Timers.StartSingleTimer(commandActor, new KillDanglingAction(commandActor), cmd.TimeOut);
+            commandActor.Tell(cmd);
+        }
+
+        private void KillDanglingAction(KillDanglingAction msg)
+        {
+            msg.commandActor.GracefulStop(TimeSpan.FromSeconds(1));
         }
     }
 }

@@ -11,7 +11,7 @@ namespace OpenttdDiscord.Database.Servers
         Task<EitherUnit> DeleteServer(Guid serverId);
         Task<Either<IError, List<OttdServer>>> GetServersForGuild(ulong guildId);
         Task<Either<IError, OttdServer>> GetServer(Guid serverId);
-        Task<Either<IError, OttdServer>> GetServerByName(string serverName);
+        Task<Either<IError, OttdServer>> GetServerByName(ulong guildId, string serverName);
         Task<Either<IError, List<ulong>>> GetAllGuilds();
     }
 }

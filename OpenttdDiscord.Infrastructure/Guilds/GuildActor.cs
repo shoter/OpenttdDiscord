@@ -5,6 +5,7 @@ using OpenttdDiscord.Base.Ext;
 using OpenttdDiscord.Domain.Security;
 using OpenttdDiscord.Infrastructure.Guilds.Messages;
 using OpenttdDiscord.Infrastructure.Ottd.Actors;
+using OpenttdDiscord.Infrastructure.Ottd.Messages;
 using OpenttdDiscord.Infrastructure.Servers;
 using System.Linq;
 
@@ -15,6 +16,8 @@ namespace OpenttdDiscord.Infrastructure.Guilds
         private readonly IListOttdServersUseCase listOttdServersUseCase;
 
         private readonly ulong guildId;
+
+        private readonly Dictionary<Guid, IActorRef> serverActors = new();
 
         public GuildActor(IServiceProvider serviceProvider, ulong guildId) : base(serviceProvider)
         {
@@ -27,6 +30,7 @@ namespace OpenttdDiscord.Infrastructure.Guilds
         private void Ready()
         {
             ReceiveAsync<InitGuildsActorMessage>(InitGuildsActorMessage);
+            Receive<ExecuteServerAction>(ExecuteServerAction);
         }
 
         public static Props Create(IServiceProvider sp, ulong guildId)
@@ -36,8 +40,23 @@ namespace OpenttdDiscord.Infrastructure.Guilds
         {
             (await listOttdServersUseCase.Execute(User.Master, guildId))
                 .ThrowIfError()
-                .Select(servers => servers.Select(s => GuildServerActor.Create(SP, s)))
-                .Select(props => props.Select(p => Context.ActorOf(p)).ToList());
+                .Map(servers => servers.Select(s =>
+                {
+                    Props props = GuildServerActor.Create(SP, s);
+                    IActorRef actor = Context.ActorOf(props);
+                    serverActors.Add(s.Id, actor);
+                    return Unit.Default;
+                }));
+        }
+
+        private void ExecuteServerAction(ExecuteServerAction msg)
+        {
+            if(!serverActors.TryGetValue(msg.ServerId, out var server))
+            {
+                return;
+            }
+
+            server.Tell(msg);
         }
     }
 }

@@ -33,7 +33,7 @@ namespace OpenttdDiscord.Infrastructure.Servers
                 .Bind(_ => this.CheckIfHasCorrectUserLEvel(userRights, UserLevel.Admin))
                 .BindAsync<IError, Unit, Unit>(async _ =>
                 {
-                    var existing = await ottdServerRepository.GetServerByName(server.Name);
+                    var existing = await ottdServerRepository.GetServerByName(server.GuildId, server.Name);
                     if (existing.IsRight)
                     {
                         return new HumanReadableError("Server with this name already exists!");

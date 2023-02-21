@@ -19,7 +19,7 @@ namespace OpenttdDiscord.Infrastructure.Servers
         protected override async Task<Either<IError, ISlashCommandResponse>> RunInternal(SocketSlashCommand command, ExtDictionary<string, object> options)
         {
             string serverName = options.GetValueAs<string>("server-name");
-            return (await this.removeOttdServerUseCase.Execute(new User(command.User), serverName))
+            return (await this.removeOttdServerUseCase.Execute(new User(command.User), command.GuildId!.Value, serverName))
                 .Map<ISlashCommandResponse>(_ => new TextCommandResponse($"{serverName} successfully deleted"));
         }
     }

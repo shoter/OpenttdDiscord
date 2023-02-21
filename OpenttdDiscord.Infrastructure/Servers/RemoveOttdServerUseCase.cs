@@ -16,12 +16,12 @@ namespace OpenttdDiscord.Infrastructure.Servers
             this.ottdServerRepository = ottdServerRepository;
         }
 
-        public Task<EitherUnit> Execute(User user, string serverName)
+        public Task<EitherUnit> Execute(User user, ulong guildId, string serverName)
         {
             this.logger.LogInformation($"Removing {serverName} for {user}");
 
             return CheckIfHasCorrectUserLEvel(user, UserLevel.Admin)
-                .BindAsync(_ => ottdServerRepository.GetServerByName(serverName))
+                .BindAsync(_ => ottdServerRepository.GetServerByName(guildId, serverName))
                 .BindAsync((OttdServer server) => ottdServerRepository.DeleteServer(server.Id));
         }
     }

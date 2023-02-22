@@ -46,7 +46,7 @@ namespace OpenttdDiscord.Infrastructure.Guilds
                     IActorRef actor = Context.ActorOf(props);
                     serverActors.Add(s.Id, actor);
                     return Unit.Default;
-                }));
+                }).ToList());
         }
 
         private void ExecuteServerAction(ExecuteServerAction msg)

@@ -39,16 +39,18 @@ namespace OpenttdDiscord.Infrastructure.Ottd.Actors
 
         private Embed CreateServerStatusEmbed(ServerStatus serverStatus, AdminServerInfo info)
         {
+            string mapName = string.IsNullOrEmpty(info.MapName) ? "Random map" : info.MapName;
+
             EmbedBuilder embedBuilder = new();
             embedBuilder.WithTitle($"{server.Name} Status");
 
-            embedBuilder.AddField("Players", serverStatus.Players.Count);
-            embedBuilder.AddField("Map Size", $"{info.MapWidth}x{info.MapHeight}", false);
-            embedBuilder.AddField("Year", info.Date, false);
+            embedBuilder.AddField("Players", serverStatus.Players.Count, true);
+            embedBuilder.AddField("Map Size", $"{info.MapWidth}x{info.MapHeight}", true);
+            embedBuilder.AddField("Year", info.Date, true);
 
-            embedBuilder.AddField("Map Name", info.MapName);
-            embedBuilder.AddField("Climate", info.Landscape, false);
-            embedBuilder.AddField("Server address", $"{client.ServerInfo.ServerIp}:{client.ServerInfo.ServerPort}", false);
+            embedBuilder.AddField("Map Name", mapName, true);
+            embedBuilder.AddField("Climate", info.Landscape.ToHumanReadable(), true);
+            embedBuilder.AddField("Server address", $"{client.ServerInfo.ServerIp}:{client.ServerInfo.ServerPort}", true);
 
             var embed = embedBuilder.Build();
             return embed;

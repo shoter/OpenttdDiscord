@@ -32,6 +32,7 @@ namespace OpenttdDiscord.Infrastructure.Guilds
             Receive<AddNewGuildActorMessage>(AddNewGuildActorMessage);
             Receive<ExecuteServerAction>(ExecuteServerAction);
             Receive<InformAboutServerRegistration>(InformAboutServerRegistration);
+            Receive<InformAboutServerDeletion>(InformAboutServerDeletion);
         }
 
         private async Task InitGuildActorMessage(InitGuildActorMessage _)
@@ -64,10 +65,21 @@ namespace OpenttdDiscord.Infrastructure.Guilds
             if (guildActors.TryGetValue(msg.server.GuildId, out IActorRef? actor))
             {
                 actor.Tell(msg);
+                return;
             }
 
             actor = Context.ActorOf(GuildActor.Create(SP, msg.server.GuildId), MainActors.Names.Guild(msg.server.GuildId));
             guildActors.Add(msg.server.GuildId, actor);
+        }
+
+        private void InformAboutServerDeletion(InformAboutServerDeletion msg)
+        {
+            if(!guildActors.TryGetValue(msg.server.GuildId, out IActorRef? actor))
+            {
+                return;
+            }
+
+            actor.Tell(msg);
         }
     }
 }

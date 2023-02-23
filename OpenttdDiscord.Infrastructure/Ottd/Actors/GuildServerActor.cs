@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using OpenTTDAdminPort;
 using OpenttdDiscord.Domain.Servers;
 using OpenttdDiscord.Infrastructure.Ottd.Messages;
+using OpenttdDiscord.Infrastructure.Servers;
 using Serilog;
 
 namespace OpenttdDiscord.Infrastructure.Ottd.Actors
@@ -41,6 +42,7 @@ namespace OpenttdDiscord.Infrastructure.Ottd.Actors
 
         protected override void PostStop()
         {
+            client.Disconnect().Wait();
             base.PostStop();
         }
 

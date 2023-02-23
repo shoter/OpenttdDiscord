@@ -33,6 +33,7 @@ namespace OpenttdDiscord.Infrastructure.Guilds
             ReceiveAsync<InitGuildsActorMessage>(InitGuildsActorMessage);
             Receive<ExecuteServerAction>(ExecuteServerAction);
             Receive<InformAboutServerRegistration>(InformAboutServerRegistration);
+            ReceiveAsync<InformAboutServerDeletion>(InformAboutServerDeletion);
         }
 
         public static Props Create(IServiceProvider sp, ulong guildId)
@@ -71,6 +72,17 @@ namespace OpenttdDiscord.Infrastructure.Guilds
             }
 
             server.Tell(msg);
+        }
+
+        private async Task InformAboutServerDeletion(InformAboutServerDeletion msg)
+        {
+            if (!serverActors.TryGetValue(msg.server.Id, out var server))
+            {
+                return;
+            }
+
+            await server.GracefulStop(TimeSpan.FromSeconds(1));
+            serverActors.Remove(msg.server.Id);
         }
     }
 }

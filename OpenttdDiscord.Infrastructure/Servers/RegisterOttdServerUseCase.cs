@@ -1,10 +1,12 @@
-﻿using LanguageExt;
+﻿using Akka.Actor;
+using LanguageExt;
 using LanguageExt.Common;
 using Microsoft.Extensions.Logging;
 using OpenttdDiscord.Base.Ext;
 using OpenttdDiscord.Database.Servers;
 using OpenttdDiscord.Domain.Security;
 using OpenttdDiscord.Domain.Servers;
+using OpenttdDiscord.Infrastructure.Akkas;
 using OpenttdDiscord.Validation;
 using OpenttdDiscord.Validation.Ottd;
 
@@ -15,13 +17,16 @@ namespace OpenttdDiscord.Infrastructure.Servers
         private readonly IOttdServerRepository ottdServerRepository;
         private readonly ILogger logger;
         private readonly OttdValidator<OttdServerValidator, OttdServer> validator = new(new());
+        private readonly IAkkaService akkaService;
 
         public RegisterOttdServerUseCase(
             ILogger<RegisterOttdServerUseCase> logger,
+            IAkkaService akkaService,
             IOttdServerRepository ottdServerRepository
             )
         {
             this.ottdServerRepository = ottdServerRepository;
+            this.akkaService = akkaService;
             this.logger = logger;
         }
 
@@ -41,7 +46,13 @@ namespace OpenttdDiscord.Infrastructure.Servers
 
                     return Unit.Default;
                 })
-                .BindAsync(_ => ottdServerRepository.InsertServer(server));
+                .BindAsync(_ => ottdServerRepository.InsertServer(server))
+                .MapAsync(async _ =>
+                {
+                    ActorSelection selection = await akkaService.SelectActor(MainActors.Paths.Guilds);
+                    selection.Tell(new InformAboutServerRegistration(server));
+                    return Unit.Default;
+                });
         }
     }
 }

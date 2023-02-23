@@ -38,8 +38,8 @@ namespace OpenttdDiscord.Infrastructure.Ottd.Runners
                var guildsActor = await akkaService.SelectActor(MainActors.Paths.Guilds);
                guildsActor.Tell(action);
                return Unit.Default;
-           })
-           .Map(_ => new TextCommandResponse("Executing command"));
+           }).ToAsync()
+           .Map( _ => (ISlashCommandResponse) new TextCommandResponse("Executing command"));
         }
     }
 }

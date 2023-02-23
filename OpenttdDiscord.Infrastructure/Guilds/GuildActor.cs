@@ -3,6 +3,7 @@ using LanguageExt;
 using Microsoft.Extensions.DependencyInjection;
 using OpenttdDiscord.Base.Ext;
 using OpenttdDiscord.Domain.Security;
+using OpenttdDiscord.Domain.Servers;
 using OpenttdDiscord.Infrastructure.Guilds.Messages;
 using OpenttdDiscord.Infrastructure.Ottd.Actors;
 using OpenttdDiscord.Infrastructure.Ottd.Messages;
@@ -31,6 +32,7 @@ namespace OpenttdDiscord.Infrastructure.Guilds
         {
             ReceiveAsync<InitGuildsActorMessage>(InitGuildsActorMessage);
             Receive<ExecuteServerAction>(ExecuteServerAction);
+            Receive<InformAboutServerRegistration>(InformAboutServerRegistration);
         }
 
         public static Props Create(IServiceProvider sp, ulong guildId)
@@ -40,13 +42,25 @@ namespace OpenttdDiscord.Infrastructure.Guilds
         {
             (await listOttdServersUseCase.Execute(User.Master, guildId))
                 .ThrowIfError()
-                .Map(servers => servers.Select(s =>
-                {
-                    Props props = GuildServerActor.Create(SP, s);
-                    IActorRef actor = Context.ActorOf(props);
-                    serverActors.Add(s.Id, actor);
-                    return Unit.Default;
-                }).ToList());
+                .Map(servers => servers.Select(CreateServerActor).ToList());
+        }
+
+        private EitherUnit CreateServerActor(OttdServer s)
+        {
+            if(serverActors.ContainsKey(s.Id))
+            {
+                return new HumanReadableError("Server is already registered");
+            }
+
+            Props props = GuildServerActor.Create(SP, s);
+            IActorRef actor = Context.ActorOf(props);
+            serverActors.Add(s.Id, actor);
+            return Unit.Default;
+        }
+
+        private void InformAboutServerRegistration(InformAboutServerRegistration msg)
+        {
+            CreateServerActor(msg.server);
         }
 
         private void ExecuteServerAction(ExecuteServerAction msg)

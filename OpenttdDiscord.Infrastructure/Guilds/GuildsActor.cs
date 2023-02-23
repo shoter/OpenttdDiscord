@@ -6,6 +6,7 @@ using OpenttdDiscord.Base.Ext;
 using OpenttdDiscord.Infrastructure.Akkas;
 using OpenttdDiscord.Infrastructure.Guilds.Messages;
 using OpenttdDiscord.Infrastructure.Ottd.Messages;
+using OpenttdDiscord.Infrastructure.Servers;
 
 namespace OpenttdDiscord.Infrastructure.Guilds
 {
@@ -30,6 +31,7 @@ namespace OpenttdDiscord.Infrastructure.Guilds
             ReceiveAsync<InitGuildActorMessage>(InitGuildActorMessage);
             Receive<AddNewGuildActorMessage>(AddNewGuildActorMessage);
             Receive<ExecuteServerAction>(ExecuteServerAction);
+            Receive<InformAboutServerRegistration>(InformAboutServerRegistration);
         }
 
         private async Task InitGuildActorMessage(InitGuildActorMessage _)
@@ -55,6 +57,17 @@ namespace OpenttdDiscord.Infrastructure.Guilds
             }
 
             guildActor.Tell(msg);
+        }
+
+        private void InformAboutServerRegistration(InformAboutServerRegistration msg)
+        {
+            if (guildActors.TryGetValue(msg.server.GuildId, out IActorRef? actor))
+            {
+                actor.Tell(msg);
+            }
+
+            actor = Context.ActorOf(GuildActor.Create(SP, msg.server.GuildId), MainActors.Names.Guild(msg.server.GuildId));
+            guildActors.Add(msg.server.GuildId, actor);
         }
     }
 }

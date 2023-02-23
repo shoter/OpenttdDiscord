@@ -52,13 +52,26 @@ namespace OpenttdDiscord.Infrastructure.Ottd.Actors
             embedBuilder.AddField("Climate", info.Landscape.ToHumanReadable(), true);
             embedBuilder.AddField("Server address", $"{client.ServerInfo.ServerIp}:{client.ServerInfo.ServerPort}", true);
 
-            var embed = embedBuilder.Build();
+            string players = string.Join('\n', serverStatus.Players.Values.Select(StringifyPlayer));
+            if (!string.IsNullOrEmpty(players))
+            {
+                embedBuilder.AddField("Players", players, false);
+            }
+
+                var embed = embedBuilder.Build();
             return embed;
         }
 
         protected override void PostStop()
         {
             base.PostStop();
+        }
+
+        private string StringifyPlayer(Player player)
+        {
+            return player.ClientId == 1 ?
+                $"{player.Name} [Server]" :
+                player.Name;
         }
     }
 }

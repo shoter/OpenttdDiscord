@@ -12,7 +12,7 @@ namespace OpenttdDiscord.Infrastructure.Statuses.UseCases
             this.statusMonitorRepository = statusMonitorRepository;
         }
 
-        public Task<EitherUnit> RegisterStatusMonitor(StatusMonitor statusMonitor)
+        public EitherAsyncUnit RegisterStatusMonitor(StatusMonitor statusMonitor)
         {
             return statusMonitorRepository.Insert(statusMonitor);
         }

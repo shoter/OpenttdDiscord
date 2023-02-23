@@ -16,11 +16,13 @@ namespace OpenttdDiscord.Infrastructure.Servers
             this.removeOttdServerUseCase = removeOttdServerUseCase;
         }
 
-        protected override async Task<Either<IError, ISlashCommandResponse>> RunInternal(SocketSlashCommand command, ExtDictionary<string, object> options)
+        protected override EitherAsync<IError, ISlashCommandResponse> RunInternal(SocketSlashCommand command, ExtDictionary<string, object> options)
         {
             string serverName = options.GetValueAs<string>("server-name");
-            return (await this.removeOttdServerUseCase.Execute(new User(command.User), command.GuildId!.Value, serverName))
-                .Map<ISlashCommandResponse>(_ => new TextCommandResponse($"{serverName} successfully deleted"));
+
+            return
+            from _1 in removeOttdServerUseCase.Execute(new User(command.User), command.GuildId!.Value, serverName).ToAsync()
+            select (ISlashCommandResponse) new TextCommandResponse($"{serverName} successfully deleted");
         }
     }
 }

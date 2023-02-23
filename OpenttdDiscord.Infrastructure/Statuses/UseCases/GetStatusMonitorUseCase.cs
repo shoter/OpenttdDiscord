@@ -31,9 +31,10 @@ namespace OpenttdDiscord.Infrastructure.Statuses.UseCases
             select monitor;
         }
 
-        public async EitherAsync<IError, StatusMonitor> Execute(Guid serverId, ulong channelId)
+        public EitherAsync<IError, StatusMonitor> Execute(Guid serverId, ulong channelId)
         {
-            var statusMonitor = statusMonitorRepository
+            //var statusMonitor = statusMonitorRepository
+            throw new Exception();
         }
     }
 }

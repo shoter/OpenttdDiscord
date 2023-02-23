@@ -7,12 +7,12 @@ namespace OpenttdDiscord.Infrastructure.Discord
 {
     internal abstract class OttdSlashCommandRunnerBase : IOttdSlashCommandRunner
     {
-        public Task<Either<IError, ISlashCommandResponse>> Run(SocketSlashCommand command)
+        public EitherAsync<IError, ISlashCommandResponse> Run(SocketSlashCommand command)
         {
             var options = command.Data.Options.ToExtDictionary(o => o.Name, o => o.Value);
             return RunInternal(command, options);
         }
 
-        protected abstract Task<Either<IError, ISlashCommandResponse>> RunInternal(SocketSlashCommand command, ExtDictionary<string, object> options);
+        protected abstract EitherAsync<IError, ISlashCommandResponse> RunInternal(SocketSlashCommand command, ExtDictionary<string, object> options);
     }
 }

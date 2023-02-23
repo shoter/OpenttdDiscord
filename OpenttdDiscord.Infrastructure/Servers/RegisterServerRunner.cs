@@ -18,34 +18,32 @@ namespace OpenttdDiscord.Infrastructure.Servers
             this.useCase = useCase;
 
         }
-        protected override async Task<Either<IError,  ISlashCommandResponse>> RunInternal(SocketSlashCommand command, ExtDictionary<string, object> options)
+        protected override EitherAsync<IError,  ISlashCommandResponse> RunInternal(SocketSlashCommand command, ExtDictionary<string, object> options)
         {
-            return (await new TryAsync<Either<IError, ISlashCommandResponse>> (async () =>
+            if (command.GuildId == null)
             {
-                if (command.GuildId == null)
-                {
-                    return Either<IError, ISlashCommandResponse>.Left(new HumanReadableError("GuildId is Null - wtf?"));
-                }
+                return new HumanReadableError("GuildId is Null - wtf?");
+            }
 
-                string name = options.GetValueAs<string>("name");
-                string password = options.GetValueAs<string>("password");
-                string ip = options.GetValueAs<string>("ip");
-                int port = (int)options.GetValueAs<long>("port");
+            string name = options.GetValueAs<string>("name");
+            string password = options.GetValueAs<string>("password");
+            string ip = options.GetValueAs<string>("ip");
+            int port = (int)options.GetValueAs<long>("port");
 
-                var rights = new User(command.User);
+            var rights = new User(command.User);
 
-                var server = new OttdServer(
-                    Guid.NewGuid(),
-                    command.GuildId.Value,
-                    ip,
-                    name,
-                    port,
-                    password
-                    );
+            var server = new OttdServer(
+                Guid.NewGuid(),
+                command.GuildId!.Value,
+                ip,
+                name,
+                port,
+                password
+                );
 
-                return (await useCase.Execute(rights, server))
-                    .Select<ISlashCommandResponse>(x => new TextCommandResponse($"Created Server {name} - {ip}:{port}"));
-            })).IfFail(ex => new ExceptionError(ex));
+            return
+            from _1 in useCase.Execute(rights, server).ToAsync()
+            select (ISlashCommandResponse) new TextCommandResponse($"Created Server {name} - {ip}:{port}");
         }
     }
 }

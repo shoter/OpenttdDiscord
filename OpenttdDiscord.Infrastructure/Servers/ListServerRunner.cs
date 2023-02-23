@@ -1,6 +1,7 @@
 ﻿using Discord;
 using Discord.WebSocket;
 using LanguageExt;
+using LanguageExt.Common;
 using OpenttdDiscord.Base.Ext;
 using OpenttdDiscord.Database.Servers;
 using OpenttdDiscord.Domain.Security;
@@ -23,19 +24,21 @@ namespace OpenttdDiscord.Infrastructure.Servers
             this.listServersUseCase = listOttdServersUseCase;
         }
 
-        public async Task<Either<IError, ISlashCommandResponse>> Run(SocketSlashCommand command)
+        public EitherAsync<IError, ISlashCommandResponse> Run(SocketSlashCommand command)
         {
             if (command.GuildId.HasValue == false)
             {
                 return new HumanReadableError("This command can only be executed within a guild!");
             }
 
-            return (await listServersUseCase.Execute(new User(command.User), command.GuildId.Value))
-                .Select(CreateEmbed)
-                .Select<ISlashCommandResponse>(embed => new EmbedCommandResponse(embed));
+            return 
+            from servers in listServersUseCase.Execute(new User(command.User), command.GuildId.Value).ToAsync()
+            from embed in CreateEmbed(servers).ToAsync()
+            select (ISlashCommandResponse) new EmbedCommandResponse(embed);
+
         }
 
-        private Embed CreateEmbed(List<OttdServer> servers)
+        private Either<IError, Embed> CreateEmbed(List<OttdServer> servers)
         {
             EmbedBuilder embedBuilder = new();
 

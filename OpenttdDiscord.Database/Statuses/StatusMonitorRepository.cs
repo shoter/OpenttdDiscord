@@ -1,7 +1,9 @@
 ﻿using Discord;
 using LanguageExt;
+using LanguageExt.Pipes;
 using Microsoft.EntityFrameworkCore;
 using OpenttdDiscord.Domain.Statuses;
+using System.Threading.Channels;
 using static LanguageExt.Prelude;
 
 namespace OpenttdDiscord.Database.Statuses
@@ -62,13 +64,13 @@ namespace OpenttdDiscord.Database.Statuses
             .ToEitherAsyncErrorFlat();
         }
 
-        public async EitherAsync<IError, StatusMonitor> UpdateStatusMonitor(StatusMonitor entity)
+        public EitherAsync<IError, StatusMonitor> UpdateStatusMonitor(StatusMonitor entity)
         {
-            try
+            return TryAsync<Either<IError, StatusMonitor>>(async () =>
             {
                 var monitor = await DB
-                    .Monitors
-                    .FirstOrDefaultAsync(monitor => monitor.ServerId == entity.ServerId && monitor.ChannelId == entity.ChannelId);
+                     .Monitors
+                     .FirstOrDefaultAsync(monitor => monitor.ServerId == entity.ServerId && monitor.ChannelId == entity.ChannelId);
 
                 if (monitor == null)
                 {
@@ -80,11 +82,8 @@ namespace OpenttdDiscord.Database.Statuses
 
                 await DB.SaveChangesAsync();
                 return monitor.ToDomain();
-            }
-            catch (Exception ex)
-            {
-                return new ExceptionError(ex);
-            }
+            })
+            .ToEitherAsyncErrorFlat();
         }
     }
 }

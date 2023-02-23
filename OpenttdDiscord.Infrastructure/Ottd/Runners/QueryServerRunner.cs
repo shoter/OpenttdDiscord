@@ -4,6 +4,7 @@ using LanguageExt;
 using OpenttdDiscord.Base.Basics;
 using OpenttdDiscord.Base.Ext;
 using OpenttdDiscord.Database.Servers;
+using OpenttdDiscord.Domain.Servers;
 using OpenttdDiscord.Infrastructure.Akkas;
 using OpenttdDiscord.Infrastructure.Discord;
 using OpenttdDiscord.Infrastructure.Ottd.Messages;
@@ -22,7 +23,7 @@ namespace OpenttdDiscord.Infrastructure.Ottd.Runners
             this.akkaService = akkaService;
             this.ottdServerRepository = ottdServerRepository;
         }
-        protected override async Task<Either<IError, ISlashCommandResponse>> RunInternal(SocketSlashCommand command, ExtDictionary<string, object> options)
+        protected override EitherAsync<IError, ISlashCommandResponse> RunInternal(SocketSlashCommand command, ExtDictionary<string, object> options)
         {
             if (!command.ChannelId.HasValue)
             {
@@ -31,15 +32,20 @@ namespace OpenttdDiscord.Infrastructure.Ottd.Runners
 
             string serverName = options.GetValueAs<string>("server-name");
             ulong channelId = command.ChannelId.Value;
-            return await ottdServerRepository.GetServerByName(command.GuildId!.Value, serverName)
-           .MapAsync(async server =>
-           {
-               var action = new QueryServer(server.Id, command.GuildId!.Value, channelId);
-               var guildsActor = await akkaService.SelectActor(MainActors.Paths.Guilds);
-               guildsActor.Tell(action);
-               return Unit.Default;
-           }).ToAsync()
-           .Map( _ => (ISlashCommandResponse) new TextCommandResponse("Executing command"));
+
+            return
+                from server in ottdServerRepository.GetServerByName(command.GuildId!.Value, serverName).ToAsync()
+                from _1 in InformActor(server, command, channelId)
+                select (ISlashCommandResponse)new TextCommandResponse("Executing command");
         }
+
+        private EitherAsyncUnit InformActor(OttdServer server, SocketSlashCommand command, ulong channelId)
+            => TryAsync(async () =>
+            {
+                var action = new QueryServer(server.Id, command.GuildId!.Value, channelId);
+                var guildsActor = await akkaService.SelectActor(MainActors.Paths.Guilds);
+                guildsActor.Tell(action);
+                return Unit.Default;
+            }).ToEitherAsyncError();
     }
 }

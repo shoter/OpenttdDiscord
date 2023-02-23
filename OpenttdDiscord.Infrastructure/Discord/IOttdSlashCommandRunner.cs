@@ -6,6 +6,6 @@ namespace OpenttdDiscord.Infrastructure.Discord
 {
     public interface IOttdSlashCommandRunner
     {
-        Task<Either<IError, ISlashCommandResponse>> Run(SocketSlashCommand command);
+        EitherAsync<IError, ISlashCommandResponse> Run(SocketSlashCommand command);
     }
 }

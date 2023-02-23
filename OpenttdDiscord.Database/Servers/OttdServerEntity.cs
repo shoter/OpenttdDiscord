@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using OpenttdDiscord.Database.Statuses;
 using OpenttdDiscord.Domain.Servers;
 
 namespace OpenttdDiscord.Database.Ottd.Servers;
@@ -12,6 +13,8 @@ int AdminPort,
 string AdminPortPassword
 )
 {
+
+    public List<StatusMonitorEntity> Monitors { get; set; } = default!;
 
     public OttdServerEntity(OttdServer ottdServer) : this(
         ottdServer.Id,

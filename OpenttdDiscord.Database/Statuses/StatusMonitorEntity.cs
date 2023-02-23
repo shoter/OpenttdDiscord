@@ -1,23 +1,29 @@
-﻿using OpenttdDiscord.Domain.Statuses;
+﻿using Microsoft.EntityFrameworkCore;
+using OpenttdDiscord.Database.Ottd.Servers;
+using OpenttdDiscord.Domain.Statuses;
 
 namespace OpenttdDiscord.Database.Statuses;
 
 public class StatusMonitorEntity
 {
-    internal Guid ServerId { get; set; }
+    public Guid ServerId { get; set; }
 
-    internal ulong ChannelId { get; set; }
+    public ulong ChannelId { get; set; }
 
-    internal ulong MessageId { get; set; }
+    public ulong MessageId { get; set; }
 
-    internal DateTime LastUpdateTime { get; set; }
+    public DateTime LastUpdateTime { get; set; }
+
+    public OttdServerEntity Server { get; set; } = default!;
+
+    public StatusMonitorEntity() { }
 
     public StatusMonitorEntity(StatusMonitor sm)
     {
         ServerId = sm.ServerId;
         ChannelId = sm.ChannelId;
-        MessageId = sm.MessageId;  
-        LastUpdateTime = sm.LastUpdateTime.UtcDateTime;
+        MessageId = sm.MessageId;
+        LastUpdateTime = sm.LastUpdateTime.ToUniversalTime();
     }
 
     public StatusMonitor ToDomain()
@@ -26,7 +32,18 @@ public class StatusMonitorEntity
             ServerId,
             ChannelId,
             MessageId,
-            new DateTimeOffset(LastUpdateTime, TimeSpan.Zero)
+            LastUpdateTime.ToUniversalTime()
             );
+    }
+
+    public static void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<StatusMonitorEntity>()
+            .HasKey(x => new {x.ServerId, x.ChannelId });
+
+        modelBuilder.Entity<StatusMonitorEntity>()
+            .HasOne(x => x.Server)
+            .WithMany(s => s.Monitors)
+            .HasForeignKey(x => x.ServerId);
     }
 }

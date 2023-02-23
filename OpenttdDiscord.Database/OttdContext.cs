@@ -20,6 +20,7 @@ namespace OpenttdDiscord.Database
             base.OnModelCreating(modelBuilder);
 
             OttdServerEntity.OnModelCreating(modelBuilder);
+            StatusMonitorEntity.OnModelCreating(modelBuilder);
         }
     }
 }

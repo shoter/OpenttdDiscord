@@ -38,6 +38,7 @@ namespace OpenttdDiscord.Database.Statuses
                 await DB
                     .Monitors
                     .AddAsync(new StatusMonitorEntity(entity));
+                await DB.SaveChangesAsync();
 
                 return Unit.Default;
 
@@ -86,7 +87,7 @@ namespace OpenttdDiscord.Database.Statuses
                 }
 
                 monitor.MessageId = entity.MessageId;
-                monitor.LastUpdateTime = entity.LastUpdateTime.UtcDateTime;
+                monitor.LastUpdateTime = entity.LastUpdateTime.ToUniversalTime();
 
                 await DB.SaveChangesAsync();
                 return monitor.ToDomain();

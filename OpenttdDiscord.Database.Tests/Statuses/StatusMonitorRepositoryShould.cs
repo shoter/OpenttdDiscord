@@ -84,15 +84,14 @@ namespace OpenttdDiscord.Database.Tests.Statuses
                 LastUpdateTime = DateTime.UtcNow
             };
 
-            (await
+            List<StatusMonitor> retrievedMonitors = (await
             (from _1 in repository.Insert(initialMonitor)
              from _2 in repository.UpdateStatusMonitor(updatedMonitor)
-             select _2)
-             ).ThrowIfError();
-
-            List<StatusMonitor> retrievedMonitors = (await repository.GetStatusMonitors(initialMonitor.ServerId))
-                .ThrowIfError()
-                .Right();
+             from monitors in repository.GetStatusMonitors(initialMonitor.ServerId)
+             select monitors
+            ))
+            .ThrowIfError()
+            .Right();
 
             Assert.Single(retrievedMonitors);
             Equal(updatedMonitor, retrievedMonitors.First());

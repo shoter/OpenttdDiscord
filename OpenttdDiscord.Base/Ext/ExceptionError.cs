@@ -14,16 +14,20 @@ namespace OpenttdDiscord.Base.Ext
             this.Exception = ex;
         }
 
-        public static ExceptionError FromError(Error error)
+        public ExceptionError(Error error)
         {
+            Exception ex = default!;
             if (error.IsExceptional)
             {
-                return new ExceptionError((Exception)error.Exception);
+                ex = (Exception)error.Exception;
             }
             else
             {
-                return new ExceptionError(new Exception(error.Message));
+                ex = new Exception(error.Message);
             }
+
+            this.Reason = ex.Message;
+            this.Exception = ex;
         }
     }
 }

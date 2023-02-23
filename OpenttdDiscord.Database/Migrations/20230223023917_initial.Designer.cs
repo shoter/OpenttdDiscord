@@ -12,8 +12,8 @@ using OpenttdDiscord.Database;
 namespace OpenttdDiscord.Database.Migrations
 {
     [DbContext(typeof(OttdContext))]
-    [Migration("20230216013015_init")]
-    partial class init
+    [Migration("20230223023917_initial")]
+    partial class initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -55,6 +55,41 @@ namespace OpenttdDiscord.Database.Migrations
                         .IsUnique();
 
                     b.ToTable("Servers");
+                });
+
+            modelBuilder.Entity("OpenttdDiscord.Database.Statuses.StatusMonitorEntity", b =>
+                {
+                    b.Property<Guid>("ServerId")
+                        .HasColumnType("uuid");
+
+                    b.Property<decimal>("ChannelId")
+                        .HasColumnType("numeric(20,0)");
+
+                    b.Property<DateTime>("LastUpdateTime")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<decimal>("MessageId")
+                        .HasColumnType("numeric(20,0)");
+
+                    b.HasKey("ServerId", "ChannelId");
+
+                    b.ToTable("Monitors");
+                });
+
+            modelBuilder.Entity("OpenttdDiscord.Database.Statuses.StatusMonitorEntity", b =>
+                {
+                    b.HasOne("OpenttdDiscord.Database.Ottd.Servers.OttdServerEntity", "Server")
+                        .WithMany("Monitors")
+                        .HasForeignKey("ServerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Server");
+                });
+
+            modelBuilder.Entity("OpenttdDiscord.Database.Ottd.Servers.OttdServerEntity", b =>
+                {
+                    b.Navigation("Monitors");
                 });
 #pragma warning restore 612, 618
         }

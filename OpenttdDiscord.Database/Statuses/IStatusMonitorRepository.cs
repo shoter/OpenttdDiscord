@@ -5,12 +5,12 @@ namespace OpenttdDiscord.Database.Statuses
 {
     internal interface IStatusMonitorRepository
     {
-        Task<EitherUnit> Insert(StatusMonitor entity);
+        EitherAsyncUnit Insert(StatusMonitor entity);
 
-        Task<Either<IError, List<StatusMonitor>>> GetStatusMonitors(Guid severId);
+        EitherAsync<IError, List<StatusMonitor>> GetStatusMonitors(Guid severId);
 
-        Task<EitherUnit> RemoveStatusMonitor(Guid serverId, ulong channelId);
+        EitherAsyncUnit RemoveStatusMonitor(Guid serverId, ulong channelId);
 
-        Task<Either<IError, StatusMonitor>> UpdateStatusMonitor(StatusMonitor entity);
+        EitherAsync<IError, StatusMonitor> UpdateStatusMonitor(StatusMonitor entity);
     }
 }

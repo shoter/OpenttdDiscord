@@ -1,6 +1,8 @@
-﻿using LanguageExt;
+﻿using Discord;
+using LanguageExt;
 using Microsoft.EntityFrameworkCore;
 using OpenttdDiscord.Domain.Statuses;
+using static LanguageExt.Prelude;
 
 namespace OpenttdDiscord.Database.Statuses
 {
@@ -13,67 +15,54 @@ namespace OpenttdDiscord.Database.Statuses
             DB = dB;
         }
 
-        public async Task<Either<IError, List<StatusMonitor>>> GetStatusMonitors(Guid serverId)
+        public EitherAsync<IError, List<StatusMonitor>> GetStatusMonitors(Guid serverId)
         {
-            try
-            {
-                return (await DB
+            return
+                TryAsync(async () =>
+                {
+                    return await DB
                     .Monitors
                     .AsNoTracking()
                     .Where(m => m.ServerId == serverId)
-                    .ToListAsync())
-                    .Select(m => m.ToDomain())
-                    .ToList();
-            }
-            catch(Exception ex)
-            {
-                return new ExceptionError(ex);
-            }
+                    .ToListAsync();
+                })
+                .ToEitherAsyncError()
+                .Select(list => list.Select(m => m.ToDomain()).ToList());
         }
 
-        public async Task<EitherUnit> Insert(StatusMonitor entity)
+        public EitherAsyncUnit Insert(StatusMonitor entity)
         {
-            try
+            return TryAsync(async () =>
             {
                 await DB
                     .Monitors
                     .AddAsync(new StatusMonitorEntity(entity));
                 await DB.SaveChangesAsync();
-
                 return Unit.Default;
-
-            }
-            catch (Exception ex)
-            {
-                return new ExceptionError(ex);
-            }
-
+            })
+            .ToEitherAsyncError();
         }
 
-        public async Task<EitherUnit> RemoveStatusMonitor(Guid serverId, ulong channelId)
+        public EitherAsyncUnit RemoveStatusMonitor(Guid serverId, ulong channelId)
         {
-            try
+            return TryAsync<EitherUnit>(async () =>
             {
                 int modifiedRows = await DB
                     .Monitors
                     .Where(m => m.ServerId == serverId && m.ChannelId == channelId)
                     .DeleteFromQueryAsync();
 
-                if(modifiedRows == 0)
+                if (modifiedRows == 0)
                 {
                     return new HumanReadableError("No status monitors were removed");
                 }
 
                 return Unit.Default;
-
-            }
-            catch (Exception ex)
-            {
-                return new ExceptionError(ex);
-            }
+            })
+            .ToEitherAsyncErrorFlat();
         }
 
-        public async Task<Either<IError, StatusMonitor>> UpdateStatusMonitor(StatusMonitor entity)
+        public async EitherAsync<IError, StatusMonitor> UpdateStatusMonitor(StatusMonitor entity)
         {
             try
             {
@@ -81,7 +70,7 @@ namespace OpenttdDiscord.Database.Statuses
                     .Monitors
                     .FirstOrDefaultAsync(monitor => monitor.ServerId == entity.ServerId && monitor.ChannelId == entity.ChannelId);
 
-                if(monitor == null)
+                if (monitor == null)
                 {
                     return new HumanReadableError("Monitor not found!");
                 }

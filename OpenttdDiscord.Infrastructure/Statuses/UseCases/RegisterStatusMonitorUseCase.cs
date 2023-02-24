@@ -60,7 +60,7 @@ namespace OpenttdDiscord.Infrastructure.Statuses.UseCases
         private Embed CreateEmptyEmbed(OttdServer server)
         {
             return new EmbedBuilder()
-                .WithTitle($"{server.Name} status")
+                .WithTitle($"{server.Name} Status")
                 .AddField("Please Wait", "Status message creation in progress")
                 .Build();
         }

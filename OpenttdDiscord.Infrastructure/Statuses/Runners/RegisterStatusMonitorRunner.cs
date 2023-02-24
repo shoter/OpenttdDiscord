@@ -25,7 +25,6 @@ namespace OpenttdDiscord.Infrastructure.Statuses.Runners
 
         protected override EitherAsync<IError, ISlashCommandResponse> RunInternal(SocketSlashCommand command, ExtDictionary<string, object> options)
         {
-            // TODO: check rights
             string serverName = options.GetValueAs<string>("server-name");
             ulong channelId = command.ChannelId!.Value;
             ulong guildId = command.GuildId!.Value;

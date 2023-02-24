@@ -3,11 +3,8 @@ using LanguageExt;
 using OpenttdDiscord.Base.Basics;
 using OpenttdDiscord.Base.Ext;
 using OpenttdDiscord.Database.Servers;
-using OpenttdDiscord.Database.Statuses;
-using OpenttdDiscord.Domain.Servers;
-using OpenttdDiscord.Infrastructure.Akkas;
 using OpenttdDiscord.Infrastructure.Discord;
-using OpenttdDiscord.Infrastructure.Statuses.Messages;
+using OpenttdDiscord.Infrastructure.Statuses.UseCases;
 
 namespace OpenttdDiscord.Infrastructure.Statuses.Runners
 {
@@ -15,15 +12,14 @@ namespace OpenttdDiscord.Infrastructure.Statuses.Runners
     {
         private readonly IOttdServerRepository ottdServerRepository;
 
-        private readonly IStatusMonitorRepository statusMonitorRepository;
+        private readonly IRegisterStatusMonitorUseCase registerStatusMonitorUseCase;
 
-        private readonly IAkkaService akkaService;
-
-        public RegisterStatusMonitorRunner(IOttdServerRepository ottdServerRepository, IStatusMonitorRepository statusMonitorRepository, IAkkaService akkaService)
+        public RegisterStatusMonitorRunner(
+            IOttdServerRepository ottdServerRepository, 
+            IRegisterStatusMonitorUseCase registerStatusMonitorUseCase)
         {
             this.ottdServerRepository = ottdServerRepository;
-            this.statusMonitorRepository = statusMonitorRepository;
-            this.akkaService = akkaService;
+            this.registerStatusMonitorUseCase = registerStatusMonitorUseCase;
         }
 
         protected override EitherAsync<IError, ISlashCommandResponse> RunInternal(SocketSlashCommand command, ExtDictionary<string, object> options)
@@ -35,18 +31,8 @@ namespace OpenttdDiscord.Infrastructure.Statuses.Runners
 
             return
             from server in ottdServerRepository.GetServerByName(guildId, serverName).ToAsync()
-            from _1 in RegisterStatusMonitorViaActor(channelId, guildId, server)
+            from monitor in registerStatusMonitorUseCase.Execute(server, guildId, channelId)
             select (ISlashCommandResponse) new TextCommandResponse("Creating status message in progress");
-        }
-
-        private EitherAsyncUnit RegisterStatusMonitorViaActor(ulong channelId, ulong guildId, OttdServer server)
-        {
-            return TryAsync(async () =>
-            {
-                var msg = new RegisterStatusMonitor(server, guildId, channelId);
-                (await akkaService.SelectActor(MainActors.Paths.Guilds)).Tell(msg);
-                return Unit.Default;
-            }).ToEitherAsyncError();
         }
     }
 }

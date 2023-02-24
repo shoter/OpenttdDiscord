@@ -8,6 +8,7 @@ using OpenttdDiscord.Infrastructure.Guilds.Messages;
 using OpenttdDiscord.Infrastructure.Ottd.Actors;
 using OpenttdDiscord.Infrastructure.Ottd.Messages;
 using OpenttdDiscord.Infrastructure.Servers;
+using OpenttdDiscord.Infrastructure.Statuses.Messages;
 using System.Linq;
 
 namespace OpenttdDiscord.Infrastructure.Guilds
@@ -31,9 +32,11 @@ namespace OpenttdDiscord.Infrastructure.Guilds
         private void Ready()
         {
             ReceiveAsync<InitGuildsActorMessage>(InitGuildsActorMessage);
-            Receive<ExecuteServerAction>(ExecuteServerAction);
             Receive<InformAboutServerRegistration>(InformAboutServerRegistration);
             ReceiveAsync<InformAboutServerDeletion>(InformAboutServerDeletion);
+
+            ReceiveRedirectMsg<ExecuteServerAction>(msg => msg.ServerId);
+            ReceiveRedirectMsg<RegisterStatusMonitor>(msg => msg.StatusMonitor.ServerId);
         }
 
         public static Props Create(IServiceProvider sp, ulong guildId)
@@ -84,5 +87,17 @@ namespace OpenttdDiscord.Infrastructure.Guilds
             await server.GracefulStop(TimeSpan.FromSeconds(1));
             serverActors.Remove(msg.server.Id);
         }
+
+        private void ReceiveRedirectMsg<TMsg>(Func<TMsg, Guid> serverSelector)
+                   => Receive((TMsg msg) =>
+                   {
+
+                       if (!serverActors.TryGetValue(serverSelector(msg), out var actor))
+                       {
+                           return;
+                       }
+
+                       actor.Tell(msg);
+                   });
     }
 }

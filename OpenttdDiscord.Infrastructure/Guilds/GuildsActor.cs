@@ -7,6 +7,7 @@ using OpenttdDiscord.Infrastructure.Akkas;
 using OpenttdDiscord.Infrastructure.Guilds.Messages;
 using OpenttdDiscord.Infrastructure.Ottd.Messages;
 using OpenttdDiscord.Infrastructure.Servers;
+using OpenttdDiscord.Infrastructure.Statuses.Messages;
 
 namespace OpenttdDiscord.Infrastructure.Guilds
 {
@@ -30,9 +31,11 @@ namespace OpenttdDiscord.Infrastructure.Guilds
         {
             ReceiveAsync<InitGuildActorMessage>(InitGuildActorMessage);
             Receive<AddNewGuildActorMessage>(AddNewGuildActorMessage);
-            Receive<ExecuteServerAction>(ExecuteServerAction);
             Receive<InformAboutServerRegistration>(InformAboutServerRegistration);
-            Receive<InformAboutServerDeletion>(InformAboutServerDeletion);
+
+            ReceiveRedirectMsg<ExecuteServerAction>(msg => msg.GuildId);
+            ReceiveRedirectMsg<RegisterStatusMonitor>(msg => msg.StatusMonitor.GuildId);
+            ReceiveRedirectMsg<InformAboutServerDeletion>(msg => msg.server.GuildId);
         }
 
         private async Task InitGuildActorMessage(InitGuildActorMessage _)
@@ -50,16 +53,6 @@ namespace OpenttdDiscord.Infrastructure.Guilds
             guildActors.Add(msg.GuildId, actor);
         }
 
-        private void ExecuteServerAction(ExecuteServerAction msg)
-        {
-            if (!guildActors.TryGetValue(msg.GuildId,out var guildActor)) 
-            {
-                return;
-            }
-
-            guildActor.Tell(msg);
-        }
-
         private void InformAboutServerRegistration(InformAboutServerRegistration msg)
         {
             if (guildActors.TryGetValue(msg.server.GuildId, out IActorRef? actor))
@@ -72,14 +65,16 @@ namespace OpenttdDiscord.Infrastructure.Guilds
             guildActors.Add(msg.server.GuildId, actor);
         }
 
-        private void InformAboutServerDeletion(InformAboutServerDeletion msg)
-        {
-            if(!guildActors.TryGetValue(msg.server.GuildId, out IActorRef? actor))
+        private void ReceiveRedirectMsg<TMsg>(Func<TMsg, ulong> guildSelector)
+            => Receive((TMsg msg) =>
             {
-                return;
-            }
 
-            actor.Tell(msg);
-        }
+                if (!guildActors.TryGetValue(guildSelector(msg), out IActorRef? actor))
+                {
+                    return;
+                }
+
+                actor.Tell(msg);
+            });
     }
 }

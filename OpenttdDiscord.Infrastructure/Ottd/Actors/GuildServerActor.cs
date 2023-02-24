@@ -5,6 +5,7 @@ using OpenTTDAdminPort;
 using OpenttdDiscord.Domain.Servers;
 using OpenttdDiscord.Infrastructure.Ottd.Messages;
 using OpenttdDiscord.Infrastructure.Servers;
+using OpenttdDiscord.Infrastructure.Statuses.Messages;
 using Serilog;
 
 namespace OpenttdDiscord.Infrastructure.Ottd.Actors
@@ -35,6 +36,7 @@ namespace OpenttdDiscord.Infrastructure.Ottd.Actors
             ReceiveAsync<InitGuildServerActorMessage>(InitGuildServerActorMessage);
             Receive<ExecuteServerAction>(ExecuteServerAction);
             Receive<KillDanglingAction>(KillDanglingAction);
+            Receive<RegisterStatusMonitor>(RegisterStatusMonitor);
         }
 
         public static Props Create(IServiceProvider sp, OttdServer server)
@@ -63,6 +65,11 @@ namespace OpenttdDiscord.Infrastructure.Ottd.Actors
         private void KillDanglingAction(KillDanglingAction msg)
         {
             msg.commandActor.GracefulStop(TimeSpan.FromSeconds(1));
+        }
+
+        private void RegisterStatusMonitor(RegisterStatusMonitor msg)
+        {
+
         }
     }
 }

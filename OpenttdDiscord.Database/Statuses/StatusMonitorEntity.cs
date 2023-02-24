@@ -8,6 +8,8 @@ public class StatusMonitorEntity
 {
     public Guid ServerId { get; set; }
 
+    public ulong GuildId { get; set; }
+
     public ulong ChannelId { get; set; }
 
     public ulong MessageId { get; set; }
@@ -21,6 +23,7 @@ public class StatusMonitorEntity
     public StatusMonitorEntity(StatusMonitor sm)
     {
         ServerId = sm.ServerId;
+        GuildId = sm.GuildId;
         ChannelId = sm.ChannelId;
         MessageId = sm.MessageId;
         LastUpdateTime = sm.LastUpdateTime.ToUniversalTime();
@@ -30,6 +33,7 @@ public class StatusMonitorEntity
     {
         return new(
             ServerId,
+            GuildId,
             ChannelId,
             MessageId,
             LastUpdateTime.ToUniversalTime()
@@ -39,7 +43,7 @@ public class StatusMonitorEntity
     public static void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<StatusMonitorEntity>()
-            .HasKey(x => new {x.ServerId, x.ChannelId });
+            .HasKey(x => new { x.ServerId, x.ChannelId });
 
         modelBuilder.Entity<StatusMonitorEntity>()
             .HasOne(x => x.Server)

@@ -32,7 +32,7 @@ namespace OpenttdDiscord.Database.Statuses
                 .Select(list => list.Select(m => m.ToDomain()).ToList());
         }
 
-        public EitherAsyncUnit Insert(StatusMonitor entity)
+        public EitherAsync<IError, StatusMonitor> Insert(StatusMonitor entity)
         {
             return TryAsync(async () =>
             {
@@ -40,7 +40,7 @@ namespace OpenttdDiscord.Database.Statuses
                     .Monitors
                     .AddAsync(new StatusMonitorEntity(entity));
                 await DB.SaveChangesAsync();
-                return Unit.Default;
+                return entity;
             })
             .ToEitherAsyncError();
         }

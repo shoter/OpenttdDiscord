@@ -2,6 +2,7 @@
 using OpenttdDiscord.Base.Ext;
 using OpenttdDiscord.Database.Servers;
 using OpenttdDiscord.Database.Statuses;
+using OpenttdDiscord.Domain.Security;
 using OpenttdDiscord.Domain.Statuses;
 using System;
 using System.Collections.Generic;
@@ -23,15 +24,15 @@ namespace OpenttdDiscord.Infrastructure.Statuses.UseCases
             this.statusMonitorRepository = statusMonitorRepository;
         }
 
-        public EitherAsync<IError, StatusMonitor> Execute(string serverName, ulong channelId, ulong guildId)
+        public EitherAsync<IError, StatusMonitor> Execute(User user, string serverName, ulong channelId, ulong guildId)
         {
             return
             from server in ottdServerRepository.GetServerByName(guildId, serverName).ToAsync()
-            from monitor in Execute(server.Id, channelId)
+            from monitor in Execute(user, server.Id, channelId)
             select monitor;
         }
 
-        public EitherAsync<IError, StatusMonitor> Execute(Guid serverId, ulong channelId)
+        public EitherAsync<IError, StatusMonitor> Execute(User user, Guid serverId, ulong channelId)
         {
             //var statusMonitor = statusMonitorRepository
             throw new Exception();

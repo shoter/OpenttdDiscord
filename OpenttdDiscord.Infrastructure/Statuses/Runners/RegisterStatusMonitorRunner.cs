@@ -3,6 +3,7 @@ using LanguageExt;
 using OpenttdDiscord.Base.Basics;
 using OpenttdDiscord.Base.Ext;
 using OpenttdDiscord.Database.Servers;
+using OpenttdDiscord.Domain.Security;
 using OpenttdDiscord.Infrastructure.Discord;
 using OpenttdDiscord.Infrastructure.Statuses.UseCases;
 
@@ -31,7 +32,7 @@ namespace OpenttdDiscord.Infrastructure.Statuses.Runners
 
             return
             from server in ottdServerRepository.GetServerByName(guildId, serverName).ToAsync()
-            from monitor in registerStatusMonitorUseCase.Execute(server, guildId, channelId)
+            from monitor in registerStatusMonitorUseCase.Execute(new User(command.User), server, guildId, channelId)
             select (ISlashCommandResponse) new TextCommandResponse("Creating status message in progress");
         }
     }

@@ -3,6 +3,7 @@ using Discord.WebSocket;
 using LanguageExt;
 using OpenttdDiscord.Base.Ext;
 using OpenttdDiscord.Database.Statuses;
+using OpenttdDiscord.Domain.Security;
 using OpenttdDiscord.Domain.Servers;
 using OpenttdDiscord.Domain.Statuses;
 using OpenttdDiscord.Infrastructure.Akkas;
@@ -10,7 +11,7 @@ using OpenttdDiscord.Infrastructure.Statuses.Messages;
 
 namespace OpenttdDiscord.Infrastructure.Statuses.UseCases
 {
-    internal class RegisterStatusMonitorUseCase : IRegisterStatusMonitorUseCase
+    internal class RegisterStatusMonitorUseCase : UseCaseBase, IRegisterStatusMonitorUseCase
     {
         private readonly IStatusMonitorRepository statusMonitorRepository;
 
@@ -28,19 +29,21 @@ namespace OpenttdDiscord.Infrastructure.Statuses.UseCases
             this.discord = discord;
         }
 
-        public EitherAsync<IError, StatusMonitor> Execute(OttdServer server, ulong guildId, ulong channelId)
+        public EitherAsync<IError, StatusMonitor> Execute(User user, OttdServer server, ulong guildId, ulong channelId)
         {
             var embedMessageIdResult = CreateEmbedMessage(channelId, server);
 
             return
-            (from messageId in embedMessageIdResult
+            (
+             from _1 in CheckIfHasCorrectUserLevel(user, UserLevel.Admin).ToAsync()
+             from messageId in embedMessageIdResult
              from statusMonitor in statusMonitorRepository.Insert(new StatusMonitor(
                  server.Id,
                  guildId,
                  channelId,
                  messageId,
                  DateTime.MinValue.ToUniversalTime()))
-             from _1 in InformActor(statusMonitor)
+             from _2 in InformActor(statusMonitor)
              select statusMonitor)
             .MapLeft(err =>
             {

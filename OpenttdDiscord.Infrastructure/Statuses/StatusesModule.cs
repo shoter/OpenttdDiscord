@@ -33,12 +33,14 @@ namespace OpenttdDiscord.Infrastructure.Statuses
         public static IServiceCollection RegisterRunners(this IServiceCollection services)
         {
             services.AddScoped<RegisterStatusMonitorRunner>();
+            services.AddScoped<RemoveStatusMonitorRunner>();
             return services;
         }
 
         public static IServiceCollection RegisterCommands(this IServiceCollection services)
         {
             services.AddSingleton<IOttdSlashCommand, RegisterStatusMonitorCommand>();
+            services.AddSingleton<IOttdSlashCommand, RemoveStatusMonitorCommand>();
             return services;
         }
     }

@@ -74,7 +74,7 @@ namespace OpenttdDiscord.Infrastructure.Guilds
                     return;
                 }
 
-                actor.Tell(msg);
+                actor.Forward(msg);
             });
     }
 }

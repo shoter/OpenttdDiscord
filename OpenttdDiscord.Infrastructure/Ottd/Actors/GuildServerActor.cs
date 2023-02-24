@@ -89,7 +89,8 @@ namespace OpenttdDiscord.Infrastructure.Ottd.Actors
 
         private void RegisterStatusMonitor(RegisterStatusMonitor msg)
         {
-
+            CreateStatusMonitor(msg.StatusMonitor);
+            Sender.Tell(Unit.Default);
         }
 
         private EitherUnit CreateStatusMonitor(StatusMonitor monitor)

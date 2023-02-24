@@ -1,6 +1,7 @@
 ﻿using Akka.Actor;
 using LanguageExt;
 using LanguageExt.Common;
+using LanguageExt.Pipes;
 using Microsoft.Extensions.Logging;
 using OpenttdDiscord.Base.Ext;
 using OpenttdDiscord.Database.Servers;
@@ -30,29 +31,36 @@ namespace OpenttdDiscord.Infrastructure.Servers
             this.logger = logger;
         }
 
-        public async Task<EitherUnit> Execute(User userRights, OttdServer server)
+        public EitherAsyncUnit Execute(User userRights, OttdServer server)
         {
             logger.LogTrace("Executing with {0} for\n{1}", userRights, server);
 
-            return await validator.Validate(server)
-                .Bind(_ => this.CheckIfHasCorrectUserLevel(userRights, UserLevel.Admin))
-                .BindAsync<IError, Unit, Unit>(async _ =>
-                {
-                    var existing = await ottdServerRepository.GetServerByName(server.GuildId, server.Name);
-                    if (existing.IsRight)
-                    {
-                        return new HumanReadableError("Server with this name already exists!");
-                    }
-
-                    return Unit.Default;
-                })
-                .BindAsync(_ => ottdServerRepository.InsertServer(server))
-                .MapAsync(async _ =>
-                {
-                    ActorSelection selection = await akkaService.SelectActor(MainActors.Paths.Guilds);
-                    selection.Tell(new InformAboutServerRegistration(server));
-                    return Unit.Default;
-                });
+            return
+                from _1 in validator.Validate(server).ToAsync()
+                from _2 in CheckIfSerwerExists(server.GuildId, server.Name)
+                from _3 in ottdServerRepository.InsertServer(server).ToAsync()
+                from _4 in InformActorAboutNewServer(server)
+                select _4;
         }
+
+        private EitherAsyncUnit CheckIfSerwerExists(ulong guildId, string serverName)
+            => TryAsync<EitherUnit>(async () =>
+            {
+                var existing = await ottdServerRepository.GetServerByName(guildId, serverName);
+                if (existing.IsRight)
+                {
+                    return new HumanReadableError("Server with this name already exists!");
+                }
+
+                return Unit.Default;
+            }).ToEitherAsyncErrorFlat();
+
+        private EitherAsyncUnit InformActorAboutNewServer(OttdServer server)
+            => TryAsync(async () =>
+            {
+                ActorSelection selection = await akkaService.SelectActor(MainActors.Paths.Guilds);
+                selection.Tell(new InformAboutServerRegistration(server));
+                return Unit.Default;
+            }).ToEitherAsyncError();
     }
 }

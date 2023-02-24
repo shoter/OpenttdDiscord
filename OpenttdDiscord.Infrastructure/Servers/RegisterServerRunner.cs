@@ -42,7 +42,7 @@ namespace OpenttdDiscord.Infrastructure.Servers
                 );
 
             return
-            from _1 in useCase.Execute(rights, server).ToAsync()
+            from _1 in useCase.Execute(rights, server)
             select (ISlashCommandResponse) new TextCommandResponse($"Created Server {name} - {ip}:{port}");
         }
     }

@@ -6,6 +6,6 @@ namespace OpenttdDiscord.Domain.Servers
 {
     public interface IRegisterOttdServerUseCase : IUseCase
     {
-        Task<EitherUnit> Execute(User userRights, OttdServer server);
+        EitherAsyncUnit Execute(User userRights, OttdServer server);
     }
 }

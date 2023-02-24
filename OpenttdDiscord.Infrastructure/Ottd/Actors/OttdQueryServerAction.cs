@@ -7,11 +7,13 @@ using OpenTTDAdminPort;
 using OpenTTDAdminPort.Game;
 using OpenttdDiscord.Domain.Servers;
 using OpenttdDiscord.Infrastructure.Ottd.Messages;
+using OpenttdDiscord.Infrastructure.Statuses;
 
 namespace OpenttdDiscord.Infrastructure.Ottd.Actors
 {
     internal class OttdQueryServerAction : OttdServerAction<QueryServer>
     {
+        private readonly ServerStatusEmbedBuilder embedBuilder = new();
         DiscordSocketClient discord;
         public OttdQueryServerAction(IServiceProvider serviceProvider, OttdServer server, IAdminPortClient client)
             : base(serviceProvider, server, client)
@@ -28,7 +30,7 @@ namespace OpenttdDiscord.Infrastructure.Ottd.Actors
             ServerStatus serverStatus = await client.QueryServerStatus();
             AdminServerInfo info = serverStatus.AdminServerInfo;
 
-            Embed embed = CreateServerStatusEmbed(serverStatus, info);
+            Embed embed = embedBuilder.CreateServerStatusEmbed(client, serverStatus, info, server.Name);
             IChannel channel = await discord.GetChannelAsync(command.ChannelId);
 
             if (channel is IMessageChannel msgChannel)
@@ -37,41 +39,9 @@ namespace OpenttdDiscord.Infrastructure.Ottd.Actors
             }
         }
 
-        private Embed CreateServerStatusEmbed(ServerStatus serverStatus, AdminServerInfo info)
-        {
-            string mapName = string.IsNullOrEmpty(info.MapName) ? "Random map" : info.MapName;
-
-            EmbedBuilder embedBuilder = new();
-            embedBuilder.WithTitle($"{server.Name} Status");
-
-            embedBuilder.AddField("Players", serverStatus.Players.Count, true);
-            embedBuilder.AddField("Map Size", $"{info.MapWidth}x{info.MapHeight}", true);
-            embedBuilder.AddField("Year", info.Date, true);
-
-            embedBuilder.AddField("Map Name", mapName, true);
-            embedBuilder.AddField("Climate", info.Landscape.ToHumanReadable(), true);
-            embedBuilder.AddField("Server address", $"{client.ServerInfo.ServerIp}:{client.ServerInfo.ServerPort}", true);
-
-            string players = string.Join('\n', serverStatus.Players.Values.Select(StringifyPlayer));
-            if (!string.IsNullOrEmpty(players))
-            {
-                embedBuilder.AddField("Players", players, false);
-            }
-
-                var embed = embedBuilder.Build();
-            return embed;
-        }
-
         protected override void PostStop()
         {
             base.PostStop();
-        }
-
-        private string StringifyPlayer(Player player)
-        {
-            return player.ClientId == 1 ?
-                $"{player.Name} [Server]" :
-                player.Name;
         }
     }
 }

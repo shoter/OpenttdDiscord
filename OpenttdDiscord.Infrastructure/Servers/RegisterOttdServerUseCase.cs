@@ -35,7 +35,7 @@ namespace OpenttdDiscord.Infrastructure.Servers
             logger.LogTrace("Executing with {0} for\n{1}", userRights, server);
 
             return await validator.Validate(server)
-                .Bind(_ => this.CheckIfHasCorrectUserLEvel(userRights, UserLevel.Admin))
+                .Bind(_ => this.CheckIfHasCorrectUserLevel(userRights, UserLevel.Admin))
                 .BindAsync<IError, Unit, Unit>(async _ =>
                 {
                     var existing = await ottdServerRepository.GetServerByName(server.GuildId, server.Name);

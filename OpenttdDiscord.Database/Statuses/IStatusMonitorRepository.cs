@@ -7,7 +7,7 @@ namespace OpenttdDiscord.Database.Statuses
     {
         EitherAsync<IError, StatusMonitor> Insert(StatusMonitor entity);
 
-        EitherAsync<IError, List<StatusMonitor>> GetStatusMonitors(Guid severId);
+        EitherAsync<IError, List<StatusMonitor>> GetStatusMonitors(Guid serverId);
 
         EitherAsyncUnit RemoveStatusMonitor(Guid serverId, ulong channelId);
 

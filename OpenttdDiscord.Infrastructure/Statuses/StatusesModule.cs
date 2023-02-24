@@ -26,6 +26,7 @@ namespace OpenttdDiscord.Infrastructure.Statuses
         public static IServiceCollection RegisterUseCases(this IServiceCollection services)
         {
             services.AddScoped<IRegisterStatusMonitorUseCase, RegisterStatusMonitorUseCase>();
+            services.AddScoped<IGetStatusMonitorsForServerUseCase, GetStatusMonitorsForServerUseCase>();
             return services;
         }
 

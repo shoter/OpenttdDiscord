@@ -1,11 +1,18 @@
 ﻿using Akka.Actor;
+using LanguageExt;
 using LanguageExt.UnitsOfMeasure;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using OpenTTDAdminPort;
+using OpenttdDiscord.Base.Ext;
+using OpenttdDiscord.Domain.Security;
 using OpenttdDiscord.Domain.Servers;
+using OpenttdDiscord.Domain.Statuses;
 using OpenttdDiscord.Infrastructure.Ottd.Messages;
 using OpenttdDiscord.Infrastructure.Servers;
+using OpenttdDiscord.Infrastructure.Statuses.Actors;
 using OpenttdDiscord.Infrastructure.Statuses.Messages;
+using OpenttdDiscord.Infrastructure.Statuses.UseCases;
 using Serilog;
 
 namespace OpenttdDiscord.Infrastructure.Ottd.Actors
@@ -14,12 +21,15 @@ namespace OpenttdDiscord.Infrastructure.Ottd.Actors
     {
         private readonly OttdServer server;
         private readonly AdminPortClient client;
+        private readonly IGetStatusMonitorsForServerUseCase getStatusMonitorsForServerUseCase;
+        private readonly LanguageExt.HashSet<IActorRef> statusMonitorActors = new();
 
         public ITimerScheduler Timers { get; set; } = default!;
 
         public GuildServerActor(IServiceProvider serviceProvider, OttdServer server) : base(serviceProvider)
         {
             this.server = server;
+            this.getStatusMonitorsForServerUseCase = SP.GetRequiredService<IGetStatusMonitorsForServerUseCase>();
             client = new(new AdminPortClientSettings()
             {
                 WatchdogInterval = TimeSpan.FromSeconds(5)
@@ -52,6 +62,16 @@ namespace OpenttdDiscord.Infrastructure.Ottd.Actors
         {
             logger.LogInformation($"Connecting to {server.Name} on {server.Ip}:{server.AdminPort}");
             await client.Connect();
+
+            var monitors = (await getStatusMonitorsForServerUseCase.Execute(User.Master, server.Id))
+                .ThrowIfError()
+                .Right();
+
+            foreach(var monitor in monitors)
+            {
+                CreateStatusMonitor(monitor);
+                logger.LogInformation($"Created monitor for {server.Name} on channel {monitor.ChannelId}");
+            }
         }
 
         private void ExecuteServerAction(ExecuteServerAction cmd)
@@ -70,6 +90,14 @@ namespace OpenttdDiscord.Infrastructure.Ottd.Actors
         private void RegisterStatusMonitor(RegisterStatusMonitor msg)
         {
 
+        }
+
+        private EitherUnit CreateStatusMonitor(StatusMonitor monitor)
+        {
+            Props props = StatusMonitorActor.Create(server, monitor, client, SP);
+            IActorRef actor = Context.ActorOf(props);
+            statusMonitorActors.Add(actor);
+            return Unit.Default;
         }
     }
 }

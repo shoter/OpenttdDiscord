@@ -30,7 +30,7 @@ namespace OpenttdDiscord.Infrastructure.Servers
         {
             this.logger.LogInformation($"Removing {serverName} for {user}");
             return await
-            (from _1 in CheckIfHasCorrectUserLEvel(user, UserLevel.Admin).ToAsync()
+            (from _1 in CheckIfHasCorrectUserLevel(user, UserLevel.Admin).ToAsync()
              from server in ottdServerRepository.GetServerByName(guildId, serverName).ToAsync()
              from _2 in ottdServerRepository.DeleteServer(server.Id).ToAsync()
              from _3 in InformGuildsActor(server).ToAsync()

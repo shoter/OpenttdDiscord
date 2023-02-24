@@ -30,19 +30,30 @@ namespace OpenttdDiscord.Infrastructure.Statuses.UseCases
 
         public EitherAsync<IError, StatusMonitor> Execute(OttdServer server, ulong guildId, ulong channelId)
         {
+            var embedMessageIdResult = CreateEmbedMessage(channelId, server);
+
             return
-            from messageId in CreateEmbedMessage(guildId, channelId, server)
-            from statusMonitor in statusMonitorRepository.Insert(new StatusMonitor(
-                server.Id,
-                guildId,
-                channelId,
-                messageId,
-                DateTime.MinValue.ToUniversalTime()))
-            from _1 in InformActor(statusMonitor)
-            select statusMonitor;
+            (from messageId in embedMessageIdResult
+             from statusMonitor in statusMonitorRepository.Insert(new StatusMonitor(
+                 server.Id,
+                 guildId,
+                 channelId,
+                 messageId,
+                 DateTime.MinValue.ToUniversalTime()))
+             from _1 in InformActor(statusMonitor)
+             select statusMonitor)
+            .MapLeft(err =>
+            {
+                if (embedMessageIdResult.IsRight.Result)
+                {
+                    DeleteEmbedMessage(channelId, embedMessageIdResult.Right());
+                }
+
+                return err;
+            });
         }
 
-        private EitherAsync<IError, ulong> CreateEmbedMessage(ulong guildId, ulong channelId, OttdServer server)
+        private EitherAsync<IError, ulong> CreateEmbedMessage(ulong channelId, OttdServer server)
             => TryAsync<Either<IError, ulong>>(async () =>
             {
                 IChannel channel = await discord.GetChannelAsync(channelId);
@@ -56,6 +67,20 @@ namespace OpenttdDiscord.Infrastructure.Statuses.UseCases
 
                 return msg.Id;
             }).ToEitherAsyncErrorFlat();
+
+        private EitherAsyncUnit DeleteEmbedMessage(ulong channelId, ulong messageId)
+           => TryAsync<EitherUnit>(async () =>
+           {
+               IChannel channel = await discord.GetChannelAsync(channelId);
+
+               if (!(channel is IMessageChannel msgChannel))
+               {
+                   return new HumanReadableError("Wrong channel!");
+               }
+
+               await msgChannel.DeleteMessageAsync(messageId);
+               return Unit.Default;
+           }).ToEitherAsyncErrorFlat();
 
         private Embed CreateEmptyEmbed(OttdServer server)
         {

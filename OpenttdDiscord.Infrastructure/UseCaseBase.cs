@@ -6,7 +6,7 @@ namespace OpenttdDiscord.Infrastructure
 {
     internal class UseCaseBase
     {
-        protected EitherUnit CheckIfHasCorrectUserLEvel(User user, UserLevel level)
+        protected EitherUnit CheckIfHasCorrectUserLevel(User user, UserLevel level)
         {
             var hasLevel = level switch
             {

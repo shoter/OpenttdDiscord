@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace OpenttdDiscord.Domain.Chatting
+﻿namespace OpenttdDiscord.Domain.Chatting
 {
-    internal class ChatChannel
-    {
-    }
+    public record ChatChannel(Guid ServerId, ulong GuildId, ulong ChannelId);
 }

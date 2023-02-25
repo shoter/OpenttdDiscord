@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using OpenttdDiscord.Database.Chatting;
 using OpenttdDiscord.Database.Ottd.Servers;
 using OpenttdDiscord.Database.Statuses;
 
@@ -11,6 +12,8 @@ namespace OpenttdDiscord.Database
 
         public DbSet<StatusMonitorEntity> Monitors { get; set; }
 
+        public DbSet<ChatChannelEntity> ChatChannels { get; set; }
+
         public OttdContext(DbContextOptions<OttdContext> options) : base(options)
         {
         }
@@ -21,6 +24,7 @@ namespace OpenttdDiscord.Database
 
             OttdServerEntity.OnModelCreating(modelBuilder);
             StatusMonitorEntity.OnModelCreating(modelBuilder);
+            ChatChannelEntity.OnModelCreating(modelBuilder);
         }
     }
 }

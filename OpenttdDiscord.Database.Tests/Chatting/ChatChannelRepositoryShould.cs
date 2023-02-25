@@ -5,10 +5,8 @@ using OpenttdDiscord.Database.Servers;
 using OpenttdDiscord.Domain.Chatting;
 using OpenttdDiscord.Domain.Servers;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 

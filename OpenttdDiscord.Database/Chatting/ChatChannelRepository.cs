@@ -47,5 +47,20 @@ namespace OpenttdDiscord.Database.Chatting
                 await DB.SaveChangesAsync();
                 return Unit.Default;
             }).ToEitherAsyncErrorFlat();
+
+        public EitherAsync<IError, Option<ChatChannel>> GetChatChannelsForServer(Guid serverId, ulong channelId)
+              => TryAsync<Either<IError, Option<ChatChannel>>>(async () =>
+              {
+                  var chatChannel = (await DB.ChatChannels
+                      .AsNoTracking()
+                      .FirstOrDefaultAsync(cc => cc.ServerId == serverId && cc.ChannelId == channelId);
+
+                  if(chatChannel == null)
+                  {
+                      return Option<ChatChannel>.None;
+                  }
+
+                  return Option<ChatChannel>.Some(chatChannel.ToDomain());
+              }).ToEitherAsyncErrorFlat();
     }
 }

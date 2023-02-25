@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using OpenttdDiscord.Database;
 using OpenttdDiscord.Infrastructure.Akkas;
+using OpenttdDiscord.Infrastructure.Chatting;
 using OpenttdDiscord.Infrastructure.Discord;
 using OpenttdDiscord.Infrastructure.Guilds;
 using OpenttdDiscord.Infrastructure.Modularity;
@@ -32,7 +33,8 @@ namespace OpenttdDiscord.Infrastructure
                 .RegisterDependencies<GuildsModule>()
                 .RegisterDependencies<OttdModule>()
                 .RegisterDependencies<DiscordModule>()
-                .RegisterDependencies<StatusesModule>();
+                .RegisterDependencies<StatusesModule>()
+                .RegisterDependencies<ChattingModule>();
 
             return services;
         }

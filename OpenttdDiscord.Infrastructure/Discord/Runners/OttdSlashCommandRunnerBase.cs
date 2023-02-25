@@ -15,5 +15,27 @@ namespace OpenttdDiscord.Infrastructure.Discord.Runners
         }
 
         protected abstract EitherAsync<IError, ISlashCommandResponse> RunInternal(SocketSlashCommand command, ExtDictionary<string, object> options);
+
+        protected Either<IError, ulong> CheckIfGuildCommand(SocketSlashCommand command)
+        {
+            if (command.GuildId.HasValue)
+            {
+                return command.GuildId!.Value;
+            }
+
+            return new HumanReadableError("This command needs to be executed within guild!");
+        }
+
+        protected Either<IError, ulong> CheckIfChannelCommand(SocketSlashCommand command)
+        {
+            if (command.ChannelId.HasValue)
+            {
+                return command.ChannelId!.Value;
+            }
+
+            return new HumanReadableError("This command needs to be executed within channel!");
+        }
+
+
     }
 }

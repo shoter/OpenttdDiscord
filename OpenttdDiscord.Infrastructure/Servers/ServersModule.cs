@@ -29,6 +29,7 @@ namespace OpenttdDiscord.Infrastructure.Servers
             services.AddScoped<IRegisterOttdServerUseCase, RegisterOttdServerUseCase>();
             services.AddScoped<IListOttdServersUseCase, ListOttdServersUseCase>();
             services.AddScoped<IRemoveOttdServerUseCase, RemoveOttdServerUseCase>();
+            services.AddScoped<IGetServerByNameUseCase, GetServerByNameUseCase>();
 
             return services;
         }

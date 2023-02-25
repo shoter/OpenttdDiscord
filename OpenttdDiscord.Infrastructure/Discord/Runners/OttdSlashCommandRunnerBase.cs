@@ -2,8 +2,9 @@
 using LanguageExt;
 using OpenttdDiscord.Base.Basics;
 using OpenttdDiscord.Base.Ext;
+using OpenttdDiscord.Infrastructure.Discord.Responses;
 
-namespace OpenttdDiscord.Infrastructure.Discord
+namespace OpenttdDiscord.Infrastructure.Discord.Runners
 {
     internal abstract class OttdSlashCommandRunnerBase : IOttdSlashCommandRunner
     {

@@ -1,5 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using OpenttdDiscord.Infrastructure.Discord;
+using OpenttdDiscord.Infrastructure.Discord.Commands;
 using OpenttdDiscord.Infrastructure.Modularity;
 using OpenttdDiscord.Infrastructure.Ottd.Commands;
 using OpenttdDiscord.Infrastructure.Ottd.Runners;

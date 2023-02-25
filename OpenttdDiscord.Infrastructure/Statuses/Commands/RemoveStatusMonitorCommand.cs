@@ -1,5 +1,5 @@
 ﻿using Discord;
-using OpenttdDiscord.Infrastructure.Discord;
+using OpenttdDiscord.Infrastructure.Discord.Commands;
 using OpenttdDiscord.Infrastructure.Statuses.Runners;
 
 namespace OpenttdDiscord.Infrastructure.Statuses.Commands

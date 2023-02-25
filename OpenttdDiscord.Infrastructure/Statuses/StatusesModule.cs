@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using OpenttdDiscord.Database.Statuses;
 using OpenttdDiscord.Domain.Statuses.UseCases;
-using OpenttdDiscord.Infrastructure.Discord;
+using OpenttdDiscord.Infrastructure.Discord.Commands;
 using OpenttdDiscord.Infrastructure.Modularity;
 using OpenttdDiscord.Infrastructure.Statuses.Commands;
 using OpenttdDiscord.Infrastructure.Statuses.Runners;

@@ -1,6 +1,6 @@
 ﻿using Discord.WebSocket;
 
-namespace OpenttdDiscord.Infrastructure.Discord
+namespace OpenttdDiscord.Infrastructure.Discord.Responses
 {
     public interface ISlashCommandResponse
     {

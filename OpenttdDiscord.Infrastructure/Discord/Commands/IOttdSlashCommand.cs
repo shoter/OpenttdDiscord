@@ -1,7 +1,8 @@
 ﻿using Discord;
 using Microsoft.Extensions.DependencyInjection;
+using OpenttdDiscord.Infrastructure.Discord.Runners;
 
-namespace OpenttdDiscord.Infrastructure.Discord
+namespace OpenttdDiscord.Infrastructure.Discord.Commands
 {
     public interface IOttdSlashCommand
     {

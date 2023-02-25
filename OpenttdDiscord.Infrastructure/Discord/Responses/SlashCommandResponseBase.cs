@@ -2,7 +2,7 @@
 using LanguageExt;
 using OpenttdDiscord.Base.Ext;
 
-namespace OpenttdDiscord.Infrastructure.Discord
+namespace OpenttdDiscord.Infrastructure.Discord.Responses
 {
     public abstract class SlashCommandResponseBase : ISlashCommandResponse
     {

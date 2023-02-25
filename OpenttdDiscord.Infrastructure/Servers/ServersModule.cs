@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using OpenttdDiscord.Database.Servers;
 using OpenttdDiscord.Domain.Servers.UseCases;
-using OpenttdDiscord.Infrastructure.Discord;
+using OpenttdDiscord.Infrastructure.Discord.Commands;
 using OpenttdDiscord.Infrastructure.Modularity;
 using OpenttdDiscord.Infrastructure.Servers.Commands;
 using OpenttdDiscord.Infrastructure.Servers.Runners;

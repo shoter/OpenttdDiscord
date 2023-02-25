@@ -7,6 +7,9 @@ using OpenttdDiscord.Domain.Security;
 using OpenttdDiscord.Domain.Servers;
 using OpenttdDiscord.Domain.Servers.UseCases;
 using OpenttdDiscord.Infrastructure.Discord;
+using OpenttdDiscord.Infrastructure.Discord.Commands;
+using OpenttdDiscord.Infrastructure.Discord.Responses;
+using OpenttdDiscord.Infrastructure.Discord.Runners;
 
 namespace OpenttdDiscord.Infrastructure.Servers.Runners
 {

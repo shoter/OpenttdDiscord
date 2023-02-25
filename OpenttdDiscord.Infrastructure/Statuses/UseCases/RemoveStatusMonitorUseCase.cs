@@ -36,7 +36,7 @@ namespace OpenttdDiscord.Infrastructure.Statuses.UseCases
             {
                 var msg = new RemoveStatusMonitor(serverId, guildId, channelId);
                 var actors = await akkaService.SelectActor(MainActors.Paths.Guilds);
-                return (await actors.TryAsk(msg))
+                return (await actors.TryAsk(msg, TimeSpan.FromSeconds(1)))
                     .Map(_ => Unit.Default);
             }).ToEitherAsyncErrorFlat();
     }

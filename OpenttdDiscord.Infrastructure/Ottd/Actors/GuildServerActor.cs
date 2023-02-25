@@ -117,6 +117,7 @@ namespace OpenttdDiscord.Infrastructure.Ottd.Actors
             actor.Forward(rmv);
             await actor.GracefulStop(TimeSpan.FromSeconds(1));
             statusMonitorActors.Remove(rmv.ChannelId);
+            Sender.Tell(Unit.Default);
         }
     }
 }

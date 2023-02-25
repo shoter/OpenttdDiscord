@@ -31,7 +31,7 @@ namespace OpenttdDiscord.Infrastructure.Statuses.Runners
             ulong guildId = command.GuildId!.Value;
 
             return
-            from server in ottdServerRepository.GetServerByName(guildId, serverName).ToAsync()
+            from server in ottdServerRepository.GetServerByName(guildId, serverName)
             from monitor in registerStatusMonitorUseCase.Execute(new User(command.User), server, guildId, channelId)
             select (ISlashCommandResponse) new TextCommandResponse("Creating status message in progress");
         }

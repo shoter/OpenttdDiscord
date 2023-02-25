@@ -26,7 +26,7 @@ string AdminPortPassword
     {
     }
 
-    public OttdServer ToOttdServer()
+    public OttdServer ToDomain()
     {
         return new(
             Id,

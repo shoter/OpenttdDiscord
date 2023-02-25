@@ -7,7 +7,12 @@ namespace OpenttdDiscord.Base.Basics
     {
         public ExtDictionary(Dictionary<TKey, TValue> dictionary)
             : base(dictionary)
-        { }
+        {
+        }
+
+        public ExtDictionary()
+        {
+        }
 
         public Option<TValue> MaybeGetValue(TKey key)
         {

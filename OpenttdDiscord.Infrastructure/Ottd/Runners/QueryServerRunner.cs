@@ -34,7 +34,7 @@ namespace OpenttdDiscord.Infrastructure.Ottd.Runners
             ulong channelId = command.ChannelId.Value;
 
             return
-                from server in ottdServerRepository.GetServerByName(command.GuildId!.Value, serverName).ToAsync()
+                from server in ottdServerRepository.GetServerByName(command.GuildId!.Value, serverName)
                 from _1 in InformActor(server, command, channelId)
                 select (ISlashCommandResponse)new TextCommandResponse("Executing command");
         }

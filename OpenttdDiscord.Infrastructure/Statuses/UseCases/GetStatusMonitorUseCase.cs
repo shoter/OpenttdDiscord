@@ -28,7 +28,7 @@ namespace OpenttdDiscord.Infrastructure.Statuses.UseCases
         public EitherAsync<IError, StatusMonitor> Execute(User user, string serverName, ulong channelId, ulong guildId)
         {
             return
-            from server in ottdServerRepository.GetServerByName(guildId, serverName).ToAsync()
+            from server in ottdServerRepository.GetServerByName(guildId, serverName)
             from monitor in Execute(user, server.Id, channelId)
             select monitor;
         }

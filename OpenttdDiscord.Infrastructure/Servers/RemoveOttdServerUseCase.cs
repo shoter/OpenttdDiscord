@@ -31,14 +31,10 @@ namespace OpenttdDiscord.Infrastructure.Servers
             this.logger.LogInformation($"Removing {serverName} for {user}");
             return await
             (from _1 in CheckIfHasCorrectUserLevel(user, UserLevel.Admin).ToAsync()
-             from server in ottdServerRepository.GetServerByName(guildId, serverName).ToAsync()
+             from server in ottdServerRepository.GetServerByName(guildId, serverName)
              from _2 in ottdServerRepository.DeleteServer(server.Id).ToAsync()
              from _3 in InformGuildsActor(server).ToAsync()
              select _1).ToEither();
-
-            //return CheckIfHasCorrectUserLEvel(user, UserLevel.Admin)
-            //    .BindAsync(_ => ottdServerRepository.GetServerByName(guildId, serverName))
-            //    .BindAsync((OttdServer server) => ottdServerRepository.DeleteServer(server.Id));
         }
 
         private async Task<EitherUnit> InformGuildsActor(OttdServer server)

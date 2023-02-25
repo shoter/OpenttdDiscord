@@ -72,7 +72,7 @@ namespace OpenttdDiscord.Database.Servers
                 .ToListAsync();
 
                 return serverEntities
-                .Select(s => s.ToOttdServer())
+                .Select(s => s.ToDomain())
                 .ToList();
             })).IfFail(ex => new ExceptionError(ex));
         }
@@ -83,21 +83,22 @@ namespace OpenttdDiscord.Database.Servers
             .Match(
                 entity => entity == null
                     ? Either<IError, OttdServer>.Left(new HumanReadableError("Server was not found"))
-                    : Either<IError, OttdServer>.Right(entity.ToOttdServer()),
+                    : Either<IError, OttdServer>.Right(entity.ToDomain()),
                 ex => Either<IError, OttdServer>.Left(new ExceptionError(ex))
             );
         }
 
-        public async Task<Either<IError, OttdServer>> GetServerByName(ulong guildId, string serverName)
+        public EitherAsync<IError, OttdServer> GetServerByName(ulong guildId, string serverName)
+            => TryAsync<Either<IError, OttdServer>>(async () =>
         {
-            return (await TryAsync(async () => await Db.Servers.SingleOrDefaultAsync(s => s.GuildId == guildId && s.Name == serverName)))
-            .Match(
-                entity => entity == null
-                    ? Either<IError, OttdServer>.Left(new HumanReadableError("Server was not found"))
-                    : Either<IError, OttdServer>.Right(entity.ToOttdServer()),
-                ex => Either<IError, OttdServer>.Left(new ExceptionError(ex))
-            );
-        }
+            var server = await Db.Servers.SingleOrDefaultAsync(s => s.GuildId == guildId && s.Name == serverName);
+
+            if (server == null)
+            {
+                return new HumanReadableError("Server not found");
+            }
+            return server.ToDomain();
+        }).ToEitherAsyncErrorFlat();
 
         public async Task<Either<IError, List<ulong>>> GetAllGuilds()
         {
@@ -109,7 +110,7 @@ namespace OpenttdDiscord.Database.Servers
                     .Distinct()
                     .ToListAsync();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return new ExceptionError(ex);
             }

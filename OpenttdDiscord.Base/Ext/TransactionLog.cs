@@ -24,6 +24,4 @@ namespace OpenttdDiscord.Base.Ext
             return result;
         }
     }
-
-   
 }

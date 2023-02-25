@@ -64,6 +64,7 @@ namespace OpenttdDiscord.Infrastructure.Discord
             {
                 try
                 {
+                    logger.LogInformation($"Registering {c}");
                     var parameters = c.Build();
                     await client.CreateGlobalApplicationCommandAsync(parameters);
                     logger.LogInformation($"Registered {c}");
@@ -114,8 +115,5 @@ namespace OpenttdDiscord.Infrastructure.Discord
 
             return new TextCommandResponse(text);
         }
-
-
-
     }
 }

@@ -1,12 +1,6 @@
 ﻿using Discord;
 using OpenttdDiscord.Infrastructure.Chatting.Runners;
-using OpenttdDiscord.Infrastructure.Discord;
 using OpenttdDiscord.Infrastructure.Discord.Commands;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OpenttdDiscord.Infrastructure.Chatting.Commands
 {

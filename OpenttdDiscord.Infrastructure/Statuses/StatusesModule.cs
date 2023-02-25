@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using OpenttdDiscord.Database.Statuses;
+using OpenttdDiscord.Domain.Statuses.UseCases;
 using OpenttdDiscord.Infrastructure.Discord;
 using OpenttdDiscord.Infrastructure.Modularity;
 using OpenttdDiscord.Infrastructure.Statuses.Commands;
@@ -27,6 +28,7 @@ namespace OpenttdDiscord.Infrastructure.Statuses
         {
             services.AddScoped<IRegisterStatusMonitorUseCase, RegisterStatusMonitorUseCase>();
             services.AddScoped<IGetStatusMonitorsForServerUseCase, GetStatusMonitorsForServerUseCase>();
+            services.AddScoped<IRemoveStatusMonitorUseCase, RemoveStatusMonitorUseCase>();
             return services;
         }
 

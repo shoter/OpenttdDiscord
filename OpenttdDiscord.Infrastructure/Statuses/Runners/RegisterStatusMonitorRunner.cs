@@ -4,6 +4,7 @@ using OpenttdDiscord.Base.Basics;
 using OpenttdDiscord.Base.Ext;
 using OpenttdDiscord.Database.Servers;
 using OpenttdDiscord.Domain.Security;
+using OpenttdDiscord.Domain.Statuses.UseCases;
 using OpenttdDiscord.Infrastructure.Discord;
 using OpenttdDiscord.Infrastructure.Statuses.UseCases;
 

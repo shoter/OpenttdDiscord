@@ -16,7 +16,7 @@ namespace OpenttdDiscord.Base.Akkas
             return Unit.Default;
         }
 
-        public static EitherAsync<IError, T> TryAsk<T>(this IActorRef actor, object msg)
+        public static EitherAsync<IError, T> TryAsk<T>(this ICanTell actor, object msg)
             => TryAsync<Either<IError, T>>(async () =>
             {
                 var t = await actor.Ask(msg);
@@ -39,7 +39,7 @@ namespace OpenttdDiscord.Base.Akkas
                 return new ExceptionError(new Exception("Could not convert an object"));
             }).ToEitherAsyncErrorFlat();
 
-        public static EitherAsync<IError, object> TryAsk(this IActorRef actor, object msg)
+        public static EitherAsync<IError, object> TryAsk(this ICanTell actor, object msg)
             => TryAsk<object>(actor, msg);
     }
 }

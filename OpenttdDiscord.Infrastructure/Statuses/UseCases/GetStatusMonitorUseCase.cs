@@ -4,6 +4,7 @@ using OpenttdDiscord.Database.Servers;
 using OpenttdDiscord.Database.Statuses;
 using OpenttdDiscord.Domain.Security;
 using OpenttdDiscord.Domain.Statuses;
+using OpenttdDiscord.Domain.Statuses.UseCases;
 using System;
 using System.Collections.Generic;
 using System.Linq;

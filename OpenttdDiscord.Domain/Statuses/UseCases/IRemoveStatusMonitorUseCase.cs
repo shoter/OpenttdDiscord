@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using OpenttdDiscord.Domain.Security;
 
 namespace OpenttdDiscord.Domain.Statuses.UseCases
 {
-    internal interface IRemoveStatusMonitorUseCase
+    public interface IRemoveStatusMonitorUseCase
     {
+        EitherAsyncUnit Execute(User user, Guid serverId, ulong channelId);
     }
 }

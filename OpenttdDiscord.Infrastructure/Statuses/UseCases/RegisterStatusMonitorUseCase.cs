@@ -6,6 +6,7 @@ using OpenttdDiscord.Database.Statuses;
 using OpenttdDiscord.Domain.Security;
 using OpenttdDiscord.Domain.Servers;
 using OpenttdDiscord.Domain.Statuses;
+using OpenttdDiscord.Domain.Statuses.UseCases;
 using OpenttdDiscord.Infrastructure.Akkas;
 using OpenttdDiscord.Infrastructure.Statuses.Messages;
 
@@ -39,7 +40,6 @@ namespace OpenttdDiscord.Infrastructure.Statuses.UseCases
              from messageId in embedMessageIdResult
              from _2 in transactionLog.AddTransactionRollback(() => DeleteEmbedMessage(channelId, messageId)).ToAsync()
              from statusMonitor in statusMonitorRepository.Insert(new StatusMonitor(
-
                  server.Id,
                  guildId,
                  channelId,
@@ -90,10 +90,9 @@ namespace OpenttdDiscord.Infrastructure.Statuses.UseCases
         private EitherAsyncUnit InformActor(StatusMonitor statusMonitor)
             => TryAsync(async () =>
             {
-                throw new Exception();
                 var msg = new RegisterStatusMonitor(statusMonitor);
-                (await akkaService.SelectActor(MainActors.Paths.Guilds)).Tell(msg);
-                return Unit.Default;
-            }).ToEitherAsyncError();
+                return (await (await akkaService.SelectActor(MainActors.Paths.Guilds)).TryAsk(msg))
+                .Map(_ => Unit.Default);
+            }).ToEitherAsyncErrorFlat();
     }
 }

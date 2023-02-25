@@ -3,9 +3,9 @@ using OpenttdDiscord.Base.Ext;
 using OpenttdDiscord.Domain.Security;
 using OpenttdDiscord.Domain.Statuses;
 
-namespace OpenttdDiscord.Infrastructure.Statuses.UseCases
+namespace OpenttdDiscord.Domain.Statuses.UseCases
 {
-    internal interface IGetStatusMonitorsForServerUseCase
+    public interface IGetStatusMonitorsForServerUseCase
     {
         EitherAsync<IError, List<StatusMonitor>> Execute(User user, Guid serverId);
     }

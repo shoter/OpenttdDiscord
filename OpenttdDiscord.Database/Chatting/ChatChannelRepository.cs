@@ -2,12 +2,6 @@
 using LanguageExt.Pipes;
 using Microsoft.EntityFrameworkCore;
 using OpenttdDiscord.Domain.Chatting;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Channels;
-using System.Threading.Tasks;
 
 namespace OpenttdDiscord.Database.Chatting
 {

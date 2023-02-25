@@ -1,9 +1,12 @@
 ﻿using LanguageExt;
+using LanguageExt.Pipes;
+using Microsoft.EntityFrameworkCore;
 using OpenttdDiscord.Domain.Chatting;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Channels;
 using System.Threading.Tasks;
 
 namespace OpenttdDiscord.Database.Chatting
@@ -18,18 +21,37 @@ namespace OpenttdDiscord.Database.Chatting
         }
 
         public EitherAsyncUnit Delete(Guid serverId, ulong channelId)
-        {
-            throw new NotImplementedException();
-        }
+            => TryAsync<EitherUnit>(async () =>
+            {
+                int deletedRows = await DB.ChatChannels
+                    .Where(cc => cc.ServerId == serverId && cc.ChannelId == channelId)
+                    .DeleteFromQueryAsync();
+
+                if(deletedRows == 0)
+                {
+                    return new HumanReadableError("No chat channel was found for deletion");
+                }
+
+                return Unit.Default;
+            }).ToEitherAsyncErrorFlat();
 
         public EitherAsync<IError, List<ChatChannel>> GetChatChannelsForServer(Guid serverId)
-        {
-            throw new NotImplementedException();
-        }
+            => TryAsync<Either<IError, List<ChatChannel>>>(async () =>
+               {
+                   return (await DB.ChatChannels
+                       .AsNoTracking()
+                       .Where(cc => cc.ServerId == serverId)
+                       .ToListAsync())
+                       .Select(cc => cc.ToDomain())
+                       .ToList();
+               }).ToEitherAsyncErrorFlat();
 
         public EitherAsyncUnit Insert(ChatChannel chatChannel)
-        {
-            throw new NotImplementedException();
-        }
+            => TryAsync<EitherUnit>(async () =>
+            {
+                await DB.ChatChannels.AddAsync(new(chatChannel));
+                await DB.SaveChangesAsync();
+                return Unit.Default;
+            }).ToEitherAsyncErrorFlat();
     }
 }

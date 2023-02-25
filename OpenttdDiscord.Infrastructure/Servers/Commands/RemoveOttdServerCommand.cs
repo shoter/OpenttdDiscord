@@ -1,7 +1,8 @@
 ﻿using Discord;
 using OpenttdDiscord.Infrastructure.Discord;
+using OpenttdDiscord.Infrastructure.Servers.Runners;
 
-namespace OpenttdDiscord.Infrastructure.Servers
+namespace OpenttdDiscord.Infrastructure.Servers.Commands
 {
     internal class RemoveOttdServerCommand : OttdSlashCommandBase<RemoveOttdServerRunner>
     {
@@ -18,7 +19,7 @@ namespace OpenttdDiscord.Infrastructure.Servers
                     .WithRequired(true)
                     .WithDescription("Name of the server")
                     .WithType(ApplicationCommandOptionType.String));
-                
+
         }
     }
 }

@@ -6,7 +6,7 @@ using OpenttdDiscord.Base.Ext;
 using OpenttdDiscord.Infrastructure.Akkas;
 using OpenttdDiscord.Infrastructure.Guilds.Messages;
 using OpenttdDiscord.Infrastructure.Ottd.Messages;
-using OpenttdDiscord.Infrastructure.Servers;
+using OpenttdDiscord.Infrastructure.Servers.Messages;
 using OpenttdDiscord.Infrastructure.Statuses.Messages;
 
 namespace OpenttdDiscord.Infrastructure.Guilds

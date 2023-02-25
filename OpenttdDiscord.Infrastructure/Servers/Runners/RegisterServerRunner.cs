@@ -5,9 +5,10 @@ using OpenttdDiscord.Base.Basics;
 using OpenttdDiscord.Base.Ext;
 using OpenttdDiscord.Domain.Security;
 using OpenttdDiscord.Domain.Servers;
+using OpenttdDiscord.Domain.Servers.UseCases;
 using OpenttdDiscord.Infrastructure.Discord;
 
-namespace OpenttdDiscord.Infrastructure.Servers
+namespace OpenttdDiscord.Infrastructure.Servers.Runners
 {
     internal class RegisterServerRunner : OttdSlashCommandRunnerBase, IOttdSlashCommandRunner
     {
@@ -18,7 +19,7 @@ namespace OpenttdDiscord.Infrastructure.Servers
             this.useCase = useCase;
 
         }
-        protected override EitherAsync<IError,  ISlashCommandResponse> RunInternal(SocketSlashCommand command, ExtDictionary<string, object> options)
+        protected override EitherAsync<IError, ISlashCommandResponse> RunInternal(SocketSlashCommand command, ExtDictionary<string, object> options)
         {
             if (command.GuildId == null)
             {
@@ -43,7 +44,7 @@ namespace OpenttdDiscord.Infrastructure.Servers
 
             return
             from _1 in useCase.Execute(rights, server)
-            select (ISlashCommandResponse) new TextCommandResponse($"Created Server {name} - {ip}:{port}");
+            select (ISlashCommandResponse)new TextCommandResponse($"Created Server {name} - {ip}:{port}");
         }
     }
 }

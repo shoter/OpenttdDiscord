@@ -7,11 +7,13 @@ using OpenttdDiscord.Base.Ext;
 using OpenttdDiscord.Database.Servers;
 using OpenttdDiscord.Domain.Security;
 using OpenttdDiscord.Domain.Servers;
+using OpenttdDiscord.Domain.Servers.UseCases;
 using OpenttdDiscord.Infrastructure.Akkas;
+using OpenttdDiscord.Infrastructure.Servers.Messages;
 using OpenttdDiscord.Validation;
 using OpenttdDiscord.Validation.Ottd;
 
-namespace OpenttdDiscord.Infrastructure.Servers
+namespace OpenttdDiscord.Infrastructure.Servers.UseCases
 {
     internal class RegisterOttdServerUseCase : UseCaseBase, IRegisterOttdServerUseCase
     {

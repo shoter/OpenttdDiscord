@@ -1,8 +1,8 @@
 ﻿using OpenttdDiscord.Domain.Security;
 
-namespace OpenttdDiscord.Infrastructure.Servers
+namespace OpenttdDiscord.Domain.Servers.UseCases
 {
-    internal interface IRemoveOttdServerUseCase
+    public interface IRemoveOttdServerUseCase
     {
         Task<EitherUnit> Execute(User userRights, ulong guildId, string serverName);
     }

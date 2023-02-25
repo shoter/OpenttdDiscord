@@ -1,7 +1,8 @@
 ﻿using Discord;
 using OpenttdDiscord.Infrastructure.Discord;
+using OpenttdDiscord.Infrastructure.Servers.Runners;
 
-namespace OpenttdDiscord.Infrastructure.Servers
+namespace OpenttdDiscord.Infrastructure.Servers.Commands
 {
     internal class ListServersCommand : OttdSlashCommandBase<ListServerRunner>
     {

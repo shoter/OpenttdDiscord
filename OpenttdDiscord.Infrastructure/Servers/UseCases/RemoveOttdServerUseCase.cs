@@ -5,10 +5,12 @@ using OpenttdDiscord.Base.Ext;
 using OpenttdDiscord.Database.Servers;
 using OpenttdDiscord.Domain.Security;
 using OpenttdDiscord.Domain.Servers;
+using OpenttdDiscord.Domain.Servers.UseCases;
 using OpenttdDiscord.Infrastructure.Akkas;
+using OpenttdDiscord.Infrastructure.Servers.Messages;
 using System.Security.Cryptography;
 
-namespace OpenttdDiscord.Infrastructure.Servers
+namespace OpenttdDiscord.Infrastructure.Servers.UseCases
 {
     internal class RemoveOttdServerUseCase : UseCaseBase, IRemoveOttdServerUseCase
     {
@@ -28,7 +30,7 @@ namespace OpenttdDiscord.Infrastructure.Servers
 
         public async Task<EitherUnit> Execute(User user, ulong guildId, string serverName)
         {
-            this.logger.LogInformation($"Removing {serverName} for {user}");
+            logger.LogInformation($"Removing {serverName} for {user}");
             return await
             (from _1 in CheckIfHasCorrectUserLevel(user, UserLevel.Admin).ToAsync()
              from server in ottdServerRepository.GetServerByName(guildId, serverName)

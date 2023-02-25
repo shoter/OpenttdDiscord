@@ -4,10 +4,12 @@ using Microsoft.Extensions.DependencyInjection;
 using OpenttdDiscord.Base.Ext;
 using OpenttdDiscord.Domain.Security;
 using OpenttdDiscord.Domain.Servers;
+using OpenttdDiscord.Domain.Servers.UseCases;
 using OpenttdDiscord.Infrastructure.Guilds.Messages;
 using OpenttdDiscord.Infrastructure.Ottd.Actors;
 using OpenttdDiscord.Infrastructure.Ottd.Messages;
-using OpenttdDiscord.Infrastructure.Servers;
+using OpenttdDiscord.Infrastructure.Servers.Messages;
+using OpenttdDiscord.Infrastructure.Servers.UseCases;
 using OpenttdDiscord.Infrastructure.Statuses.Messages;
 using System.Linq;
 

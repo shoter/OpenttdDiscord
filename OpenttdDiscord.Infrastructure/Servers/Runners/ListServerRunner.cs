@@ -6,14 +6,16 @@ using OpenttdDiscord.Base.Ext;
 using OpenttdDiscord.Database.Servers;
 using OpenttdDiscord.Domain.Security;
 using OpenttdDiscord.Domain.Servers;
+using OpenttdDiscord.Domain.Servers.UseCases;
 using OpenttdDiscord.Infrastructure.Discord;
+using OpenttdDiscord.Infrastructure.Servers.UseCases;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OpenttdDiscord.Infrastructure.Servers
+namespace OpenttdDiscord.Infrastructure.Servers.Runners
 {
     internal class ListServerRunner : IOttdSlashCommandRunner
     {
@@ -21,7 +23,7 @@ namespace OpenttdDiscord.Infrastructure.Servers
 
         public ListServerRunner(IListOttdServersUseCase listOttdServersUseCase)
         {
-            this.listServersUseCase = listOttdServersUseCase;
+            listServersUseCase = listOttdServersUseCase;
         }
 
         public EitherAsync<IError, ISlashCommandResponse> Run(SocketSlashCommand command)
@@ -31,10 +33,10 @@ namespace OpenttdDiscord.Infrastructure.Servers
                 return new HumanReadableError("This command can only be executed within a guild!");
             }
 
-            return 
+            return
             from servers in listServersUseCase.Execute(new User(command.User), command.GuildId.Value).ToAsync()
             from embed in CreateEmbed(servers).ToAsync()
-            select (ISlashCommandResponse) new EmbedCommandResponse(embed);
+            select (ISlashCommandResponse)new EmbedCommandResponse(embed);
 
         }
 

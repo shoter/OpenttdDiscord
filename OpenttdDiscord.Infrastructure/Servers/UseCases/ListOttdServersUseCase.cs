@@ -4,10 +4,11 @@ using OpenttdDiscord.Base.Ext;
 using OpenttdDiscord.Database.Servers;
 using OpenttdDiscord.Domain.Security;
 using OpenttdDiscord.Domain.Servers;
+using OpenttdDiscord.Domain.Servers.UseCases;
 using OpenttdDiscord.Validation.Ottd;
 using static LanguageExt.Prelude;
 
-namespace OpenttdDiscord.Infrastructure.Servers
+namespace OpenttdDiscord.Infrastructure.Servers.UseCases
 {
     public class ListOttdServersUseCase : IListOttdServersUseCase
     {
@@ -16,7 +17,7 @@ namespace OpenttdDiscord.Infrastructure.Servers
 
         public ListOttdServersUseCase(
             ILogger<ListOttdServersUseCase> logger,
-            IOttdServerRepository ottdServerRepository )
+            IOttdServerRepository ottdServerRepository)
         {
             this.logger = logger;
             this.ottdServerRepository = ottdServerRepository;

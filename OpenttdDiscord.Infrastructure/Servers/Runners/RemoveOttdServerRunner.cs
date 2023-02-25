@@ -3,9 +3,11 @@ using LanguageExt;
 using OpenttdDiscord.Base.Basics;
 using OpenttdDiscord.Base.Ext;
 using OpenttdDiscord.Domain.Security;
+using OpenttdDiscord.Domain.Servers.UseCases;
 using OpenttdDiscord.Infrastructure.Discord;
+using OpenttdDiscord.Infrastructure.Servers.UseCases;
 
-namespace OpenttdDiscord.Infrastructure.Servers
+namespace OpenttdDiscord.Infrastructure.Servers.Runners
 {
     internal class RemoveOttdServerRunner : OttdSlashCommandRunnerBase, IOttdSlashCommandRunner
     {
@@ -22,7 +24,7 @@ namespace OpenttdDiscord.Infrastructure.Servers
 
             return
             from _1 in removeOttdServerUseCase.Execute(new User(command.User), command.GuildId!.Value, serverName).ToAsync()
-            select (ISlashCommandResponse) new TextCommandResponse($"{serverName} successfully deleted");
+            select (ISlashCommandResponse)new TextCommandResponse($"{serverName} successfully deleted");
         }
     }
 }

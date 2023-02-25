@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using OpenTTDAdminPort;
 using OpenTTDAdminPort.Game;
+using OpenttdDiscord.Database.Statuses;
 using OpenttdDiscord.Domain.Servers;
 using OpenttdDiscord.Domain.Statuses;
 using OpenttdDiscord.Infrastructure.Statuses.Messages;
@@ -66,17 +67,26 @@ namespace OpenttdDiscord.Infrastructure.Statuses.Actors
 
             if (!message.IsSpecified)
             {
-                // TODO : Create it!
-                return;
+                var channel = (IMessageChannel)await discord.GetChannelAsync(statusMonitor.ChannelId);
+                var newMessage = await channel.SendMessageAsync(embed: embed);
+                Context.Parent.Tell(new UpdateStatusMonitor(this.statusMonitor with
+                {
+                    MessageId = newMessage.Id
+                }));
+
+                logger.LogDebug("No message detected. Created new - recreating status monitor for {0} at {1}", ottdServer.Name, statusMonitor.ChannelId);
             }
-
-            await message.Value.ModifyAsync(x =>
+            else
             {
-                x.Content = null;
-                x.Embed = embed;
-            });
 
-            logger.LogDebug("Regenerated status monitor for {0} at {1}", ottdServer.Name, statusMonitor.ChannelId);
+                await message.Value.ModifyAsync(x =>
+                {
+                    x.Content = null;
+                    x.Embed = embed;
+                });
+
+                logger.LogDebug("Regenerated status monitor for {0} at {1}", ottdServer.Name, statusMonitor.ChannelId);
+            }
         }
 
         private async Task<Optional<RestUserMessage>> GetMessage()

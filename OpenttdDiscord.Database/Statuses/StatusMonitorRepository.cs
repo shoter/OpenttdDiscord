@@ -85,5 +85,23 @@ namespace OpenttdDiscord.Database.Statuses
             })
             .ToEitherAsyncErrorFlat();
         }
+
+        public EitherAsync<IError, Option<StatusMonitor>> GetStatusMonitor(Guid serverId, ulong channelId)
+            => TryAsync(async () =>
+            {
+                var monitor = await DB
+                .Monitors
+                .AsNoTracking()
+                .FirstOrDefaultAsync(m => m.ServerId == serverId);
+
+                if (monitor == null)
+                {
+                    return Option<StatusMonitor>.None;
+                }
+
+                return monitor.ToDomain();
+            })
+            .ToEitherAsyncError();
+
     }
 }

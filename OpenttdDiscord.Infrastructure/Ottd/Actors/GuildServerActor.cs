@@ -24,6 +24,7 @@ namespace OpenttdDiscord.Infrastructure.Ottd.Actors
         private readonly OttdServer server;
         private readonly AdminPortClient client;
         private readonly IGetStatusMonitorsForServerUseCase getStatusMonitorsForServerUseCase;
+        private readonly IUpdateStatusMonitorUseCase updateStatusMonitorUseCase;
         private readonly ExtDictionary<ulong, IActorRef> statusMonitorActors = new();
 
         public ITimerScheduler Timers { get; set; } = default!;
@@ -32,6 +33,7 @@ namespace OpenttdDiscord.Infrastructure.Ottd.Actors
         {
             this.server = server;
             this.getStatusMonitorsForServerUseCase = SP.GetRequiredService<IGetStatusMonitorsForServerUseCase>();
+            this.updateStatusMonitorUseCase = SP.GetRequiredService<IUpdateStatusMonitorUseCase>();
             client = new(new AdminPortClientSettings()
             {
                 WatchdogInterval = TimeSpan.FromSeconds(5)
@@ -50,6 +52,7 @@ namespace OpenttdDiscord.Infrastructure.Ottd.Actors
             Receive<KillDanglingAction>(KillDanglingAction);
             Receive<RegisterStatusMonitor>(RegisterStatusMonitor);
             ReceiveAsync<RemoveStatusMonitor>(RemoveStatusMonitor);
+            ReceiveAsync<UpdateStatusMonitor>(UpdateStatusMonitor);
         }
 
         public static Props Create(IServiceProvider sp, OttdServer server)
@@ -118,6 +121,18 @@ namespace OpenttdDiscord.Infrastructure.Ottd.Actors
             await actor.GracefulStop(TimeSpan.FromSeconds(1));
             statusMonitorActors.Remove(rmv.ChannelId);
             Sender.Tell(Unit.Default);
+        }
+
+        private async Task UpdateStatusMonitor(UpdateStatusMonitor usm)
+        {
+            await this.RemoveStatusMonitor(new(usm.UpdatedMonitor.ServerId, usm.UpdatedMonitor.GuildId, usm.UpdatedMonitor.ChannelId));
+            var self = Self;
+            var monitorResult = await this.updateStatusMonitorUseCase.Execute(User.Master, usm.UpdatedMonitor);
+            monitorResult.Map(monitor =>
+            {
+                self.Tell(new RegisterStatusMonitor(monitor));
+                return Unit.Default;
+            });
         }
     }
 }

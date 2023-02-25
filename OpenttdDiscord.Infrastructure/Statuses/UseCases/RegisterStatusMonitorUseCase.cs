@@ -32,28 +32,22 @@ namespace OpenttdDiscord.Infrastructure.Statuses.UseCases
         public EitherAsync<IError, StatusMonitor> Execute(User user, OttdServer server, ulong guildId, ulong channelId)
         {
             var embedMessageIdResult = CreateEmbedMessage(channelId, server);
-
+            var transactionLog = new TransactionLog();
             return
             (
              from _1 in CheckIfHasCorrectUserLevel(user, UserLevel.Admin).ToAsync()
              from messageId in embedMessageIdResult
+             from _2 in transactionLog.AddTransactionRollback(() => DeleteEmbedMessage(channelId, messageId)).ToAsync()
              from statusMonitor in statusMonitorRepository.Insert(new StatusMonitor(
+
                  server.Id,
                  guildId,
                  channelId,
                  messageId,
                  DateTime.MinValue.ToUniversalTime()))
-             from _2 in InformActor(statusMonitor)
+             from _4 in InformActor(statusMonitor)
              select statusMonitor)
-            .MapLeft(err =>
-            {
-                if (embedMessageIdResult.IsRight.Result)
-                {
-                    DeleteEmbedMessage(channelId, embedMessageIdResult.Right());
-                }
-
-                return err;
-            });
+             .LeftRollback(transactionLog);
         }
 
         private EitherAsync<IError, ulong> CreateEmbedMessage(ulong channelId, OttdServer server)
@@ -96,6 +90,7 @@ namespace OpenttdDiscord.Infrastructure.Statuses.UseCases
         private EitherAsyncUnit InformActor(StatusMonitor statusMonitor)
             => TryAsync(async () =>
             {
+                throw new Exception();
                 var msg = new RegisterStatusMonitor(statusMonitor);
                 (await akkaService.SelectActor(MainActors.Paths.Guilds)).Tell(msg);
                 return Unit.Default;

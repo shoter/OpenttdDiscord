@@ -1,9 +1,9 @@
 ﻿using LanguageExt;
 using OpenttdDiscord.Base.Ext;
 
-namespace OpenttdDiscord.Infrastructure.Guilds
+namespace OpenttdDiscord.Domain.Guilds.UseCases
 {
-    internal interface IGetAllGuildsUseCase
+    public interface IGetAllGuildsUseCase
     {
         Task<Either<IError, List<ulong>>> Execute();
     }

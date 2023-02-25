@@ -1,8 +1,9 @@
 ﻿using LanguageExt;
 using OpenttdDiscord.Base.Ext;
 using OpenttdDiscord.Database.Servers;
+using OpenttdDiscord.Domain.Guilds.UseCases;
 
-namespace OpenttdDiscord.Infrastructure.Guilds
+namespace OpenttdDiscord.Infrastructure.Guilds.UseCases
 {
     internal class GetAllGuildsUseCase : IGetAllGuildsUseCase
     {

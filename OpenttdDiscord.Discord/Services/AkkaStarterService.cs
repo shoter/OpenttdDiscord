@@ -2,7 +2,7 @@
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using OpenttdDiscord.Infrastructure.Akkas;
-using OpenttdDiscord.Infrastructure.Guilds;
+using OpenttdDiscord.Infrastructure.Guilds.Actors;
 
 namespace OpenttdDiscord.Discord.Services
 {

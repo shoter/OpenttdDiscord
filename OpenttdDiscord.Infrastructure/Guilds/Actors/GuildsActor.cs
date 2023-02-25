@@ -3,13 +3,14 @@ using LanguageExt;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using OpenttdDiscord.Base.Ext;
+using OpenttdDiscord.Domain.Guilds.UseCases;
 using OpenttdDiscord.Infrastructure.Akkas;
 using OpenttdDiscord.Infrastructure.Guilds.Messages;
 using OpenttdDiscord.Infrastructure.Ottd.Messages;
 using OpenttdDiscord.Infrastructure.Servers.Messages;
 using OpenttdDiscord.Infrastructure.Statuses.Messages;
 
-namespace OpenttdDiscord.Infrastructure.Guilds
+namespace OpenttdDiscord.Infrastructure.Guilds.Actors
 {
     public class GuildsActor : ReceiveActorBase
     {

@@ -13,7 +13,7 @@ using OpenttdDiscord.Infrastructure.Servers.UseCases;
 using OpenttdDiscord.Infrastructure.Statuses.Messages;
 using System.Linq;
 
-namespace OpenttdDiscord.Infrastructure.Guilds
+namespace OpenttdDiscord.Infrastructure.Guilds.Actors
 {
     public class GuildActor : ReceiveActorBase
     {
@@ -25,7 +25,7 @@ namespace OpenttdDiscord.Infrastructure.Guilds
 
         public GuildActor(IServiceProvider serviceProvider, ulong guildId) : base(serviceProvider)
         {
-            this.listOttdServersUseCase = SP.GetRequiredService<IListOttdServersUseCase>();
+            listOttdServersUseCase = SP.GetRequiredService<IListOttdServersUseCase>();
             this.guildId = guildId;
             Ready();
             Self.Tell(new InitGuildsActorMessage());
@@ -54,7 +54,7 @@ namespace OpenttdDiscord.Infrastructure.Guilds
 
         private EitherUnit CreateServerActor(OttdServer s)
         {
-            if(serverActors.ContainsKey(s.Id))
+            if (serverActors.ContainsKey(s.Id))
             {
                 return new HumanReadableError("Server is already registered");
             }
@@ -72,7 +72,7 @@ namespace OpenttdDiscord.Infrastructure.Guilds
 
         private void ExecuteServerAction(ExecuteServerAction msg)
         {
-            if(!serverActors.TryGetValue(msg.ServerId, out var server))
+            if (!serverActors.TryGetValue(msg.ServerId, out var server))
             {
                 return;
             }

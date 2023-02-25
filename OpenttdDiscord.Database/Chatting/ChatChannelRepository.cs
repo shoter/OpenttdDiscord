@@ -53,7 +53,7 @@ namespace OpenttdDiscord.Database.Chatting
               {
                   var chatChannel = (await DB.ChatChannels
                       .AsNoTracking()
-                      .FirstOrDefaultAsync(cc => cc.ServerId == serverId && cc.ChannelId == channelId);
+                      .FirstOrDefaultAsync(cc => cc.ServerId == serverId && cc.ChannelId == channelId));
 
                   if(chatChannel == null)
                   {

@@ -4,10 +4,12 @@ using LanguageExt.UnitsOfMeasure;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using OpenTTDAdminPort;
+using OpenttdDiscord.Base.Basics;
 using OpenttdDiscord.Base.Ext;
 using OpenttdDiscord.Domain.Security;
 using OpenttdDiscord.Domain.Servers;
 using OpenttdDiscord.Domain.Statuses;
+using OpenttdDiscord.Domain.Statuses.UseCases;
 using OpenttdDiscord.Infrastructure.Ottd.Messages;
 using OpenttdDiscord.Infrastructure.Servers;
 using OpenttdDiscord.Infrastructure.Statuses.Actors;
@@ -22,7 +24,7 @@ namespace OpenttdDiscord.Infrastructure.Ottd.Actors
         private readonly OttdServer server;
         private readonly AdminPortClient client;
         private readonly IGetStatusMonitorsForServerUseCase getStatusMonitorsForServerUseCase;
-        private readonly LanguageExt.HashSet<IActorRef> statusMonitorActors = new();
+        private readonly ExtDictionary<ulong, IActorRef> statusMonitorActors = new();
 
         public ITimerScheduler Timers { get; set; } = default!;
 
@@ -47,6 +49,7 @@ namespace OpenttdDiscord.Infrastructure.Ottd.Actors
             Receive<ExecuteServerAction>(ExecuteServerAction);
             Receive<KillDanglingAction>(KillDanglingAction);
             Receive<RegisterStatusMonitor>(RegisterStatusMonitor);
+            ReceiveAsync<RemoveStatusMonitor>(RemoveStatusMonitor);
         }
 
         public static Props Create(IServiceProvider sp, OttdServer server)
@@ -97,8 +100,23 @@ namespace OpenttdDiscord.Infrastructure.Ottd.Actors
         {
             Props props = StatusMonitorActor.Create(server, monitor, client, SP);
             IActorRef actor = Context.ActorOf(props);
-            statusMonitorActors.Add(actor);
+            statusMonitorActors.Add(monitor.ChannelId, actor);
             return Unit.Default;
+        }
+
+        private async Task RemoveStatusMonitor(RemoveStatusMonitor rmv)
+        {
+            var statusMonitor = statusMonitorActors.TryGetValueAs<IActorRef>(rmv.ChannelId);
+
+            if(statusMonitor.IsNone)
+            {
+                throw new ActorNotFoundException();
+            }
+
+            var actor = statusMonitor.Value();
+            actor.Forward(rmv);
+            await actor.GracefulStop(TimeSpan.FromSeconds(1));
+            statusMonitorActors.Remove(rmv.ChannelId);
         }
     }
 }

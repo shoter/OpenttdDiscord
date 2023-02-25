@@ -36,6 +36,7 @@ namespace OpenttdDiscord.Infrastructure.Guilds
             ReceiveRedirectMsg<ExecuteServerAction>(msg => msg.GuildId);
             ReceiveRedirectMsg<RegisterStatusMonitor>(msg => msg.StatusMonitor.GuildId);
             ReceiveRedirectMsg<InformAboutServerDeletion>(msg => msg.server.GuildId);
+            ReceiveRedirectMsg<RemoveStatusMonitor>(msg => msg.GuildId);
         }
 
         private async Task InitGuildActorMessage(InitGuildActorMessage _)

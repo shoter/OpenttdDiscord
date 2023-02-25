@@ -22,19 +22,19 @@ namespace OpenttdDiscord.Infrastructure.Statuses.UseCases
             this.akkaService = akkaService;
         }
 
-        public EitherAsyncUnit Execute(User user, Guid serverId, ulong channelId)
+        public EitherAsyncUnit Execute(User user, Guid serverId, ulong guildId, ulong channelId)
         {
             return
             from _1 in CheckIfHasCorrectUserLevel(user, UserLevel.Admin).ToAsync()
             from _2 in statusMonitorRepository.RemoveStatusMonitor(serverId, channelId)
-            from _3 in InformActor(serverId, channelId)
+            from _3 in InformActor(serverId, guildId, channelId)
             select _3;
         }
 
-        private EitherAsyncUnit InformActor(Guid serverId, ulong channelId)
+        private EitherAsyncUnit InformActor(Guid serverId, ulong guildId, ulong channelId)
             => TryAsync(async () =>
             {
-                var msg = new RemoveStatusMonitor(serverId, channelId);
+                var msg = new RemoveStatusMonitor(serverId, guildId, channelId);
                 var actors = await akkaService.SelectActor(MainActors.Paths.Guilds);
                 return (await actors.TryAsk(msg))
                     .Map(_ => Unit.Default);

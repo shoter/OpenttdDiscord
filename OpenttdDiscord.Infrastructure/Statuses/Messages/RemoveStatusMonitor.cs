@@ -1,4 +1,4 @@
 ﻿namespace OpenttdDiscord.Infrastructure.Statuses.Messages
 {
-    public record RemoveStatusMonitor(Guid ServerId, ulong ChannelId);
+    public record RemoveStatusMonitor(Guid ServerId, ulong GuildId, ulong ChannelId);
 }

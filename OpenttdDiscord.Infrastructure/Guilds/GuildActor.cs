@@ -37,6 +37,7 @@ namespace OpenttdDiscord.Infrastructure.Guilds
 
             ReceiveRedirectMsg<ExecuteServerAction>(msg => msg.ServerId);
             ReceiveRedirectMsg<RegisterStatusMonitor>(msg => msg.StatusMonitor.ServerId);
+            ReceiveRedirectMsg<RemoveStatusMonitor>(msg => msg.ServerId);
         }
 
         public static Props Create(IServiceProvider sp, ulong guildId)

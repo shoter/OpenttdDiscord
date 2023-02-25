@@ -2,6 +2,7 @@
 using Discord;
 using Discord.Rest;
 using Discord.WebSocket;
+using LanguageExt;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using OpenTTDAdminPort;
@@ -45,6 +46,7 @@ namespace OpenttdDiscord.Infrastructure.Statuses.Actors
         private void Ready()
         {
             ReceiveAsync<RegenerateStatusMonitor>(RegenerateStatusMonitor);
+            ReceiveAsync<RemoveStatusMonitor>(RemoveStatusMonitor);
         }
 
         public static Props Create(
@@ -60,21 +62,46 @@ namespace OpenttdDiscord.Infrastructure.Statuses.Actors
             AdminServerInfo info = serverStatus.AdminServerInfo;
 
             Embed embed = embedBuilder.CreateServerStatusEmbed(client, serverStatus, info, ottdServer.Name);
-            var channel = (IMessageChannel)await discord.GetChannelAsync(statusMonitor.ChannelId);
-            var message = await channel.GetMessageAsync(statusMonitor.MessageId) as RestUserMessage;
+            Optional<RestUserMessage> message = await GetMessage();
 
-            if (message == null)
+            if (!message.IsSpecified)
             {
+                // TODO : Create it!
                 return;
             }
 
-            await message.ModifyAsync(x =>
+            await message.Value.ModifyAsync(x =>
             {
                 x.Content = null;
                 x.Embed = embed;
             });
 
             logger.LogDebug("Regenerated status monitor for {0} at {1}", ottdServer.Name, statusMonitor.ChannelId);
+        }
+
+        private async Task<Optional<RestUserMessage>> GetMessage()
+        {
+            var channel = (IMessageChannel)await discord.GetChannelAsync(statusMonitor.ChannelId);
+            var message = await channel.GetMessageAsync(statusMonitor.MessageId) as RestUserMessage;
+
+            if (message == null)
+            {
+                return default;
+            }
+
+            return message;
+        }
+
+        private async Task RemoveStatusMonitor(RemoveStatusMonitor msg)
+        {
+            var message = await GetMessage();
+
+            if(!message.IsSpecified)
+            {
+                return;
+            }
+
+            await message.Value.DeleteAsync();
         }
     }
 }

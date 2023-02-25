@@ -49,8 +49,8 @@ namespace OpenttdDiscord.Infrastructure.Statuses.Runners
             checkIfStatusMonitorExistsUseCase.Execute(user, serverId, channelId)
             .Bind(exists =>
                 exists ?
-                EitherAsyncUnit.Right(Unit.Default) :
-                EitherAsyncUnit.Left(new HumanReadableError("Status monitor already exists for this channel")));
+                EitherAsyncUnit.Left(new HumanReadableError("Status monitor already exists for this channel")) : 
+                EitherAsyncUnit.Right(Unit.Default));
         }
     }
 }

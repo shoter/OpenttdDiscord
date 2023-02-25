@@ -30,6 +30,7 @@ namespace OpenttdDiscord.Infrastructure.Statuses
             services.AddScoped<IGetStatusMonitorsForServerUseCase, GetStatusMonitorsForServerUseCase>();
             services.AddScoped<IRemoveStatusMonitorUseCase, RemoveStatusMonitorUseCase>();
             services.AddScoped<IUpdateStatusMonitorUseCase, UpdateStatusMonitorUseCase>();
+            services.AddScoped<ICheckIfStatusMonitorExistsUseCase, CheckIfStatusMonitorExistsUseCase>();
             return services;
         }
 

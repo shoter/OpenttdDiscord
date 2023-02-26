@@ -48,8 +48,8 @@ namespace OpenttdDiscord.Infrastructure.Chatting.Runners
             var result = getChatChannelUseCase.Execute(user, serverId, channelId);
             return result.Bind(chatChannel =>
                 chatChannel.IsNone ?
-                EitherAsyncUnit.Left(new HumanReadableError("Chat channel already exists!")) :
-                EitherAsyncUnit.Right(Unit.Default));
+            EitherAsyncUnit.Right(Unit.Default) :
+            EitherAsyncUnit.Left(new HumanReadableError("Chat channel already exists!")));
         }
     }
 }

@@ -45,7 +45,8 @@ namespace OpenttdDiscord.Infrastructure.Statuses.UseCases
                  channelId,
                  messageId,
                  DateTime.MinValue.ToUniversalTime()))
-             from _4 in InformActor(statusMonitor)
+             from guilds in akkaService.SelectActor(MainActors.Paths.Guilds)
+             from _3 in guilds.TryAsk(new RegisterStatusMonitor(statusMonitor), TimeSpan.FromSeconds(1))
              select statusMonitor)
              .LeftRollback(transactionLog);
         }
@@ -86,13 +87,5 @@ namespace OpenttdDiscord.Infrastructure.Statuses.UseCases
                 .AddField("Please Wait", "Status message creation in progress")
                 .Build();
         }
-
-        private EitherAsyncUnit InformActor(StatusMonitor statusMonitor)
-            => TryAsync(async () =>
-            {
-                var msg = new RegisterStatusMonitor(statusMonitor);
-                return (await (await akkaService.SelectActor(MainActors.Paths.Guilds)).TryAsk(msg))
-                .Map(_ => Unit.Default);
-            }).ToEitherAsyncErrorFlat();
     }
 }

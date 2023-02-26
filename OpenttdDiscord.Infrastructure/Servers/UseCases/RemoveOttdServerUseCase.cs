@@ -35,15 +35,9 @@ namespace OpenttdDiscord.Infrastructure.Servers.UseCases
             (from _1 in CheckIfHasCorrectUserLevel(user, UserLevel.Admin).ToAsync()
              from server in ottdServerRepository.GetServerByName(guildId, serverName)
              from _2 in ottdServerRepository.DeleteServer(server.Id).ToAsync()
-             from _3 in InformGuildsActor(server).ToAsync()
-             select _1).ToEither();
-        }
-
-        private async Task<EitherUnit> InformGuildsActor(OttdServer server)
-        {
-            ActorSelection selection = await akkaService.SelectActor(MainActors.Paths.Guilds);
-            selection.Tell(new InformAboutServerDeletion(server));
-            return Unit.Default;
+             from actor in akkaService.SelectActor(MainActors.Paths.Guilds)
+             from _3 in actor.TellExt(new InformAboutServerDeletion(server)).ToAsync()
+             select _3);
         }
     }
 }

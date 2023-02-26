@@ -6,6 +6,12 @@ namespace OpenttdDiscord.Base.Akkas
 {
     public static class ICanTellExtensions
     {
+        public static EitherUnit TellExt(this ICanTell actor, object msg, IActorRef sender = null)
+        {
+            actor.Tell(msg, sender);
+            return Unit.Default;
+        }
+
         public static EitherAsync<IError, T> TryAsk<T>(this ICanTell canTell, object msg, TimeSpan? timeout = null)
             => TryAsync<Either<IError, T>>(async () =>
             {

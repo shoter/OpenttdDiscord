@@ -38,17 +38,9 @@ namespace OpenttdDiscord.Infrastructure.Ottd.Runners
 
             return
                 from server in ottdServerRepository.GetServerByName(command.GuildId!.Value, serverName)
-                from _1 in InformActor(server, command, channelId)
+                from actor  in akkaService.SelectActor(MainActors.Paths.Guilds)
+                from _1     in actor.TellExt(new QueryServer(server.Id, command.GuildId!.Value, channelId)).ToAsync()
                 select (ISlashCommandResponse)new TextCommandResponse("Executing command");
         }
-
-        private EitherAsyncUnit InformActor(OttdServer server, SocketSlashCommand command, ulong channelId)
-            => TryAsync(async () =>
-            {
-                var action = new QueryServer(server.Id, command.GuildId!.Value, channelId);
-                var guildsActor = await akkaService.SelectActor(MainActors.Paths.Guilds);
-                guildsActor.Tell(action);
-                return Unit.Default;
-            }).ToEitherAsyncError();
     }
 }

@@ -2,6 +2,7 @@
 using LanguageExt;
 using LanguageExt.Common;
 using LanguageExt.Pipes;
+using LanguageExt.SomeHelp;
 using Microsoft.Extensions.Logging;
 using OpenttdDiscord.Base.Ext;
 using OpenttdDiscord.Database.Servers;
@@ -38,10 +39,11 @@ namespace OpenttdDiscord.Infrastructure.Servers.UseCases
             logger.LogTrace("Executing with {0} for\n{1}", userRights, server);
 
             return
-                from _1 in validator.Validate(server).ToAsync()
-                from _2 in CheckIfSerwerExists(server.GuildId, server.Name)
-                from _3 in ottdServerRepository.InsertServer(server).ToAsync()
-                from _4 in InformActorAboutNewServer(server)
+                from _1         in validator.Validate(server).ToAsync()
+                from _2         in CheckIfSerwerExists(server.GuildId, server.Name)
+                from _3         in ottdServerRepository.InsertServer(server).ToAsync()
+                from selection  in akkaService.SelectActor(MainActors.Paths.Guilds)
+                from _4         in selection.TellExt(new InformAboutServerRegistration(server)).ToAsync()
                 select _4;
         }
 
@@ -56,13 +58,5 @@ namespace OpenttdDiscord.Infrastructure.Servers.UseCases
 
                 return Unit.Default;
             }).ToEitherAsyncErrorFlat();
-
-        private EitherAsyncUnit InformActorAboutNewServer(OttdServer server)
-            => TryAsync(async () =>
-            {
-                ActorSelection selection = await akkaService.SelectActor(MainActors.Paths.Guilds);
-                selection.Tell(new InformAboutServerRegistration(server));
-                return Unit.Default;
-            }).ToEitherAsyncError();
     }
 }

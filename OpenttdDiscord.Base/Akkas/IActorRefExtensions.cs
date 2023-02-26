@@ -6,6 +6,12 @@ namespace OpenttdDiscord.Base.Akkas
 {
     public static class IActorRefExtensions
     {
+        public static Unit TellExt(this IActorRef actor, object msg)
+        {
+            actor.Tell(msg);
+            return Unit.Default;
+        }
+
         public static Unit TellMany<T>(this IActorRef actor, IEnumerable<T> msgs)
         {
             foreach (var m in msgs)

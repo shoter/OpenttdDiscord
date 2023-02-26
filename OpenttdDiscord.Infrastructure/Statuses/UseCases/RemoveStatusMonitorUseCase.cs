@@ -24,20 +24,14 @@ namespace OpenttdDiscord.Infrastructure.Statuses.UseCases
 
         public EitherAsyncUnit Execute(User user, Guid serverId, ulong guildId, ulong channelId)
         {
+            var msg = new RemoveStatusMonitor(serverId, guildId, channelId);
+
             return
             from _1 in CheckIfHasCorrectUserLevel(user, UserLevel.Admin).ToAsync()
             from _2 in statusMonitorRepository.RemoveStatusMonitor(serverId, channelId)
-            from _3 in InformActor(serverId, guildId, channelId)
-            select _3;
+            from guilds in akkaService.SelectActor(MainActors.Paths.Guilds)
+            from _3 in guilds.TryAsk(msg, TimeSpan.FromSeconds(1))
+            select Unit.Default;
         }
-
-        private EitherAsyncUnit InformActor(Guid serverId, ulong guildId, ulong channelId)
-            => TryAsync(async () =>
-            {
-                var msg = new RemoveStatusMonitor(serverId, guildId, channelId);
-                var actors = await akkaService.SelectActor(MainActors.Paths.Guilds);
-                return (await actors.TryAsk(msg, TimeSpan.FromSeconds(1)))
-                    .Map(_ => Unit.Default);
-            }).ToEitherAsyncErrorFlat();
     }
 }

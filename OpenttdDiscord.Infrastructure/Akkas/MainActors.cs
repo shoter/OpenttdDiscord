@@ -8,6 +8,8 @@ namespace OpenttdDiscord.Infrastructure.Akkas
         {
             public const string Guilds = "guilds";
 
+            public const string ChatChannelManager = "chat-channels";
+
             /// <summary>
             /// Guild-<b>{guildId}</b>
             /// </summary>
@@ -17,6 +19,8 @@ namespace OpenttdDiscord.Infrastructure.Akkas
         public static class Paths
         {
             public const string Guilds = "/user/" + Names.Guilds;
+
+            public const string ChatChannelManager = "/user/" + Names.ChatChannelManager;
         }
     }
 }

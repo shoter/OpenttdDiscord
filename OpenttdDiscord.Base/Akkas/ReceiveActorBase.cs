@@ -12,7 +12,7 @@ namespace OpenttdDiscord.Base.Akkas
 
         protected readonly ILogger logger;
 
-        public ReceiveActorBase(IServiceProvider serviceProvider)
+        protected ReceiveActorBase(IServiceProvider serviceProvider)
         {
             this.serviceScope = serviceProvider.CreateScope();
             this.SP = serviceScope.ServiceProvider;

@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using OpenttdDiscord.Infrastructure.Akkas;
+using OpenttdDiscord.Infrastructure.Chatting.Actors;
 using OpenttdDiscord.Infrastructure.Guilds.Actors;
 
 namespace OpenttdDiscord.Discord.Services
@@ -31,6 +32,7 @@ namespace OpenttdDiscord.Discord.Services
         {
             logger.LogInformation("Starting all akka actors");
             actorSystem.ActorOf(GuildsActor.Create(serviceProvider), MainActors.Names.Guilds);
+            actorSystem.ActorOf(ChatChannelManagerActor.Create(serviceProvider), MainActors.Names.ChatChannelManager);
             logger.LogInformation("Akka has been started!");
             akkaService.NotifyAboutAkkaStart();
             return Task.CompletedTask;

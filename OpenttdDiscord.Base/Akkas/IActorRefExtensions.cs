@@ -49,7 +49,7 @@ namespace OpenttdDiscord.Base.Akkas
                 return new ExceptionError(new Exception("Could not convert an object"));
             }).ToEitherAsyncErrorFlat();
 
-        public static EitherAsync<IError, object> TryAsk(this ICanTell actor, object msg, TimeSpan? timeout = null)
-            => TryAsk<object>(actor, msg);
+        public static EitherAsync<IError, object> TryAsk(this IActorRef actor, object msg, TimeSpan? timeout = null)
+            => TryAsk<object>(actor, msg, timeout);
     }
 }

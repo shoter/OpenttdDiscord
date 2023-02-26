@@ -8,7 +8,7 @@ namespace OpenttdDiscord.Infrastructure.Chatting.Actors
     public class ChatChannelManagerActor : ReceiveActorBase
     {
         public ExtDictionary<ulong, IActorRef> Channels { get; } = new();
-        private ChatChannelManagerActor(IServiceProvider serviceProvider) : base(serviceProvider)
+        public ChatChannelManagerActor(IServiceProvider serviceProvider) : base(serviceProvider)
         {
             Ready();
         }

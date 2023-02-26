@@ -11,6 +11,6 @@ namespace OpenttdDiscord.Database.Chatting
 
         EitherAsync<IError, List<ChatChannel>> GetChatChannelsForServer(Guid serverId);
 
-        EitherAsync<IError, Option<ChatChannel>> GetChatChannelsForServer(Guid serverId, ulong channelId);
+        EitherAsync<IError, Option<ChatChannel>> GetChatChannelForServer(Guid serverId, ulong channelId);
     }
 }

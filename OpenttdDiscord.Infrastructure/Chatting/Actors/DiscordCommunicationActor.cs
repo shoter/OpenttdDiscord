@@ -28,12 +28,16 @@ namespace OpenttdDiscord.Infrastructure.Chatting.Actors
             : base(serviceProvider)
         {
             this.ottdServer = ottdServer;
+            this.channelId = channelId;
             this.client = client;
             this.akkaService = SP.GetRequiredService<IAkkaService>();
 
             Ready();
             Self.Tell(new InitDiscordChannel());
         }
+
+        public static Props Create(IServiceProvider serviceProvider, ulong channelId, AdminPortClient client, OttdServer ottdServer)
+            => Props.Create(() => new DiscordCommunicationActor(serviceProvider, channelId, client, ottdServer));
 
         private void Ready()
         {

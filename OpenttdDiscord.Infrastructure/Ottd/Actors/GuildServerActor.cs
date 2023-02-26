@@ -6,10 +6,14 @@ using Microsoft.Extensions.Logging;
 using OpenTTDAdminPort;
 using OpenttdDiscord.Base.Basics;
 using OpenttdDiscord.Base.Ext;
+using OpenttdDiscord.Domain.Chatting.UseCases;
 using OpenttdDiscord.Domain.Security;
 using OpenttdDiscord.Domain.Servers;
 using OpenttdDiscord.Domain.Statuses;
 using OpenttdDiscord.Domain.Statuses.UseCases;
+using OpenttdDiscord.Infrastructure.Chatting;
+using OpenttdDiscord.Infrastructure.Chatting.Actors;
+using OpenttdDiscord.Infrastructure.Chatting.Messages;
 using OpenttdDiscord.Infrastructure.Ottd.Messages;
 using OpenttdDiscord.Infrastructure.Servers;
 using OpenttdDiscord.Infrastructure.Statuses.Actors;
@@ -25,15 +29,20 @@ namespace OpenttdDiscord.Infrastructure.Ottd.Actors
         private readonly AdminPortClient client;
         private readonly IGetStatusMonitorsForServerUseCase getStatusMonitorsForServerUseCase;
         private readonly IUpdateStatusMonitorUseCase updateStatusMonitorUseCase;
+        private readonly IGetChatChannelUseCase getChatChannelUseCase;
         private readonly ExtDictionary<ulong, IActorRef> statusMonitorActors = new();
+        private readonly ExtDictionary<ulong, ChattingActors> chatChannelActors = new();
 
         public ITimerScheduler Timers { get; set; } = default!;
 
         public GuildServerActor(IServiceProvider serviceProvider, OttdServer server) : base(serviceProvider)
         {
             this.server = server;
+
             this.getStatusMonitorsForServerUseCase = SP.GetRequiredService<IGetStatusMonitorsForServerUseCase>();
             this.updateStatusMonitorUseCase = SP.GetRequiredService<IUpdateStatusMonitorUseCase>();
+            this.getChatChannelUseCase = SP.GetRequiredService<IGetChatChannelUseCase>();
+
             client = new(new AdminPortClientSettings()
             {
                 WatchdogInterval = TimeSpan.FromSeconds(5)
@@ -53,6 +62,7 @@ namespace OpenttdDiscord.Infrastructure.Ottd.Actors
             Receive<RegisterStatusMonitor>(RegisterStatusMonitor);
             ReceiveAsync<RemoveStatusMonitor>(RemoveStatusMonitor);
             ReceiveAsync<UpdateStatusMonitor>(UpdateStatusMonitor);
+            Receive<RegisterChatChannel>(RegisterChatChannel);
         }
 
         public static Props Create(IServiceProvider sp, OttdServer server)
@@ -77,6 +87,15 @@ namespace OpenttdDiscord.Infrastructure.Ottd.Actors
             {
                 CreateStatusMonitor(monitor);
                 logger.LogInformation($"Created monitor for {server.Name} on channel {monitor.ChannelId}");
+            }
+
+            var chatChannels = (await getChatChannelUseCase.Execute(User.Master, server.Id))
+                .ThrowIfError()
+                .Right();
+
+            foreach(var cc in chatChannels)
+            {
+                RegisterChatChannel(new(server, cc));
             }
         }
 
@@ -133,6 +152,21 @@ namespace OpenttdDiscord.Infrastructure.Ottd.Actors
                 self.Tell(new RegisterStatusMonitor(monitor));
                 return Unit.Default;
             });
+        }
+
+        private void RegisterChatChannel(RegisterChatChannel rcc)
+        {
+            if(chatChannelActors.ContainsKey(rcc.chatChannel.ChannelId))
+            {
+                logger.LogWarning($"Chat channel {server.Name} - {rcc.chatChannel.ChannelId} already registered");
+                return;
+            }
+
+            var discord = Context.ActorOf(DiscordCommunicationActor.Create(SP, rcc.chatChannel.ChannelId, client, server));
+
+            var chattingActors = new ChattingActors(rcc.chatChannel, discord, discord);
+            chatChannelActors.Add(rcc.chatChannel.ChannelId, chattingActors);
+            logger.LogInformation($"Registered chat channel {rcc.chatChannel.ChannelId} for {server.Name}");
         }
     }
 }

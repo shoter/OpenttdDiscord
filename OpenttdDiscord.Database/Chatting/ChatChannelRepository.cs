@@ -48,7 +48,7 @@ namespace OpenttdDiscord.Database.Chatting
                 return Unit.Default;
             }).ToEitherAsyncErrorFlat();
 
-        public EitherAsync<IError, Option<ChatChannel>> GetChatChannelsForServer(Guid serverId, ulong channelId)
+        public EitherAsync<IError, Option<ChatChannel>> GetChatChannelForServer(Guid serverId, ulong channelId)
               => TryAsync<Either<IError, Option<ChatChannel>>>(async () =>
               {
                   var chatChannel = (await DB.ChatChannels

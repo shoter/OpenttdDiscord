@@ -4,6 +4,7 @@ using OpenttdDiscord.Database.Chatting;
 using OpenttdDiscord.Domain.Chatting;
 using OpenttdDiscord.Domain.Chatting.UseCases;
 using OpenttdDiscord.Domain.Security;
+using System.Threading.Channels;
 
 namespace OpenttdDiscord.Infrastructure.Chatting.UseCases
 {
@@ -20,7 +21,15 @@ namespace OpenttdDiscord.Infrastructure.Chatting.UseCases
         {
             return
                 from _1 in CheckIfHasCorrectUserLevel(user, UserLevel.Moderator).ToAsync()
-                from server in chatChannelRepository.GetChatChannelsForServer(serverId, channelId)
+                from server in chatChannelRepository.GetChatChannelForServer(serverId, channelId)
+                select server;
+        }
+
+        public EitherAsync<IError, List<ChatChannel>> Execute(User user, Guid serverId)
+        {
+            return
+                from _1 in CheckIfHasCorrectUserLevel(user, UserLevel.Moderator).ToAsync()
+                from server in chatChannelRepository.GetChatChannelsForServer(serverId)
                 select server;
         }
     }

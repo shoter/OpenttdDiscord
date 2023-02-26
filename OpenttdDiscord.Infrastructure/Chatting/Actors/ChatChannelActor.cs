@@ -12,7 +12,7 @@ namespace OpenttdDiscord.Infrastructure.Chatting.Actors
         private readonly IActorRef discordChannel;
         private readonly HashSet<IActorRef> subscribers = new();
 
-        private ChatChannelActor(
+        public ChatChannelActor(
             IServiceProvider serviceProvider,
             ulong chatChannelId) : base(serviceProvider)
         {

@@ -9,11 +9,13 @@ namespace OpenttdDiscord.Infrastructure.Discord.Actors
     {
         private readonly DiscordSocketClient discord;
         private readonly ulong channelId;
-        protected DiscordChannelActor(
+        private readonly IActorRef parent;
+        public DiscordChannelActor(
             IServiceProvider serviceProvider, ulong channelId) : base(serviceProvider)
         {
             this.discord = serviceProvider.GetRequiredService<DiscordSocketClient>();
             this.channelId = channelId;
+            this.parent = Context.Parent;
 
             Ready();
             Self.Tell(new InitDiscordChannelActor());
@@ -45,12 +47,13 @@ namespace OpenttdDiscord.Infrastructure.Discord.Actors
                 return Task.CompletedTask;
             }
 
-            if(string.IsNullOrWhiteSpace(msg.Content))
+            if (string.IsNullOrWhiteSpace(msg.Content))
             {
                 return Task.CompletedTask;
             }
 
-            Context.Parent.Tell(new HandleDiscordMessage(msg.Author.Username, msg.Content));
+
+            parent.Tell(new HandleDiscordMessage(msg.Author.Username, msg.Content));
             return Task.CompletedTask;
         }
     }

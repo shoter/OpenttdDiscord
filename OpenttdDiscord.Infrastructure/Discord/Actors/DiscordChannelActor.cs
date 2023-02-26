@@ -52,7 +52,6 @@ namespace OpenttdDiscord.Infrastructure.Discord.Actors
                 return Task.CompletedTask;
             }
 
-
             parent.Tell(new HandleDiscordMessage(msg.Author.Username, msg.Content));
             return Task.CompletedTask;
         }

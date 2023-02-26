@@ -21,9 +21,9 @@ namespace OpenttdDiscord.Infrastructure.Chatting.Actors
         private Option<IActorRef> chatChannel = Option<IActorRef>.None;
 
         public DiscordCommunicationActor(
-            IServiceProvider serviceProvider, 
+            IServiceProvider serviceProvider,
             ulong channelId,
-            AdminPortClient client, 
+            AdminPortClient client,
             OttdServer ottdServer)
             : base(serviceProvider)
         {
@@ -50,7 +50,7 @@ namespace OpenttdDiscord.Infrastructure.Chatting.Actors
             var msg = new GetCreateChatChannel(channelId);
             var self = Self;
 
-            (await(
+            (await (
             from chatManager in akkaService.SelectActor(MainActors.Paths.ChatChannelManager)
             from channelActor in chatManager.TryAsk<IActorRef>(msg)
             from _1 in AssignChannelActor(channelActor).ToAsync()
@@ -62,8 +62,8 @@ namespace OpenttdDiscord.Infrastructure.Chatting.Actors
         private void HandleDiscordMessage(HandleDiscordMessage handle)
         {
             var msg = new AdminChatMessage(
-                NetworkAction.NETWORK_ACTION_CHAT, 
-                ChatDestination.DESTTYPE_BROADCAST, 
+                NetworkAction.NETWORK_ACTION_CHAT,
+                ChatDestination.DESTTYPE_BROADCAST,
                 default,
                 $"[{handle.Username}] {handle.Message}");
             client.SendMessage(msg);
@@ -73,6 +73,13 @@ namespace OpenttdDiscord.Infrastructure.Chatting.Actors
         {
             this.chatChannel = Option<IActorRef>.Some(channelActor);
             return Unit.Default;
+        }
+
+        protected override void PostStop()
+        {
+            base.PostStop();
+            var self = Self;
+            chatChannel.Some(a => a.Tell(new UnregisterFromChatChannel(self)));
         }
     }
 }

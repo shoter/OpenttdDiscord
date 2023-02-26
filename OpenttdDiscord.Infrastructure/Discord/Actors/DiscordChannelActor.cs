@@ -14,6 +14,9 @@ namespace OpenttdDiscord.Infrastructure.Discord.Actors
         {
             this.discord = serviceProvider.GetRequiredService<DiscordSocketClient>();
             this.channelId = channelId;
+
+            Ready();
+            Self.Tell(new InitDiscordChannelActor());
         }
 
         private void Ready()

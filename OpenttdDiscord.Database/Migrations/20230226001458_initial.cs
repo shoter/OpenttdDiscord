@@ -12,6 +12,19 @@ namespace OpenttdDiscord.Database.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
+                name: "ChatChannels",
+                columns: table => new
+                {
+                    ServerId = table.Column<Guid>(type: "uuid", nullable: false),
+                    ChannelId = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
+                    GuildId = table.Column<decimal>(type: "numeric(20,0)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ChatChannels", x => new { x.ServerId, x.ChannelId });
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Servers",
                 columns: table => new
                 {
@@ -58,6 +71,9 @@ namespace OpenttdDiscord.Database.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "ChatChannels");
+
             migrationBuilder.DropTable(
                 name: "Monitors");
 

@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using OpenttdDiscord.Base.Ext;
 using OpenttdDiscord.Infrastructure.Discord.Commands;
 using OpenttdDiscord.Infrastructure.Discord.Responses;
+using OpenttdDiscord.Infrastructure.Statuses.Commands;
 using OpenttdDiscord.Validation;
 
 namespace OpenttdDiscord.Infrastructure.Discord
@@ -26,11 +27,11 @@ namespace OpenttdDiscord.Infrastructure.Discord
             this.logger = logger;
             this.serviceProvider = serviceProvider;
             this.client = client;
-                        foreach(var c in commands)
+            foreach (var c in commands)
             {
                 this.commands.Add(c.Name, c);
             }
-}
+        }
 
         public async Task Register()
         {
@@ -60,8 +61,16 @@ namespace OpenttdDiscord.Infrastructure.Discord
 
         private async Task RegisterCommands()
         {
+            var existingCommands = (await client.GetGlobalApplicationCommandsAsync())
+                .ToDictionary(x => x.Name);
+
             foreach (var c in commands.Values)
             {
+                if (existingCommands.ContainsKey(c.Name))
+                {
+                    continue;
+                }
+
                 try
                 {
                     logger.LogInformation($"Registering {c}");

@@ -12,7 +12,7 @@ using OpenttdDiscord.Database;
 namespace OpenttdDiscord.Database.Migrations
 {
     [DbContext(typeof(OttdContext))]
-    [Migration("20230224010527_initial")]
+    [Migration("20230226001458_initial")]
     partial class initial
     {
         /// <inheritdoc />
@@ -24,6 +24,22 @@ namespace OpenttdDiscord.Database.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
+
+            modelBuilder.Entity("OpenttdDiscord.Database.Chatting.ChatChannelEntity", b =>
+                {
+                    b.Property<Guid>("ServerId")
+                        .HasColumnType("uuid");
+
+                    b.Property<decimal>("ChannelId")
+                        .HasColumnType("numeric(20,0)");
+
+                    b.Property<decimal>("GuildId")
+                        .HasColumnType("numeric(20,0)");
+
+                    b.HasKey("ServerId", "ChannelId");
+
+                    b.ToTable("ChatChannels");
+                });
 
             modelBuilder.Entity("OpenttdDiscord.Database.Ottd.Servers.OttdServerEntity", b =>
                 {

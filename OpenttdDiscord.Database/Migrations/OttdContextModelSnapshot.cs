@@ -22,6 +22,22 @@ namespace OpenttdDiscord.Database.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("OpenttdDiscord.Database.Chatting.ChatChannelEntity", b =>
+                {
+                    b.Property<Guid>("ServerId")
+                        .HasColumnType("uuid");
+
+                    b.Property<decimal>("ChannelId")
+                        .HasColumnType("numeric(20,0)");
+
+                    b.Property<decimal>("GuildId")
+                        .HasColumnType("numeric(20,0)");
+
+                    b.HasKey("ServerId", "ChannelId");
+
+                    b.ToTable("ChatChannels");
+                });
+
             modelBuilder.Entity("OpenttdDiscord.Database.Ottd.Servers.OttdServerEntity", b =>
                 {
                     b.Property<Guid>("Id")

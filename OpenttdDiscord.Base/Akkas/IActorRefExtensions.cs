@@ -16,7 +16,17 @@ namespace OpenttdDiscord.Base.Akkas
             return Unit.Default;
         }
 
-        public static EitherAsync<IError, T> TryAsk<T>(this ICanTell actor, object msg, TimeSpan? timeout = null)
+        public static Unit TellMany(this IEnumerable<IActorRef> actor, object msg)
+        {
+            foreach(var a in actor)
+            {
+                a.Tell(msg);
+            }
+
+            return Unit.Default;
+        }
+
+        public static EitherAsync<IError, T> TryAsk<T>(this IActorRef actor, object msg, TimeSpan? timeout = null)
             => TryAsync<Either<IError, T>>(async () =>
             {
                 var t = await actor.Ask(msg, timeout);

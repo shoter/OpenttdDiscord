@@ -1,4 +1,6 @@
 ﻿using Akka.Actor;
+using LanguageExt;
+using OpenttdDiscord.Base.Ext;
 
 namespace OpenttdDiscord.Infrastructure.Akkas
 {
@@ -18,14 +20,15 @@ namespace OpenttdDiscord.Infrastructure.Akkas
             isAkkaStared = true;
         }
 
-        public async Task<ActorSelection> SelectActor(string path)
+        public EitherAsync<IError, ActorSelection> SelectActor(string path)
+        => TryAsync(async () =>
         {
-            while(isAkkaStared == false)
+            while (isAkkaStared == false)
             {
                 await Task.Delay(TimeSpan.FromSeconds(1));
             }
 
             return actorSystem.ActorSelection(path);
-        }
+        }).ToEitherAsyncError();
     }
 }

@@ -1,10 +1,12 @@
 ﻿using Akka.Actor;
+using LanguageExt;
+using OpenttdDiscord.Base.Ext;
 
 namespace OpenttdDiscord.Infrastructure.Akkas
 {
     public interface IAkkaService
     {
-        Task<ActorSelection> SelectActor(string path);
+        EitherAsync<IError, ActorSelection> SelectActor(string path);
 
         void NotifyAboutAkkaStart();
     }

@@ -19,6 +19,9 @@ namespace OpenttdDiscord.Infrastructure.Discord.Actors
             Self.Tell(new InitDiscordChannelActor());
         }
 
+        public static Props Create(IServiceProvider sp, ulong channelId)
+            => Props.Create(() => new DiscordChannelActor(sp, channelId));
+
         private void Ready()
         {
             ReceiveAsync<InitDiscordChannelActor>(InitDiscordChannelActor);

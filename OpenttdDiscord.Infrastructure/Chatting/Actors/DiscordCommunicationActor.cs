@@ -44,6 +44,7 @@ namespace OpenttdDiscord.Infrastructure.Chatting.Actors
         {
             ReceiveAsync<InitDiscordChannel>(InitDiscordChannel);
             Receive<HandleDiscordMessage>(HandleDiscordMessage);
+            ReceiveIgnore<HandleOttdMessage>();
         }
 
         private async Task InitDiscordChannel(InitDiscordChannel _)

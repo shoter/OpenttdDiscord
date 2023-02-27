@@ -35,5 +35,10 @@ namespace OpenttdDiscord.Base.Akkas
             base.PostStop();
             serviceScope.Dispose();
         }
+
+        /// <summary>
+        /// Ignores all messages of type <typeparamref name="T"/> and does nothing with them.
+        /// </summary>
+        protected void ReceiveIgnore<T>() => Receive<T>(_ => { });
     }
 }

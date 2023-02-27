@@ -164,7 +164,7 @@ namespace OpenttdDiscord.Infrastructure.Ottd.Actors
             }
 
             var discord = Context.ActorOf(DiscordCommunicationActor.Create(SP, rcc.chatChannel.ChannelId, client, server), "discordCommunication");
-            var openttd =  Context.ActorOf(OttdCommunicationActor.Create(SP, rcc.chatChannel.ChannelId, server), "ottdCommunication");
+            var openttd =  Context.ActorOf(OttdCommunicationActor.Create(SP, rcc.chatChannel.ChannelId, server, client), "ottdCommunication");
 
             var chattingActors = new ChattingActors(rcc.chatChannel, discord, openttd);
             chatChannelActors.Add(rcc.chatChannel.ChannelId, chattingActors);

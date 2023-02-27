@@ -2,7 +2,10 @@
 using LanguageExt;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using OpenTTDAdminPort;
 using OpenTTDAdminPort.Events;
+using OpenTTDAdminPort.Game;
+using OpenTTDAdminPort.Messages;
 using OpenttdDiscord.Base.Ext;
 using OpenttdDiscord.Domain.Servers;
 using OpenttdDiscord.Infrastructure.Akkas;
@@ -20,6 +23,7 @@ namespace OpenttdDiscord.Infrastructure.Chatting.Actors
     {
         private readonly OttdServer server;
         private readonly ulong channelId;
+        private readonly IAdminPortClient client;
         private Option<IActorRef> chatChannel = Option<IActorRef>.None;
 
         private readonly IAkkaService akkaService;
@@ -27,26 +31,28 @@ namespace OpenttdDiscord.Infrastructure.Chatting.Actors
         public OttdCommunicationActor(
             IServiceProvider serviceProvider,
             ulong channelId,
-            OttdServer server)
+            OttdServer server,
+            IAdminPortClient client)
             : base(serviceProvider)
         {
             this.server = server;
             this.channelId = channelId;
+            this.client = client;
             this.akkaService = SP.GetRequiredService<IAkkaService>();
 
             Ready();
             Self.Tell(new InitOttdCommunicationActor());
         }
 
-        public static Props Create(IServiceProvider sp, ulong channelId, OttdServer server) =>
-            Props.Create(() => new OttdCommunicationActor(sp, channelId, server));
+        public static Props Create(IServiceProvider sp, ulong channelId, OttdServer server, IAdminPortClient client) =>
+            Props.Create(() => new OttdCommunicationActor(sp, channelId, server, client));
 
         private void Ready()
         {
             ReceiveAsync<InitOttdCommunicationActor>(InitOttdCommunicationActor);
+            Receive<HandleOttdMessage>(HandleOttdMessage);
             Receive<AdminChatMessageEvent>(HandleChatMessage);
-            // ignore other events
-            Receive<IAdminEvent>(_ => { });
+            ReceiveIgnore<IAdminEvent>();
         }
 
         private async Task InitOttdCommunicationActor(InitOttdCommunicationActor _)
@@ -74,7 +80,25 @@ namespace OpenttdDiscord.Infrastructure.Chatting.Actors
 
         private void HandleChatMessage(AdminChatMessageEvent msg)
         {
-            logger.LogInformation($"{msg.Player.Name} : {msg.Message}");
+            if(msg.Player.ClientId == 1)
+            {
+                // we ignore server messages
+                return;
+            }
+
+            this.chatChannel.TellMany(new HandleOttdMessage(server, msg.Player.Name, msg.Message));
+        }
+
+        private void HandleOttdMessage(HandleOttdMessage msg)
+        {
+            if(msg.Server == server)
+            {
+                return;
+            }
+
+            string message = $"[{msg.Server.Name}] {msg.Username}: {msg.Message}";
+
+            client.SendMessage(new AdminChatMessage(NetworkAction.NETWORK_ACTION_CHAT, ChatDestination.DESTTYPE_BROADCAST, default, message));
         }
 
         protected override void PostStop()

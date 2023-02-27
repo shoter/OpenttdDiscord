@@ -18,7 +18,7 @@ namespace OpenttdDiscord.Infrastructure.Chatting.Actors
             ulong chatChannelId) : base(serviceProvider)
         {
             this.chatChannelId = chatChannelId;
-            discordChannel = Context.ActorOf(DiscordChannelActor.Create(SP, chatChannelId));
+            discordChannel = Context.ActorOf(DiscordChannelActor.Create(SP, chatChannelId), "discordChannel");
             Ready();
         }
 
@@ -27,15 +27,23 @@ namespace OpenttdDiscord.Infrastructure.Chatting.Actors
 
         private void Ready()
         {
-            Receive<HandleDiscordMessage>(HandleDiscordMessage);
+            Receive<HandleDiscordMessage>(TellSubscribers);
+            Receive<HandleOttdMessage>(TellSubscribers);
             Receive<RegisterToChatChannel>(RegisterToChatChannel);
             Receive<UnregisterFromChatChannel>(UnregisterFromChatChannel);
         }
 
-        private void HandleDiscordMessage(HandleDiscordMessage msg)
+        private void TellSubscribers(object msg)
         {
-            logger.LogInformation($"[{msg.Username}] {msg.Message}");
-            subscribers.TellMany(msg);
+            foreach(var s in subscribers)
+            {
+                if(s == Sender)
+                {
+                    continue;
+                }
+
+                s.Tell(msg);
+            }
         }
 
         private void RegisterToChatChannel(RegisterToChatChannel msg)

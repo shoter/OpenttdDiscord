@@ -1,9 +1,9 @@
 ﻿using Akka.Actor;
 using LanguageExt;
-using LanguageExt.UnitsOfMeasure;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using OpenTTDAdminPort;
+using OpenTTDAdminPort.Events;
 using OpenttdDiscord.Base.Basics;
 using OpenttdDiscord.Base.Ext;
 using OpenttdDiscord.Domain.Chatting.UseCases;
@@ -15,10 +15,8 @@ using OpenttdDiscord.Infrastructure.Chatting;
 using OpenttdDiscord.Infrastructure.Chatting.Actors;
 using OpenttdDiscord.Infrastructure.Chatting.Messages;
 using OpenttdDiscord.Infrastructure.Ottd.Messages;
-using OpenttdDiscord.Infrastructure.Servers;
 using OpenttdDiscord.Infrastructure.Statuses.Actors;
 using OpenttdDiscord.Infrastructure.Statuses.Messages;
-using OpenttdDiscord.Infrastructure.Statuses.UseCases;
 using Serilog;
 
 namespace OpenttdDiscord.Infrastructure.Ottd.Actors
@@ -32,6 +30,7 @@ namespace OpenttdDiscord.Infrastructure.Ottd.Actors
         private readonly IGetChatChannelUseCase getChatChannelUseCase;
         private readonly ExtDictionary<ulong, IActorRef> statusMonitorActors = new();
         private readonly ExtDictionary<ulong, ChattingActors> chatChannelActors = new();
+        private readonly System.Collections.Generic.HashSet<IActorRef> adminEventSubscribers = new();
 
         public ITimerScheduler Timers { get; set; } = default!;
 
@@ -58,11 +57,15 @@ namespace OpenttdDiscord.Infrastructure.Ottd.Actors
         {
             ReceiveAsync<InitGuildServerActorMessage>(InitGuildServerActorMessage);
             Receive<ExecuteServerAction>(ExecuteServerAction);
-            Receive<KillDanglingAction>(KillDanglingAction);
             Receive<RegisterStatusMonitor>(RegisterStatusMonitor);
             ReceiveAsync<RemoveStatusMonitor>(RemoveStatusMonitor);
             ReceiveAsync<UpdateStatusMonitor>(UpdateStatusMonitor);
             Receive<RegisterChatChannel>(RegisterChatChannel);
+
+            Receive<KillDanglingAction>(msg => msg.commandActor.GracefulStop(TimeSpan.FromSeconds(1)));
+            Receive<IAdminEvent>(ev => adminEventSubscribers.TellMany(ev));
+            Receive<SubscribeToAdminEvents>(m => adminEventSubscribers.Add(m.Subscriber));
+            Receive<UnsubscribeFromAdminEvents>(m => adminEventSubscribers.Remove(m.subscriber));
         }
 
         public static Props Create(IServiceProvider sp, OttdServer server)
@@ -97,6 +100,8 @@ namespace OpenttdDiscord.Infrastructure.Ottd.Actors
             {
                 RegisterChatChannel(new(server, cc));
             }
+
+            client.SetAdminEventHandler(ev => self.Tell(ev));
         }
 
         private void ExecuteServerAction(ExecuteServerAction cmd)
@@ -105,11 +110,6 @@ namespace OpenttdDiscord.Infrastructure.Ottd.Actors
             var commandActor = Context.ActorOf(props);
             Timers.StartSingleTimer(commandActor, new KillDanglingAction(commandActor), cmd.TimeOut);
             commandActor.Tell(cmd);
-        }
-
-        private void KillDanglingAction(KillDanglingAction msg)
-        {
-            msg.commandActor.GracefulStop(TimeSpan.FromSeconds(1));
         }
 
         private void RegisterStatusMonitor(RegisterStatusMonitor msg)
@@ -144,6 +144,7 @@ namespace OpenttdDiscord.Infrastructure.Ottd.Actors
 
         private async Task UpdateStatusMonitor(UpdateStatusMonitor usm)
         {
+
             await this.RemoveStatusMonitor(new(usm.UpdatedMonitor.ServerId, usm.UpdatedMonitor.GuildId, usm.UpdatedMonitor.ChannelId));
             var self = Self;
             var monitorResult = await this.updateStatusMonitorUseCase.Execute(User.Master, usm.UpdatedMonitor);
@@ -163,8 +164,9 @@ namespace OpenttdDiscord.Infrastructure.Ottd.Actors
             }
 
             var discord = Context.ActorOf(DiscordCommunicationActor.Create(SP, rcc.chatChannel.ChannelId, client, server), "discordCommunication");
+            var openttd =  Context.ActorOf(OttdCommunicationActor.Create(SP, rcc.chatChannel.ChannelId, server), "ottdCommunication");
 
-            var chattingActors = new ChattingActors(rcc.chatChannel, discord, discord);
+            var chattingActors = new ChattingActors(rcc.chatChannel, discord, openttd);
             chatChannelActors.Add(rcc.chatChannel.ChannelId, chattingActors);
             logger.LogInformation($"Registered chat channel {rcc.chatChannel.ChannelId} for {server.Name}");
         }

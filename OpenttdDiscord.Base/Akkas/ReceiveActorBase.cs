@@ -12,10 +12,16 @@ namespace OpenttdDiscord.Base.Akkas
 
         protected readonly ILogger logger;
 
+        protected readonly IActorRef self;
+
+        protected readonly IActorRef parent;
+
         protected ReceiveActorBase(IServiceProvider serviceProvider)
         {
             this.serviceScope = serviceProvider.CreateScope();
             this.SP = serviceScope.ServiceProvider;
+            this.self = Self;
+            this.parent = Context.Parent;
 
             ILoggerFactory loggerFactory = SP.GetRequiredService<ILoggerFactory>();
             var type = this.GetType();

@@ -65,7 +65,7 @@ namespace OpenttdDiscord.Infrastructure.Chatting.Actors
                 NetworkAction.NETWORK_ACTION_CHAT,
                 ChatDestination.DESTTYPE_BROADCAST,
                 default,
-                $"[{handle.Username}] {handle.Message}");
+                $"[Discord] {handle.Username}: {handle.Message}");
             client.SendMessage(msg);
         }
 

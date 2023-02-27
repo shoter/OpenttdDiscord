@@ -1,4 +1,5 @@
 ﻿using Akka.Actor;
+using LanguageExt;
 using Microsoft.Extensions.Logging;
 using OpenttdDiscord.Infrastructure.Chatting.Messages;
 using OpenttdDiscord.Infrastructure.Discord.Actors;
@@ -10,7 +11,7 @@ namespace OpenttdDiscord.Infrastructure.Chatting.Actors
     {
         private readonly ulong chatChannelId;
         private readonly IActorRef discordChannel;
-        private readonly HashSet<IActorRef> subscribers = new();
+        private readonly System.Collections.Generic.HashSet<IActorRef> subscribers = new();
 
         public ChatChannelActor(
             IServiceProvider serviceProvider,
@@ -40,11 +41,13 @@ namespace OpenttdDiscord.Infrastructure.Chatting.Actors
         private void RegisterToChatChannel(RegisterToChatChannel msg)
         {
             subscribers.Add(msg.Subscriber);
+            Sender.Tell(Unit.Default);
         }
 
         private void UnregisterFromChatChannel(UnregisterFromChatChannel msg)
         {
             subscribers.Remove(msg.Subscriber);
+            Sender.Tell(Unit.Default);
         }
     }
 }

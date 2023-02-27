@@ -30,7 +30,9 @@ namespace OpenttdDiscord.Infrastructure.Chatting.Actors
 
         private IActorRef CreateChatChannel(ulong channelId)
         {
-            return Context.ActorOf(ChatChannelActor.Create(SP, channelId), channelId.ToString());
+            IActorRef channel = Context.ActorOf(ChatChannelActor.Create(SP, channelId), channelId.ToString());
+            Channels.Add(channelId, channel);
+            return channel;
         }
     }
 }

@@ -23,7 +23,7 @@ namespace OpenttdDiscord.Infrastructure.Chatting.Actors
 
         private readonly IAkkaService akkaService;
 
-        protected OttdCommunicationActor(
+        public OttdCommunicationActor(
             IServiceProvider serviceProvider,
             ulong channelId,
             OttdServer server)

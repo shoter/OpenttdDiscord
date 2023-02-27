@@ -9,6 +9,7 @@ using OpenttdDiscord.Domain.Servers;
 using OpenttdDiscord.Infrastructure.Akkas;
 using OpenttdDiscord.Infrastructure.Chatting.Messages;
 using OpenttdDiscord.Infrastructure.Discord.Messages;
+using OpenttdDiscord.Infrastructure.Ottd.Messages;
 
 namespace OpenttdDiscord.Infrastructure.Chatting.Actors
 {

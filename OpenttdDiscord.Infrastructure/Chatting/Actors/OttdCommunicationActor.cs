@@ -7,6 +7,7 @@ using OpenttdDiscord.Base.Ext;
 using OpenttdDiscord.Domain.Servers;
 using OpenttdDiscord.Infrastructure.Akkas;
 using OpenttdDiscord.Infrastructure.Chatting.Messages;
+using OpenttdDiscord.Infrastructure.Ottd.Messages;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -61,6 +62,8 @@ namespace OpenttdDiscord.Infrastructure.Chatting.Actors
             from _2 in channelActor.TryAsk(new RegisterToChatChannel(self))
             select _2
             )).ThrowIfError();
+
+            parent.Tell(new SubscribeToAdminEvents(self));
         }
 
         private EitherUnit AssignChannelActor(IActorRef channelActor)
@@ -78,6 +81,7 @@ namespace OpenttdDiscord.Infrastructure.Chatting.Actors
         {
             base.PostStop();
             var self = Self;
+            parent.Tell(new UnsubscribeFromAdminEvents(self));
             chatChannel.Some(a => a.Tell(new UnregisterFromChatChannel(self)));
         }
     }

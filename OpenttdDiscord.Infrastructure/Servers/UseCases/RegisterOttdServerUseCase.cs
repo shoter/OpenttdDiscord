@@ -34,11 +34,12 @@ namespace OpenttdDiscord.Infrastructure.Servers.UseCases
             this.logger = logger;
         }
 
-        public EitherAsyncUnit Execute(User userRights, OttdServer server)
+        public EitherAsyncUnit Execute(User user, OttdServer server)
         {
-            logger.LogTrace("Executing with {0} for\n{1}", userRights, server);
+            logger.LogTrace("Executing with {0} for\n{1}", user, server);
 
             return
+                from _0         in CheckIfHasCorrectUserLevel(user, UserLevel.Admin).ToAsync()
                 from _1         in validator.Validate(server).ToAsync()
                 from _2         in CheckIfSerwerExists(server.GuildId, server.Name)
                 from _3         in ottdServerRepository.InsertServer(server).ToAsync()

@@ -4,6 +4,7 @@ using LanguageExt;
 using OpenttdDiscord.Base.Basics;
 using OpenttdDiscord.Base.Ext;
 using OpenttdDiscord.Database.Servers;
+using OpenttdDiscord.Domain.Security;
 using OpenttdDiscord.Domain.Servers;
 using OpenttdDiscord.Infrastructure.Akkas;
 using OpenttdDiscord.Infrastructure.Discord;
@@ -35,6 +36,7 @@ namespace OpenttdDiscord.Infrastructure.Ottd.Runners
 
             string serverName = options.GetValueAs<string>("server-name");
             ulong channelId = command.ChannelId.Value;
+            var user = new User(command.User);
 
             return
                 from server in ottdServerRepository.GetServerByName(command.GuildId!.Value, serverName)

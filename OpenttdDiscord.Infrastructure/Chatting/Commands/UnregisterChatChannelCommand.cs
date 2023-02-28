@@ -17,7 +17,8 @@ namespace OpenttdDiscord.Infrastructure.Chatting.Commands
 
         public override void Configure(SlashCommandBuilder builder)
         {
-            throw new NotImplementedException();
+            builder
+                .WithDescription("Removes given server from chat channel completely");
         }
     }
 }

@@ -31,6 +31,7 @@ namespace OpenttdDiscord.Infrastructure.Chatting.Actors
             Receive<HandleOttdMessage>(TellSubscribers);
             Receive<RegisterToChatChannel>(RegisterToChatChannel);
             Receive<UnregisterFromChatChannel>(UnregisterFromChatChannel);
+            Receive<QuerySubscriberCount>(_ => Sender.Tell(subscribers.Count));
         }
 
         private void TellSubscribers(object msg)

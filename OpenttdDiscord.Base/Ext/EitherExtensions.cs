@@ -1,4 +1,5 @@
 ﻿using LanguageExt;
+using Microsoft.Extensions.Logging;
 
 namespace OpenttdDiscord.Base.Ext
 {
@@ -20,5 +21,12 @@ namespace OpenttdDiscord.Base.Ext
 
             return either;
         }
+
+        public static Either<IError, R> LeftLogError<R>(this Either<IError, R> either, ILogger logger)
+            => either.MapLeft(err =>
+            {
+                err.LogError(logger);
+                return err;
+            });
     }
 }

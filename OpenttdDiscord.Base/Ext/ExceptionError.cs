@@ -1,4 +1,5 @@
 ﻿using LanguageExt.Common;
+using Microsoft.Extensions.Logging;
 
 namespace OpenttdDiscord.Base.Ext
 {
@@ -28,6 +29,11 @@ namespace OpenttdDiscord.Base.Ext
 
             this.Reason = ex.Message;
             this.Exception = ex;
+        }
+
+        public void LogError(ILogger logger)
+        {
+            logger.LogError(Exception, Reason);
         }
     }
 }

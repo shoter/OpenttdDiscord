@@ -1,6 +1,7 @@
 ﻿using Akka.Actor;
 using LanguageExt;
 using OpenttdDiscord.Base.Basics;
+using OpenttdDiscord.Base.Ext;
 using OpenttdDiscord.Infrastructure.Chatting.Messages;
 
 namespace OpenttdDiscord.Infrastructure.Chatting.Actors
@@ -36,11 +37,26 @@ namespace OpenttdDiscord.Infrastructure.Chatting.Actors
             return channel;
         }
 
-        private void UnregisterChatChannel(UnregisterChatChannel ucc)
+        private async Task UnregisterChatChannel(UnregisterChatChannel ucc)
         {
-            Channels
-                .MaybeGetValue(ucc.ChannelId)
-                .Some(channel => channel.GracefulStop(TimeSpan.FromSeconds(1)));
+            EitherAsyncUnit RemoveIfCountEqualsZero(int count, IActorRef channel)
+                => TryAsync(async () =>
+                {
+                    if (count == 0)
+                    {
+                        return Unit.Default;
+                    }
+
+                    await channel.GracefulStop(TimeSpan.FromSeconds(1));
+                    return Unit.Default;
+                }).ToEitherAsyncError();
+
+            (await(
+            from channel in Channels.MaybeGetValue(ucc.ChannelId).ToEitherAsync((IError) new HumanReadableError("Channel not found"))
+             from count in channel.TryAsk<int>(new QuerySubscriberCount())
+             from _1 in RemoveIfCountEqualsZero(count, channel)
+             select _1
+             )).LeftLogError(logger);
         }
     }
 }

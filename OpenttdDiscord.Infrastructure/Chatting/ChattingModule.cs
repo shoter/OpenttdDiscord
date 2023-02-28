@@ -6,6 +6,7 @@ using OpenttdDiscord.Infrastructure.Chatting.Runners;
 using OpenttdDiscord.Infrastructure.Chatting.UseCases;
 using OpenttdDiscord.Infrastructure.Discord.Commands;
 using OpenttdDiscord.Infrastructure.Modularity;
+using System.Net.Security;
 
 namespace OpenttdDiscord.Infrastructure.Chatting
 {
@@ -27,6 +28,7 @@ namespace OpenttdDiscord.Infrastructure.Chatting
         {
             services.AddScoped<IRegisterChatChannelUseCase, RegisterChatChannelUseCase>();
             services.AddScoped<IGetChatChannelUseCase, GetChatChannelUseCase>();
+            services.AddScoped<IUnregisterChatChannelUseCase, UnregisterChatChannelUseCase>();
 
             return services;
         }

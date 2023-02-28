@@ -5,6 +5,7 @@ using OpenttdDiscord.Base.Ext;
 using OpenttdDiscord.Domain.Security;
 using OpenttdDiscord.Domain.Servers;
 using OpenttdDiscord.Domain.Servers.UseCases;
+using OpenttdDiscord.Infrastructure.Chatting.Messages;
 using OpenttdDiscord.Infrastructure.Guilds.Messages;
 using OpenttdDiscord.Infrastructure.Ottd.Actors;
 using OpenttdDiscord.Infrastructure.Ottd.Messages;
@@ -40,6 +41,8 @@ namespace OpenttdDiscord.Infrastructure.Guilds.Actors
             ReceiveRedirectMsg<ExecuteServerAction>(msg => msg.ServerId);
             ReceiveRedirectMsg<RegisterStatusMonitor>(msg => msg.StatusMonitor.ServerId);
             ReceiveRedirectMsg<RemoveStatusMonitor>(msg => msg.ServerId);
+            ReceiveRedirectMsg<RegisterChatChannel>(msg => msg.chatChannel.ServerId);
+            ReceiveRedirectMsg<UnregisterChatChannel>(msg => msg.ServerId);
         }
 
         public static Props Create(IServiceProvider sp, ulong guildId)

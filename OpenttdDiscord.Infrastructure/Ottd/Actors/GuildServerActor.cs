@@ -11,6 +11,7 @@ using OpenttdDiscord.Domain.Security;
 using OpenttdDiscord.Domain.Servers;
 using OpenttdDiscord.Domain.Statuses;
 using OpenttdDiscord.Domain.Statuses.UseCases;
+using OpenttdDiscord.Infrastructure.Akkas;
 using OpenttdDiscord.Infrastructure.Chatting;
 using OpenttdDiscord.Infrastructure.Chatting.Actors;
 using OpenttdDiscord.Infrastructure.Chatting.Messages;
@@ -25,6 +26,7 @@ namespace OpenttdDiscord.Infrastructure.Ottd.Actors
     {
         private readonly OttdServer server;
         private readonly AdminPortClient client;
+        private readonly IAkkaService akkaService;
         private readonly IGetStatusMonitorsForServerUseCase getStatusMonitorsForServerUseCase;
         private readonly IUpdateStatusMonitorUseCase updateStatusMonitorUseCase;
         private readonly IGetChatChannelUseCase getChatChannelUseCase;
@@ -34,13 +36,16 @@ namespace OpenttdDiscord.Infrastructure.Ottd.Actors
 
         public ITimerScheduler Timers { get; set; } = default!;
 
-        public GuildServerActor(IServiceProvider serviceProvider, OttdServer server) : base(serviceProvider)
+        public GuildServerActor(
+            IServiceProvider serviceProvider,
+            OttdServer server) : base(serviceProvider)
         {
             this.server = server;
 
             this.getStatusMonitorsForServerUseCase = SP.GetRequiredService<IGetStatusMonitorsForServerUseCase>();
             this.updateStatusMonitorUseCase = SP.GetRequiredService<IUpdateStatusMonitorUseCase>();
             this.getChatChannelUseCase = SP.GetRequiredService<IGetChatChannelUseCase>();
+            this.akkaService = SP.GetRequiredService<IAkkaService>();
 
             client = new(new AdminPortClientSettings()
             {
@@ -61,6 +66,7 @@ namespace OpenttdDiscord.Infrastructure.Ottd.Actors
             ReceiveAsync<RemoveStatusMonitor>(RemoveStatusMonitor);
             ReceiveAsync<UpdateStatusMonitor>(UpdateStatusMonitor);
             Receive<RegisterChatChannel>(RegisterChatChannel);
+            ReceiveAsync<UnregisterChatChannel>(UnregisterChatChannel);
 
             Receive<KillDanglingAction>(msg => msg.commandActor.GracefulStop(TimeSpan.FromSeconds(1)));
             Receive<IAdminEvent>(ev => adminEventSubscribers.TellMany(ev));
@@ -98,7 +104,7 @@ namespace OpenttdDiscord.Infrastructure.Ottd.Actors
 
             foreach(var cc in chatChannels)
             {
-                RegisterChatChannel(new(server, cc));
+                RegisterChatChannel(new(cc));
             }
 
             client.SetAdminEventHandler(ev => self.Tell(ev));
@@ -157,18 +163,39 @@ namespace OpenttdDiscord.Infrastructure.Ottd.Actors
 
         private void RegisterChatChannel(RegisterChatChannel rcc)
         {
-            if(chatChannelActors.ContainsKey(rcc.chatChannel.ChannelId))
+            if (chatChannelActors.ContainsKey(rcc.chatChannel.ChannelId))
             {
                 logger.LogWarning($"Chat channel {server.Name} - {rcc.chatChannel.ChannelId} already registered");
                 return;
             }
 
             var discord = Context.ActorOf(DiscordCommunicationActor.Create(SP, rcc.chatChannel.ChannelId, client, server), "discordCommunication");
-            var openttd =  Context.ActorOf(OttdCommunicationActor.Create(SP, rcc.chatChannel.ChannelId, server, client), "ottdCommunication");
+            var openttd = Context.ActorOf(OttdCommunicationActor.Create(SP, rcc.chatChannel.ChannelId, server, client), "ottdCommunication");
 
             var chattingActors = new ChattingActors(rcc.chatChannel, discord, openttd);
             chatChannelActors.Add(rcc.chatChannel.ChannelId, chattingActors);
             logger.LogInformation($"Registered chat channel {rcc.chatChannel.ChannelId} for {server.Name}");
+        }
+
+        private async Task UnregisterChatChannel(UnregisterChatChannel ucc)
+        {
+            if (chatChannelActors.ContainsKey(ucc.ChannelId))
+            {
+                logger.LogError($"Chat channel {server.Name} - {ucc.ChannelId} already removed");
+                return;
+            }
+
+            ChattingActors actors = chatChannelActors.GetValueAs<ChattingActors>(ucc.ChannelId);
+
+            await Task.WhenAll(
+                actors.Discord.GracefulStop(TimeSpan.FromSeconds(1)),
+                actors.Ottd.GracefulStop(TimeSpan.FromSeconds(1))
+                );
+
+            await
+            (from chatManager in akkaService.SelectActor(MainActors.Paths.ChatChannelManager)
+             from _1 in chatManager.TellExt(ucc).ToAsync()
+             select _1);
         }
     }
 }

@@ -19,6 +19,7 @@ namespace OpenttdDiscord.Infrastructure.Chatting.Actors
         private void Ready()
         {
             Receive<GetCreateChatChannel>(GetCreateChatChannel);
+            Receive<UnregisterChatChannel>(UnregisterChatChannel);
         }
 
         private void GetCreateChatChannel(GetCreateChatChannel msg)
@@ -33,6 +34,13 @@ namespace OpenttdDiscord.Infrastructure.Chatting.Actors
             IActorRef channel = Context.ActorOf(ChatChannelActor.Create(SP, channelId), channelId.ToString());
             Channels.Add(channelId, channel);
             return channel;
+        }
+
+        private void UnregisterChatChannel(UnregisterChatChannel ucc)
+        {
+            Channels
+                .MaybeGetValue(ucc.ChannelId)
+                .Some(channel => channel.GracefulStop(TimeSpan.FromSeconds(1)));
         }
     }
 }

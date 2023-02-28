@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using OpenttdDiscord.Base.Ext;
 using OpenttdDiscord.Domain.Guilds.UseCases;
 using OpenttdDiscord.Infrastructure.Akkas;
+using OpenttdDiscord.Infrastructure.Chatting.Messages;
 using OpenttdDiscord.Infrastructure.Guilds.Messages;
 using OpenttdDiscord.Infrastructure.Ottd.Messages;
 using OpenttdDiscord.Infrastructure.Servers.Messages;
@@ -38,6 +39,8 @@ namespace OpenttdDiscord.Infrastructure.Guilds.Actors
             ReceiveRedirectMsg<RegisterStatusMonitor>(msg => msg.StatusMonitor.GuildId);
             ReceiveRedirectMsg<InformAboutServerDeletion>(msg => msg.server.GuildId);
             ReceiveRedirectMsg<RemoveStatusMonitor>(msg => msg.GuildId);
+            ReceiveRedirectMsg<RegisterChatChannel>(msg => msg.chatChannel.GuildId);
+            ReceiveRedirectMsg<UnregisterChatChannel>(msg => msg.GuildId);
         }
 
         private async Task InitGuildActorMessage(InitGuildActorMessage _)

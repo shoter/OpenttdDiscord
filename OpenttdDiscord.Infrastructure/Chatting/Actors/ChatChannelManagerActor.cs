@@ -1,5 +1,6 @@
 ﻿using Akka.Actor;
 using LanguageExt;
+using Microsoft.Extensions.Logging;
 using OpenttdDiscord.Base.Basics;
 using OpenttdDiscord.Base.Ext;
 using OpenttdDiscord.Infrastructure.Chatting.Messages;
@@ -20,7 +21,7 @@ namespace OpenttdDiscord.Infrastructure.Chatting.Actors
         private void Ready()
         {
             Receive<GetCreateChatChannel>(GetCreateChatChannel);
-            Receive<UnregisterChatChannel>(UnregisterChatChannel);
+            ReceiveAsync<UnregisterChatChannel>(UnregisterChatChannel);
         }
 
         private void GetCreateChatChannel(GetCreateChatChannel msg)
@@ -39,24 +40,33 @@ namespace OpenttdDiscord.Infrastructure.Chatting.Actors
 
         private async Task UnregisterChatChannel(UnregisterChatChannel ucc)
         {
-            EitherAsyncUnit RemoveIfCountEqualsZero(int count, IActorRef channel)
+            EitherAsync<IError, bool> RemoveIfCountEqualsZero(int count, IActorRef channel)
                 => TryAsync(async () =>
                 {
                     if (count == 0)
                     {
-                        return Unit.Default;
+                        return false;
                     }
 
                     await channel.GracefulStop(TimeSpan.FromSeconds(1));
-                    return Unit.Default;
+                    return true;
                 }).ToEitherAsyncError();
 
-            (await(
-            from channel in Channels.MaybeGetValue(ucc.ChannelId).ToEitherAsync((IError) new HumanReadableError("Channel not found"))
-             from count in channel.TryAsk<int>(new QuerySubscriberCount())
-             from _1 in RemoveIfCountEqualsZero(count, channel)
-             select _1
-             )).LeftLogError(logger);
+            (await (
+            from channel in Channels.MaybeGetValue(ucc.ChannelId).ToEitherAsync((IError)new HumanReadableError("Channel not found"))
+            from count in channel.TryAsk<int>(new QuerySubscriberCount(), TimeSpan.FromSeconds(2))
+            from isRemoved in RemoveIfCountEqualsZero(count, channel)
+            select isRemoved
+             ))
+             .LeftLogError(logger)
+             .Right(isRemoved =>
+             {
+                 if (isRemoved)
+                 {
+                     logger.LogInformation($"Removed chat channel {ucc.ChannelId}");
+                 }
+             });
+                
         }
     }
 }

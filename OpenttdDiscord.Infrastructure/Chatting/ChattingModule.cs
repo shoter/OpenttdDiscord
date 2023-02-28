@@ -36,6 +36,7 @@ namespace OpenttdDiscord.Infrastructure.Chatting
         public static IServiceCollection RegisterRunners(this IServiceCollection services)
         {
             services.AddScoped<RegisterChatChannelRunner>();
+            services.AddScoped<UnregisterChatChannelRunner>();
 
             return services;
         }
@@ -43,6 +44,7 @@ namespace OpenttdDiscord.Infrastructure.Chatting
         public static IServiceCollection RegisterCommands(this IServiceCollection services)
         {
             services.AddSingleton<IOttdSlashCommand, RegisterChatChannelCommand>();
+            services.AddSingleton<IOttdSlashCommand, UnregisterChatChannelCommand>();
 
             return services;
         }

@@ -107,6 +107,7 @@ namespace OpenttdDiscord.Infrastructure.Chatting.Actors
             var self = Self;
             parent.Tell(new UnsubscribeFromAdminEvents(self));
             chatChannel.Some(a => a.Tell(new UnregisterFromChatChannel(self)));
+            logger.LogInformation($"Removing Ottd communication Actor for {channelId}");
         }
     }
 }

@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using OpenttdDiscord.Infrastructure.Chatting.Messages;
 using OpenttdDiscord.Infrastructure.Discord.Actors;
 using OpenttdDiscord.Infrastructure.Discord.Messages;
+using System.Threading.Channels;
 
 namespace OpenttdDiscord.Infrastructure.Chatting.Actors
 {
@@ -57,6 +58,13 @@ namespace OpenttdDiscord.Infrastructure.Chatting.Actors
         {
             subscribers.Remove(msg.Subscriber);
             Sender.Tell(Unit.Default);
+        }
+
+        protected override void PostStop()
+        {
+            base.PostStop();
+            logger.LogInformation($"Removing Chat channel Actor for {chatChannelId}");
+
         }
     }
 }

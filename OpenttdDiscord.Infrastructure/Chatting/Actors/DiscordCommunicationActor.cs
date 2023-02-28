@@ -1,6 +1,7 @@
 ﻿using Akka.Actor;
 using LanguageExt;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using OpenTTDAdminPort;
 using OpenTTDAdminPort.Game;
 using OpenTTDAdminPort.Messages;
@@ -82,6 +83,8 @@ namespace OpenttdDiscord.Infrastructure.Chatting.Actors
             base.PostStop();
             var self = Self;
             chatChannel.Some(a => a.Tell(new UnregisterFromChatChannel(self)));
+            logger.LogInformation($"Removing Discord communication Actor for {channelId}");
+
         }
     }
 }

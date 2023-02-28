@@ -3,6 +3,7 @@ using Discord;
 using Discord.WebSocket;
 using LanguageExt;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using OpenttdDiscord.Domain.Statuses;
 using OpenttdDiscord.Infrastructure.Chatting.Messages;
 using OpenttdDiscord.Infrastructure.Discord.Messages;
@@ -80,6 +81,7 @@ namespace OpenttdDiscord.Infrastructure.Discord.Actors
         {
             base.PostStop();
             parent.Tell(new UnregisterFromChatChannel(self));
+            logger.LogInformation($"Removing Discord Actor for {channelId}");
         }
     }
 }

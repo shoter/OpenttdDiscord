@@ -66,16 +66,28 @@ namespace OpenttdDiscord.Infrastructure.Discord
 
             foreach (var c in commands.Values)
             {
-                if (existingCommands.ContainsKey(c.Name))
+                var props = c.Build();
+
+                if (existingCommands.TryGetValue(c.Name, out var existing))
                 {
-                    continue;
+                    int cCount = props.Options.IsSpecified ? props.Options.Value.Count : 0;
+                    int exCount = existing.Options.Count();
+
+                    if (cCount == exCount)
+                    {
+                        continue;
+                    }
+                    else
+                    {
+                        await existing.DeleteAsync();
+                        logger.LogError($"Removed {c.Name} due to parameter count mismatch");
+                    }
                 }
 
                 try
                 {
                     logger.LogInformation($"Registering {c}");
-                    var parameters = c.Build();
-                    await client.CreateGlobalApplicationCommandAsync(parameters);
+                    await client.CreateGlobalApplicationCommandAsync(props);
                     logger.LogInformation($"Registered {c}");
 
                 }
@@ -89,19 +101,25 @@ namespace OpenttdDiscord.Infrastructure.Discord
         private async Task Client_SlashCommandExecuted(SocketSlashCommand arg)
         {
             var command = this.commands[arg.Data.Name];
-
             using var scope = serviceProvider.CreateScope();
             var runner = command.CreateRunner(scope.ServiceProvider);
             var response = (await runner.Run(arg))
                            .IfLeft(err => GenerateErrorResponse(err, arg));
 
             (await response.Execute(arg))
-                .IfLeft((IError error) =>
+                .MapLeft((IError error) =>
                 {
                     if (error is ExceptionError ee)
                     {
                         logger.LogError(ee.Exception, $"Something went wrong while executing some command {arg.CommandName}.");
                     }
+
+                    logger.LogWarning($"{arg.User.Username} executed unsuccessfully {arg.CommandName}");
+                    return error;
+                }).Map(unit =>
+                {
+                    logger.LogInformation($"{arg.User.Username} executed successfully {arg.CommandName}");
+                    return unit;
                 });
         }
 

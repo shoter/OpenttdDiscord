@@ -1,4 +1,5 @@
-﻿using OpenttdDiscord.Database.Statuses;
+﻿using OpenttdDiscord.Database.Chatting;
+using OpenttdDiscord.Database.Statuses;
 using OpenttdDiscord.Domain.Chatting.UseCases;
 using OpenttdDiscord.Domain.Security;
 using OpenttdDiscord.Infrastructure.Akkas;
@@ -8,13 +9,13 @@ namespace OpenttdDiscord.Infrastructure.Chatting.UseCases
 {
     internal class UnregisterChatChannelUseCase : UseCaseBase, IUnregisterChatChannelUseCase
     {
-        private readonly IStatusMonitorRepository statusMonitorRepository;
+        private readonly IChatChannelRepository chatChannelRepository;
 
         private readonly IAkkaService akkaService;
 
-        public UnregisterChatChannelUseCase(IStatusMonitorRepository statusMonitorRepository, IAkkaService akkaService)
+        public UnregisterChatChannelUseCase(IChatChannelRepository statusMonitorRepository, IAkkaService akkaService)
         {
-            this.statusMonitorRepository = statusMonitorRepository;
+            this.chatChannelRepository = statusMonitorRepository;
             this.akkaService = akkaService;
         }
 
@@ -22,7 +23,7 @@ namespace OpenttdDiscord.Infrastructure.Chatting.UseCases
         {
             return
                 from _1 in CheckIfHasCorrectUserLevel(user, UserLevel.Admin).ToAsync()
-                from _2 in statusMonitorRepository.RemoveStatusMonitor(serverId, chatChannelId)
+                from _2 in chatChannelRepository.Delete(serverId, chatChannelId)
                 from actor in akkaService.SelectActor(MainActors.Paths.Guilds)
                 from _3 in actor.TellExt(new UnregisterChatChannel(serverId, guildId, chatChannelId)).ToAsync()
                 select _3;

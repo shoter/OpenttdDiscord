@@ -179,7 +179,7 @@ namespace OpenttdDiscord.Infrastructure.Ottd.Actors
 
         private async Task UnregisterChatChannel(UnregisterChatChannel ucc)
         {
-            if (chatChannelActors.ContainsKey(ucc.ChannelId))
+            if (!chatChannelActors.ContainsKey(ucc.ChannelId))
             {
                 logger.LogError($"Chat channel {server.Name} - {ucc.ChannelId} already removed");
                 return;

@@ -1,5 +1,10 @@
 version: '3.9'
 services:
+    bot:
+        build: .
+        environment:
+            Database:ConnectionString: User ID=openttd;Password=secret-pw;Host=database;Port=5432;Database=openttd
+            Discord:Token: "${discord_token}"
     database:
         build:
             context: ./OpenttdDiscord.Database
@@ -7,6 +12,6 @@ services:
         volumes:
             - "psql_data:/var/lib/mysql"
         ports:
-            - 3306:3306
+            - 5432:5432
 volumes:
     psql_data:

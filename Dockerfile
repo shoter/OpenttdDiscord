@@ -1,4 +1,14 @@
-﻿FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
+﻿FROM mcr.microsoft.com/dotnet/sdk:6.0 AS buildmigrations
+RUN dotnet tool install --global dotnet-ef
+ENV PATH="$PATH:/root/.dotnet/tools"
+
+RUN ls
+
+COPY . /build
+WORKDIR /build/OpenttdDiscord.Database
+RUN dotnet ef migrations bundle 
+
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 ARG CONFIGURATION=Release
 
 #PUT_PROJECTS_BELOW_THIS_LINE
@@ -29,6 +39,7 @@ WORKDIR /app
 
 COPY --from=publish /app .
 COPY ./startup.sh .
-RUN chmod 755 /app/startup.sh
-ENTRYPOINT ["dotnet", "/app/OpenttdDiscord.Discord.dll"]
+
+COPY --from=buildmigrations /build/OpenttdDiscord.Database/efbundle /bundle/efbundle
+ENTRYPOINT ["bash", "-c", "./startup.sh"]
 

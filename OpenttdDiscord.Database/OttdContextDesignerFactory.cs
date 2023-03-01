@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Extensions.Configuration;
+using System.Configuration;
 
 namespace OpenttdDiscord.Database
 {
@@ -12,10 +13,8 @@ namespace OpenttdDiscord.Database
             configBuilder.AddUserSecrets(typeof(OttdContextDesignerFactory).Assembly);
             var config = configBuilder.Build();
 
-            string connectionString = config["ConnectionString"] ?? throw new NullReferenceException();
-
             var optionsBuilder = new DbContextOptionsBuilder<OttdContext>();
-            optionsBuilder.UseNpgsql(connectionString, x =>
+            optionsBuilder.UseNpgsql(connectionString: null, x =>
             {
                 x.MigrationsHistoryTable("__MigrationHistory");
             });

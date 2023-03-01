@@ -29,6 +29,20 @@ OttdContext context = new(optionsBuilder.Options);
 string sql = File.ReadAllText(args[0]);
 
 Console.WriteLine("Applying script");
-await context.Database.ExecuteSqlRawAsync(sql);
+
+for (int i = 0; i < 10; ++i)
+{
+    try
+    {
+        await context.Database.ExecuteSqlRawAsync(sql);
+        Console.WriteLine("Connected and applied migrations :)");
+        break;
+    }
+    catch(Exception ex)
+    {
+        Console.WriteLine(ex.Message);
+        await Task.Delay(TimeSpan.FromSeconds(2));
+    }
+}
 Console.WriteLine("Done");
 

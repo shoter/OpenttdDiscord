@@ -1,14 +1,4 @@
-﻿FROM mcr.microsoft.com/dotnet/sdk:6.0 AS buildmigrations
-RUN dotnet tool install --global dotnet-ef
-ENV PATH="$PATH:/root/.dotnet/tools"
-
-RUN ls
-
-COPY . /build
-WORKDIR /build/OpenttdDiscord.Database
-RUN dotnet ef migrations script > /script.sql 
-
-FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
+﻿FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 ARG CONFIGURATION=Release
 
 #PUT_PROJECTS_BELOW_THIS_LINE
@@ -26,21 +16,27 @@ COPY ./OpenttdDiscord.Validation.Tests/OpenttdDiscord.Validation.Tests.csproj ./
 
 COPY ./OpenttdDiscord.sln .
 RUN dotnet restore 
-COPY . .
+COPY . /build
 
 FROM build AS publish
 ARG CONFIGURATION=Release
 
-RUN dotnet publish "OpenttdDiscord.Discord/OpenttdDiscord.Discord.csproj" -c $CONFIGURATION -o /app/publish
-RUN dotnet publish "OpenttdDiscord.Database.Migrator/OpenttdDiscord.Database.Migrator.csproj" -c $CONFIGURATION -o /app/migrator
+RUN dotnet publish "/build/OpenttdDiscord.Discord/OpenttdDiscord.Discord.csproj" -c $CONFIGURATION -o /app/publish
+RUN dotnet publish "/build/OpenttdDiscord.Database.Migrator/OpenttdDiscord.Database.Migrator.csproj" -c $CONFIGURATION -o /app/migrator
 
+FROM build as dbMigrations
+
+RUN dotnet tool install --global dotnet-ef
+ENV PATH="$PATH:/root/.dotnet/tools"
+WORKDIR /build/OpenttdDiscord.Database
+RUN dotnet ef migrations script -v -o /script.sql 
 FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS run
 ARG CONFIGURATION=Release
 
 WORKDIR /app
 
 COPY --from=publish /app .
-COPY --from=buildmigrations /script.sql /app/script.sql
+COPY --from=dbMigrations /script.sql /app/script.sql
 COPY ./startup.sh .
 ENTRYPOINT ["bash", "-c", "./startup.sh"]
 

@@ -11,9 +11,9 @@ namespace OpenttdDiscord.Infrastructure.Discord.Responses
             this.response = response;
         }
 
-        protected override Task InternalExecute(SocketSlashCommand command)
+        protected override async Task InternalExecute(SocketSlashCommand command)
         {
-            return command.RespondAsync(response);
+            await command.RespondAsync(response);
         }
     }
 }

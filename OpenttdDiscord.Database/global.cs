@@ -10,3 +10,4 @@ global using System.Threading.Tasks;
 
 [assembly: InternalsVisibleTo("OpenttdDiscord.Database.Tests")]
 [assembly: InternalsVisibleTo("OpenttdDiscord.Infrastructure")]
+[assembly: InternalsVisibleTo("OpenttdDiscord.Database.Migrator")]

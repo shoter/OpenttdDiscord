@@ -22,11 +22,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{1029E915
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenttdDiscord.Validation.Tests", "OpenttdDiscord.Validation.Tests\OpenttdDiscord.Validation.Tests.csproj", "{5C31467F-F60B-4C1F-A78E-17869D44F5C8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenttdDiscord.Database", "OpenttdDiscord.Database\OpenttdDiscord.Database.csproj", "{79B1A333-38E4-4CC7-949D-9D75B09F10F4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenttdDiscord.Database", "OpenttdDiscord.Database\OpenttdDiscord.Database.csproj", "{79B1A333-38E4-4CC7-949D-9D75B09F10F4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenttdDiscord.Database.Tests", "OpenttdDiscord.Database.Tests\OpenttdDiscord.Database.Tests.csproj", "{9CEB94CD-0358-4A33-BDA1-6DDFBA7C7BED}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenttdDiscord.Database.Tests", "OpenttdDiscord.Database.Tests\OpenttdDiscord.Database.Tests.csproj", "{9CEB94CD-0358-4A33-BDA1-6DDFBA7C7BED}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenttdDiscord.DockerizedTesting", "OpenttdDiscord.DockerizedTesting\OpenttdDiscord.DockerizedTesting.csproj", "{724714CA-8376-46BD-B7CF-BBFD5C920A77}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenttdDiscord.DockerizedTesting", "OpenttdDiscord.DockerizedTesting\OpenttdDiscord.DockerizedTesting.csproj", "{724714CA-8376-46BD-B7CF-BBFD5C920A77}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenttdDiscord.Database.Migrator", "OpenttdDiscord.Database.Migrator\OpenttdDiscord.Database.Migrator.csproj", "{91914F84-8AD3-4AF8-B5B7-C2551AE4889B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -70,6 +72,10 @@ Global
 		{724714CA-8376-46BD-B7CF-BBFD5C920A77}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{724714CA-8376-46BD-B7CF-BBFD5C920A77}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{724714CA-8376-46BD-B7CF-BBFD5C920A77}.Release|Any CPU.Build.0 = Release|Any CPU
+		{91914F84-8AD3-4AF8-B5B7-C2551AE4889B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{91914F84-8AD3-4AF8-B5B7-C2551AE4889B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{91914F84-8AD3-4AF8-B5B7-C2551AE4889B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{91914F84-8AD3-4AF8-B5B7-C2551AE4889B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

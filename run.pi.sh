@@ -1,2 +1,2 @@
-docker-compose build --progress plain --build-arg BUILD_IMG=mcr.microsoft.com/dotnet/sdk:6.0.406-bullseye-slim-arm32v7 --build-arg RUN_IMG=mcr.microsoft.com/dotnet/aspnet:6.0.14-bullseye-slim-arm32v7
+docker-compose build --progress plain --build-arg BUILD_IMG=mcr.microsoft.com/dotnet/sdk:6.0.406-bullseye-slim-arm64v8 --build-arg RUN_IMG=mcr.microsoft.com/dotnet/aspnet:6.0.14-bullseye-slim-arm64v8
 docker-compose up --no-build -d 

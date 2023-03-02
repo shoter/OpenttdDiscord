@@ -41,7 +41,8 @@ namespace OpenttdDiscord
                     .AddSingleton(ActorSystem.Create("OttdDiscord"))
                     .AddSingleton(new DiscordSocketClient(new()
                     {
-                        GatewayIntents = GatewayIntents.MessageContent | GatewayIntents.AllUnprivileged
+                        GatewayIntents = GatewayIntents.MessageContent | GatewayIntents.AllUnprivileged,
+                        UseInteractionSnowflakeDate = false
                     }))
                     .RegisterModules()
                     .AddHostedServices()

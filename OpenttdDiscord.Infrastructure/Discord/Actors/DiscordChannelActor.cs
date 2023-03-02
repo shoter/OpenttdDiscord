@@ -70,7 +70,7 @@ namespace OpenttdDiscord.Infrastructure.Discord.Actors
 
         private async Task HandleOttdMessage(HandleOttdMessage msg)
         {
-            string message = $"[{msg.Server.Name} {msg.Username}: {msg.Message}";
+            string message = $"[{msg.Server.Name}] {msg.Username}: {msg.Message}";
             await messageChannel.IfSomeAsync(async channel =>
             {
                 await channel.SendMessageAsync(message);

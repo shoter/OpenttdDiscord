@@ -1,4 +1,5 @@
-﻿FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
+﻿ARG BUILD_IMG=mcr.microsoft.com/dotnet/sdk:6.0
+FROM ${BUILD_IMG} AS build
 ARG CONFIGURATION=Release
 
 #PUT_PROJECTS_BELOW_THIS_LINE
@@ -30,7 +31,9 @@ RUN dotnet tool install --global dotnet-ef
 ENV PATH="$PATH:/root/.dotnet/tools"
 WORKDIR /build/OpenttdDiscord.Database
 RUN dotnet ef migrations script -v -o /script.sql 
-FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS run
+
+ARG RUN_IMG=mcr.microsoft.com/dotnet/aspnet:6.0
+FROM ${BUILD_IMG} AS run
 ARG CONFIGURATION=Release
 
 WORKDIR /app

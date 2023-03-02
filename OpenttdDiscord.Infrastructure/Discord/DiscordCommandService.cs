@@ -100,9 +100,11 @@ namespace OpenttdDiscord.Infrastructure.Discord
 
         private async Task Client_SlashCommandExecuted(SocketSlashCommand arg)
         {
+            logger.LogDebug("{0} executing {1}", arg.User.Username, arg.CommandName);
             var command = this.commands[arg.Data.Name];
             using var scope = serviceProvider.CreateScope();
             var runner = command.CreateRunner(scope.ServiceProvider);
+            logger.LogDebug("Created runner");
             var response = (await runner.Run(arg))
                            .IfLeft(err => GenerateErrorResponse(err, arg));
 
@@ -114,7 +116,7 @@ namespace OpenttdDiscord.Infrastructure.Discord
                         logger.LogError(ee.Exception, $"Something went wrong while executing some command {arg.CommandName}.");
                     }
 
-                    logger.LogWarning($"{arg.User.Username} executed unsuccessfully {arg.CommandName}");
+                    logger.LogWarning($"{arg.User.Username} executed unsuccessfully {arg.CommandName} - {error.Reason}");
                     return error;
                 }).Map(unit =>
                 {

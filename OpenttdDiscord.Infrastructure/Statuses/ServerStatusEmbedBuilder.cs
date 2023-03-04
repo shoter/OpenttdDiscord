@@ -12,7 +12,7 @@ namespace OpenttdDiscord.Infrastructure.Statuses
             string mapName = string.IsNullOrEmpty(info.MapName) ? "Random map" : info.MapName;
 
             EmbedBuilder embedBuilder = new();
-            embedBuilder.WithTitle($"{serverName} Status");
+            embedBuilder.WithTitle($"{info.ServerName} Status");
 
             embedBuilder.AddField("Players", serverStatus.Players.Count, true);
             embedBuilder.AddField("Map Size", $"{info.MapWidth}x{info.MapHeight}", true);
@@ -20,7 +20,7 @@ namespace OpenttdDiscord.Infrastructure.Statuses
 
             embedBuilder.AddField("Map Name", mapName, true);
             embedBuilder.AddField("Climate", info.Landscape.ToHumanReadable(), true);
-            embedBuilder.AddField("Server address", $"{client.ServerInfo.ServerIp}:{client.ServerInfo.ServerPort}", true);
+            embedBuilder.AddField("Server address", $"{client.ServerInfo.ServerIp}", true);
 
             string players = string.Join('\n', serverStatus.Players.Values.Select(StringifyPlayer));
             if (!string.IsNullOrEmpty(players))

@@ -1,2 +1,2 @@
 docker compose build
-docker compose up --no-build -d 
+docker compose up --no-build -d --force-recreate

@@ -6,7 +6,7 @@ namespace OpenttdDiscord.Domain.Rcon.UseCases
 {
     public interface IGetRconChannelUseCase
     {
-        EitherAsync<IError, RconChannel> Execute(User user, Guid serverId, ulong channelId);
+        EitherAsync<IError, Option<RconChannel>> Execute(User user, Guid serverId, ulong channelId);
 
         EitherAsync<IError, List<RconChannel>> Execute(User user, Guid serverId);
     }

@@ -1,3 +1,3 @@
 ﻿namespace OpenttdDiscord.Domain.Rcon;
 
-public record RconChannel(Guid ServerId, ulong ChannelId, ulong GuildId, string prefix);
+public record RconChannel(Guid ServerId, ulong GuildId, ulong ChannelId, string prefix);

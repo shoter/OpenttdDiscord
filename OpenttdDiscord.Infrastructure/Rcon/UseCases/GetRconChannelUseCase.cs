@@ -16,13 +16,12 @@ namespace OpenttdDiscord.Infrastructure.Rcon.UseCases
             this.rconChannelRepository = rconChannelRepository;
         }
 
-        public EitherAsync<IError, RconChannel> Execute(User user, Guid serverId,  ulong channelId)
+        public EitherAsync<IError, Option<RconChannel>> Execute(User user, Guid serverId,  ulong channelId)
         {
             return
                 from _1 in CheckIfHasCorrectUserLevel(user, UserLevel.Moderator).ToAsync()
                 from option in rconChannelRepository.GetRconChannel(serverId, channelId)
-                from rcon in option.ToEitherAsync((IError)new HumanReadableError("Rcon channel not found"))
-                select rcon;
+                select option;
         }
 
         public EitherAsync<IError, List<RconChannel>> Execute(User user, Guid serverId)

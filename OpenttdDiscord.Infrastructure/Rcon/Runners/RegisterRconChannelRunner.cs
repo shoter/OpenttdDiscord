@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Discord.WebSocket;
+﻿using Discord.WebSocket;
 using LanguageExt;
 using OpenttdDiscord.Base.Basics;
 using OpenttdDiscord.Base.Ext;
@@ -52,7 +47,9 @@ namespace OpenttdDiscord.Infrastructure.Rcon.Runners
         {
             return getRconChannelUseCase
                 .Execute(user, serverId, channelId)
-                .Bind(_ => EitherAsyncUnit.Left(new HumanReadableError("Rcon channel is already registered!")));
+                .Bind(option => option.IsNone ?
+                    EitherAsyncUnit.Right(Unit.Default) :
+                    EitherAsyncUnit.Left(new HumanReadableError("Rcon channel is already registered!")));
         }
     }
 }

@@ -56,16 +56,16 @@ namespace OpenttdDiscord.Database.Rcon
         public EitherAsync<IError, Option<RconChannel>> GetRconChannel(Guid serverId, ulong channelId)
               => TryAsync<Either<IError, Option<RconChannel>>>(async () =>
               {
-                  var adminChannel = await DB.RconChannels
+                  var rconChannel = await DB.RconChannels
                       .AsNoTracking()
                       .FirstOrDefaultAsync(cc => cc.ServerId == serverId && cc.ChannelId == channelId);
 
-                  if (adminChannel == null)
+                  if (rconChannel == null)
                   {
                       return Option<RconChannel>.None;
                   }
 
-                  return Option<RconChannel>.Some(adminChannel.ToDomain());
+                  return Option<RconChannel>.Some(rconChannel.ToDomain());
               }).ToEitherAsyncErrorFlat();
     }
 }

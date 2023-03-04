@@ -16,7 +16,7 @@ COPY ./OpenttdDiscord.Validation.Tests/OpenttdDiscord.Validation.Tests.csproj ./
 #END_PUT_PROJECTS_BELOW_THIS_LINE
 
 COPY ./OpenttdDiscord.sln .
-RUN dotnet restore 
+RUN dotnet restore --disable-parallel
 COPY . /build
 
 FROM build AS publish
@@ -41,6 +41,7 @@ WORKDIR /app
 COPY --from=publish /app .
 COPY --from=dbMigrations /script.sql /app/script.sql
 COPY ./startup.sh .
+RUN chmod a+x /app/startup.sh
 ENTRYPOINT ["bash", "-c", "./startup.sh"]
 
 

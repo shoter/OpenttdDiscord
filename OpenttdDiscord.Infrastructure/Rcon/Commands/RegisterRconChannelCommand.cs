@@ -15,7 +15,6 @@ namespace OpenttdDiscord.Infrastructure.Rcon.Commands
         {
             builder
                 .WithDescription("Registers channel to interact with server through RCON interface. " +
-                "You will be able to execute ottd commands on this channel afterwards. " +
                 "DO NOT execute this command on a channel where normal users have access to")
                 .AddOption(new SlashCommandOptionBuilder()
                     .WithName("server-name")

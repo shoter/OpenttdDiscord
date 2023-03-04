@@ -7,15 +7,15 @@ namespace OpenttdDiscord.Infrastructure.Rcon.Commands
     internal class RegisterRconChannelCommand : OttdSlashCommandBase<RegisterRconChannelRunner>
     {
         public RegisterRconChannelCommand()
-            : base("register-admin-channel")
+            : base("register-rcon-channel")
         {
         }
 
         public override void Configure(SlashCommandBuilder builder)
         {
             builder
-                .WithDescription("Registers channel to interact with server through RCON interface. " +
-                "DO NOT execute this command on a channel where normal users have access to")
+                .WithDescription("Registers channel as RCON interface. " +
+                "DO NOT use it on non-admin channel!")
                 .AddOption(new SlashCommandOptionBuilder()
                     .WithName("server-name")
                     .WithRequired(true)

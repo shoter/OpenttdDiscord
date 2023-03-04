@@ -17,7 +17,7 @@ namespace OpenttdDiscord.Database.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.2")
+                .HasAnnotation("ProductVersion", "7.0.3")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -68,6 +68,26 @@ namespace OpenttdDiscord.Database.Migrations
                         .IsUnique();
 
                     b.ToTable("Servers");
+                });
+
+            modelBuilder.Entity("OpenttdDiscord.Database.Rcon.RconChannelEntity", b =>
+                {
+                    b.Property<Guid>("ServerId")
+                        .HasColumnType("uuid");
+
+                    b.Property<decimal>("ChannelId")
+                        .HasColumnType("numeric(20,0)");
+
+                    b.Property<decimal>("GuildId")
+                        .HasColumnType("numeric(20,0)");
+
+                    b.Property<string>("Prefix")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("ServerId", "ChannelId");
+
+                    b.ToTable("RconChannels");
                 });
 
             modelBuilder.Entity("OpenttdDiscord.Database.Statuses.StatusMonitorEntity", b =>

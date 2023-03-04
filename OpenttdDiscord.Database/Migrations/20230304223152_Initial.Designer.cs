@@ -12,15 +12,15 @@ using OpenttdDiscord.Database;
 namespace OpenttdDiscord.Database.Migrations
 {
     [DbContext(typeof(OttdContext))]
-    [Migration("20230226001458_initial")]
-    partial class initial
+    [Migration("20230304223152_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.2")
+                .HasAnnotation("ProductVersion", "7.0.3")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -71,6 +71,26 @@ namespace OpenttdDiscord.Database.Migrations
                         .IsUnique();
 
                     b.ToTable("Servers");
+                });
+
+            modelBuilder.Entity("OpenttdDiscord.Database.Rcon.RconChannelEntity", b =>
+                {
+                    b.Property<Guid>("ServerId")
+                        .HasColumnType("uuid");
+
+                    b.Property<decimal>("ChannelId")
+                        .HasColumnType("numeric(20,0)");
+
+                    b.Property<decimal>("GuildId")
+                        .HasColumnType("numeric(20,0)");
+
+                    b.Property<string>("Prefix")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("ServerId", "ChannelId");
+
+                    b.ToTable("RconChannels");
                 });
 
             modelBuilder.Entity("OpenttdDiscord.Database.Statuses.StatusMonitorEntity", b =>

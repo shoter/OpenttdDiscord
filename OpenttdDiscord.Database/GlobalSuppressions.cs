@@ -5,4 +5,5 @@
 
 using System.Diagnostics.CodeAnalysis;
 
-[assembly: SuppressMessage("StyleCop.CSharp.NamingRules", "SA1300:Element should begin with upper-case letter", Justification = "Migrations naming rules are not so important to error out whole project", Scope = "namespaceanddescendants", Target = "OpenttdDiscord.Database.Migrations")]
+[assembly: SuppressMessage("StyleCop.CSharp.NamingRules", "SA1300:Element should begin with upper-case letter", Justification = "Migrations naming rules are not so important to error out whole project", Scope = "namespaceanddescendants", Target = "~N:OpenttdDiscord.Database.Migrations")]
+[assembly: SuppressMessage("StyleCop.CSharp.ReadabilityRules", "SA1413:Use trailing comma in multi-line initializers", Justification = "Migrations are violating this rule", Scope = "namespaceanddescendants", Target = "~N:OpenttdDiscord.Database.Migrations")]

@@ -6,7 +6,7 @@ namespace OpenttdDiscord.Base.Akkas
 {
     public static class ICanTellExtensions
     {
-        public static EitherUnit TellExt(this ICanTell actor, object msg, IActorRef sender = null)
+        public static EitherUnit TellExt(this ICanTell actor, object msg, IActorRef? sender = null)
         {
             actor.Tell(msg, sender);
             return Unit.Default;

@@ -8,11 +8,11 @@ namespace OpenttdDiscord.Database
 {
     internal class OttdContext : DbContext
     {
-        public DbSet<OttdServerEntity> Servers { get; set; }
+        public DbSet<OttdServerEntity> Servers { get; set; } = default!;
 
-        public DbSet<StatusMonitorEntity> Monitors { get; set; }
+        public DbSet<StatusMonitorEntity> Monitors { get; set; } = default!;
 
-        public DbSet<ChatChannelEntity> ChatChannels { get; set; }
+        public DbSet<ChatChannelEntity> ChatChannels { get; set; } = default!;
 
         public OttdContext(DbContextOptions<OttdContext> options) : base(options)
         {

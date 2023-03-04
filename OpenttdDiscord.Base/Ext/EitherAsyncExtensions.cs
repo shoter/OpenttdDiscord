@@ -1,4 +1,5 @@
 ﻿using LanguageExt;
+#pragma warning disable SA1314 // Type parameter names should begin with T
 
 namespace OpenttdDiscord.Base.Ext
 {

@@ -1,9 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using OpenttdDiscord.Domain.Admin;
+using OpenttdDiscord.Domain.Rcon;
 
-namespace OpenttdDiscord.Database.Admin
+namespace OpenttdDiscord.Database.Rcon
 {
-    internal class AdminChannelEntity
+    internal class RconChannelEntity
     {
         public Guid ServerId { get; internal set; }
 
@@ -13,12 +13,12 @@ namespace OpenttdDiscord.Database.Admin
 
         public string Prefix { get; internal set; }
 
-        public AdminChannelEntity()
+        public RconChannelEntity()
         {
             Prefix = string.Empty;
         }
 
-        public AdminChannelEntity(AdminChannel ac)
+        public RconChannelEntity(RconChannel ac)
         {
             ServerId = ac.ServerId;
             GuildId = ac.GuildId;
@@ -26,7 +26,7 @@ namespace OpenttdDiscord.Database.Admin
             Prefix = ac.prefix;
         }
 
-        public AdminChannel ToDomain() => new(
+        public RconChannel ToDomain() => new(
             ServerId,
             GuildId,
             ChannelId,
@@ -34,7 +34,7 @@ namespace OpenttdDiscord.Database.Admin
 
         public static void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<AdminChannelEntity>()
+            modelBuilder.Entity<RconChannelEntity>()
                 .HasKey(x => new { x.ServerId, x.ChannelId });
         }
     }

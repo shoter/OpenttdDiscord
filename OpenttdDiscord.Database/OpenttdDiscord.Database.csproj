@@ -9,6 +9,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Chatting\ChatChannelRepository" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="Chatting\ChatChannelRepository" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Folder Include="Reporting\" />
   </ItemGroup>
 

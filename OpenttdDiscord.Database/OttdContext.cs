@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using OpenttdDiscord.Database.Admin;
+using OpenttdDiscord.Database.Rcon;
 using OpenttdDiscord.Database.Chatting;
 using OpenttdDiscord.Database.Ottd.Servers;
 using OpenttdDiscord.Database.Statuses;
@@ -15,7 +15,7 @@ namespace OpenttdDiscord.Database
 
         public DbSet<ChatChannelEntity> ChatChannels { get; set; } = default!;
 
-        public DbSet<AdminChannelEntity> AdminChannels { get; set; } = default!;
+        public DbSet<RconChannelEntity> RconChannels { get; set; } = default!;
 
         public OttdContext(DbContextOptions<OttdContext> options)
             : base(options)
@@ -29,7 +29,7 @@ namespace OpenttdDiscord.Database
             OttdServerEntity.OnModelCreating(modelBuilder);
             StatusMonitorEntity.OnModelCreating(modelBuilder);
             ChatChannelEntity.OnModelCreating(modelBuilder);
-            AdminChannelEntity.OnModelCreating(modelBuilder);
+            RconChannelEntity.OnModelCreating(modelBuilder);
         }
     }
 }

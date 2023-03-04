@@ -8,6 +8,7 @@ using OpenttdDiscord.Infrastructure.Discord;
 using OpenttdDiscord.Infrastructure.Guilds;
 using OpenttdDiscord.Infrastructure.Modularity;
 using OpenttdDiscord.Infrastructure.Ottd;
+using OpenttdDiscord.Infrastructure.Rcon;
 using OpenttdDiscord.Infrastructure.Servers;
 using OpenttdDiscord.Infrastructure.Statuses;
 
@@ -34,7 +35,8 @@ namespace OpenttdDiscord.Infrastructure
                 .RegisterDependencies<OttdModule>()
                 .RegisterDependencies<DiscordModule>()
                 .RegisterDependencies<StatusesModule>()
-                .RegisterDependencies<ChattingModule>();
+                .RegisterDependencies<ChattingModule>()
+                .RegisterDependencies<RconModule>();
 
             return services;
         }

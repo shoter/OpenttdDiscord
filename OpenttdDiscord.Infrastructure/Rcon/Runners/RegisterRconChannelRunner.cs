@@ -21,11 +21,15 @@ namespace OpenttdDiscord.Infrastructure.Rcon.Runners
 
         private readonly IGetServerByNameUseCase getServerByNameUseCase;
 
+        private readonly IGetRconChannelUseCase getRconChannelUseCase;
+
         public RegisterRconChannelRunner(
             IRegisterRconChannelUseCase registerRconChannelUseCase,
+            IGetRconChannelUseCase getRconChannelUseCase,
             IGetServerByNameUseCase getServerByNameUseCase)
         {
             this.registerRconChannelUseCase = registerRconChannelUseCase;
+            this.getRconChannelUseCase = getRconChannelUseCase;
             this.getServerByNameUseCase = getServerByNameUseCase;
         }
 
@@ -39,8 +43,16 @@ namespace OpenttdDiscord.Infrastructure.Rcon.Runners
 
             return
                 from server in getServerByNameUseCase.Execute(user, serverName, guildId)
-                from _1 in registerRconChannelUseCase.Execute(user, server.Id, guildId, channelId, prefix)
+                from _1 in ErrorIfRconChannelExists(user, server.Id, channelId)
+                from _2 in registerRconChannelUseCase.Execute(user, server.Id, guildId, channelId, prefix)
                 select (ISlashCommandResponse)new TextCommandResponse("Rcon channel registered!");
+        }
+
+        private EitherAsyncUnit ErrorIfRconChannelExists(User user, Guid serverId, ulong channelId)
+        {
+            return getRconChannelUseCase
+                .Execute(user, serverId, channelId)
+                .Bind(_ => EitherAsyncUnit.Left(new HumanReadableError("Rcon channel is already registered!")));
         }
     }
 }

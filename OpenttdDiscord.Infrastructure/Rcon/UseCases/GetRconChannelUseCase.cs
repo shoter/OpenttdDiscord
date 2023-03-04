@@ -16,7 +16,7 @@ namespace OpenttdDiscord.Infrastructure.Rcon.UseCases
             this.rconChannelRepository = rconChannelRepository;
         }
 
-        public EitherAsync<IError, RconChannel> Execute(User user, Guid serverId, ulong guildId, ulong channelId)
+        public EitherAsync<IError, RconChannel> Execute(User user, Guid serverId,  ulong channelId)
         {
             return
                 from _1 in CheckIfHasCorrectUserLevel(user, UserLevel.Moderator).ToAsync()
@@ -25,7 +25,7 @@ namespace OpenttdDiscord.Infrastructure.Rcon.UseCases
                 select rcon;
         }
 
-        public EitherAsync<IError, List<RconChannel>> Execute(User user, Guid serverId, ulong guildId)
+        public EitherAsync<IError, List<RconChannel>> Execute(User user, Guid serverId)
         {
             return
                 from _1 in CheckIfHasCorrectUserLevel(user, UserLevel.Moderator).ToAsync()

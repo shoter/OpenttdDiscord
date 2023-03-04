@@ -29,6 +29,7 @@ namespace OpenttdDiscord.Infrastructure.Rcon
         public static IServiceCollection RegisterUseCases(this IServiceCollection services)
         {
             services.AddScoped<IRegisterRconChannelUseCase, RegisterRconChannelUseCase>();
+            services.AddScoped<IGetRconChannelUseCase, GetRconChannelUseCase>();
 
             return services;
         }

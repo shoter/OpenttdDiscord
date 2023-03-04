@@ -1,12 +1,12 @@
 ﻿using Discord;
-using OpenttdDiscord.Infrastructure.Admin.Runners;
+using OpenttdDiscord.Infrastructure.Rcon.Runners;
 using OpenttdDiscord.Infrastructure.Discord.Commands;
 
-namespace OpenttdDiscord.Infrastructure.Admin.Commands
+namespace OpenttdDiscord.Infrastructure.Rcon.Commands
 {
-    internal class RegisterAdminChannelCommand : OttdSlashCommandBase<RegisterAdminChannelRunner>
+    internal class RegisterRconChannelCommand : OttdSlashCommandBase<RegisterRconChannelRunner>
     {
-        public RegisterAdminChannelCommand()
+        public RegisterRconChannelCommand()
             : base("register-admin-channel")
         {
         }

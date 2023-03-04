@@ -10,9 +10,9 @@ using OpenttdDiscord.Base.Ext;
 using OpenttdDiscord.Infrastructure.Discord.Responses;
 using OpenttdDiscord.Infrastructure.Discord.Runners;
 
-namespace OpenttdDiscord.Infrastructure.Admin.Runners
+namespace OpenttdDiscord.Infrastructure.Rcon.Runners
 {
-    internal class RegisterAdminChannelRunner : OttdSlashCommandRunnerBase
+    internal class RegisterRconChannelRunner : OttdSlashCommandRunnerBase
     {
         protected override EitherAsync<IError, ISlashCommandResponse> RunInternal(SocketSlashCommand command, ExtDictionary<string, object> options)
         {

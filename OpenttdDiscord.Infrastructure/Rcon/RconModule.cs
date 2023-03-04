@@ -1,14 +1,15 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using OpenttdDiscord.Database.Chatting;
+using OpenttdDiscord.Database.Rcon;
 using OpenttdDiscord.Infrastructure.Modularity;
 
-namespace OpenttdDiscord.Infrastructure.Admin
+namespace OpenttdDiscord.Infrastructure.Rcon
 {
-    internal class AdminModule : IModule
+    internal class RconModule : IModule
     {
         public void RegisterDependencies(IServiceCollection services)
         {
-            services.AddScoped<IChatChannelRepository, ChatChannelRepository>();
+            services.AddScoped<IRconChannelRepository, RconChannelRepository>();
             services
                 .RegisterUseCases()
                 .RegisterCommands()
@@ -17,11 +18,12 @@ namespace OpenttdDiscord.Infrastructure.Admin
     }
 
 #pragma warning disable SA1402 // File may only contain a single type
-    internal static class AdminModuleExtensions
+    internal static class RconModuleExtensions
 #pragma warning restore SA1402 // File may only contain a single type
     {
         public static IServiceCollection RegisterUseCases(this IServiceCollection services)
         {
+
             return services;
         }
 

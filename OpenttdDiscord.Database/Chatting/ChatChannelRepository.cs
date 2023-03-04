@@ -21,7 +21,7 @@ namespace OpenttdDiscord.Database.Chatting
                     .Where(cc => cc.ServerId == serverId && cc.ChannelId == channelId)
                     .DeleteFromQueryAsync();
 
-                if(deletedRows == 0)
+                if (deletedRows == 0)
                 {
                     return new HumanReadableError("No chat channel was found for deletion");
                 }
@@ -51,11 +51,11 @@ namespace OpenttdDiscord.Database.Chatting
         public EitherAsync<IError, Option<ChatChannel>> GetChatChannelForServer(Guid serverId, ulong channelId)
               => TryAsync<Either<IError, Option<ChatChannel>>>(async () =>
               {
-                  var chatChannel = (await DB.ChatChannels
+                  var chatChannel = await DB.ChatChannels
                       .AsNoTracking()
-                      .FirstOrDefaultAsync(cc => cc.ServerId == serverId && cc.ChannelId == channelId));
+                      .FirstOrDefaultAsync(cc => cc.ServerId == serverId && cc.ChannelId == channelId);
 
-                  if(chatChannel == null)
+                  if (chatChannel == null)
                   {
                       return Option<ChatChannel>.None;
                   }

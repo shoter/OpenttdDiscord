@@ -1,6 +1,6 @@
 ﻿namespace OpenttdDiscord.Database
 {
-    public static class Program 
+    public static class Program
     {
         public static void Main(string[] args)
         {

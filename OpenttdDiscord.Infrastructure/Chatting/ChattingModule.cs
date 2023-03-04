@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using System.Net.Security;
+using Microsoft.Extensions.DependencyInjection;
 using OpenttdDiscord.Database.Chatting;
 using OpenttdDiscord.Domain.Chatting.UseCases;
 using OpenttdDiscord.Infrastructure.Chatting.Commands;
@@ -6,7 +7,6 @@ using OpenttdDiscord.Infrastructure.Chatting.Runners;
 using OpenttdDiscord.Infrastructure.Chatting.UseCases;
 using OpenttdDiscord.Infrastructure.Discord.Commands;
 using OpenttdDiscord.Infrastructure.Modularity;
-using System.Net.Security;
 
 namespace OpenttdDiscord.Infrastructure.Chatting
 {
@@ -22,7 +22,9 @@ namespace OpenttdDiscord.Infrastructure.Chatting
         }
     }
 
+#pragma warning disable SA1402 // File may only contain a single type
     internal static class ChattingModuleExtensions
+#pragma warning restore SA1402 // File may only contain a single type
     {
         public static IServiceCollection RegisterUseCases(this IServiceCollection services)
         {

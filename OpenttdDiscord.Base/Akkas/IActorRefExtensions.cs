@@ -24,7 +24,7 @@ namespace OpenttdDiscord.Base.Akkas
 
         public static Unit TellMany(this IEnumerable<IActorRef> actor, object msg)
         {
-            foreach(var a in actor)
+            foreach (var a in actor)
             {
                 a.Tell(msg);
             }

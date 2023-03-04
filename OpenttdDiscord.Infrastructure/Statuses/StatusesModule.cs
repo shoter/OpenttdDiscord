@@ -21,9 +21,10 @@ namespace OpenttdDiscord.Infrastructure.Statuses
         }
     }
 
+#pragma warning disable SA1402 // File may only contain a single type
     internal static class StatusesModuleExtensions
+#pragma warning restore SA1402 // File may only contain a single type
     {
-
         public static IServiceCollection RegisterUseCases(this IServiceCollection services)
         {
             services.AddScoped<IRegisterStatusMonitorUseCase, RegisterStatusMonitorUseCase>();
@@ -48,5 +49,4 @@ namespace OpenttdDiscord.Infrastructure.Statuses
             return services;
         }
     }
-
 }

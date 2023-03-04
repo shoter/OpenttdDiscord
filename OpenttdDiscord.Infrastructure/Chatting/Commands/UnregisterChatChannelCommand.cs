@@ -1,17 +1,18 @@
-﻿using Discord;
-using OpenttdDiscord.Infrastructure.Chatting.Runners;
-using OpenttdDiscord.Infrastructure.Discord.Commands;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Discord;
+using OpenttdDiscord.Infrastructure.Chatting.Runners;
+using OpenttdDiscord.Infrastructure.Discord.Commands;
 
 namespace OpenttdDiscord.Infrastructure.Chatting.Commands
 {
     internal class UnregisterChatChannelCommand : OttdSlashCommandBase<UnregisterChatChannelRunner>
     {
-        public UnregisterChatChannelCommand() : base("unregister-chat-channel")
+        public UnregisterChatChannelCommand()
+            : base("unregister-chat-channel")
         {
         }
 

@@ -1,8 +1,8 @@
-﻿using DotNet.Testcontainers.Builders;
+﻿using System;
+using System.Threading.Tasks;
+using DotNet.Testcontainers.Builders;
 using DotNet.Testcontainers.Containers;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Threading.Tasks;
 
 namespace OpenttdDiscord.Database.Tests
 {
@@ -63,13 +63,6 @@ namespace OpenttdDiscord.Database.Tests
                 disposedValue = true;
             }
         }
-
-        // // TODO: override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
-        // ~PostgressDatabaseContext()
-        // {
-        //     // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
-        //     Dispose(disposing: false);
-        // }
 
         void IDisposable.Dispose()
         {

@@ -11,7 +11,7 @@ namespace OpenttdDiscord.Infrastructure.Ottd.Actors
         protected OttdServerAction(
             IServiceProvider serviceProvider,
             OttdServer server,
-            IAdminPortClient client) 
+            IAdminPortClient client)
             : base(serviceProvider)
         {
             this.client = client;

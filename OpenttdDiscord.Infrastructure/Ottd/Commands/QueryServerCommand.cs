@@ -6,7 +6,8 @@ namespace OpenttdDiscord.Infrastructure.Ottd.Commands
 {
     internal class QueryServerCommand : OttdSlashCommandBase<QueryServerRunner>
     {
-        public QueryServerCommand() : base("query-server")
+        public QueryServerCommand()
+            : base("query-server")
         {
         }
 

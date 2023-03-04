@@ -1,8 +1,8 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
+using System.Runtime.Loader;
 using Microsoft.Extensions.Hosting;
 using OpenttdDiscord;
-using System.Runtime.Loader;
 
 var host = ApplicationBuilder
     .CreateHostBuilder()

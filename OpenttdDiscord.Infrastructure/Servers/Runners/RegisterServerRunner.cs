@@ -20,8 +20,8 @@ namespace OpenttdDiscord.Infrastructure.Servers.Runners
         public RegisterServerRunner(IRegisterOttdServerUseCase useCase)
         {
             this.useCase = useCase;
-
         }
+
         protected override EitherAsync<IError, ISlashCommandResponse> RunInternal(SocketSlashCommand command, ExtDictionary<string, object> options)
         {
             if (command.GuildId == null)

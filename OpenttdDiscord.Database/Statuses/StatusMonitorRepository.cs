@@ -1,9 +1,9 @@
-﻿using Discord;
+﻿using System.Threading.Channels;
+using Discord;
 using LanguageExt;
 using LanguageExt.Pipes;
 using Microsoft.EntityFrameworkCore;
 using OpenttdDiscord.Domain.Statuses;
-using System.Threading.Channels;
 using static LanguageExt.Prelude;
 
 namespace OpenttdDiscord.Database.Statuses
@@ -102,6 +102,5 @@ namespace OpenttdDiscord.Database.Statuses
                 return monitor.ToDomain();
             })
             .ToEitherAsyncError();
-
     }
 }

@@ -1,6 +1,6 @@
-﻿using OpenttdDiscord.Domain.Servers;
+﻿using System;
+using OpenttdDiscord.Domain.Servers;
 using OpenttdDiscord.Validation.Ottd;
-using System;
 using Xunit;
 
 namespace OpenttdDiscord.Validation.Tests.Ottd
@@ -43,6 +43,7 @@ namespace OpenttdDiscord.Validation.Tests.Ottd
         [Theory]
         [InlineData("1.2.3.4")]
         [InlineData("21.37.69.42")]
+
         // v6
         [InlineData("684D:1111:222:3333:4444:5555:6:77")]
         [InlineData("::")]
@@ -58,9 +59,11 @@ namespace OpenttdDiscord.Validation.Tests.Ottd
         }
 
         [Theory]
+
         // First add space here and there. Validator is not doing any trimming. Exact string need to pass ip address validation.
         [InlineData("1.2.3.4 ")]
         [InlineData("21.37.69.42 ")]
+
         // v6
         [InlineData(" 684D:1111:222:3333:4444:5555:6:77")]
         [InlineData(":: ")]
@@ -68,6 +71,7 @@ namespace OpenttdDiscord.Validation.Tests.Ottd
         [InlineData("2001:db8:: ")]
         [InlineData(" 2001:0db8:0001:0000:0000:0ab9:C0A8:0102")]
         [InlineData("2001:db8:1::ab9:C0A8:102 ")]
+
         // new data
         [InlineData("That's not an ip address. :D")]
         [InlineData("256.256.256.256")]
@@ -83,7 +87,7 @@ namespace OpenttdDiscord.Validation.Tests.Ottd
         [Fact]
         public void DisallowEmptyPassword_WhenPortIsPresent()
         {
-            var server = correctServer with { AdminPortPassword = "" };
+            var server = correctServer with { AdminPortPassword = string.Empty };
             var result = validator.Validate(server);
             Assert.False(result.IsValid);
         }

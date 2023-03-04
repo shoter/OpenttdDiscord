@@ -33,7 +33,7 @@ namespace OpenttdDiscord.Infrastructure.Statuses.Runners
             var _ =
             from server in ottdServerRepository.GetServerByName(command.GuildId!.Value, serverName)
             from _2 in removeStatusMonitorUseCase.Execute(new User(command.User), server.Id, command.GuildId!.Value, command.ChannelId!.Value)
-            select (ISlashCommandResponse) new TextCommandResponse("Status monitor removed!");
+            select (ISlashCommandResponse)new TextCommandResponse("Status monitor removed!");
             return _;
         }
     }

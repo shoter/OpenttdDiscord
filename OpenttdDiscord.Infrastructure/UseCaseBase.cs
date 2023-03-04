@@ -16,7 +16,7 @@ namespace OpenttdDiscord.Infrastructure
                 _ => false
             };
 
-            if(!hasLevel)
+            if (!hasLevel)
             {
                 return new HumanReadableError("You do not have sufficient privileges to run this command!");
             }

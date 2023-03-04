@@ -1,10 +1,10 @@
-﻿using Akka.Actor;
+﻿using System.Threading.Channels;
+using Akka.Actor;
 using LanguageExt;
 using Microsoft.Extensions.Logging;
 using OpenttdDiscord.Infrastructure.Chatting.Messages;
 using OpenttdDiscord.Infrastructure.Discord.Actors;
 using OpenttdDiscord.Infrastructure.Discord.Messages;
-using System.Threading.Channels;
 
 namespace OpenttdDiscord.Infrastructure.Chatting.Actors
 {
@@ -16,7 +16,8 @@ namespace OpenttdDiscord.Infrastructure.Chatting.Actors
 
         public ChatChannelActor(
             IServiceProvider serviceProvider,
-            ulong chatChannelId) : base(serviceProvider)
+            ulong chatChannelId)
+            : base(serviceProvider)
         {
             this.chatChannelId = chatChannelId;
             discordChannel = Context.ActorOf(DiscordChannelActor.Create(SP, chatChannelId), "discordChannel");
@@ -37,9 +38,9 @@ namespace OpenttdDiscord.Infrastructure.Chatting.Actors
 
         private void TellSubscribers(object msg)
         {
-            foreach(var s in subscribers)
+            foreach (var s in subscribers)
             {
-                if(s == Sender)
+                if (s == Sender)
                 {
                     continue;
                 }
@@ -64,7 +65,6 @@ namespace OpenttdDiscord.Infrastructure.Chatting.Actors
         {
             base.PostStop();
             logger.LogInformation($"Removing Chat channel Actor for {chatChannelId}");
-
         }
     }
 }

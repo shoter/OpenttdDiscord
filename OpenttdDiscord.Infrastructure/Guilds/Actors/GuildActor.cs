@@ -1,4 +1,5 @@
-﻿using Akka.Actor;
+﻿using System.Linq;
+using Akka.Actor;
 using LanguageExt;
 using Microsoft.Extensions.DependencyInjection;
 using OpenttdDiscord.Base.Ext;
@@ -12,7 +13,6 @@ using OpenttdDiscord.Infrastructure.Ottd.Messages;
 using OpenttdDiscord.Infrastructure.Servers.Messages;
 using OpenttdDiscord.Infrastructure.Servers.UseCases;
 using OpenttdDiscord.Infrastructure.Statuses.Messages;
-using System.Linq;
 
 namespace OpenttdDiscord.Infrastructure.Guilds.Actors
 {
@@ -24,7 +24,8 @@ namespace OpenttdDiscord.Infrastructure.Guilds.Actors
 
         private readonly Dictionary<Guid, IActorRef> serverActors = new();
 
-        public GuildActor(IServiceProvider serviceProvider, ulong guildId) : base(serviceProvider)
+        public GuildActor(IServiceProvider serviceProvider, ulong guildId)
+            : base(serviceProvider)
         {
             listOttdServersUseCase = SP.GetRequiredService<IListOttdServersUseCase>();
             this.guildId = guildId;
@@ -97,7 +98,6 @@ namespace OpenttdDiscord.Infrastructure.Guilds.Actors
         private void ReceiveRedirectMsg<TMsg>(Func<TMsg, Guid> serverSelector)
                    => Receive((TMsg msg) =>
                    {
-
                        if (!serverActors.TryGetValue(serverSelector(msg), out var actor))
                        {
                            return;

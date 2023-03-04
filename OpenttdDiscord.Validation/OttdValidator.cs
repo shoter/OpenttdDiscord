@@ -9,6 +9,7 @@ namespace OpenttdDiscord.Validation
         where TValidator : AbstractValidator<T>
     {
         private readonly TValidator validator;
+
         public OttdValidator(TValidator validator)
         {
             this.validator = validator;

@@ -1,20 +1,21 @@
-﻿using AutoFixture;
+﻿using System;
+using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
+using AutoFixture;
 using OpenttdDiscord.Base.Ext;
 using OpenttdDiscord.Database.Chatting;
 using OpenttdDiscord.Database.Servers;
 using OpenttdDiscord.Domain.Chatting;
 using OpenttdDiscord.Domain.Servers;
-using System;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace OpenttdDiscord.Database.Tests.Chatting
 {
     public class ChatChannelRepositoryShould : DatabaseBaseTest
     {
-        public ChatChannelRepositoryShould(PostgressDatabaseFixture databaseFixture) : base(databaseFixture)
+        public ChatChannelRepositoryShould(PostgressDatabaseFixture databaseFixture)
+            : base(databaseFixture)
         {
         }
 
@@ -33,15 +34,15 @@ namespace OpenttdDiscord.Database.Tests.Chatting
         {
             var repo = await CreateRpeository();
             var server = await CreateServer();
-            var chatChannel = fix.Create<ChatChannel>() with
+            var chatChannel = Fix.Create<ChatChannel>() with
             {
                 ServerId = server.Id
             };
 
             var chatChannels = await
                 (from _1 in repo.Insert(chatChannel)
-                from cc in repo.GetChatChannelsForServer(server.Id)
-                select cc);
+                 from cc in repo.GetChatChannelsForServer(server.Id)
+                 select cc);
 
             chatChannels.ThrowIfError();
             Assert.Single(chatChannels.Right());
@@ -54,7 +55,7 @@ namespace OpenttdDiscord.Database.Tests.Chatting
         {
             var repo = await CreateRpeository();
             var server = await CreateServer();
-            var chatChannel = fix.Create<ChatChannel>() with
+            var chatChannel = Fix.Create<ChatChannel>() with
             {
                 ServerId = server.Id
             };
@@ -74,7 +75,7 @@ namespace OpenttdDiscord.Database.Tests.Chatting
         {
             var repo = await CreateRpeository();
             var server = await CreateServer();
-            var chatChannel = fix.Create<ChatChannel>() with
+            var chatChannel = Fix.Create<ChatChannel>() with
             {
                 ServerId = server.Id
             };
@@ -98,7 +99,7 @@ namespace OpenttdDiscord.Database.Tests.Chatting
         {
             var context = await CreateContext(databaseName);
             var repository = new OttdServerRepository(context);
-            var server = fix.Create<OttdServer>();
+            var server = Fix.Create<OttdServer>();
             (await repository.InsertServer(server)).ThrowIfError();
             return server;
         }

@@ -15,8 +15,10 @@ namespace OpenttdDiscord.Infrastructure.Discord.Actors
         private readonly DiscordSocketClient discord;
         private readonly ulong channelId;
         private Option<IMessageChannel> messageChannel = new();
+
         public DiscordChannelActor(
-            IServiceProvider serviceProvider, ulong channelId) : base(serviceProvider)
+            IServiceProvider serviceProvider, ulong channelId)
+            : base(serviceProvider)
         {
             this.discord = serviceProvider.GetRequiredService<DiscordSocketClient>();
             this.channelId = channelId;
@@ -49,7 +51,7 @@ namespace OpenttdDiscord.Infrastructure.Discord.Actors
                 return Task.CompletedTask;
             }
 
-            if(msg.Channel.Id != channelId)
+            if (msg.Channel.Id != channelId)
             {
                 return Task.CompletedTask;
             }
@@ -59,7 +61,7 @@ namespace OpenttdDiscord.Infrastructure.Discord.Actors
                 return Task.CompletedTask;
             }
 
-            if(discord.CurrentUser.Id == msg.Author.Id)
+            if (discord.CurrentUser.Id == msg.Author.Id)
             {
                 return Task.CompletedTask;
             }

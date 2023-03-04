@@ -1,10 +1,10 @@
-﻿using LanguageExt;
+﻿using System.Threading.Channels;
+using LanguageExt;
 using OpenttdDiscord.Base.Ext;
 using OpenttdDiscord.Database.Chatting;
 using OpenttdDiscord.Domain.Chatting;
 using OpenttdDiscord.Domain.Chatting.UseCases;
 using OpenttdDiscord.Domain.Security;
-using System.Threading.Channels;
 
 namespace OpenttdDiscord.Infrastructure.Chatting.UseCases
 {

@@ -13,10 +13,10 @@ int AdminPort,
 string AdminPortPassword
 )
 {
-
     public List<StatusMonitorEntity> Monitors { get; set; } = default!;
 
-    public OttdServerEntity(OttdServer ottdServer) : this(
+    public OttdServerEntity(OttdServer ottdServer)
+        : this(
         ottdServer.Id,
         ottdServer.GuildId,
         ottdServer.Ip,

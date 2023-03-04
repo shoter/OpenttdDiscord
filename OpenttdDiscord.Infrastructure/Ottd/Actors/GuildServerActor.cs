@@ -38,7 +38,8 @@ namespace OpenttdDiscord.Infrastructure.Ottd.Actors
 
         public GuildServerActor(
             IServiceProvider serviceProvider,
-            OttdServer server) : base(serviceProvider)
+            OttdServer server)
+            : base(serviceProvider)
         {
             this.server = server;
 
@@ -49,7 +50,7 @@ namespace OpenttdDiscord.Infrastructure.Ottd.Actors
 
             client = new(new AdminPortClientSettings()
             {
-                WatchdogInterval = TimeSpan.FromSeconds(5)
+                WatchdogInterval = TimeSpan.FromSeconds(5),
             },
             new(server.Ip, server.AdminPort, server.AdminPortPassword),
             logging => logging.AddSerilog());
@@ -92,7 +93,7 @@ namespace OpenttdDiscord.Infrastructure.Ottd.Actors
                 .ThrowIfError()
                 .Right();
 
-            foreach(var monitor in monitors)
+            foreach (var monitor in monitors)
             {
                 CreateStatusMonitor(monitor);
                 logger.LogInformation($"Created monitor for {server.Name} on channel {monitor.ChannelId}");
@@ -102,7 +103,7 @@ namespace OpenttdDiscord.Infrastructure.Ottd.Actors
                 .ThrowIfError()
                 .Right();
 
-            foreach(var cc in chatChannels)
+            foreach (var cc in chatChannels)
             {
                 RegisterChatChannel(new(cc));
             }
@@ -136,7 +137,7 @@ namespace OpenttdDiscord.Infrastructure.Ottd.Actors
         {
             var statusMonitor = statusMonitorActors.TryGetValueAs<IActorRef>(rmv.ChannelId);
 
-            if(statusMonitor.IsNone)
+            if (statusMonitor.IsNone)
             {
                 throw new ActorNotFoundException();
             }
@@ -150,7 +151,6 @@ namespace OpenttdDiscord.Infrastructure.Ottd.Actors
 
         private async Task UpdateStatusMonitor(UpdateStatusMonitor usm)
         {
-
             await this.RemoveStatusMonitor(new(usm.UpdatedMonitor.ServerId, usm.UpdatedMonitor.GuildId, usm.UpdatedMonitor.ChannelId));
             var self = Self;
             var monitorResult = await this.updateStatusMonitorUseCase.Execute(User.Master, usm.UpdatedMonitor);

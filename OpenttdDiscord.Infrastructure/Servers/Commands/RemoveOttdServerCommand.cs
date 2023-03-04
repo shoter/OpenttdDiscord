@@ -6,7 +6,8 @@ namespace OpenttdDiscord.Infrastructure.Servers.Commands
 {
     internal class RemoveOttdServerCommand : OttdSlashCommandBase<RemoveOttdServerRunner>
     {
-        public RemoveOttdServerCommand() : base("remove-ottd-server")
+        public RemoveOttdServerCommand()
+            : base("remove-ottd-server")
         {
         }
 
@@ -19,7 +20,6 @@ namespace OpenttdDiscord.Infrastructure.Servers.Commands
                     .WithRequired(true)
                     .WithDescription("Name of the server")
                     .WithType(ApplicationCommandOptionType.String));
-
         }
     }
 }

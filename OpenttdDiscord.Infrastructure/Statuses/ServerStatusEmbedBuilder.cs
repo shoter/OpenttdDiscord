@@ -1,7 +1,7 @@
 ﻿using Discord;
 using LanguageExt.Pipes;
-using OpenTTDAdminPort.Game;
 using OpenTTDAdminPort;
+using OpenTTDAdminPort.Game;
 
 namespace OpenttdDiscord.Infrastructure.Statuses
 {

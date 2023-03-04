@@ -1,4 +1,9 @@
-﻿using Discord;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Discord;
 using Discord.WebSocket;
 using LanguageExt;
 using LanguageExt.Common;
@@ -12,11 +17,6 @@ using OpenttdDiscord.Infrastructure.Discord.Commands;
 using OpenttdDiscord.Infrastructure.Discord.Responses;
 using OpenttdDiscord.Infrastructure.Discord.Runners;
 using OpenttdDiscord.Infrastructure.Servers.UseCases;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OpenttdDiscord.Infrastructure.Servers.Runners
 {
@@ -40,7 +40,6 @@ namespace OpenttdDiscord.Infrastructure.Servers.Runners
             from servers in listServersUseCase.Execute(new User(command.User), command.GuildId.Value).ToAsync()
             from embed in CreateEmbed(servers).ToAsync()
             select (ISlashCommandResponse)new EmbedCommandResponse(embed);
-
         }
 
         private Either<IError, Embed> CreateEmbed(List<OttdServer> servers)
@@ -49,7 +48,7 @@ namespace OpenttdDiscord.Infrastructure.Servers.Runners
 
             embedBuilder
                 .WithTitle("List of servers")
-                .WithDescription("");
+                .WithDescription(string.Empty);
 
             foreach (var server in servers)
             {

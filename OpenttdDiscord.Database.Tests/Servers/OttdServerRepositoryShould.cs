@@ -1,23 +1,24 @@
-﻿using AutoFixture;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Text;
+using System.Threading.Tasks;
+using AutoFixture;
 using DotNet.Testcontainers.Builders;
 using LanguageExt;
 using Microsoft.EntityFrameworkCore;
 using OpenttdDiscord.Database.Ottd.Servers;
 using OpenttdDiscord.Database.Servers;
 using OpenttdDiscord.Domain.Servers;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace OpenttdDiscord.Database.Tests.Servers
 {
     public class OttdServerRepositoryShould : DatabaseBaseTest
     {
-        public OttdServerRepositoryShould(PostgressDatabaseFixture databaseFixture) : base(databaseFixture)
+        public OttdServerRepositoryShould(PostgressDatabaseFixture databaseFixture)
+            : base(databaseFixture)
         {
         }
 
@@ -25,10 +26,10 @@ namespace OpenttdDiscord.Database.Tests.Servers
         public async Task InsertServerToDatabase()
         {
             var repository = await CreateRpeository();
-            var expectedServer = fix.Create<OttdServer>();
+            var expectedServer = Fix.Create<OttdServer>();
 
             await repository.InsertServer(expectedServer);
-            var retrievedServer = (await repository.GetServer(expectedServer.Id));
+            var retrievedServer = await repository.GetServer(expectedServer.Id);
 
             retrievedServer.Match(
                 server => Assert.Equal(expectedServer, server),
@@ -40,11 +41,11 @@ namespace OpenttdDiscord.Database.Tests.Servers
         public async Task RemoveServerFromDatabase()
         {
             var repository = await CreateRpeository();
-            var expectedServer = fix.Create<OttdServer>();
+            var expectedServer = Fix.Create<OttdServer>();
 
             await repository.InsertServer(expectedServer);
             await repository.DeleteServer(expectedServer.Id);
-            var retrievedServer = (await repository.GetServer(expectedServer.Id));
+            var retrievedServer = await repository.GetServer(expectedServer.Id);
 
             retrievedServer.Match(
                 server => Assert.Equal(expectedServer, server),
@@ -56,12 +57,12 @@ namespace OpenttdDiscord.Database.Tests.Servers
         public async Task UpdateServerInDatabase()
         {
             var repository = await CreateRpeository();
-            var insertedServer = fix.Create<OttdServer>();
+            var insertedServer = Fix.Create<OttdServer>();
 
             await repository.InsertServer(insertedServer);
             await repository.DeleteServer(insertedServer.Id);
 
-            var updatedServerr = fix.Create<OttdServer>() with
+            var updatedServerr = Fix.Create<OttdServer>() with
             {
                 Id = insertedServer.Id,
                 GuildId = insertedServer.GuildId
@@ -69,7 +70,7 @@ namespace OpenttdDiscord.Database.Tests.Servers
 
             await repository.UpdateServer(updatedServerr);
 
-            var retrievedServer = (await repository.GetServer(insertedServer.Id));
+            var retrievedServer = await repository.GetServer(insertedServer.Id);
 
             retrievedServer.Match(
                 server => Assert.Equal(updatedServerr, server),

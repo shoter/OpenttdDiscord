@@ -39,12 +39,12 @@ namespace OpenttdDiscord.Infrastructure.Servers.UseCases
             logger.LogTrace("Executing with {0} for\n{1}", user, server);
 
             return
-                from _0         in CheckIfHasCorrectUserLevel(user, UserLevel.Admin).ToAsync()
-                from _1         in validator.Validate(server).ToAsync()
-                from _2         in CheckIfSerwerExists(server.GuildId, server.Name)
-                from _3         in ottdServerRepository.InsertServer(server).ToAsync()
-                from selection  in akkaService.SelectActor(MainActors.Paths.Guilds)
-                from _4         in selection.TellExt(new InformAboutServerRegistration(server)).ToAsync()
+                from _0 in CheckIfHasCorrectUserLevel(user, UserLevel.Admin).ToAsync()
+                from _1 in validator.Validate(server).ToAsync()
+                from _2 in CheckIfSerwerExists(server.GuildId, server.Name)
+                from _3 in ottdServerRepository.InsertServer(server).ToAsync()
+                from selection in akkaService.SelectActor(MainActors.Paths.Guilds)
+                from _4 in selection.TellExt(new InformAboutServerRegistration(server)).ToAsync()
                 select _4;
         }
 

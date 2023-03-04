@@ -1,4 +1,5 @@
-﻿using Discord;
+﻿using System.Collections.Generic;
+using Discord;
 using Discord.WebSocket;
 using LanguageExt;
 using Microsoft.Extensions.DependencyInjection;
@@ -11,7 +12,6 @@ using OpenttdDiscord.Discord.Options;
 using OpenttdDiscord.Infrastructure.Discord;
 using OpenttdDiscord.Validation;
 using Serilog.Core;
-using System.Collections.Generic;
 
 namespace OpenttdDiscord.Discord.Services
 {
@@ -35,8 +35,6 @@ namespace OpenttdDiscord.Discord.Services
             client.Log += OnDiscordLog;
             client.Ready += Client_Ready;
         }
-
-     
 
         private async Task Client_Ready()
         {

@@ -1,3 +1,5 @@
 ﻿namespace OpenttdDiscord.Domain;
 
-public interface IUseCase { }
+public interface IUseCase
+{
+}

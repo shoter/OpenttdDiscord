@@ -18,7 +18,9 @@ public class StatusMonitorEntity
 
     public OttdServerEntity Server { get; set; } = default!;
 
-    public StatusMonitorEntity() { }
+    public StatusMonitorEntity()
+    {
+    }
 
     public StatusMonitorEntity(StatusMonitor sm)
     {

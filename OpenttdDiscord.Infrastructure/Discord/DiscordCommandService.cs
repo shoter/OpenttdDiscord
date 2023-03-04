@@ -89,7 +89,6 @@ namespace OpenttdDiscord.Infrastructure.Discord
                     logger.LogInformation($"Registering {c}");
                     await client.CreateGlobalApplicationCommandAsync(props);
                     logger.LogInformation($"Registered {c}");
-
                 }
                 catch (Exception ex)
                 {

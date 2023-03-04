@@ -6,7 +6,8 @@ namespace OpenttdDiscord.Infrastructure.Statuses.Commands
 {
     internal class RemoveStatusMonitorCommand : OttdSlashCommandBase<RemoveStatusMonitorRunner>
     {
-        public RemoveStatusMonitorCommand() : base("remove-status-monitor")
+        public RemoveStatusMonitorCommand()
+            : base("remove-status-monitor")
         {
         }
 

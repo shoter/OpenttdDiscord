@@ -18,7 +18,8 @@ namespace OpenttdDiscord.Infrastructure.Guilds.Actors
         private readonly IGetAllGuildsUseCase getAllGuildsUseCase;
         private readonly Dictionary<ulong, IActorRef> guildActors = new();
 
-        public GuildsActor(IServiceProvider serviceProvider) : base(serviceProvider)
+        public GuildsActor(IServiceProvider serviceProvider)
+            : base(serviceProvider)
         {
             getAllGuildsUseCase = SP.GetRequiredService<IGetAllGuildsUseCase>();
             Ready();
@@ -73,7 +74,6 @@ namespace OpenttdDiscord.Infrastructure.Guilds.Actors
         private void ReceiveRedirectMsg<TMsg>(Func<TMsg, ulong> guildSelector)
             => Receive((TMsg msg) =>
             {
-
                 if (!guildActors.TryGetValue(guildSelector(msg), out IActorRef? actor))
                 {
                     return;

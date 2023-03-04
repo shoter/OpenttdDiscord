@@ -27,6 +27,7 @@ namespace OpenttdDiscord.Infrastructure.Ottd.Runners
             this.akkaService = akkaService;
             this.ottdServerRepository = ottdServerRepository;
         }
+
         protected override EitherAsync<IError, ISlashCommandResponse> RunInternal(SocketSlashCommand command, ExtDictionary<string, object> options)
         {
             if (!command.ChannelId.HasValue)
@@ -40,8 +41,8 @@ namespace OpenttdDiscord.Infrastructure.Ottd.Runners
 
             return
                 from server in ottdServerRepository.GetServerByName(command.GuildId!.Value, serverName)
-                from actor  in akkaService.SelectActor(MainActors.Paths.Guilds)
-                from _1     in actor.TellExt(new QueryServer(server.Id, command.GuildId!.Value, channelId)).ToAsync()
+                from actor in akkaService.SelectActor(MainActors.Paths.Guilds)
+                from _1 in actor.TellExt(new QueryServer(server.Id, command.GuildId!.Value, channelId)).ToAsync()
                 select (ISlashCommandResponse)new TextCommandResponse("Executing command");
         }
     }

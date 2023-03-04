@@ -6,7 +6,8 @@ namespace OpenttdDiscord.Infrastructure.Servers.Commands
 {
     internal class ListServersCommand : OttdSlashCommandBase<ListServerRunner>
     {
-        public ListServersCommand() : base("list-ottd-servers")
+        public ListServersCommand()
+            : base("list-ottd-servers")
         {
         }
 

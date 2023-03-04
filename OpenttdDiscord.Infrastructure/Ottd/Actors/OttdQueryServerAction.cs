@@ -14,7 +14,9 @@ namespace OpenttdDiscord.Infrastructure.Ottd.Actors
     internal class OttdQueryServerAction : OttdServerAction<QueryServer>
     {
         private readonly ServerStatusEmbedBuilder embedBuilder = new();
-        DiscordSocketClient discord;
+
+        private readonly DiscordSocketClient discord;
+
         public OttdQueryServerAction(IServiceProvider serviceProvider, OttdServer server, IAdminPortClient client)
             : base(serviceProvider, server, client)
         {

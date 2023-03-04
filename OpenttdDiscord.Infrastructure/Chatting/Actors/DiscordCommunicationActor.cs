@@ -84,7 +84,6 @@ namespace OpenttdDiscord.Infrastructure.Chatting.Actors
             var self = Self;
             chatChannel.Some(a => a.Tell(new UnregisterFromChatChannel(self)));
             logger.LogInformation($"Removing Discord communication Actor for {channelId}");
-
         }
     }
 }

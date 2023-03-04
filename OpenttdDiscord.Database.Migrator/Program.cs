@@ -1,10 +1,10 @@
 ﻿// See https://aka.ms/new-console-template for more informationI
 
+using System.Reflection;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.Extensions.Configuration;
 using OpenttdDiscord.Database;
-using System.Reflection;
 
 Console.WriteLine($"args : {string.Join(", ", args)}");
 
@@ -13,6 +13,7 @@ if (args.Count() == 0 || !File.Exists(args[0]))
     Console.WriteLine("SQL migration file does not exist!");
     return;
 }
+
 ConfigurationBuilder configuration = new();
 configuration.AddUserSecrets(Assembly.GetExecutingAssembly());
 configuration.AddEnvironmentVariables();
@@ -38,7 +39,7 @@ for (int i = 0; i < 10; ++i)
         Console.WriteLine("Connected and applied migrations :)");
         break;
     }
-    catch(Exception ex)
+    catch (Exception ex)
     {
         Console.WriteLine(ex.Message);
         await Task.Delay(TimeSpan.FromSeconds(2));
@@ -46,4 +47,3 @@ for (int i = 0; i < 10; ++i)
 }
 
 Console.WriteLine("Done");
-

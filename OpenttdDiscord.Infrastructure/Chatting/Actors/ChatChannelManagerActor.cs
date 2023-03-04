@@ -10,7 +10,9 @@ namespace OpenttdDiscord.Infrastructure.Chatting.Actors
     public class ChatChannelManagerActor : ReceiveActorBase
     {
         public ExtDictionary<ulong, IActorRef> Channels { get; } = new();
-        public ChatChannelManagerActor(IServiceProvider serviceProvider) : base(serviceProvider)
+
+        public ChatChannelManagerActor(IServiceProvider serviceProvider)
+            : base(serviceProvider)
         {
             Ready();
         }
@@ -66,7 +68,6 @@ namespace OpenttdDiscord.Infrastructure.Chatting.Actors
                      logger.LogInformation($"Removed chat channel {ucc.ChannelId}");
                  }
              });
-                
         }
     }
 }

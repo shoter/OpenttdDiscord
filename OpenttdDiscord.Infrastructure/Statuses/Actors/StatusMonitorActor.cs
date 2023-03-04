@@ -24,7 +24,7 @@ namespace OpenttdDiscord.Infrastructure.Statuses.Actors
 
         private readonly DiscordSocketClient discord;
 
-        private static readonly ServerStatusEmbedBuilder embedBuilder = new();
+        private static readonly ServerStatusEmbedBuilder EmbedBuilder = new();
 
         public ITimerScheduler Timers { get; set; } = default!;
 
@@ -51,10 +51,10 @@ namespace OpenttdDiscord.Infrastructure.Statuses.Actors
         }
 
         public static Props Create(
-            OttdServer server, 
+            OttdServer server,
             StatusMonitor monitor,
             AdminPortClient client,
-            IServiceProvider serviceProvider) 
+            IServiceProvider serviceProvider)
             => Props.Create(() => new StatusMonitorActor(server, monitor, client, serviceProvider));
 
         private async Task RegenerateStatusMonitor(RegenerateStatusMonitor _)
@@ -62,7 +62,7 @@ namespace OpenttdDiscord.Infrastructure.Statuses.Actors
             ServerStatus serverStatus = await client.QueryServerStatus();
             AdminServerInfo info = serverStatus.AdminServerInfo;
 
-            Embed embed = embedBuilder.CreateServerStatusEmbed(client, serverStatus, info, ottdServer.Name);
+            Embed embed = EmbedBuilder.CreateServerStatusEmbed(client, serverStatus, info, ottdServer.Name);
             Optional<RestUserMessage> message = await GetMessage();
 
             if (!message.IsSpecified)
@@ -78,7 +78,6 @@ namespace OpenttdDiscord.Infrastructure.Statuses.Actors
             }
             else
             {
-
                 await message.Value.ModifyAsync(x =>
                 {
                     x.Content = null;
@@ -106,7 +105,7 @@ namespace OpenttdDiscord.Infrastructure.Statuses.Actors
         {
             var message = await GetMessage();
 
-            if(!message.IsSpecified)
+            if (!message.IsSpecified)
             {
                 return;
             }

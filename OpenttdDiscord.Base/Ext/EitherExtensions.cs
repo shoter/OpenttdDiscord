@@ -14,7 +14,7 @@ namespace OpenttdDiscord.Base.Ext
 
         public static Either<IError, R> ThrowIfError<R>(this Either<IError, R> either)
         {
-            if(either.IsLeft)
+            if (either.IsLeft)
             {
                 throw new Exception(either.Left().Reason);
             }

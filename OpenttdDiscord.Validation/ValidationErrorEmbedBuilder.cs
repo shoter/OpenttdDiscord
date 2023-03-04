@@ -11,8 +11,8 @@ namespace OpenttdDiscord.Validation
             embedBuilder
                 .WithTitle("Validation failed")
                 .WithDescription("Data you have provided was wrong and could not be parsed");
-            
-            foreach(var e in validationError.Errors)
+
+            foreach (var e in validationError.Errors)
             {
                 embedBuilder.AddField(e.PropertyName, e.ErrorMessage);
             }

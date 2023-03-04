@@ -16,7 +16,7 @@ namespace OpenttdDiscord.Infrastructure.Statuses.UseCases
 
         public RemoveStatusMonitorUseCase(
             IStatusMonitorRepository statusMonitorRepository,
-            IAkkaService akkaService )
+            IAkkaService akkaService)
         {
             this.statusMonitorRepository = statusMonitorRepository;
             this.akkaService = akkaService;

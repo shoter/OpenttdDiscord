@@ -20,7 +20,7 @@ namespace OpenttdDiscord.Infrastructure.Chatting.Runners
         private readonly IGetChatChannelUseCase getChatChannelUseCase;
 
         public RegisterChatChannelRunner(
-            IGetServerByNameUseCase getServerByNameUseCase, 
+            IGetServerByNameUseCase getServerByNameUseCase,
             IRegisterChatChannelUseCase registerChatChannelUseCase,
             IGetChatChannelUseCase getChatChannelUseCase)
         {

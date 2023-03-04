@@ -14,7 +14,6 @@ namespace OpenttdDiscord.Database.Chatting
 
         public ChatChannelEntity()
         {
-
         }
 
         public ChatChannelEntity(ChatChannel cc)

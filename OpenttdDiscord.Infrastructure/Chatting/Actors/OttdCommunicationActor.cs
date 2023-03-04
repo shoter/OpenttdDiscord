@@ -1,4 +1,9 @@
-﻿using Akka.Actor;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Akka.Actor;
 using LanguageExt;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -11,11 +16,6 @@ using OpenttdDiscord.Domain.Servers;
 using OpenttdDiscord.Infrastructure.Akkas;
 using OpenttdDiscord.Infrastructure.Chatting.Messages;
 using OpenttdDiscord.Infrastructure.Ottd.Messages;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OpenttdDiscord.Infrastructure.Chatting.Actors
 {
@@ -24,9 +24,9 @@ namespace OpenttdDiscord.Infrastructure.Chatting.Actors
         private readonly OttdServer server;
         private readonly ulong channelId;
         private readonly IAdminPortClient client;
-        private Option<IActorRef> chatChannel = Option<IActorRef>.None;
-
         private readonly IAkkaService akkaService;
+
+        private Option<IActorRef> chatChannel = Option<IActorRef>.None;
 
         public OttdCommunicationActor(
             IServiceProvider serviceProvider,
@@ -57,11 +57,10 @@ namespace OpenttdDiscord.Infrastructure.Chatting.Actors
 
         private async Task InitOttdCommunicationActor(InitOttdCommunicationActor _)
         {
-
             var msg = new GetCreateChatChannel(channelId);
             var self = Self;
 
-            (await(
+            (await (
             from chatManager in akkaService.SelectActor(MainActors.Paths.ChatChannelManager)
             from channelActor in chatManager.TryAsk<IActorRef>(msg)
             from _1 in AssignChannelActor(channelActor).ToAsync()
@@ -80,7 +79,7 @@ namespace OpenttdDiscord.Infrastructure.Chatting.Actors
 
         private void HandleChatMessage(AdminChatMessageEvent msg)
         {
-            if(msg.Player.ClientId == 1)
+            if (msg.Player.ClientId == 1)
             {
                 // we ignore server messages
                 return;
@@ -91,7 +90,7 @@ namespace OpenttdDiscord.Infrastructure.Chatting.Actors
 
         private void HandleOttdMessage(HandleOttdMessage msg)
         {
-            if(msg.Server == server)
+            if (msg.Server == server)
             {
                 return;
             }

@@ -1,22 +1,23 @@
-﻿using AutoFixture;
-using OpenttdDiscord.Domain.Servers;
-using System.Threading.Tasks;
-using System;
-using Xunit;
-using OpenttdDiscord.Database.Servers;
-using System.Runtime.CompilerServices;
-using OpenttdDiscord.Domain.Statuses;
-using OpenttdDiscord.Database.Statuses;
-using LanguageExt;
-using OpenttdDiscord.Base.Ext;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
+using AutoFixture;
+using LanguageExt;
+using OpenttdDiscord.Base.Ext;
+using OpenttdDiscord.Database.Servers;
+using OpenttdDiscord.Database.Statuses;
+using OpenttdDiscord.Domain.Servers;
+using OpenttdDiscord.Domain.Statuses;
+using Xunit;
 
 namespace OpenttdDiscord.Database.Tests.Statuses
 {
     public class StatusMonitorRepositoryShould : DatabaseBaseTest
     {
-        public StatusMonitorRepositoryShould(PostgressDatabaseFixture databaseFixture) : base(databaseFixture)
+        public StatusMonitorRepositoryShould(PostgressDatabaseFixture databaseFixture)
+            : base(databaseFixture)
         {
         }
 
@@ -25,7 +26,7 @@ namespace OpenttdDiscord.Database.Tests.Statuses
         {
             var repository = await CreateRpeository();
             var server = await CreateServer();
-            var expectedMonitor = fix.Create<StatusMonitor>();
+            var expectedMonitor = Fix.Create<StatusMonitor>();
             expectedMonitor = expectedMonitor with
             {
                 ServerId = server.Id,
@@ -46,7 +47,7 @@ namespace OpenttdDiscord.Database.Tests.Statuses
         {
             var repository = await CreateRpeository();
             var server = await CreateServer();
-            var expectedMonitor = fix.Create<StatusMonitor>();
+            var expectedMonitor = Fix.Create<StatusMonitor>();
             expectedMonitor = expectedMonitor with
             {
                 ServerId = server.Id,
@@ -71,7 +72,7 @@ namespace OpenttdDiscord.Database.Tests.Statuses
         {
             var repository = await CreateRpeository();
             var server = await CreateServer();
-            var initialMonitor = fix.Create<StatusMonitor>();
+            var initialMonitor = Fix.Create<StatusMonitor>();
             initialMonitor = initialMonitor with
             {
                 ServerId = server.Id,
@@ -107,7 +108,7 @@ namespace OpenttdDiscord.Database.Tests.Statuses
         {
             var context = await CreateContext(databaseName);
             var repository = new OttdServerRepository(context);
-            var server = fix.Create<OttdServer>();
+            var server = Fix.Create<OttdServer>();
             (await repository.InsertServer(server)).ThrowIfError();
             return server;
         }
@@ -119,6 +120,5 @@ namespace OpenttdDiscord.Database.Tests.Statuses
             Assert.Equal(lhm.MessageId, rhm.MessageId);
             Assert.Equal(lhm.LastUpdateTime, rhm.LastUpdateTime, TimeSpan.FromMilliseconds(1));
         }
-
     }
 }

@@ -6,7 +6,8 @@ namespace OpenttdDiscord.Infrastructure.Statuses.Commands
 {
     internal class RegisterStatusMonitorCommand : OttdSlashCommandBase<RegisterStatusMonitorRunner>
     {
-        public RegisterStatusMonitorCommand() : base("register-status-monitor")
+        public RegisterStatusMonitorCommand()
+            : base("register-status-monitor")
         {
         }
 

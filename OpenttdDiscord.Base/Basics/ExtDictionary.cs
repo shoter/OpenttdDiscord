@@ -16,7 +16,7 @@ namespace OpenttdDiscord.Base.Basics
 
         public Option<TValue> MaybeGetValue(TKey key)
         {
-            if(this.TryGetValue(key, out var value))
+            if (this.TryGetValue(key, out var value))
             {
                 return value;
             }
@@ -28,13 +28,13 @@ namespace OpenttdDiscord.Base.Basics
 
         public TAs GetValueAs<TAs>(TKey key)
             where TAs : TValue
-            => (TAs)this[key] !;
+            => (TAs)this[key]!;
 
         public Option<TAs> TryGetValueAs<TAs>(TKey key)
         {
             if (this.TryGetValue(key, out var value))
             {
-                if(value is TAs ass)
+                if (value is TAs ass)
                 {
                     return ass;
                 }

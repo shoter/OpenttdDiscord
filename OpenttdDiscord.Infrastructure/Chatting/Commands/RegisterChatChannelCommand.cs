@@ -6,7 +6,8 @@ namespace OpenttdDiscord.Infrastructure.Chatting.Commands
 {
     internal class RegisterChatChannelCommand : OttdSlashCommandBase<RegisterChatChannelRunner>
     {
-        public RegisterChatChannelCommand() : base("register-chat-channel")
+        public RegisterChatChannelCommand()
+            : base("register-chat-channel")
         {
         }
 

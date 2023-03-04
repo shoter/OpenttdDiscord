@@ -1,4 +1,5 @@
-﻿using Akka.Actor;
+﻿using System.Security.Cryptography;
+using Akka.Actor;
 using LanguageExt;
 using Microsoft.Extensions.Logging;
 using OpenttdDiscord.Base.Ext;
@@ -8,7 +9,6 @@ using OpenttdDiscord.Domain.Servers;
 using OpenttdDiscord.Domain.Servers.UseCases;
 using OpenttdDiscord.Infrastructure.Akkas;
 using OpenttdDiscord.Infrastructure.Servers.Messages;
-using System.Security.Cryptography;
 
 namespace OpenttdDiscord.Infrastructure.Servers.UseCases
 {

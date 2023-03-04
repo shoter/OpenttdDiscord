@@ -1,15 +1,15 @@
-﻿using Microsoft.Extensions.Hosting;
-using OpenttdDiscord.Infrastructure;
-using Serilog;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Akka.Actor;
+using Discord;
+using Discord.WebSocket;
+using Microsoft.EntityFrameworkCore.Migrations.Operations;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using OpenttdDiscord.Database;
 using OpenttdDiscord.Discord.Options;
 using OpenttdDiscord.Discord.Services;
-using Microsoft.EntityFrameworkCore.Migrations.Operations;
-using OpenttdDiscord.Database;
-using Akka.Actor;
-using Discord.WebSocket;
-using Discord;
+using OpenttdDiscord.Infrastructure;
+using Serilog;
 
 namespace OpenttdDiscord
 {
@@ -42,7 +42,7 @@ namespace OpenttdDiscord
                     .AddSingleton(new DiscordSocketClient(new()
                     {
                         GatewayIntents = GatewayIntents.MessageContent | GatewayIntents.AllUnprivileged,
-                        UseInteractionSnowflakeDate = false
+                        UseInteractionSnowflakeDate = false,
                     }))
                     .RegisterModules()
                     .AddHostedServices()

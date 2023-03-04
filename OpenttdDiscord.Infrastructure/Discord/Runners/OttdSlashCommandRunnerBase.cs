@@ -35,7 +35,5 @@ namespace OpenttdDiscord.Infrastructure.Discord.Runners
 
             return new HumanReadableError("This command needs to be executed within channel!");
         }
-
-
     }
 }

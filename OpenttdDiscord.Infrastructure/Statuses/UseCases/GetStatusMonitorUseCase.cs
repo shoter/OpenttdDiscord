@@ -1,15 +1,15 @@
-﻿using LanguageExt;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using LanguageExt;
 using OpenttdDiscord.Base.Ext;
 using OpenttdDiscord.Database.Servers;
 using OpenttdDiscord.Database.Statuses;
 using OpenttdDiscord.Domain.Security;
 using OpenttdDiscord.Domain.Statuses;
 using OpenttdDiscord.Domain.Statuses.UseCases;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OpenttdDiscord.Infrastructure.Statuses.UseCases
 {
@@ -35,7 +35,7 @@ namespace OpenttdDiscord.Infrastructure.Statuses.UseCases
 
         public EitherAsync<IError, StatusMonitor> Execute(User user, Guid serverId, ulong channelId)
         {
-            //var statusMonitor = statusMonitorRepository
+            // var statusMonitor = statusMonitorRepository
             throw new Exception();
         }
     }

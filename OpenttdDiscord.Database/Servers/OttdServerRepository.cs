@@ -1,10 +1,10 @@
-﻿using LanguageExt;
+﻿using System.Collections.Generic;
+using LanguageExt;
 using LanguageExt.Common;
 using LanguageExt.Pipes;
 using Microsoft.EntityFrameworkCore;
 using OpenttdDiscord.Database.Ottd.Servers;
 using OpenttdDiscord.Domain.Servers;
-using System.Collections.Generic;
 using static LanguageExt.Prelude;
 
 namespace OpenttdDiscord.Database.Servers
@@ -97,6 +97,7 @@ namespace OpenttdDiscord.Database.Servers
             {
                 return new HumanReadableError("Server not found");
             }
+
             return server.ToDomain();
         }).ToEitherAsyncErrorFlat();
 
@@ -114,7 +115,6 @@ namespace OpenttdDiscord.Database.Servers
             {
                 return new ExceptionError(ex);
             }
-
         }
     }
 }

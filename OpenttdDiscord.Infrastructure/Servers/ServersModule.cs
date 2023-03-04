@@ -19,10 +19,11 @@ namespace OpenttdDiscord.Infrastructure.Servers
                 .RegisterCommands()
                 .RegisterRunners();
         }
-
     }
 
+#pragma warning disable SA1402 // File may only contain a single type
     internal static class ServersModuleExtensions
+#pragma warning restore SA1402 // File may only contain a single type
     {
         public static IServiceCollection RegisterUseCases(this IServiceCollection services)
         {

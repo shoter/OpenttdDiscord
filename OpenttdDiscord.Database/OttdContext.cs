@@ -14,7 +14,8 @@ namespace OpenttdDiscord.Database
 
         public DbSet<ChatChannelEntity> ChatChannels { get; set; } = default!;
 
-        public OttdContext(DbContextOptions<OttdContext> options) : base(options)
+        public OttdContext(DbContextOptions<OttdContext> options)
+            : base(options)
         {
         }
 

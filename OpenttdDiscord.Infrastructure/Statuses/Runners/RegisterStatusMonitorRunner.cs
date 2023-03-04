@@ -23,7 +23,7 @@ namespace OpenttdDiscord.Infrastructure.Statuses.Runners
         private readonly ICheckIfStatusMonitorExistsUseCase checkIfStatusMonitorExistsUseCase;
 
         public RegisterStatusMonitorRunner(
-            IOttdServerRepository ottdServerRepository, 
+            IOttdServerRepository ottdServerRepository,
             IRegisterStatusMonitorUseCase registerStatusMonitorUseCase,
             ICheckIfStatusMonitorExistsUseCase checkIfStatusMonitorExistsUseCase)
         {
@@ -43,7 +43,7 @@ namespace OpenttdDiscord.Infrastructure.Statuses.Runners
             from server in ottdServerRepository.GetServerByName(guildId, serverName)
             from _1 in ReturnErrorIfMonitorExists(user, server.Id, channelId)
             from monitor in registerStatusMonitorUseCase.Execute(user, server, guildId, channelId)
-            select (ISlashCommandResponse) new TextCommandResponse("Creating status message in progress");
+            select (ISlashCommandResponse)new TextCommandResponse("Creating status message in progress");
         }
 
         private EitherAsyncUnit ReturnErrorIfMonitorExists(User user, Guid serverId, ulong channelId)
@@ -52,7 +52,7 @@ namespace OpenttdDiscord.Infrastructure.Statuses.Runners
             checkIfStatusMonitorExistsUseCase.Execute(user, serverId, channelId)
             .Bind(exists =>
                 exists ?
-                EitherAsyncUnit.Left(new HumanReadableError("Status monitor already exists for this channel")) : 
+                EitherAsyncUnit.Left(new HumanReadableError("Status monitor already exists for this channel")) :
                 EitherAsyncUnit.Right(Unit.Default));
         }
     }

@@ -4,6 +4,6 @@ namespace OpenttdDiscord.Infrastructure.Modularity
 {
     internal interface IModule
     {
-        public void RegisterDependencies(IServiceCollection services); 
+        public void RegisterDependencies(IServiceCollection services);
     }
 }

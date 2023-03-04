@@ -6,7 +6,8 @@ namespace OpenttdDiscord.Infrastructure.Servers.Commands
 {
     internal class RegisterServerCommand : OttdSlashCommandBase<RegisterServerRunner>
     {
-        public RegisterServerCommand() : base("register-ottd-server")
+        public RegisterServerCommand()
+            : base("register-ottd-server")
         {
         }
 

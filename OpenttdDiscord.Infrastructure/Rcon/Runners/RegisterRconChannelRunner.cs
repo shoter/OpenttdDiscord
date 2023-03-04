@@ -7,6 +7,7 @@ using Discord.WebSocket;
 using LanguageExt;
 using OpenttdDiscord.Base.Basics;
 using OpenttdDiscord.Base.Ext;
+using OpenttdDiscord.Domain.Security;
 using OpenttdDiscord.Infrastructure.Discord.Responses;
 using OpenttdDiscord.Infrastructure.Discord.Runners;
 
@@ -14,7 +15,7 @@ namespace OpenttdDiscord.Infrastructure.Rcon.Runners
 {
     internal class RegisterRconChannelRunner : OttdSlashCommandRunnerBase
     {
-        protected override EitherAsync<IError, ISlashCommandResponse> RunInternal(SocketSlashCommand command, ExtDictionary<string, object> options)
+        protected override EitherAsync<IError, ISlashCommandResponse> RunInternal(SocketSlashCommand command, User user, ExtDictionary<string, object> options)
         {
             throw new NotImplementedException();
         }

@@ -26,13 +26,13 @@ namespace OpenttdDiscord.Infrastructure.Statuses.Runners
             this.ottdServerRepository = ottdServerRepository;
         }
 
-        protected override EitherAsync<IError, ISlashCommandResponse> RunInternal(SocketSlashCommand command, ExtDictionary<string, object> options)
+        protected override EitherAsync<IError, ISlashCommandResponse> RunInternal(SocketSlashCommand command, User user, ExtDictionary<string, object> options)
         {
             string serverName = options.GetValueAs<string>("server-name");
 
             var _ =
             from server in ottdServerRepository.GetServerByName(command.GuildId!.Value, serverName)
-            from _2 in removeStatusMonitorUseCase.Execute(new User(command.User), server.Id, command.GuildId!.Value, command.ChannelId!.Value)
+            from _2 in removeStatusMonitorUseCase.Execute(user, server.Id, command.GuildId!.Value, command.ChannelId!.Value)
             select (ISlashCommandResponse)new TextCommandResponse("Status monitor removed!");
             return _;
         }

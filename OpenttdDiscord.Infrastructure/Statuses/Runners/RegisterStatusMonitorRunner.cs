@@ -32,12 +32,11 @@ namespace OpenttdDiscord.Infrastructure.Statuses.Runners
             this.checkIfStatusMonitorExistsUseCase = checkIfStatusMonitorExistsUseCase;
         }
 
-        protected override EitherAsync<IError, ISlashCommandResponse> RunInternal(SocketSlashCommand command, ExtDictionary<string, object> options)
+        protected override EitherAsync<IError, ISlashCommandResponse> RunInternal(SocketSlashCommand command, User user, ExtDictionary<string, object> options)
         {
             string serverName = options.GetValueAs<string>("server-name");
             ulong channelId = command.ChannelId!.Value;
             ulong guildId = command.GuildId!.Value;
-            var user = new User(command.User);
 
             return
             from server in ottdServerRepository.GetServerByName(guildId, serverName)

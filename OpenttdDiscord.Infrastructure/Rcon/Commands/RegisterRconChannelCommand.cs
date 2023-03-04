@@ -1,6 +1,6 @@
 ﻿using Discord;
-using OpenttdDiscord.Infrastructure.Rcon.Runners;
 using OpenttdDiscord.Infrastructure.Discord.Commands;
+using OpenttdDiscord.Infrastructure.Rcon.Runners;
 
 namespace OpenttdDiscord.Infrastructure.Rcon.Commands
 {

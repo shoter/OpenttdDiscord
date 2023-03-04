@@ -23,19 +23,16 @@ namespace OpenttdDiscord.Infrastructure.Rcon
     {
         public static IServiceCollection RegisterUseCases(this IServiceCollection services)
         {
-
             return services;
         }
 
         public static IServiceCollection RegisterRunners(this IServiceCollection services)
         {
-
             return services;
         }
 
         public static IServiceCollection RegisterCommands(this IServiceCollection services)
         {
-
             return services;
         }
     }

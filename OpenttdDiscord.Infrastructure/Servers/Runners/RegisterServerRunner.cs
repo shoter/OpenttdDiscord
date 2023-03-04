@@ -22,7 +22,7 @@ namespace OpenttdDiscord.Infrastructure.Servers.Runners
             this.useCase = useCase;
         }
 
-        protected override EitherAsync<IError, ISlashCommandResponse> RunInternal(SocketSlashCommand command, ExtDictionary<string, object> options)
+        protected override EitherAsync<IError, ISlashCommandResponse> RunInternal(SocketSlashCommand command, User user, ExtDictionary<string, object> options)
         {
             if (command.GuildId == null)
             {
@@ -34,8 +34,6 @@ namespace OpenttdDiscord.Infrastructure.Servers.Runners
             string ip = options.GetValueAs<string>("ip");
             int port = (int)options.GetValueAs<long>("port");
 
-            var rights = new User(command.User);
-
             var server = new OttdServer(
                 Guid.NewGuid(),
                 command.GuildId!.Value,
@@ -46,7 +44,7 @@ namespace OpenttdDiscord.Infrastructure.Servers.Runners
                 );
 
             return
-            from _1 in useCase.Execute(rights, server)
+            from _1 in useCase.Execute(user, server)
             select (ISlashCommandResponse)new TextCommandResponse($"Created Server {name} - {ip}:{port}");
         }
     }

@@ -28,7 +28,7 @@ namespace OpenttdDiscord.Infrastructure.Ottd.Runners
             this.ottdServerRepository = ottdServerRepository;
         }
 
-        protected override EitherAsync<IError, ISlashCommandResponse> RunInternal(SocketSlashCommand command, ExtDictionary<string, object> options)
+        protected override EitherAsync<IError, ISlashCommandResponse> RunInternal(SocketSlashCommand command, User user, ExtDictionary<string, object> options)
         {
             if (!command.ChannelId.HasValue)
             {
@@ -37,7 +37,6 @@ namespace OpenttdDiscord.Infrastructure.Ottd.Runners
 
             string serverName = options.GetValueAs<string>("server-name");
             ulong channelId = command.ChannelId.Value;
-            var user = new User(command.User);
 
             return
                 from server in ottdServerRepository.GetServerByName(command.GuildId!.Value, serverName)

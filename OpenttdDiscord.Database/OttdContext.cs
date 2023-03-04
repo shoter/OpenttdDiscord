@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using OpenttdDiscord.Database.Rcon;
 using OpenttdDiscord.Database.Chatting;
 using OpenttdDiscord.Database.Ottd.Servers;
+using OpenttdDiscord.Database.Rcon;
 using OpenttdDiscord.Database.Statuses;
 
 namespace OpenttdDiscord.Database

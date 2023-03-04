@@ -85,6 +85,11 @@ namespace OpenttdDiscord.Infrastructure.Chatting.Actors
                 return;
             }
 
+            if(msg.NetworkAction != NetworkAction.NETWORK_ACTION_SERVER_MESSAGE)
+            {
+                return;
+            }
+
             this.chatChannel.TellMany(new HandleOttdMessage(server, msg.Player.Name, msg.Message));
         }
 

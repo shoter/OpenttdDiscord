@@ -137,7 +137,6 @@ namespace OpenttdDiscord.Infrastructure.Chatting.Actors
                 // Do not print here messages written by players
                 return;
             }
-
             string str = $"[{DateTime.Now:dd/MM HH:mm:ss}] {ev.Message}";
             Self.Tell(str);
         }

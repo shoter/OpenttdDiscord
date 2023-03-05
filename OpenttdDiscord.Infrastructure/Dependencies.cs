@@ -5,6 +5,7 @@ using OpenttdDiscord.Database;
 using OpenttdDiscord.Infrastructure.Akkas;
 using OpenttdDiscord.Infrastructure.Chatting;
 using OpenttdDiscord.Infrastructure.Discord;
+using OpenttdDiscord.Infrastructure.EventLogs;
 using OpenttdDiscord.Infrastructure.Guilds;
 using OpenttdDiscord.Infrastructure.Modularity;
 using OpenttdDiscord.Infrastructure.Ottd;
@@ -36,7 +37,8 @@ namespace OpenttdDiscord.Infrastructure
                 .RegisterDependencies<DiscordModule>()
                 .RegisterDependencies<StatusesModule>()
                 .RegisterDependencies<ChattingModule>()
-                .RegisterDependencies<RconModule>();
+                .RegisterDependencies<RconModule>()
+                .RegisterDependencies<EventLogModule>();
 
             return services;
         }

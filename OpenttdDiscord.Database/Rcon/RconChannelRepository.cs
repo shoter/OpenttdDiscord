@@ -28,7 +28,7 @@ namespace OpenttdDiscord.Database.Rcon
 
                 if (deletedRows == 0)
                 {
-                    return new HumanReadableError("No chat channel was found for deletion");
+                    return new HumanReadableError("No rcon channel was found for deletion");
                 }
 
                 return Unit.Default;

@@ -31,6 +31,7 @@ namespace OpenttdDiscord.Infrastructure.Rcon
             services.AddScoped<IRegisterRconChannelUseCase, RegisterRconChannelUseCase>();
             services.AddScoped<IGetRconChannelUseCase, GetRconChannelUseCase>();
             services.AddScoped<IUnregisterRconChannelUseCase, UnregisterRconChannelUseCase>();
+            services.AddScoped<IListRconChannelsUseCase, ListRconChannelsUseCase>();
 
             return services;
         }
@@ -39,6 +40,7 @@ namespace OpenttdDiscord.Infrastructure.Rcon
         {
             services.AddScoped<RegisterRconChannelRunner>();
             services.AddScoped<UnregisterRconChannelRunner>();
+            services.AddScoped<ListRconChannelsRunner>();
 
             return services;
         }
@@ -47,6 +49,7 @@ namespace OpenttdDiscord.Infrastructure.Rcon
         {
             services.AddSingleton<IOttdSlashCommand, RegisterRconChannelCommand>();
             services.AddSingleton<IOttdSlashCommand, UnregisterRconChannelCommand>();
+            services.AddSingleton<IOttdSlashCommand, ListRconChannelsCommand>();
 
             return services;
         }

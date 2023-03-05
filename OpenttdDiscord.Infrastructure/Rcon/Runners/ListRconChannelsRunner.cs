@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Discord;
 using Discord.WebSocket;
 using LanguageExt;
 using OpenttdDiscord.Base.Basics;
@@ -51,10 +52,9 @@ namespace OpenttdDiscord.Infrastructure.Rcon.Runners
 
                 foreach (var rcon in channels)
                 {
-                    var discordChannel = await discord.GetChannelAsync(rcon.ChannelId);
                     var server = (await getServerUseCase.Execute(User.Master, rcon.ServerId))
                     .ThrowIfError().Right();
-                    sb.AppendLine($"{server.Name} - {discordChannel.Name} - prefix: `{rcon.Prefix}`");
+                    sb.AppendLine($"{server.Name} - {MentionUtils.MentionChannel(rcon.ChannelId)} - prefix: `{rcon.Prefix}`");
                 }
 
                 return sb.ToString();

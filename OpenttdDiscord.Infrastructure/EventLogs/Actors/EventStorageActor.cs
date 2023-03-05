@@ -1,4 +1,5 @@
-﻿using System.Runtime.InteropServices;
+﻿using System.Reflection.Metadata;
+using System.Runtime.InteropServices;
 using System.Text;
 using Akka.Actor;
 using OpenTTDAdminPort;
@@ -6,6 +7,7 @@ using OpenTTDAdminPort.Events;
 using OpenTTDAdminPort.Game;
 using OpenttdDiscord.Domain.Servers;
 using OpenttdDiscord.Infrastructure.Chatting.Messages;
+using OpenttdDiscord.Infrastructure.Discord.Messages;
 using OpenttdDiscord.Infrastructure.EventLogs.Messages;
 using OpenttdDiscord.Infrastructure.Ottd.Messages;
 
@@ -58,9 +60,10 @@ namespace OpenttdDiscord.Infrastructure.EventLogs.Actors
         {
             Receive<string>(HandleChatMessage);
             ReceiveAsync<AdminChatMessageEvent>(HandleChatMessage);
-            Receive<AdminConsoleEvent>(HandleConsole);
             ReceiveAsync<StoreChatMessages>(StoreChatMessages);
             Receive<RetrieveEventLog>(RetrieveChatMessages);
+            Receive<HandleDiscordMessage>(HandleDiscordMessage);
+            Receive<HandleOttdMessage>(HandleOttdMessage);
             ReceiveIgnore<IAdminEvent>();
         }
 
@@ -120,21 +123,16 @@ namespace OpenttdDiscord.Infrastructure.EventLogs.Actors
             self.Tell(str);
         }
 
-        private void HandleConsole(AdminConsoleEvent ev)
+        private void HandleDiscordMessage(HandleDiscordMessage msg)
         {
-            if (ev.EventType != AdminEventType.ConsoleMessage)
-            {
-                return;
-            }
+            string str = $"[{DateTime.Now:dd/MM HH:mm:ss}] [Discord] {msg.Username}: {msg.Message}";
+            self.Tell(str);
+        }
 
-            if (ev.Message.Trim().StartsWith("[All]"))
-            {
-                // Do not print here messages written by players
-                return;
-            }
-
-            string str = $"[{DateTime.Now:dd/MM HH:mm:ss}] {ev.Message}";
-            Self.Tell(str);
+        private void HandleOttdMessage(HandleOttdMessage msg)
+        {
+            string str = $"[{DateTime.Now:dd/MM HH:mm:ss}] [{msg.Server.Name}] {msg.Username}: {msg.Message}";
+            self.Tell(str);
         }
 
         private void RetrieveChatMessages(RetrieveEventLog _)

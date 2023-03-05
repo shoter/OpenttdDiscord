@@ -1,5 +1,6 @@
 ﻿using Akka.Actor;
 using LanguageExt;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using OpenTTDAdminPort;
@@ -69,7 +70,9 @@ namespace OpenttdDiscord.Infrastructure.Chatting.Actors
                 ChatDestination.DESTTYPE_BROADCAST,
                 default,
                 $"[Discord] {handle.Username}: {handle.Message}");
+
             client.SendMessage(msg);
+            parent.Tell(handle);
         }
 
         private EitherUnit AssignChannelActor(IActorRef channelActor)

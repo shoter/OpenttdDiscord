@@ -35,7 +35,6 @@ namespace OpenttdDiscord.Infrastructure.Chatting
             services.AddScoped<IRegisterChatChannelUseCase, RegisterChatChannelUseCase>();
             services.AddScoped<IGetChatChannelUseCase, GetChatChannelUseCase>();
             services.AddScoped<IUnregisterChatChannelUseCase, UnregisterChatChannelUseCase>();
-            services.AddScoped<IQueryEventLogUseCase, QueryEventLogUseCase>();
 
             return services;
         }
@@ -44,7 +43,6 @@ namespace OpenttdDiscord.Infrastructure.Chatting
         {
             services.AddScoped<RegisterChatChannelRunner>();
             services.AddScoped<UnregisterChatChannelRunner>();
-            services.AddScoped<QueryEventLogRunner>();
 
             return services;
         }
@@ -53,7 +51,6 @@ namespace OpenttdDiscord.Infrastructure.Chatting
         {
             services.AddSingleton<IOttdSlashCommand, RegisterChatChannelCommand>();
             services.AddSingleton<IOttdSlashCommand, UnregisterChatChannelCommand>();
-            services.AddSingleton<IOttdSlashCommand, QueryEventLogCommand>();
 
             return services;
         }

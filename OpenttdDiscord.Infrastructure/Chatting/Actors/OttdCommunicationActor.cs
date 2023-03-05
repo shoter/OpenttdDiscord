@@ -104,6 +104,7 @@ namespace OpenttdDiscord.Infrastructure.Chatting.Actors
             string message = $"[{msg.Server.Name}] {msg.Username}: {msg.Message}";
 
             client.SendMessage(new AdminChatMessage(NetworkAction.NETWORK_ACTION_CHAT, ChatDestination.DESTTYPE_BROADCAST, default, message));
+            parent.Tell(msg);
         }
 
         protected override void PostStop()

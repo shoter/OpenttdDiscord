@@ -1,8 +1,10 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using OpenttdDiscord.Database.Chatting;
+using OpenttdDiscord.Domain.EventLogs.UseCases;
 using OpenttdDiscord.Infrastructure.Discord.Commands;
 using OpenttdDiscord.Infrastructure.EventLogs.Commands;
 using OpenttdDiscord.Infrastructure.EventLogs.Runners;
+using OpenttdDiscord.Infrastructure.EventLogs.UseCases;
 using OpenttdDiscord.Infrastructure.Modularity;
 
 namespace OpenttdDiscord.Infrastructure.EventLogs
@@ -25,6 +27,8 @@ namespace OpenttdDiscord.Infrastructure.EventLogs
     {
         public static IServiceCollection RegisterUseCases(this IServiceCollection services)
         {
+            services.AddSingleton<IQueryEventLogUseCase, QueryEventLogUseCase>();
+
             return services;
         }
 

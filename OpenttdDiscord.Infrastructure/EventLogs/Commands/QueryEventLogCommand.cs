@@ -7,7 +7,7 @@ namespace OpenttdDiscord.Infrastructure.EventLogs.Commands
     internal class QueryEventLogCommand : OttdSlashCommandBase<QueryEventLogRunner>
     {
         public QueryEventLogCommand()
-            : base("query-command-log")
+            : base("query-event-log")
         {
         }
 

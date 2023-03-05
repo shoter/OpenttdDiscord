@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Akka.Actor;
 using Akka.Dispatch;
 using LanguageExt.Pipes;
+using OpenTTDAdminPort;
 using OpenTTDAdminPort.Events;
 using OpenTTDAdminPort.Game;
 using OpenttdDiscord.Domain.Servers;
@@ -24,6 +25,8 @@ namespace OpenttdDiscord.Infrastructure.Chatting.Actors
 
         private readonly OttdServer ottdServer;
 
+        private readonly IAdminPortClient ottdClient;
+
         private readonly Queue<string> chatMessages = new();
 
         private DateTime lastMessageTime = DateTime.MaxValue;
@@ -34,10 +37,11 @@ namespace OpenttdDiscord.Infrastructure.Chatting.Actors
 
         public ITimerScheduler Timers { get; set; } = default!;
 
-        protected ChatStorageActor(IServiceProvider serviceProvider, OttdServer server)
+        protected ChatStorageActor(IServiceProvider serviceProvider, OttdServer server, IAdminPortClient ottdClient)
             : base(serviceProvider)
         {
             this.ottdServer = server;
+            this.ottdClient = ottdClient;
 
             Ready();
 
@@ -98,14 +102,23 @@ namespace OpenttdDiscord.Infrastructure.Chatting.Actors
             lastMessageStoreTime = lastMessageTime;
         }
 
-        private void HandleChatMessage(AdminChatMessageEvent msg)
+        private async Task HandleChatMessage(AdminChatMessageEvent msg)
         {
             if (msg.NetworkAction != NetworkAction.NETWORK_ACTION_SERVER_MESSAGE)
             {
                 return;
             }
 
-            string str = $"[{DateTime.Now:d HH:mm:ss}] {msg.Player.Name}: {msg.Message}";
+            // This one should be quick awaitable
+            ServerStatus info = await ottdClient.QueryServerStatus();
+            uint clientId = msg.Player.ClientId;
+            string playerIp = "no-ip";
+            if (info.Players.ContainsKey(clientId))
+            {
+                playerIp = info.Players[clientId].Hostname;
+            }
+
+            string str = $"[{DateTime.Now:d HH:mm:ss}] {msg.Player.Name}({playerIp}): {msg.Message}";
             self.Tell(str);
         }
 

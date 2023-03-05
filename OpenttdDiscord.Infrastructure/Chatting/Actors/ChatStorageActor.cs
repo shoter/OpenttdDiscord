@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Akka.Actor;
+using Akka.Dispatch;
 using LanguageExt.Pipes;
 using OpenTTDAdminPort.Events;
 using OpenTTDAdminPort.Game;
@@ -18,7 +19,8 @@ namespace OpenttdDiscord.Infrastructure.Chatting.Actors
     /// </summary>
     internal class ChatStorageActor : ReceiveActorBase, IWithTimers
     {
-        private const int ChatMessageMaxCount = 300;
+        // TODO: Make it configurable through appsettings or something or whatever
+        private const int ChatMessageMaxCount = 600;
 
         private readonly OttdServer ottdServer;
 
@@ -57,6 +59,7 @@ namespace OpenttdDiscord.Infrastructure.Chatting.Actors
             Receive<AdminChatMessageEvent>(HandleChatMessage);
             ReceiveIgnore<IAdminEvent>();
             ReceiveAsync<StoreChatMessages>(StoreChatMessages);
+            Receive<RetrieveChatMessages>(RetrieveChatMessages);
         }
 
         private void HandleChatMessage(string msg)
@@ -102,8 +105,15 @@ namespace OpenttdDiscord.Infrastructure.Chatting.Actors
                 return;
             }
 
-            string str = $"[{DateTime.Now:HH:mm:ss}] {msg.Player.Name}: {msg.Message}";
+            string str = $"[{DateTime.Now:d HH:mm:ss}] {msg.Player.Name}: {msg.Message}";
             self.Tell(str);
+        }
+
+        private void RetrieveChatMessages(RetrieveChatMessages _)
+        {
+            List<string> messages = new List<string>(this.chatMessages.Count);
+            messages.AddRange(this.chatMessages);
+            Sender.Tell(new RetrievedChatMessages(messages));
         }
 
         protected override void PostStop()

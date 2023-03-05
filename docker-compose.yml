@@ -5,6 +5,8 @@ services:
         environment:
             Database:ConnectionString: User ID=openttd;Password=secret-pw;Host=database;Port=5432;Database=openttd
             Discord:Token: "${discord_token}"
+        volumes:
+            - "chat_data:/var/app/ottd"
     database:
         build:
             context: ./OpenttdDiscord.Database
@@ -15,3 +17,4 @@ services:
             - 5432:5432
 volumes:
     psql_data:
+    chat_data:

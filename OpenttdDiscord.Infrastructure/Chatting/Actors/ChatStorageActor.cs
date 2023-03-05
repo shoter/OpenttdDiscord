@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using Akka.Actor;
@@ -33,8 +34,6 @@ namespace OpenttdDiscord.Infrastructure.Chatting.Actors
 
         private DateTime lastMessageStoreTime = DateTime.MinValue;
 
-        private string ChatFileName => $"./chat/{ottdServer.Id}.chat";
-
         public ITimerScheduler Timers { get; set; } = default!;
 
         public ChatStorageActor(IServiceProvider serviceProvider, OttdServer server, IAdminPortClient ottdClient)
@@ -46,11 +45,11 @@ namespace OpenttdDiscord.Infrastructure.Chatting.Actors
             Ready();
 
             parent.Tell(new SubscribeToAdminEvents(Self));
-            Timers.StartPeriodicTimer("store", new StoreChatMessages(), TimeSpan.FromMinutes(10));
+            Timers.StartPeriodicTimer("store", new StoreChatMessages(), TimeSpan.FromMinutes(2));
 
-            if (File.Exists(ChatFileName))
+            if (File.Exists(GetChatFileName()))
             {
-                foreach (var line in File.ReadAllLines(ChatFileName))
+                foreach (var line in File.ReadAllLines(GetChatFileName()))
                 {
                     Enque(line);
                 }
@@ -100,7 +99,7 @@ namespace OpenttdDiscord.Infrastructure.Chatting.Actors
                 sb.AppendLine(msg);
             }
 
-            await File.WriteAllTextAsync(ChatFileName, sb.ToString());
+            await File.WriteAllTextAsync(GetChatFileName(), sb.ToString());
 
             lastMessageStoreTime = lastMessageTime;
         }
@@ -121,7 +120,7 @@ namespace OpenttdDiscord.Infrastructure.Chatting.Actors
                 playerIp = info.Players[clientId].Hostname;
             }
 
-            string str = $"[{DateTime.Now:d HH:mm:ss}] {msg.Player.Name}({playerIp}): {msg.Message}";
+            string str = $"[{DateTime.Now:dd/MM HH:mm:ss}] {msg.Player.Name}({playerIp}): {msg.Message}";
             self.Tell(str);
         }
 
@@ -136,6 +135,16 @@ namespace OpenttdDiscord.Infrastructure.Chatting.Actors
         {
             base.PostStop();
             parent.Tell(new UnsubscribeFromAdminEvents(Self));
+        }
+
+        private string GetChatFileName()
+        {
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                return $"./chat/{ottdServer.Id}.chat";
+            }
+
+            return $"/var/app/ottd/{ottdServer.Id}.chat";
         }
     }
 }

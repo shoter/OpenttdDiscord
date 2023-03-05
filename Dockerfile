@@ -42,6 +42,7 @@ COPY --from=publish /app .
 COPY --from=dbMigrations /script.sql /app/script.sql
 COPY ./startup.sh .
 RUN chmod a+x /app/startup.sh
+RUN mkdir -p /var/app/ottd/
 ENTRYPOINT ["bash", "-c", "./startup.sh"]
 
 

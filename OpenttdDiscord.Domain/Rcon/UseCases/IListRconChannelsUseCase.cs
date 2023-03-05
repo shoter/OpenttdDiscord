@@ -9,6 +9,5 @@ namespace OpenttdDiscord.Domain.Rcon.UseCases
         EitherAsync<IError, List<RconChannel>> Execute(User user, Guid serverId);
 
         EitherAsync<IError, List<RconChannel>> Execute(User user, ulong guildId);
-
     }
 }

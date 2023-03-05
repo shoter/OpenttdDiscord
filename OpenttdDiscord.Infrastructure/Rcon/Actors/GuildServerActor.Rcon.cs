@@ -13,12 +13,12 @@ namespace OpenttdDiscord.Infrastructure.Ottd.Actors
 {
     internal partial class GuildServerActor
     {
-        private IGetRconChannelUseCase getRconChannelUseCase = default!;
+        private IListRconChannelsUseCase listRconChannelsUseCase = default!;
         private Dictionary<ulong, IActorRef> rconChannels = new();
 
         private void RconConstructor()
         {
-            this.getRconChannelUseCase = SP.GetRequiredService<IGetRconChannelUseCase>();
+            this.listRconChannelsUseCase = SP.GetRequiredService<IListRconChannelsUseCase>();
         }
 
         private void RconReady()
@@ -32,7 +32,7 @@ namespace OpenttdDiscord.Infrastructure.Ottd.Actors
 
         private async Task RconInit()
         {
-            List<RconChannel> channels = (await getRconChannelUseCase.Execute(User.Master, server.Id))
+            List<RconChannel> channels = (await listRconChannelsUseCase.Execute(User.Master, server.Id))
                 .ThrowIfError()
                 .Right();
 

@@ -17,11 +17,11 @@ namespace OpenttdDiscord.Infrastructure.Rcon.Runners
 {
     internal class UnregisterRconChannelRunner : OttdSlashCommandRunnerBase
     {
-        private readonly IGetServerByNameUseCase getServerByNameUseCase;
+        private readonly IGetServerUseCase getServerByNameUseCase;
         private readonly IUnregisterRconChannelUseCase unregisterRconChannelUseCase;
 
         public UnregisterRconChannelRunner(
-            IGetServerByNameUseCase getServerByNameUseCase,
+            IGetServerUseCase getServerByNameUseCase,
             IUnregisterRconChannelUseCase unregisterRconChannelUseCase)
         {
             this.getServerByNameUseCase = getServerByNameUseCase;

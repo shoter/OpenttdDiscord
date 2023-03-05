@@ -8,6 +8,7 @@ using OpenttdDiscord.Infrastructure.Akkas;
 using OpenttdDiscord.Infrastructure.Chatting.Messages;
 using OpenttdDiscord.Infrastructure.Guilds.Messages;
 using OpenttdDiscord.Infrastructure.Ottd.Messages;
+using OpenttdDiscord.Infrastructure.Rcon.Messages;
 using OpenttdDiscord.Infrastructure.Servers.Messages;
 using OpenttdDiscord.Infrastructure.Statuses.Messages;
 
@@ -42,6 +43,7 @@ namespace OpenttdDiscord.Infrastructure.Guilds.Actors
             ReceiveRedirectMsg<RemoveStatusMonitor>(msg => msg.GuildId);
             ReceiveRedirectMsg<RegisterChatChannel>(msg => msg.chatChannel.GuildId);
             ReceiveRedirectMsg<UnregisterChatChannel>(msg => msg.GuildId);
+            ReceiveRedirectMsg<RegisterNewRconChannel>(msg => msg.RconChannel.GuildId);
         }
 
         private async Task InitGuildActorMessage(InitGuildActorMessage _)

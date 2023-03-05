@@ -12,8 +12,8 @@ using OpenttdDiscord.Database;
 namespace OpenttdDiscord.Database.Migrations
 {
     [DbContext(typeof(OttdContext))]
-    [Migration("20230304223152_Initial")]
-    partial class Initial
+    [Migration("20230305003316_Rcon")]
+    partial class Rcon
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

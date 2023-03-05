@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace OpenttdDiscord.Database.Migrations
 {
     /// <inheritdoc />
-    public partial class Initial : Migration
+    public partial class initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -17,25 +17,11 @@ namespace OpenttdDiscord.Database.Migrations
                 {
                     ServerId = table.Column<Guid>(type: "uuid", nullable: false),
                     ChannelId = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
-                    GuildId = table.Column<decimal>(type: "numeric(20,0)", nullable: false)
+                    GuildId = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_ChatChannels", x => new { x.ServerId, x.ChannelId });
-                });
-
-            migrationBuilder.CreateTable(
-                name: "RconChannels",
-                columns: table => new
-                {
-                    ServerId = table.Column<Guid>(type: "uuid", nullable: false),
-                    ChannelId = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
-                    GuildId = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
-                    Prefix = table.Column<string>(type: "text", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_RconChannels", x => new { x.ServerId, x.ChannelId });
                 });
 
             migrationBuilder.CreateTable(
@@ -47,7 +33,7 @@ namespace OpenttdDiscord.Database.Migrations
                     Ip = table.Column<string>(type: "text", nullable: false),
                     Name = table.Column<string>(type: "text", nullable: false),
                     AdminPort = table.Column<int>(type: "integer", nullable: false),
-                    AdminPortPassword = table.Column<string>(type: "text", nullable: false)
+                    AdminPortPassword = table.Column<string>(type: "text", nullable: false),
                 },
                 constraints: table =>
                 {
@@ -62,7 +48,7 @@ namespace OpenttdDiscord.Database.Migrations
                     ChannelId = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
                     GuildId = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
                     MessageId = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
-                    LastUpdateTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                    LastUpdateTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                 },
                 constraints: table =>
                 {
@@ -90,9 +76,6 @@ namespace OpenttdDiscord.Database.Migrations
 
             migrationBuilder.DropTable(
                 name: "Monitors");
-
-            migrationBuilder.DropTable(
-                name: "RconChannels");
 
             migrationBuilder.DropTable(
                 name: "Servers");

@@ -6,6 +6,7 @@ using OpenttdDiscord.Domain.Rcon;
 using OpenttdDiscord.Domain.Rcon.UseCases;
 using OpenttdDiscord.Domain.Security;
 using OpenttdDiscord.Infrastructure.Rcon.Actors;
+using OpenttdDiscord.Infrastructure.Rcon.Messages;
 
 namespace OpenttdDiscord.Infrastructure.Ottd.Actors
 {
@@ -21,7 +22,11 @@ namespace OpenttdDiscord.Infrastructure.Ottd.Actors
 
         private void RconReady()
         {
+            Receive<RegisterNewRconChannel>(RegisterNewRconChannel);
         }
+
+        private void RegisterNewRconChannel(RegisterNewRconChannel msg)
+            => CreateNewRconActor(msg.RconChannel);
 
         private async Task RconInit()
         {
@@ -31,9 +36,14 @@ namespace OpenttdDiscord.Infrastructure.Ottd.Actors
 
             foreach (var channel in channels)
             {
-                var rconActor = Context.ActorOf(RconChannelActor.Create(SP, channel, server, client), $"rcon-{channel.ChannelId}");
-                rconChannels.Add(channel.ChannelId, rconActor);
+                CreateNewRconActor(channel);
             }
+        }
+
+        private void CreateNewRconActor(RconChannel channel)
+        {
+            var rconActor = Context.ActorOf(RconChannelActor.Create(SP, channel, server, client), $"rcon-{channel.ChannelId}");
+            rconChannels.Add(channel.ChannelId, rconActor);
         }
     }
 }

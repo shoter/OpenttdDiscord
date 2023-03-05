@@ -13,14 +13,14 @@ namespace OpenttdDiscord.Infrastructure.Chatting.Runners
 {
     internal class RegisterChatChannelRunner : OttdSlashCommandRunnerBase
     {
-        private readonly IGetServerByNameUseCase getServerByNameUseCase;
+        private readonly IGetServerUseCase getServerByNameUseCase;
 
         private readonly IRegisterChatChannelUseCase registerChatChannelUseCase;
 
         private readonly IGetChatChannelUseCase getChatChannelUseCase;
 
         public RegisterChatChannelRunner(
-            IGetServerByNameUseCase getServerByNameUseCase,
+            IGetServerUseCase getServerByNameUseCase,
             IRegisterChatChannelUseCase registerChatChannelUseCase,
             IGetChatChannelUseCase getChatChannelUseCase)
         {

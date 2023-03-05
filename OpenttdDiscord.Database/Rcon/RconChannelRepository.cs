@@ -67,5 +67,16 @@ namespace OpenttdDiscord.Database.Rcon
 
                   return Option<RconChannel>.Some(rconChannel.ToDomain());
               }).ToEitherAsyncErrorFlat();
+
+        public EitherAsync<IError, List<RconChannel>> GetRconChannelsForTheGuild(ulong guildId)
+            => TryAsync<Either<IError, List<RconChannel>>>(async () =>
+            {
+                return (await DB.RconChannels
+                    .AsNoTracking()
+                    .Where(cc => cc.GuildId == guildId)
+                    .ToListAsync())
+                    .Select(cc => cc.ToDomain())
+                    .ToList();
+            }).ToEitherAsyncErrorFlat();
     }
 }

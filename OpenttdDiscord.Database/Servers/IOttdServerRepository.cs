@@ -12,9 +12,9 @@ namespace OpenttdDiscord.Database.Servers
 
         Task<EitherUnit> DeleteServer(Guid serverId);
 
-        Task<Either<IError, List<OttdServer>>> GetServersForGuild(ulong guildId);
+        EitherAsync<IError, List<OttdServer>> GetServersForGuild(ulong guildId);
 
-        Task<Either<IError, OttdServer>> GetServer(Guid serverId);
+        EitherAsync<IError, OttdServer> GetServer(Guid serverId);
 
         EitherAsync<IError, OttdServer> GetServerByName(ulong guildId, string serverName);
 

@@ -7,11 +7,11 @@ using OpenttdDiscord.Domain.Servers.UseCases;
 
 namespace OpenttdDiscord.Infrastructure.Servers.UseCases
 {
-    internal class GetServerByNameUseCase : UseCaseBase, IGetServerByNameUseCase
+    internal class GetServerUseCase : UseCaseBase, IGetServerUseCase
     {
         private readonly IOttdServerRepository ottdServerRepository;
 
-        public GetServerByNameUseCase(IOttdServerRepository ottdServerRepository)
+        public GetServerUseCase(IOttdServerRepository ottdServerRepository)
         {
             this.ottdServerRepository = ottdServerRepository;
         }
@@ -21,6 +21,14 @@ namespace OpenttdDiscord.Infrastructure.Servers.UseCases
             return
                 from _1 in CheckIfHasCorrectUserLevel(user, UserLevel.Moderator).ToAsync()
                 from server in ottdServerRepository.GetServerByName(guildId, serverName)
+                select server;
+        }
+
+        public EitherAsync<IError, OttdServer> Execute(User user, Guid serverId)
+        {
+            return
+                from _1 in CheckIfHasCorrectUserLevel(user, UserLevel.Moderator).ToAsync()
+                from server in ottdServerRepository.GetServer(serverId)
                 select server;
         }
     }

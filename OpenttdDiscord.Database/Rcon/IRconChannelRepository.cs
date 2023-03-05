@@ -12,6 +12,8 @@ namespace OpenttdDiscord.Database.Rcon
 
         EitherAsync<IError, List<RconChannel>> GetRconChannelsForTheServer(Guid serverId);
 
+        EitherAsync<IError, List<RconChannel>> GetRconChannelsForTheGuild(ulong guildId);
+
         EitherAsync<IError, Option<RconChannel>> GetRconChannel(Guid serverId, ulong channelId);
     }
 }

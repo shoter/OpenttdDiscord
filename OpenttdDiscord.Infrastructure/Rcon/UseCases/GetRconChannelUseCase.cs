@@ -1,4 +1,5 @@
 ﻿using LanguageExt;
+using LanguageExt.Pipes;
 using OpenttdDiscord.Base.Ext;
 using OpenttdDiscord.Database.Rcon;
 using OpenttdDiscord.Domain.Rcon;
@@ -22,14 +23,6 @@ namespace OpenttdDiscord.Infrastructure.Rcon.UseCases
                 from _1 in CheckIfHasCorrectUserLevel(user, UserLevel.Moderator).ToAsync()
                 from option in rconChannelRepository.GetRconChannel(serverId, channelId)
                 select option;
-        }
-
-        public EitherAsync<IError, List<RconChannel>> Execute(User user, Guid serverId)
-        {
-            return
-                from _1 in CheckIfHasCorrectUserLevel(user, UserLevel.Moderator).ToAsync()
-                from rconChannels in rconChannelRepository.GetRconChannelsForTheServer(serverId)
-                select rconChannels;
         }
     }
 }

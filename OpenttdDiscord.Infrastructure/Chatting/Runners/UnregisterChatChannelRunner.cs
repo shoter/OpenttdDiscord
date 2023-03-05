@@ -19,11 +19,11 @@ namespace OpenttdDiscord.Infrastructure.Chatting.Runners
     {
         private readonly IUnregisterChatChannelUseCase unregisterChatChannelUseCase;
 
-        private readonly IGetServerByNameUseCase getServerByNameUseCase;
+        private readonly IGetServerUseCase getServerByNameUseCase;
 
         public UnregisterChatChannelRunner(
             IUnregisterChatChannelUseCase unregisterChatChannelUseCase,
-            IGetServerByNameUseCase getServerByNameUseCase)
+            IGetServerUseCase getServerByNameUseCase)
         {
             this.unregisterChatChannelUseCase = unregisterChatChannelUseCase;
             this.getServerByNameUseCase = getServerByNameUseCase;

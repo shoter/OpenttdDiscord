@@ -14,14 +14,14 @@ namespace OpenttdDiscord.Infrastructure.Rcon.Runners
     {
         private readonly IRegisterRconChannelUseCase registerRconChannelUseCase;
 
-        private readonly IGetServerByNameUseCase getServerByNameUseCase;
+        private readonly IGetServerUseCase getServerByNameUseCase;
 
         private readonly IGetRconChannelUseCase getRconChannelUseCase;
 
         public RegisterRconChannelRunner(
             IRegisterRconChannelUseCase registerRconChannelUseCase,
             IGetRconChannelUseCase getRconChannelUseCase,
-            IGetServerByNameUseCase getServerByNameUseCase)
+            IGetServerUseCase getServerByNameUseCase)
         {
             this.registerRconChannelUseCase = registerRconChannelUseCase;
             this.getRconChannelUseCase = getRconChannelUseCase;

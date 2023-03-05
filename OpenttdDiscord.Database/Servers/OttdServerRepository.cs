@@ -62,9 +62,8 @@ namespace OpenttdDiscord.Database.Servers
             })).IfFail(ex => new ExceptionError(ex));
         }
 
-        public async Task<Either<IError, List<OttdServer>>> GetServersForGuild(ulong guildId)
-        {
-            return (await TryAsync<Either<IError, List<OttdServer>>>(async () =>
+        public EitherAsync<IError, List<OttdServer>> GetServersForGuild(ulong guildId)
+            => TryAsync(async () =>
             {
                 List<OttdServerEntity> serverEntities = await Db
                 .Servers
@@ -74,19 +73,20 @@ namespace OpenttdDiscord.Database.Servers
                 return serverEntities
                 .Select(s => s.ToDomain())
                 .ToList();
-            })).IfFail(ex => new ExceptionError(ex));
-        }
+            }).ToEitherAsyncError();
 
-        public async Task<Either<IError, OttdServer>> GetServer(Guid serverId)
-        {
-            return (await TryAsync(async () => await Db.FindAsync<OttdServerEntity>(serverId)))
-            .Match(
-                entity => entity == null
-                    ? Either<IError, OttdServer>.Left(new HumanReadableError("Server was not found"))
-                    : Either<IError, OttdServer>.Right(entity.ToDomain()),
-                ex => Either<IError, OttdServer>.Left(new ExceptionError(ex))
-            );
-        }
+        public EitherAsync<IError, OttdServer> GetServer(Guid serverId)
+            => TryAsync<Either<IError, OttdServer>>(async () =>
+            {
+                var entity = await Db.FindAsync<OttdServerEntity>(serverId);
+
+                if(entity == null)
+                {
+                    return new HumanReadableError("Server was not found");
+                }
+
+                return entity.ToDomain();
+            }).ToEitherAsyncErrorFlat();
 
         public EitherAsync<IError, OttdServer> GetServerByName(ulong guildId, string serverName)
             => TryAsync<Either<IError, OttdServer>>(async () =>

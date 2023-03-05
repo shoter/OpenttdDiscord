@@ -30,6 +30,7 @@ namespace OpenttdDiscord.Infrastructure.Rcon
         {
             services.AddScoped<IRegisterRconChannelUseCase, RegisterRconChannelUseCase>();
             services.AddScoped<IGetRconChannelUseCase, GetRconChannelUseCase>();
+            services.AddScoped<IUnregisterRconChannelUseCase, UnregisterRconChannelUseCase>();
 
             return services;
         }

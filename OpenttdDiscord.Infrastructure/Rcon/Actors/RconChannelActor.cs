@@ -119,6 +119,7 @@ namespace OpenttdDiscord.Infrastructure.Rcon.Actors
         protected override void PostStop()
         {
             base.PostStop();
+            discord.MessageReceived -= Discord_MessageReceived;
             parent.Tell(new UnsubscribeFromAdminEvents(Self));
             logger.LogInformation($"Rcon channel {this} stopped");
         }

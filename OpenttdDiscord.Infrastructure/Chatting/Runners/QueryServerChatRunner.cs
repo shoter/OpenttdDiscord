@@ -1,16 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Discord.WebSocket;
+﻿using Discord.WebSocket;
 using LanguageExt;
 using OpenttdDiscord.Base.Basics;
 using OpenttdDiscord.Base.Ext;
+using OpenttdDiscord.Domain.Chatting.UseCases;
 using OpenttdDiscord.Domain.Security;
 using OpenttdDiscord.Domain.Servers.UseCases;
-using OpenttdDiscord.Infrastructure.Akkas;
-using OpenttdDiscord.Infrastructure.Chatting.Messages;
 using OpenttdDiscord.Infrastructure.Discord.Responses;
 using OpenttdDiscord.Infrastructure.Discord.Runners;
 
@@ -18,17 +12,14 @@ namespace OpenttdDiscord.Infrastructure.Chatting.Runners
 {
     internal class QueryServerChatRunner : OttdSlashCommandRunnerBase
     {
-        private readonly IAkkaService akkaService;
-
-        private readonly DiscordSocketClient discord;
-
         private readonly IGetServerUseCase getServerUseCase;
 
-        public QueryServerChatRunner(IAkkaService akkaService, IGetServerUseCase getServerUseCase, DiscordSocketClient discord)
+        private readonly IQueryServerChatUseCase queryServerChatUseCase;
+
+        public QueryServerChatRunner(IGetServerUseCase getServerUseCase, IQueryServerChatUseCase queryServerChatUseCase)
         {
-            this.akkaService = akkaService;
             this.getServerUseCase = getServerUseCase;
-            this.discord = discord;
+            this.queryServerChatUseCase = queryServerChatUseCase;
         }
 
         protected override EitherAsync<IError, ISlashCommandResponse> RunInternal(SocketSlashCommand command, User user, ExtDictionary<string, object> options)
@@ -37,12 +28,13 @@ namespace OpenttdDiscord.Infrastructure.Chatting.Runners
             string serverName = options.GetValueAs<string>("server-name");
 
             return
-                from actor in akkaService.SelectActor(MainActors.Paths.Guilds)
-                from x in actor.TryAsk<RetrievedChatMessages>(new RetrieveChatMessages())
-
+                from server in getServerUseCase.Execute(user, serverName, guildId)
+                from messages in queryServerChatUseCase.Execute(user, server.Id, guildId)
+                from response in ReplyWithFile(messages)
+                select response;
         }
 
-        private EitherAsync<IError, ISlashCommandResponse> ReplyWithFile(List<string> text)
+        private EitherAsync<IError, ISlashCommandResponse> ReplyWithFile(IReadOnlyList<string> text)
         {
             MemoryStream ms = new();
             using (var sw = new StreamWriter(ms, leaveOpen: true))
@@ -53,7 +45,7 @@ namespace OpenttdDiscord.Infrastructure.Chatting.Runners
                 }
             }
 
-            return new StreamCommandResponse(ms, "chat.txt", dispose: true); 
+            return new StreamCommandResponse(ms, "chat.txt", dispose: true);
         }
     }
 }

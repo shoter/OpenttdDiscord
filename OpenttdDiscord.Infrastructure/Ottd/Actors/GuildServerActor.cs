@@ -114,6 +114,8 @@ namespace OpenttdDiscord.Infrastructure.Ottd.Actors
             client.SetAdminEventHandler(ev => self.Tell(ev));
 
             await RconInit();
+
+            Context.ActorOf(ChatStorageActor.Create(SP, server, client));
         }
 
         private void ExecuteServerAction(ExecuteServerAction cmd)

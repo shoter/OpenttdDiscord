@@ -37,7 +37,7 @@ namespace OpenttdDiscord.Infrastructure.Chatting.Actors
 
         public ITimerScheduler Timers { get; set; } = default!;
 
-        protected ChatStorageActor(IServiceProvider serviceProvider, OttdServer server, IAdminPortClient ottdClient)
+        public ChatStorageActor(IServiceProvider serviceProvider, OttdServer server, IAdminPortClient ottdClient)
             : base(serviceProvider)
         {
             this.ottdServer = server;
@@ -57,13 +57,16 @@ namespace OpenttdDiscord.Infrastructure.Chatting.Actors
             }
         }
 
+        public static Props Create(IServiceProvider serviceProvider, OttdServer server, IAdminPortClient ottdClient)
+            => Props.Create(() => new ChatStorageActor(serviceProvider, server, ottdClient));
+
         private void Ready()
         {
             Receive<string>(HandleChatMessage);
-            Receive<AdminChatMessageEvent>(HandleChatMessage);
-            ReceiveIgnore<IAdminEvent>();
+            ReceiveAsync<AdminChatMessageEvent>(HandleChatMessage);
             ReceiveAsync<StoreChatMessages>(StoreChatMessages);
             Receive<RetrieveChatMessages>(RetrieveChatMessages);
+            ReceiveIgnore<IAdminEvent>();
         }
 
         private void HandleChatMessage(string msg)

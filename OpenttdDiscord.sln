@@ -1,39 +1,34 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.29709.97
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33205.214
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenttdDiscord", "OpenttdDiscord\OpenttdDiscord.csproj", "{9D260E45-64E0-4D3B-B3A8-FB4C2D232FB2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenttdDiscord.Discord", "OpenttdDiscord.Discord\OpenttdDiscord.Discord.csproj", "{69ABCB52-8725-4B18-BC70-9BB3E6AC9CAB}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenttdDiscord.Openttd", "OpenttdDiscord.Openttd\OpenttdDiscord.Openttd.csproj", "{E2A2AC12-8407-4FD8-A099-968DE219D78E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenttdDiscord.Domain", "OpenttdDiscord.Domain\OpenttdDiscord.Domain.csproj", "{E825953F-1CFF-4479-8199-35610CD66D88}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenttdDiscord.Openttd.Tests", "OpenttdDiscord.Openttd.Tests\OpenttdDiscord.Openttd.Tests.csproj", "{A2726B0F-FC23-483F-AE08-03F62EE4D05B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenttdDiscord.Infrastructure", "OpenttdDiscord.Infrastructure\OpenttdDiscord.Infrastructure.csproj", "{3580FA79-4A0A-4169-8837-1CCB13A317DF}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{2ABE6986-06D2-491D-852D-0B15E65AEAF8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenttdDiscord.Base", "OpenttdDiscord.Base\OpenttdDiscord.Base.csproj", "{5374E8CB-0CC3-4CC6-8A9E-7FC9BFB94AF1}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{A2C51779-426B-46E0-AF4B-7B2F05C3A80F}"
 	ProjectSection(SolutionItems) = preProject
-		.editorconfig = .editorconfig
-		build.sh = build.sh
-		JenkinsFile = JenkinsFile
-		LICENSE.txt = LICENSE.txt
-		Readme.md = Readme.md
-		run.sh = run.sh
+		docker-compose.yml = docker-compose.yml
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenttdDiscord.Database", "OpenttdDiscord.Database\OpenttdDiscord.Database.csproj", "{C948A6D1-2B53-4420-A51C-BF08D7C96F16}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenttdDiscord.Validation", "OpenttdDiscord.Validation\OpenttdDiscord.Validation.csproj", "{390F24BA-93A0-4105-B72F-C5334919FD20}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenttdDiscord.Common", "OpenttdDiscord.Common\OpenttdDiscord.Common.csproj", "{0AF313A2-918B-4FC1-BD7A-38564D27D302}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{1029E915-ADC4-4365-9E59-FC59C822350B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenttdDiscord.Common.Tests", "OpenttdDiscord.Common.Tests\OpenttdDiscord.Common.Tests.csproj", "{90B5F497-BE1F-4607-A55F-53372E9CFE2D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenttdDiscord.Validation.Tests", "OpenttdDiscord.Validation.Tests\OpenttdDiscord.Validation.Tests.csproj", "{5C31467F-F60B-4C1F-A78E-17869D44F5C8}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenttdDiscord.Testing", "OpenttdDiscord.Testing\OpenttdDiscord.Testing.csproj", "{703CCA37-FD2F-4347-A7C0-1B171F4A179B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenttdDiscord.Database", "OpenttdDiscord.Database\OpenttdDiscord.Database.csproj", "{79B1A333-38E4-4CC7-949D-9D75B09F10F4}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenttdDiscord.Backend.Tests", "OpenttdDiscord.Backend.Tests\OpenttdDiscord.Backend.Tests.csproj", "{AC1BDD1C-D7CC-4522-B3D8-930B15D4D7AA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenttdDiscord.Database.Tests", "OpenttdDiscord.Database.Tests\OpenttdDiscord.Database.Tests.csproj", "{9CEB94CD-0358-4A33-BDA1-6DDFBA7C7BED}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenttdDiscord.Database.Tests", "OpenttdDiscord.Database.Tests\OpenttdDiscord.Database.Tests.csproj", "{03B022E5-EC6D-40B9-86E4-79FE9DF69B6B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenttdDiscord.DockerizedTesting", "OpenttdDiscord.DockerizedTesting\OpenttdDiscord.DockerizedTesting.csproj", "{724714CA-8376-46BD-B7CF-BBFD5C920A77}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenttdDiscord.Tests", "OpenttdDiscord.Tests\OpenttdDiscord.Tests.csproj", "{3CAEB0E4-7C59-41FD-889E-2A1DB2304344}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenttdDiscord.Backend", "OpenttdDiscord.Backend\OpenttdDiscord.Backend.csproj", "{E6DD72DF-D387-4F14-8134-A09C31461027}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenttdDiscord.Database.Migrator", "OpenttdDiscord.Database.Migrator\OpenttdDiscord.Database.Migrator.csproj", "{91914F84-8AD3-4AF8-B5B7-C2551AE4889B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -41,55 +36,56 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{9D260E45-64E0-4D3B-B3A8-FB4C2D232FB2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9D260E45-64E0-4D3B-B3A8-FB4C2D232FB2}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9D260E45-64E0-4D3B-B3A8-FB4C2D232FB2}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9D260E45-64E0-4D3B-B3A8-FB4C2D232FB2}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E2A2AC12-8407-4FD8-A099-968DE219D78E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E2A2AC12-8407-4FD8-A099-968DE219D78E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E2A2AC12-8407-4FD8-A099-968DE219D78E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E2A2AC12-8407-4FD8-A099-968DE219D78E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A2726B0F-FC23-483F-AE08-03F62EE4D05B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A2726B0F-FC23-483F-AE08-03F62EE4D05B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A2726B0F-FC23-483F-AE08-03F62EE4D05B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A2726B0F-FC23-483F-AE08-03F62EE4D05B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C948A6D1-2B53-4420-A51C-BF08D7C96F16}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C948A6D1-2B53-4420-A51C-BF08D7C96F16}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C948A6D1-2B53-4420-A51C-BF08D7C96F16}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C948A6D1-2B53-4420-A51C-BF08D7C96F16}.Release|Any CPU.Build.0 = Release|Any CPU
-		{0AF313A2-918B-4FC1-BD7A-38564D27D302}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0AF313A2-918B-4FC1-BD7A-38564D27D302}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0AF313A2-918B-4FC1-BD7A-38564D27D302}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0AF313A2-918B-4FC1-BD7A-38564D27D302}.Release|Any CPU.Build.0 = Release|Any CPU
-		{90B5F497-BE1F-4607-A55F-53372E9CFE2D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{90B5F497-BE1F-4607-A55F-53372E9CFE2D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{90B5F497-BE1F-4607-A55F-53372E9CFE2D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{90B5F497-BE1F-4607-A55F-53372E9CFE2D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{703CCA37-FD2F-4347-A7C0-1B171F4A179B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{703CCA37-FD2F-4347-A7C0-1B171F4A179B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{703CCA37-FD2F-4347-A7C0-1B171F4A179B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{703CCA37-FD2F-4347-A7C0-1B171F4A179B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{AC1BDD1C-D7CC-4522-B3D8-930B15D4D7AA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{AC1BDD1C-D7CC-4522-B3D8-930B15D4D7AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{AC1BDD1C-D7CC-4522-B3D8-930B15D4D7AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{AC1BDD1C-D7CC-4522-B3D8-930B15D4D7AA}.Release|Any CPU.Build.0 = Release|Any CPU
-		{03B022E5-EC6D-40B9-86E4-79FE9DF69B6B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{03B022E5-EC6D-40B9-86E4-79FE9DF69B6B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{03B022E5-EC6D-40B9-86E4-79FE9DF69B6B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{03B022E5-EC6D-40B9-86E4-79FE9DF69B6B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{3CAEB0E4-7C59-41FD-889E-2A1DB2304344}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3CAEB0E4-7C59-41FD-889E-2A1DB2304344}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3CAEB0E4-7C59-41FD-889E-2A1DB2304344}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3CAEB0E4-7C59-41FD-889E-2A1DB2304344}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E6DD72DF-D387-4F14-8134-A09C31461027}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E6DD72DF-D387-4F14-8134-A09C31461027}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E6DD72DF-D387-4F14-8134-A09C31461027}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E6DD72DF-D387-4F14-8134-A09C31461027}.Release|Any CPU.Build.0 = Release|Any CPU
+		{69ABCB52-8725-4B18-BC70-9BB3E6AC9CAB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{69ABCB52-8725-4B18-BC70-9BB3E6AC9CAB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{69ABCB52-8725-4B18-BC70-9BB3E6AC9CAB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{69ABCB52-8725-4B18-BC70-9BB3E6AC9CAB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E825953F-1CFF-4479-8199-35610CD66D88}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E825953F-1CFF-4479-8199-35610CD66D88}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E825953F-1CFF-4479-8199-35610CD66D88}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E825953F-1CFF-4479-8199-35610CD66D88}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3580FA79-4A0A-4169-8837-1CCB13A317DF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3580FA79-4A0A-4169-8837-1CCB13A317DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3580FA79-4A0A-4169-8837-1CCB13A317DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3580FA79-4A0A-4169-8837-1CCB13A317DF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5374E8CB-0CC3-4CC6-8A9E-7FC9BFB94AF1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5374E8CB-0CC3-4CC6-8A9E-7FC9BFB94AF1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5374E8CB-0CC3-4CC6-8A9E-7FC9BFB94AF1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5374E8CB-0CC3-4CC6-8A9E-7FC9BFB94AF1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{390F24BA-93A0-4105-B72F-C5334919FD20}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{390F24BA-93A0-4105-B72F-C5334919FD20}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{390F24BA-93A0-4105-B72F-C5334919FD20}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{390F24BA-93A0-4105-B72F-C5334919FD20}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5C31467F-F60B-4C1F-A78E-17869D44F5C8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5C31467F-F60B-4C1F-A78E-17869D44F5C8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5C31467F-F60B-4C1F-A78E-17869D44F5C8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5C31467F-F60B-4C1F-A78E-17869D44F5C8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{79B1A333-38E4-4CC7-949D-9D75B09F10F4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{79B1A333-38E4-4CC7-949D-9D75B09F10F4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{79B1A333-38E4-4CC7-949D-9D75B09F10F4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{79B1A333-38E4-4CC7-949D-9D75B09F10F4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9CEB94CD-0358-4A33-BDA1-6DDFBA7C7BED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9CEB94CD-0358-4A33-BDA1-6DDFBA7C7BED}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9CEB94CD-0358-4A33-BDA1-6DDFBA7C7BED}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9CEB94CD-0358-4A33-BDA1-6DDFBA7C7BED}.Release|Any CPU.Build.0 = Release|Any CPU
+		{724714CA-8376-46BD-B7CF-BBFD5C920A77}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{724714CA-8376-46BD-B7CF-BBFD5C920A77}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{724714CA-8376-46BD-B7CF-BBFD5C920A77}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{724714CA-8376-46BD-B7CF-BBFD5C920A77}.Release|Any CPU.Build.0 = Release|Any CPU
+		{91914F84-8AD3-4AF8-B5B7-C2551AE4889B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{91914F84-8AD3-4AF8-B5B7-C2551AE4889B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{91914F84-8AD3-4AF8-B5B7-C2551AE4889B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{91914F84-8AD3-4AF8-B5B7-C2551AE4889B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{5C31467F-F60B-4C1F-A78E-17869D44F5C8} = {1029E915-ADC4-4365-9E59-FC59C822350B}
+		{9CEB94CD-0358-4A33-BDA1-6DDFBA7C7BED} = {1029E915-ADC4-4365-9E59-FC59C822350B}
+		{724714CA-8376-46BD-B7CF-BBFD5C920A77} = {1029E915-ADC4-4365-9E59-FC59C822350B}
+	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {7CDEE503-F030-4F69-9439-FCD0BE15DE7F}
+		SolutionGuid = {E49BE0BA-49A5-4D0D-B91D-01CA312FDD26}
 	EndGlobalSection
 EndGlobal

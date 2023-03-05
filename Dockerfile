@@ -1,22 +1,48 @@
-﻿# https://hub.docker.com/_/microsoft-dotnet-core
-FROM mcr.microsoft.com/dotnet/core/sdk:3.1 AS build
-WORKDIR /source
+﻿ARG BUILD_IMG=mcr.microsoft.com/dotnet/sdk:6.0
+FROM ${BUILD_IMG} AS build
+ARG CONFIGURATION=Release
 
-# copy csproj and restore as distinct layers
-COPY . .
-WORKDIR OpenttdDiscord
-RUN dotnet restore
-RUN dotnet publish -c release -o /app --no-restore
+#PUT_PROJECTS_BELOW_THIS_LINE
+COPY ./OpenttdDiscord.Base/OpenttdDiscord.Base.csproj ./OpenttdDiscord.Base/OpenttdDiscord.Base.csproj
+COPY ./OpenttdDiscord.Database/OpenttdDiscord.Database.csproj ./OpenttdDiscord.Database/OpenttdDiscord.Database.csproj
+COPY ./OpenttdDiscord.Database.Migrator/OpenttdDiscord.Database.Migrator.csproj ./OpenttdDiscord.Database.Migrator/OpenttdDiscord.Database.Migrator.csproj
+COPY ./OpenttdDiscord.Database.Tests/OpenttdDiscord.Database.Tests.csproj ./OpenttdDiscord.Database.Tests/OpenttdDiscord.Database.Tests.csproj
+COPY ./OpenttdDiscord.Discord/OpenttdDiscord.Discord.csproj ./OpenttdDiscord.Discord/OpenttdDiscord.Discord.csproj
+COPY ./OpenttdDiscord.DockerizedTesting/OpenttdDiscord.DockerizedTesting.csproj ./OpenttdDiscord.DockerizedTesting/OpenttdDiscord.DockerizedTesting.csproj
+COPY ./OpenttdDiscord.Domain/OpenttdDiscord.Domain.csproj ./OpenttdDiscord.Domain/OpenttdDiscord.Domain.csproj
+COPY ./OpenttdDiscord.Infrastructure/OpenttdDiscord.Infrastructure.csproj ./OpenttdDiscord.Infrastructure/OpenttdDiscord.Infrastructure.csproj
+COPY ./OpenttdDiscord.Validation/OpenttdDiscord.Validation.csproj ./OpenttdDiscord.Validation/OpenttdDiscord.Validation.csproj
+COPY ./OpenttdDiscord.Validation.Tests/OpenttdDiscord.Validation.Tests.csproj ./OpenttdDiscord.Validation.Tests/OpenttdDiscord.Validation.Tests.csproj
+#END_PUT_PROJECTS_BELOW_THIS_LINE
 
-# final stage/image
-FROM mcr.microsoft.com/dotnet/core/runtime:3.1
-# FROM mcr.microsoft.com/dotnet/core/runtime:3.1-buster-slim-arm32v7
+COPY ./OpenttdDiscord.sln .
+RUN dotnet restore --disable-parallel
+COPY . /build
+
+FROM build AS publish
+ARG CONFIGURATION=Release
+
+RUN dotnet publish "/build/OpenttdDiscord.Discord/OpenttdDiscord.Discord.csproj" -c $CONFIGURATION -o /app/publish
+RUN dotnet publish "/build/OpenttdDiscord.Database.Migrator/OpenttdDiscord.Database.Migrator.csproj" -c $CONFIGURATION -o /app/migrator
+
+FROM build as dbMigrations
+
+RUN dotnet tool install --global dotnet-ef
+ENV PATH="$PATH:/root/.dotnet/tools"
+WORKDIR /build/OpenttdDiscord.Database
+RUN dotnet ef migrations script -v -i -o /script.sql 
+
+ARG RUN_IMG=mcr.microsoft.com/dotnet/aspnet:6.0
+FROM ${BUILD_IMG} AS run
+ARG CONFIGURATION=Release
+
 WORKDIR /app
-COPY --from=build /app .
-ADD https://raw.githubusercontent.com/vishnubob/wait-for-it/master/wait-for-it.sh /wait
-RUN chmod +x /wait
 
-COPY ./container_entry.sh /start.sh
-RUN chmod +x /start.sh
+COPY --from=publish /app .
+COPY --from=dbMigrations /script.sql /app/script.sql
+COPY ./startup.sh .
+RUN chmod a+x /app/startup.sh
+RUN mkdir -p /var/app/ottd/
+ENTRYPOINT ["bash", "-c", "./startup.sh"]
 
-ENTRYPOINT ["bash", "/start.sh"]
+

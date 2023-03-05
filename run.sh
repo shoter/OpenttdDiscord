@@ -1,2 +1,2 @@
-docker-compose build --build-arg IMG=mysql
-docker-compose up -d 
+docker compose build --no-cache
+docker compose up --no-build -d --force-recreate

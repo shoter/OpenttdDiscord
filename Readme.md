@@ -1,6 +1,7 @@
 ﻿# Openttd Discord
 
 ![GitHub](https://img.shields.io/github/license/shoter/OpenttdDiscord?style=plastic)
+![Test badge](https://github.com/shoter/OpenttdDiscord/actions/workflows/test.yml/badge.svg)
 
 Provides ability to integrate Discord with your OpenTTD servers.
 
@@ -174,3 +175,11 @@ some additional information and it will be uploaded as a file on discord channel
 @BotMention list_subscribed_servers
 ```
 
+## Architecture
+
+### Actors hierarchy
+
+
+### Database diagram
+
+![Database diagram](./docs/database.drawio.png)

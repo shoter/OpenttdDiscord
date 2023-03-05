@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net6.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\OpenttdDiscord.Database\OpenttdDiscord.Database.csproj" />
+		<ProjectReference Include="..\OpenttdDiscord.Domain\OpenttdDiscord.Domain.csproj" />
+		<ProjectReference Include="..\OpenttdDiscord.Validation\OpenttdDiscord.Validation.csproj" />
+		<PackageReference Include="Serilog" Version="2.12.0" />
+		<PackageReference Include="Serilog.Extensions.Hosting" Version="5.0.1" />
+		<PackageReference Include="Serilog.Settings.Configuration" Version="3.4.0" />
+		<PackageReference Include="Serilog.Sinks.Console" Version="4.1.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="Servers\Actors\" />
+	</ItemGroup>
+
+</Project>

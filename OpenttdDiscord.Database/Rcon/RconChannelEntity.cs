@@ -23,7 +23,7 @@ namespace OpenttdDiscord.Database.Rcon
             ServerId = ac.ServerId;
             GuildId = ac.GuildId;
             ChannelId = ac.ChannelId;
-            Prefix = ac.prefix;
+            Prefix = ac.Prefix;
         }
 
         public RconChannel ToDomain() => new(

@@ -22,7 +22,7 @@ using Serilog;
 
 namespace OpenttdDiscord.Infrastructure.Ottd.Actors
 {
-    internal class GuildServerActor : ReceiveActorBase, IWithTimers
+    internal partial class GuildServerActor : ReceiveActorBase, IWithTimers
     {
         private readonly OttdServer server;
         private readonly AdminPortClient client;
@@ -55,7 +55,10 @@ namespace OpenttdDiscord.Infrastructure.Ottd.Actors
             new(server.Ip, server.AdminPort, server.AdminPortPassword),
             logging => logging.AddSerilog());
 
+            RconConstructor();
+
             Ready();
+            RconReady();
             Self.Tell(new InitGuildServerActorMessage());
         }
 
@@ -109,6 +112,8 @@ namespace OpenttdDiscord.Infrastructure.Ottd.Actors
             }
 
             client.SetAdminEventHandler(ev => self.Tell(ev));
+
+            await RconInit();
         }
 
         private void ExecuteServerAction(ExecuteServerAction cmd)

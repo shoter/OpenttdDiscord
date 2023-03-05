@@ -7,6 +7,7 @@ using Microsoft.Extensions.Logging;
 using OpenttdDiscord.Domain.Statuses;
 using OpenttdDiscord.Infrastructure.Chatting.Messages;
 using OpenttdDiscord.Infrastructure.Discord.Messages;
+using System.Configuration;
 
 namespace OpenttdDiscord.Infrastructure.Discord.Actors
 {

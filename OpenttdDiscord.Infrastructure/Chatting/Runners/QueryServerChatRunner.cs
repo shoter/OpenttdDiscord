@@ -41,7 +41,7 @@ namespace OpenttdDiscord.Infrastructure.Chatting.Runners
             {
                 foreach (var line in text)
                 {
-                    sw.WriteLine(text);
+                    sw.WriteLine(line);
                 }
             }
 

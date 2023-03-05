@@ -33,6 +33,7 @@ namespace OpenttdDiscord.Infrastructure.Ottd.Actors
         private readonly ExtDictionary<ulong, IActorRef> statusMonitorActors = new();
         private readonly ExtDictionary<ulong, ChattingActors> chatChannelActors = new();
         private readonly System.Collections.Generic.HashSet<IActorRef> adminEventSubscribers = new();
+        private Option<IActorRef> chatStorageActor = Option<IActorRef>.None;
 
         public ITimerScheduler Timers { get; set; } = default!;
 
@@ -76,6 +77,7 @@ namespace OpenttdDiscord.Infrastructure.Ottd.Actors
             Receive<IAdminEvent>(ev => adminEventSubscribers.TellMany(ev));
             Receive<SubscribeToAdminEvents>(m => adminEventSubscribers.Add(m.Subscriber));
             Receive<UnsubscribeFromAdminEvents>(m => adminEventSubscribers.Remove(m.subscriber));
+            Receive<RetrieveChatMessages>(RetrieveChatMessages);
         }
 
         public static Props Create(IServiceProvider sp, OttdServer server)
@@ -115,7 +117,7 @@ namespace OpenttdDiscord.Infrastructure.Ottd.Actors
 
             await RconInit();
 
-            Context.ActorOf(ChatStorageActor.Create(SP, server, client));
+            chatStorageActor = Some(Context.ActorOf(EventStorageActor.Create(SP, server, client)));
         }
 
         private void ExecuteServerAction(ExecuteServerAction cmd)
@@ -203,6 +205,17 @@ namespace OpenttdDiscord.Infrastructure.Ottd.Actors
             (from chatManager in akkaService.SelectActor(MainActors.Paths.ChatChannelManager)
              from _1 in chatManager.TellExt(ucc).ToAsync()
              select _1);
+        }
+
+        private void RetrieveChatMessages(RetrieveChatMessages msg)
+        {
+            if(chatStorageActor.IsNone)
+            {
+                return;
+            }
+
+            var actor = (IActorRef)chatStorageActor.Case!;
+            actor.Forward(msg);
         }
     }
 }

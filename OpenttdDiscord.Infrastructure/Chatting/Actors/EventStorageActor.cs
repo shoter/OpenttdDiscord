@@ -19,7 +19,7 @@ namespace OpenttdDiscord.Infrastructure.Chatting.Actors
     /// <summary>
     /// Used to store chat messages for given ottd server. It automatically connects to the ottd server event chain to gather chat messages.
     /// </summary>
-    internal class ChatStorageActor : ReceiveActorBase, IWithTimers
+    internal class EventStorageActor : ReceiveActorBase, IWithTimers
     {
         // TODO: Make it configurable through appsettings or something or whatever
         private const int ChatMessageMaxCount = 600;
@@ -36,7 +36,7 @@ namespace OpenttdDiscord.Infrastructure.Chatting.Actors
 
         public ITimerScheduler Timers { get; set; } = default!;
 
-        public ChatStorageActor(IServiceProvider serviceProvider, OttdServer server, IAdminPortClient ottdClient)
+        public EventStorageActor(IServiceProvider serviceProvider, OttdServer server, IAdminPortClient ottdClient)
             : base(serviceProvider)
         {
             this.ottdServer = server;
@@ -57,12 +57,13 @@ namespace OpenttdDiscord.Infrastructure.Chatting.Actors
         }
 
         public static Props Create(IServiceProvider serviceProvider, OttdServer server, IAdminPortClient ottdClient)
-            => Props.Create(() => new ChatStorageActor(serviceProvider, server, ottdClient));
+            => Props.Create(() => new EventStorageActor(serviceProvider, server, ottdClient));
 
         private void Ready()
         {
             Receive<string>(HandleChatMessage);
             ReceiveAsync<AdminChatMessageEvent>(HandleChatMessage);
+            Receive<AdminConsoleEvent>(HandleConsole);
             ReceiveAsync<StoreChatMessages>(StoreChatMessages);
             Receive<RetrieveChatMessages>(RetrieveChatMessages);
             ReceiveIgnore<IAdminEvent>();
@@ -122,6 +123,23 @@ namespace OpenttdDiscord.Infrastructure.Chatting.Actors
 
             string str = $"[{DateTime.Now:dd/MM HH:mm:ss}] {msg.Player.Name}({playerIp}): {msg.Message}";
             self.Tell(str);
+        }
+
+        private void HandleConsole(AdminConsoleEvent ev)
+        {
+            if (ev.EventType != AdminEventType.ConsoleMessage)
+            {
+                return;
+            }
+
+            if(ev.Message.Trim().StartsWith("[All]"))
+            {
+                // Do not print here messages written by players
+                return;
+            }
+
+            string str = $"[{DateTime.Now:dd/MM HH:mm:ss}] {ev.Message}";
+            Self.Tell(str);
         }
 
         private void RetrieveChatMessages(RetrieveChatMessages _)

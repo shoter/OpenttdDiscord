@@ -39,7 +39,7 @@ namespace OpenttdDiscord.Infrastructure.EventLogs.Runners
             MemoryStream ms = new();
             using (var sw = new StreamWriter(ms, leaveOpen: true))
             {
-                foreach (var line in text)
+                foreach (var line in text.Reverse())
                 {
                     sw.WriteLine(line);
                 }

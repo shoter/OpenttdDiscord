@@ -1,6 +1,8 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using OpenttdDiscord.Database.Reporting;
+using OpenttdDiscord.Domain.Reporting.UseCases;
 using OpenttdDiscord.Infrastructure.Modularity;
+using OpenttdDiscord.Infrastructure.Reporting.UseCases;
 
 namespace OpenttdDiscord.Infrastructure.Reporting
 {
@@ -22,6 +24,8 @@ namespace OpenttdDiscord.Infrastructure.Reporting
     {
         public static IServiceCollection RegisterUseCases(this IServiceCollection services)
         {
+            services.AddScoped<IRegisterReportChannelUseCase, RegisterReportChannelUseCase>();
+
             return services;
         }
 

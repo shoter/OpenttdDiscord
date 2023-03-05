@@ -30,7 +30,7 @@ FROM build as dbMigrations
 RUN dotnet tool install --global dotnet-ef
 ENV PATH="$PATH:/root/.dotnet/tools"
 WORKDIR /build/OpenttdDiscord.Database
-RUN dotnet ef migrations script -v -o /script.sql 
+RUN dotnet ef migrations script -v -i -o /script.sql 
 
 ARG RUN_IMG=mcr.microsoft.com/dotnet/aspnet:6.0
 FROM ${BUILD_IMG} AS run

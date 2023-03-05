@@ -1,3 +1,3 @@
 ﻿namespace OpenttdDiscord.Infrastructure.Chatting.Messages;
 
-internal record RetrievedChatMessages(IReadOnlyCollection<string> messages);
+internal record RetrievedChatMessages(IReadOnlyList<string> Messages);

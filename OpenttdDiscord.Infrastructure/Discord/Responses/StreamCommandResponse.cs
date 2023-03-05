@@ -1,0 +1,57 @@
+﻿using Discord.WebSocket;
+
+namespace OpenttdDiscord.Infrastructure.Discord.Responses
+{
+    internal class StreamCommandResponse : SlashCommandResponseBase, IDisposable
+    {
+        private readonly Stream stream;
+        private readonly string fileName;
+        private readonly bool dispose;
+        private bool disposedValue;
+
+        public StreamCommandResponse(Stream stream, string fileName, bool dispose = true)
+        {
+            this.stream = stream;
+            this.fileName = fileName;
+            this.dispose = dispose;
+        }
+
+        protected override async Task InternalExecute(SocketSlashCommand command)
+        {
+            await command.RespondWithFileAsync(stream, fileName);
+            if(dispose)
+            {
+                Dispose(true);
+            }
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    stream.Dispose();
+                }
+
+                // TODO: free unmanaged resources (unmanaged objects) and override finalizer
+                // TODO: set large fields to null
+                disposedValue = true;
+            }
+        }
+
+        // // TODO: override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
+        // ~StreamCommandResponse()
+        // {
+        //     // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+        //     Dispose(disposing: false);
+        // }
+
+        public void Dispose()
+        {
+            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
+        }
+    }
+}

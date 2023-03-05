@@ -37,6 +37,7 @@ namespace OpenttdDiscord.Infrastructure.Rcon
         public static IServiceCollection RegisterRunners(this IServiceCollection services)
         {
             services.AddScoped<RegisterRconChannelRunner>();
+            services.AddScoped<UnregisterRconChannelRunner>();
 
             return services;
         }
@@ -44,6 +45,7 @@ namespace OpenttdDiscord.Infrastructure.Rcon
         public static IServiceCollection RegisterCommands(this IServiceCollection services)
         {
             services.AddSingleton<IOttdSlashCommand, RegisterRconChannelCommand>();
+            services.AddSingleton<IOttdSlashCommand, UnregisterRconChannelCommand>();
 
             return services;
         }

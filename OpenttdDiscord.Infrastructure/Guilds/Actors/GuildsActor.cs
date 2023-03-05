@@ -44,6 +44,7 @@ namespace OpenttdDiscord.Infrastructure.Guilds.Actors
             ReceiveRedirectMsg<RegisterChatChannel>(msg => msg.chatChannel.GuildId);
             ReceiveRedirectMsg<UnregisterChatChannel>(msg => msg.GuildId);
             ReceiveRedirectMsg<RegisterNewRconChannel>(msg => msg.RconChannel.GuildId);
+            ReceiveRedirectMsg<UnregisterRconChannel>(msg => msg.guildId);
         }
 
         private async Task InitGuildActorMessage(InitGuildActorMessage _)

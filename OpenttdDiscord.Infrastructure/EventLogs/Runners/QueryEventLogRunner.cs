@@ -2,21 +2,21 @@
 using LanguageExt;
 using OpenttdDiscord.Base.Basics;
 using OpenttdDiscord.Base.Ext;
-using OpenttdDiscord.Domain.Chatting.UseCases;
+using OpenttdDiscord.Domain.EventLogs.UseCases;
 using OpenttdDiscord.Domain.Security;
 using OpenttdDiscord.Domain.Servers.UseCases;
 using OpenttdDiscord.Infrastructure.Discord.Responses;
 using OpenttdDiscord.Infrastructure.Discord.Runners;
 
-namespace OpenttdDiscord.Infrastructure.Chatting.Runners
+namespace OpenttdDiscord.Infrastructure.EventLogs.Runners
 {
-    internal class QueryServerChatRunner : OttdSlashCommandRunnerBase
+    internal class QueryEventLogRunner : OttdSlashCommandRunnerBase
     {
         private readonly IGetServerUseCase getServerUseCase;
 
-        private readonly IQueryServerChatUseCase queryServerChatUseCase;
+        private readonly IQueryEventLogUseCase queryServerChatUseCase;
 
-        public QueryServerChatRunner(IGetServerUseCase getServerUseCase, IQueryServerChatUseCase queryServerChatUseCase)
+        public QueryEventLogRunner(IGetServerUseCase getServerUseCase, IQueryEventLogUseCase queryServerChatUseCase)
         {
             this.getServerUseCase = getServerUseCase;
             this.queryServerChatUseCase = queryServerChatUseCase;

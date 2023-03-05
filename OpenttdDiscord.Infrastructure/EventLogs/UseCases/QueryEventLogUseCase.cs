@@ -1,17 +1,17 @@
 ﻿using LanguageExt;
 using OpenttdDiscord.Base.Ext;
-using OpenttdDiscord.Domain.Chatting.UseCases;
+using OpenttdDiscord.Domain.EventLogs.UseCases;
 using OpenttdDiscord.Domain.Security;
 using OpenttdDiscord.Infrastructure.Akkas;
-using OpenttdDiscord.Infrastructure.Chatting.Messages;
+using OpenttdDiscord.Infrastructure.EventLogs.Messages;
 
-namespace OpenttdDiscord.Infrastructure.Chatting.UseCases
+namespace OpenttdDiscord.Infrastructure.EventLogs.UseCases
 {
-    internal class QueryServerChatUseCase : UseCaseBase, IQueryServerChatUseCase
+    internal class QueryEventLogUseCase : UseCaseBase, IQueryEventLogUseCase
     {
         private readonly IAkkaService akkaService;
 
-        public QueryServerChatUseCase(IAkkaService akkaService)
+        public QueryEventLogUseCase(IAkkaService akkaService)
         {
             this.akkaService = akkaService;
         }
@@ -21,7 +21,7 @@ namespace OpenttdDiscord.Infrastructure.Chatting.UseCases
             return
                 from _1 in CheckIfHasCorrectUserLevel(user, UserLevel.Admin).ToAsync()
                 from actor in akkaService.SelectActor(MainActors.Paths.Guilds)
-                from response in actor.TryAsk<RetrievedChatMessages>(new RetrieveChatMessages(serverId, guildId))
+                from response in actor.TryAsk<RetrievedEventLog>(new RetrieveEventLog(serverId, guildId))
                 select response.Messages;
         }
     }

@@ -15,6 +15,8 @@ using OpenttdDiscord.Infrastructure.Akkas;
 using OpenttdDiscord.Infrastructure.Chatting;
 using OpenttdDiscord.Infrastructure.Chatting.Actors;
 using OpenttdDiscord.Infrastructure.Chatting.Messages;
+using OpenttdDiscord.Infrastructure.EventLogs.Actors;
+using OpenttdDiscord.Infrastructure.EventLogs.Messages;
 using OpenttdDiscord.Infrastructure.Ottd.Messages;
 using OpenttdDiscord.Infrastructure.Statuses.Actors;
 using OpenttdDiscord.Infrastructure.Statuses.Messages;
@@ -77,7 +79,7 @@ namespace OpenttdDiscord.Infrastructure.Ottd.Actors
             Receive<IAdminEvent>(ev => adminEventSubscribers.TellMany(ev));
             Receive<SubscribeToAdminEvents>(m => adminEventSubscribers.Add(m.Subscriber));
             Receive<UnsubscribeFromAdminEvents>(m => adminEventSubscribers.Remove(m.subscriber));
-            Receive<RetrieveChatMessages>(RetrieveChatMessages);
+            Receive<RetrieveEventLog>(RetrieveChatMessages);
         }
 
         public static Props Create(IServiceProvider sp, OttdServer server)
@@ -207,7 +209,7 @@ namespace OpenttdDiscord.Infrastructure.Ottd.Actors
              select _1);
         }
 
-        private void RetrieveChatMessages(RetrieveChatMessages msg)
+        private void RetrieveChatMessages(RetrieveEventLog msg)
         {
             if(chatStorageActor.IsNone)
             {

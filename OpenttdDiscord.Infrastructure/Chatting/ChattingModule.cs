@@ -2,10 +2,14 @@
 using Microsoft.Extensions.DependencyInjection;
 using OpenttdDiscord.Database.Chatting;
 using OpenttdDiscord.Domain.Chatting.UseCases;
+using OpenttdDiscord.Domain.EventLogs.UseCases;
 using OpenttdDiscord.Infrastructure.Chatting.Commands;
 using OpenttdDiscord.Infrastructure.Chatting.Runners;
 using OpenttdDiscord.Infrastructure.Chatting.UseCases;
 using OpenttdDiscord.Infrastructure.Discord.Commands;
+using OpenttdDiscord.Infrastructure.EventLogs.Commands;
+using OpenttdDiscord.Infrastructure.EventLogs.Runners;
+using OpenttdDiscord.Infrastructure.EventLogs.UseCases;
 using OpenttdDiscord.Infrastructure.Modularity;
 
 namespace OpenttdDiscord.Infrastructure.Chatting
@@ -31,7 +35,7 @@ namespace OpenttdDiscord.Infrastructure.Chatting
             services.AddScoped<IRegisterChatChannelUseCase, RegisterChatChannelUseCase>();
             services.AddScoped<IGetChatChannelUseCase, GetChatChannelUseCase>();
             services.AddScoped<IUnregisterChatChannelUseCase, UnregisterChatChannelUseCase>();
-            services.AddScoped<IQueryServerChatUseCase, QueryServerChatUseCase>();
+            services.AddScoped<IQueryEventLogUseCase, QueryEventLogUseCase>();
 
             return services;
         }
@@ -40,7 +44,7 @@ namespace OpenttdDiscord.Infrastructure.Chatting
         {
             services.AddScoped<RegisterChatChannelRunner>();
             services.AddScoped<UnregisterChatChannelRunner>();
-            services.AddScoped<QueryServerChatRunner>();
+            services.AddScoped<QueryEventLogRunner>();
 
             return services;
         }
@@ -49,7 +53,7 @@ namespace OpenttdDiscord.Infrastructure.Chatting
         {
             services.AddSingleton<IOttdSlashCommand, RegisterChatChannelCommand>();
             services.AddSingleton<IOttdSlashCommand, UnregisterChatChannelCommand>();
-            services.AddSingleton<IOttdSlashCommand, QueryServerChatCommand>();
+            services.AddSingleton<IOttdSlashCommand, QueryEventLogCommand>();
 
             return services;
         }

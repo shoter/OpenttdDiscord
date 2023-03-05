@@ -7,6 +7,7 @@ using OpenttdDiscord.Domain.Security;
 using OpenttdDiscord.Domain.Servers;
 using OpenttdDiscord.Domain.Servers.UseCases;
 using OpenttdDiscord.Infrastructure.Chatting.Messages;
+using OpenttdDiscord.Infrastructure.EventLogs.Messages;
 using OpenttdDiscord.Infrastructure.Guilds.Messages;
 using OpenttdDiscord.Infrastructure.Ottd.Actors;
 using OpenttdDiscord.Infrastructure.Ottd.Messages;
@@ -47,7 +48,7 @@ namespace OpenttdDiscord.Infrastructure.Guilds.Actors
             ReceiveRedirectMsg<UnregisterChatChannel>(msg => msg.ServerId);
             ReceiveRedirectMsg<RegisterNewRconChannel>(msg => msg.ServerId);
             ReceiveRedirectMsg<UnregisterRconChannel>(msg => msg.ServerId);
-            ReceiveRedirectMsg<RetrieveChatMessages>(msg => msg.ServerId);
+            ReceiveRedirectMsg<RetrieveEventLog>(msg => msg.ServerId);
         }
 
         public static Props Create(IServiceProvider sp, ulong guildId)

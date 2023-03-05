@@ -1,20 +1,20 @@
 ﻿using Discord;
-using OpenttdDiscord.Infrastructure.Chatting.Runners;
 using OpenttdDiscord.Infrastructure.Discord.Commands;
+using OpenttdDiscord.Infrastructure.EventLogs.Runners;
 
-namespace OpenttdDiscord.Infrastructure.Chatting.Commands
+namespace OpenttdDiscord.Infrastructure.EventLogs.Commands
 {
-    internal class QueryServerChatCommand : OttdSlashCommandBase<QueryServerChatRunner>
+    internal class QueryEventLogCommand : OttdSlashCommandBase<QueryEventLogRunner>
     {
-        public QueryServerChatCommand()
-            : base("query-server-chat")
+        public QueryEventLogCommand()
+            : base("query-command-log")
         {
         }
 
         public override void Configure(SlashCommandBuilder builder)
         {
             builder
-                .WithDescription("Returns file with latest messages from server chat")
+                .WithDescription("Returns file with latest events from the server")
                 .AddOption(new SlashCommandOptionBuilder()
                     .WithName("server-name")
                     .WithRequired(true)

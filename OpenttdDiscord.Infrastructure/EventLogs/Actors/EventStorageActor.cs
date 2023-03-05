@@ -1,20 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
 using System.Text;
-using System.Threading.Tasks;
 using Akka.Actor;
-using Akka.Dispatch;
-using LanguageExt.Pipes;
 using OpenTTDAdminPort;
 using OpenTTDAdminPort.Events;
 using OpenTTDAdminPort.Game;
 using OpenttdDiscord.Domain.Servers;
 using OpenttdDiscord.Infrastructure.Chatting.Messages;
+using OpenttdDiscord.Infrastructure.EventLogs.Messages;
 using OpenttdDiscord.Infrastructure.Ottd.Messages;
 
-namespace OpenttdDiscord.Infrastructure.Chatting.Actors
+namespace OpenttdDiscord.Infrastructure.EventLogs.Actors
 {
     /// <summary>
     /// Used to store chat messages for given ottd server. It automatically connects to the ottd server event chain to gather chat messages.
@@ -39,7 +34,7 @@ namespace OpenttdDiscord.Infrastructure.Chatting.Actors
         public EventStorageActor(IServiceProvider serviceProvider, OttdServer server, IAdminPortClient ottdClient)
             : base(serviceProvider)
         {
-            this.ottdServer = server;
+            ottdServer = server;
             this.ottdClient = ottdClient;
 
             Ready();
@@ -65,7 +60,7 @@ namespace OpenttdDiscord.Infrastructure.Chatting.Actors
             ReceiveAsync<AdminChatMessageEvent>(HandleChatMessage);
             Receive<AdminConsoleEvent>(HandleConsole);
             ReceiveAsync<StoreChatMessages>(StoreChatMessages);
-            Receive<RetrieveChatMessages>(RetrieveChatMessages);
+            Receive<RetrieveEventLog>(RetrieveChatMessages);
             ReceiveIgnore<IAdminEvent>();
         }
 
@@ -132,20 +127,21 @@ namespace OpenttdDiscord.Infrastructure.Chatting.Actors
                 return;
             }
 
-            if(ev.Message.Trim().StartsWith("[All]"))
+            if (ev.Message.Trim().StartsWith("[All]"))
             {
                 // Do not print here messages written by players
                 return;
             }
+
             string str = $"[{DateTime.Now:dd/MM HH:mm:ss}] {ev.Message}";
             Self.Tell(str);
         }
 
-        private void RetrieveChatMessages(RetrieveChatMessages _)
+        private void RetrieveChatMessages(RetrieveEventLog _)
         {
-            List<string> messages = new List<string>(this.chatMessages.Count);
-            messages.AddRange(this.chatMessages);
-            Sender.Tell(new RetrievedChatMessages(messages));
+            List<string> messages = new List<string>(chatMessages.Count);
+            messages.AddRange(chatMessages);
+            Sender.Tell(new RetrievedEventLog(messages));
         }
 
         protected override void PostStop()

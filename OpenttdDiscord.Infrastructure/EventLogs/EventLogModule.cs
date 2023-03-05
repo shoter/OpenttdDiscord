@@ -1,5 +1,8 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using OpenttdDiscord.Database.Chatting;
+using OpenttdDiscord.Infrastructure.Discord.Commands;
+using OpenttdDiscord.Infrastructure.EventLogs.Commands;
+using OpenttdDiscord.Infrastructure.EventLogs.Runners;
 using OpenttdDiscord.Infrastructure.Modularity;
 
 namespace OpenttdDiscord.Infrastructure.EventLogs
@@ -27,11 +30,15 @@ namespace OpenttdDiscord.Infrastructure.EventLogs
 
         public static IServiceCollection RegisterRunners(this IServiceCollection services)
         {
+            services.AddScoped<QueryEventLogRunner>();
+
             return services;
         }
 
         public static IServiceCollection RegisterCommands(this IServiceCollection services)
         {
+            services.AddSingleton<IOttdSlashCommand, QueryEventLogCommand>();
+
             return services;
         }
     }

@@ -84,6 +84,7 @@ namespace OpenttdDiscord.Infrastructure.Discord.Actors
         {
             base.PostStop();
             parent.Tell(new UnregisterFromChatChannel(self));
+            discord.MessageReceived -= Discord_MessageReceived;
             logger.LogInformation($"Removing Discord Actor for {channelId}");
         }
     }

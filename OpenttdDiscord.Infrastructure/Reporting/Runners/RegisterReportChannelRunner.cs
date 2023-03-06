@@ -1,6 +1,5 @@
 ﻿using Discord.WebSocket;
 using LanguageExt;
-using Microsoft.EntityFrameworkCore.Metadata;
 using OpenttdDiscord.Base.Basics;
 using OpenttdDiscord.Base.Ext;
 using OpenttdDiscord.Domain.Reporting;

@@ -1,7 +1,10 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using OpenttdDiscord.Database.Reporting;
 using OpenttdDiscord.Domain.Reporting.UseCases;
+using OpenttdDiscord.Infrastructure.Discord.Commands;
 using OpenttdDiscord.Infrastructure.Modularity;
+using OpenttdDiscord.Infrastructure.Reporting.Commands;
+using OpenttdDiscord.Infrastructure.Reporting.Runners;
 using OpenttdDiscord.Infrastructure.Reporting.UseCases;
 
 namespace OpenttdDiscord.Infrastructure.Reporting
@@ -31,11 +34,15 @@ namespace OpenttdDiscord.Infrastructure.Reporting
 
         public static IServiceCollection RegisterRunners(this IServiceCollection services)
         {
+            services.AddScoped<RegisterReportChannelRunner>();
+
             return services;
         }
 
         public static IServiceCollection RegisterCommands(this IServiceCollection services)
         {
+            services.AddSingleton<IOttdSlashCommand, RegisterReportChannelCommand>();
+
             return services;
         }
     }

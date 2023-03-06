@@ -29,6 +29,7 @@ namespace OpenttdDiscord.Infrastructure.Reporting
         {
             services.AddScoped<IRegisterReportChannelUseCase, RegisterReportChannelUseCase>();
             services.AddScoped<IListReportChannelsUseCase, ListReportChannelsUseCase>();
+            services.AddScoped<IUnregisterReportChannelUseCase, UnregisterReportChannelUseCase>();
 
             return services;
         }
@@ -36,6 +37,7 @@ namespace OpenttdDiscord.Infrastructure.Reporting
         public static IServiceCollection RegisterRunners(this IServiceCollection services)
         {
             services.AddScoped<RegisterReportChannelRunner>();
+            services.AddScoped<UnregisterReportChannelRunner>();
 
             return services;
         }
@@ -43,6 +45,7 @@ namespace OpenttdDiscord.Infrastructure.Reporting
         public static IServiceCollection RegisterCommands(this IServiceCollection services)
         {
             services.AddSingleton<IOttdSlashCommand, RegisterReportChannelCommand>();
+            services.AddSingleton<IOttdSlashCommand, UnregisterReportChannelCommand>();
 
             return services;
         }

@@ -51,6 +51,7 @@ namespace OpenttdDiscord.Infrastructure.Guilds.Actors
             ReceiveRedirectMsg<UnregisterRconChannel>(msg => msg.ServerId);
             ReceiveRedirectMsg<RetrieveEventLog>(msg => msg.ServerId);
             ReceiveRedirectMsg<RegisterReportChannel>(msg => msg.ReportChannel.ServerId);
+            ReceiveRedirectMsg<UnregisterReportChannel>(msg => msg.ServerId);
         }
 
         public static Props Create(IServiceProvider sp, ulong guildId)

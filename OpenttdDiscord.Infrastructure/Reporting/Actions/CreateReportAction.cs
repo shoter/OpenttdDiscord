@@ -4,9 +4,12 @@ using Discord.WebSocket;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using OpenTTDAdminPort;
+using OpenTTDAdminPort.Events;
+using OpenTTDAdminPort.Messages;
 using OpenttdDiscord.Domain.Servers;
 using OpenttdDiscord.Infrastructure.EventLogs.Messages;
 using OpenttdDiscord.Infrastructure.Ottd.Actions;
+using OpenttdDiscord.Infrastructure.Ottd.Messages;
 using OpenttdDiscord.Infrastructure.Reporting.Messages;
 
 namespace OpenttdDiscord.Infrastructure.Reporting.Actions
@@ -18,6 +21,13 @@ namespace OpenttdDiscord.Infrastructure.Reporting.Actions
             : base(serviceProvider, server, client)
         {
             this.discord = serviceProvider.GetRequiredService<DiscordSocketClient>();
+            parent.Tell(new SubscribeToAdminEvents(Self));
+        }
+
+        protected override void Ready()
+        {
+            base.Ready();
+            ReceiveIgnore<IAdminEvent>();
         }
 
         public static Props Create(IServiceProvider serviceProvider, OttdServer server, IAdminPortClient client)
@@ -73,6 +83,12 @@ namespace OpenttdDiscord.Infrastructure.Reporting.Actions
         private void WriteSectionEnd(StreamWriter sw)
         {
             sw.WriteLine("=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=");
+        }
+
+        protected override void PostStop()
+        {
+            base.PostStop();
+            parent.Tell(new UnsubscribeFromAdminEvents(Self));
         }
     }
 }

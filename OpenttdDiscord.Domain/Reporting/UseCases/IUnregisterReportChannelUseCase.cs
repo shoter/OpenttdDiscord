@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using OpenttdDiscord.Domain.Security;
 
-namespace OpenttdDiscord.Domain.Reporting.UseCases
+namespace OpenttdDiscord.Domain.Reporting.UseCases;
+
+public interface IUnregisterReportChannelUseCase
 {
-    internal interface IUnregisterReportChannelUseCase
-    {
-    }
+    EitherAsyncUnit Execute(User user, Guid serverId, ulong guildId, ulong channelId);
 }

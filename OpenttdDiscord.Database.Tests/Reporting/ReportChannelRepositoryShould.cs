@@ -24,7 +24,7 @@ namespace OpenttdDiscord.Database.Tests.Reporting
         {
             var repo = await CreateRpeository();
 
-            var chatChannels = await repo.GetReportChannel(Guid.NewGuid());
+            var chatChannels = await repo.GetReportChannelsForServer(Guid.NewGuid());
             chatChannels.ThrowIfError();
             Assert.Empty(chatChannels.Right());
         }
@@ -41,8 +41,8 @@ namespace OpenttdDiscord.Database.Tests.Reporting
 
             var chatChannels = await
                 (from _1 in repo.Insert(chatChannel)
-                 from cc in repo.GetReportChannel(server.Id)
-                 select cc);
+                 from rc in repo.GetReportChannelsForServer(server.Id)
+                 select rc);
 
             chatChannels.ThrowIfError();
             Assert.Single(chatChannels.Right());
@@ -63,8 +63,8 @@ namespace OpenttdDiscord.Database.Tests.Reporting
             var chatChannels = await
                 (from _1 in repo.Insert(chatChannel)
                  from _2 in repo.Delete(server.Id, chatChannel.ChannelId)
-                 from cc in repo.GetReportChannel(server.Id)
-                 select cc);
+                 from rc in repo.GetReportChannelsForServer(server.Id)
+                 select rc);
 
             chatChannels.ThrowIfError();
             Assert.Empty(chatChannels.Right());
@@ -83,8 +83,8 @@ namespace OpenttdDiscord.Database.Tests.Reporting
             var chatChannels = await
                 (from _1 in repo.Insert(chatChannel)
                  from _2 in repo.Insert(chatChannel)
-                 from cc in repo.GetReportChannel(server.Id)
-                 select cc);
+                 from rc in repo.GetReportChannelsForServer(server.Id)
+                 select rc);
 
             Assert.True(chatChannels.IsLeft);
         }

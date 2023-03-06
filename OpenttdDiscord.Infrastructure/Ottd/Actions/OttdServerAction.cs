@@ -1,8 +1,14 @@
 ﻿using OpenTTDAdminPort;
 using OpenttdDiscord.Domain.Servers;
+using OpenttdDiscord.Infrastructure.Ottd.Actors;
 
-namespace OpenttdDiscord.Infrastructure.Ottd.Actors
+namespace OpenttdDiscord.Infrastructure.Ottd.Actions
 {
+    /// <summary>
+    /// Action is a temporary actor created as a child of <see cref="GuildServerActor"/>.
+    /// Its role is to execute single operation (aka. action) and terminate afterwards.
+    /// </summary>
+    /// <typeparam name="TCommand">Type of message that this actor is going to receive jsut after it has been created.</typeparam>
     public abstract class OttdServerAction<TCommand> : ReceiveActorBase
     {
         protected readonly IAdminPortClient client;

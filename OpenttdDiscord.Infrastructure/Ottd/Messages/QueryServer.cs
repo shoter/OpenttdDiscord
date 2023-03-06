@@ -1,7 +1,7 @@
 ﻿using Akka.Actor;
 using OpenTTDAdminPort;
 using OpenttdDiscord.Domain.Servers;
-using OpenttdDiscord.Infrastructure.Ottd.Actors;
+using OpenttdDiscord.Infrastructure.Ottd.Actions;
 
 namespace OpenttdDiscord.Infrastructure.Ottd.Messages;
 

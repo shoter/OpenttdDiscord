@@ -9,7 +9,7 @@ using OpenttdDiscord.Domain.Servers;
 using OpenttdDiscord.Infrastructure.Ottd.Messages;
 using OpenttdDiscord.Infrastructure.Statuses;
 
-namespace OpenttdDiscord.Infrastructure.Ottd.Actors
+namespace OpenttdDiscord.Infrastructure.Ottd.Actions
 {
     internal class OttdQueryServerAction : OttdServerAction<QueryServer>
     {
@@ -28,7 +28,7 @@ namespace OpenttdDiscord.Infrastructure.Ottd.Actors
 
         protected override async Task HandleCommand(QueryServer command)
         {
-            this.logger.LogInformation($"Received command to query status of {server.Name} on {command.ChannelId}");
+            logger.LogInformation($"Received command to query status of {server.Name} on {command.ChannelId}");
             ServerStatus serverStatus = await client.QueryServerStatus();
             AdminServerInfo info = serverStatus.AdminServerInfo;
 
@@ -39,11 +39,6 @@ namespace OpenttdDiscord.Infrastructure.Ottd.Actors
             {
                 await msgChannel.SendMessageAsync(embed: embed);
             }
-        }
-
-        protected override void PostStop()
-        {
-            base.PostStop();
         }
     }
 }

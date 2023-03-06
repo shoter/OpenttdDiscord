@@ -58,6 +58,7 @@ namespace OpenttdDiscord.Infrastructure.Ottd.Actors
         {
             var rconActor = Context.ActorOf(RconChannelActor.Create(SP, channel, server, client), $"rcon-{channel.ChannelId}");
             rconChannels.Add(channel.ChannelId, rconActor);
+            logger.LogInformation($"Created rcon actor for {server.Name} - {channel.ChannelId}");
         }
     }
 }

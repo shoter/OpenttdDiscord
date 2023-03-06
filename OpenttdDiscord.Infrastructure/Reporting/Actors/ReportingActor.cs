@@ -16,11 +16,11 @@ namespace OpenttdDiscord.Infrastructure.Reporting.Actors
     /// </summary>
     internal class ReportingActor : ReceiveActorBase
     {
-        private readonly ReportChannel reportChannel1;
+        private readonly ReportChannel reportChannel;
         public ReportingActor(IServiceProvider serviceProvider, ReportChannel reportChannel)
             : base(serviceProvider)
         {
-            this.reportChannel1 = reportChannel;
+            this.reportChannel = reportChannel;
 
             Ready();
             Self.Tell(new InitReportActor());
@@ -55,10 +55,9 @@ namespace OpenttdDiscord.Infrastructure.Reporting.Actors
                 return;
             }
 
-            string reportmessage = msg.Message.Split("!report").Last().Trim();
-            logger.LogInformation($"Received report from {msg.Player.Name}: {reportmessage}");
-
-            // TODO: Send action message to the parent
+            string reportMessage = msg.Message.Split("!report").Last().Trim();
+            var action = new CreateReport(reportChannel, msg.Player, reportMessage);
+            parent.Tell(action);
         }
 
         private void InitReportActor(InitReportActor _)

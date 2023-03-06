@@ -28,6 +28,7 @@ namespace OpenttdDiscord.Infrastructure.Reporting
         public static IServiceCollection RegisterUseCases(this IServiceCollection services)
         {
             services.AddScoped<IRegisterReportChannelUseCase, RegisterReportChannelUseCase>();
+            services.AddScoped<IListReportChannelsUseCase, ListReportChannelsUseCase>();
 
             return services;
         }

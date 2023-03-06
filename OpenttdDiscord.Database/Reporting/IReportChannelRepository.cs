@@ -9,8 +9,10 @@ namespace OpenttdDiscord.Database.Reporting
 
         EitherAsyncUnit Delete(Guid serverId, ulong channelId);
 
-        EitherAsync<IError, List<ReportChannel>> GetReportChannel(Guid serverId);
+        EitherAsync<IError, List<ReportChannel>> GetReportChannelsForServer(Guid serverId);
 
-        EitherAsync<IError, Option<ReportChannel>> GetReportChannelsForServer(Guid serverId, ulong channelId);
+        EitherAsync<IError, Option<ReportChannel>> GetReportChannel(Guid serverId, ulong channelId);
+
+        EitherAsync<IError, List<ReportChannel>> GetReportChannelsForGuild(ulong guildId);
     }
 }

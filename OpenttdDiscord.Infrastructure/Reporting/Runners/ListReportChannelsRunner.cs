@@ -1,21 +1,15 @@
-﻿using Discord;
+﻿using System.Text;
+using Discord;
 using Discord.WebSocket;
 using LanguageExt;
 using OpenttdDiscord.Base.Basics;
 using OpenttdDiscord.Base.Ext;
-using OpenttdDiscord.Domain.Rcon.UseCases;
-using OpenttdDiscord.Domain.Rcon;
+using OpenttdDiscord.Domain.Reporting;
+using OpenttdDiscord.Domain.Reporting.UseCases;
 using OpenttdDiscord.Domain.Security;
 using OpenttdDiscord.Domain.Servers.UseCases;
 using OpenttdDiscord.Infrastructure.Discord.Responses;
 using OpenttdDiscord.Infrastructure.Discord.Runners;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using OpenttdDiscord.Domain.Reporting.UseCases;
-using OpenttdDiscord.Domain.Reporting;
 
 namespace OpenttdDiscord.Infrastructure.Reporting.Runners
 {

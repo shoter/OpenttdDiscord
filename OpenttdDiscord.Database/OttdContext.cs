@@ -21,6 +21,8 @@ namespace OpenttdDiscord.Database
         public DbSet<ReportChannelEntity> ReportChannels { get; set; } = default!;
 
         public OttdContext(DbContextOptions<OttdContext> options)
+            : base(options)
+        {
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

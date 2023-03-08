@@ -83,6 +83,7 @@ namespace OpenttdDiscord.Infrastructure.Reporting.Actions
         private void WriteSectionEnd(StreamWriter sw)
         {
             sw.WriteLine("=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=");
+            sw.WriteLine();
         }
 
         protected override void PostStop()

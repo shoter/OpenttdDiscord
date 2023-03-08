@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using OpenttdDiscord.Database.Chatting;
 using OpenttdDiscord.Database.Ottd.Servers;
 using OpenttdDiscord.Database.Rcon;
+using OpenttdDiscord.Database.Reporting;
 using OpenttdDiscord.Database.Statuses;
 
 namespace OpenttdDiscord.Database
@@ -17,6 +18,8 @@ namespace OpenttdDiscord.Database
 
         public DbSet<RconChannelEntity> RconChannels { get; set; } = default!;
 
+        public DbSet<ReportChannelEntity> ReportChannels { get; set; } = default!;
+
         public OttdContext(DbContextOptions<OttdContext> options)
             : base(options)
         {
@@ -30,6 +33,7 @@ namespace OpenttdDiscord.Database
             StatusMonitorEntity.OnModelCreating(modelBuilder);
             ChatChannelEntity.OnModelCreating(modelBuilder);
             RconChannelEntity.OnModelCreating(modelBuilder);
+            ReportChannelEntity.OnModelCreating(modelBuilder);
         }
     }
 }

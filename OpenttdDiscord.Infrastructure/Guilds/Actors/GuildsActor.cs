@@ -10,6 +10,7 @@ using OpenttdDiscord.Infrastructure.EventLogs.Messages;
 using OpenttdDiscord.Infrastructure.Guilds.Messages;
 using OpenttdDiscord.Infrastructure.Ottd.Messages;
 using OpenttdDiscord.Infrastructure.Rcon.Messages;
+using OpenttdDiscord.Infrastructure.Reporting.Messages;
 using OpenttdDiscord.Infrastructure.Servers.Messages;
 using OpenttdDiscord.Infrastructure.Statuses.Messages;
 
@@ -47,6 +48,8 @@ namespace OpenttdDiscord.Infrastructure.Guilds.Actors
             ReceiveRedirectMsg<RegisterNewRconChannel>(msg => msg.RconChannel.GuildId);
             ReceiveRedirectMsg<UnregisterRconChannel>(msg => msg.guildId);
             ReceiveRedirectMsg<RetrieveEventLog>(msg => msg.GuildId);
+            ReceiveRedirectMsg<RegisterReportChannel>(msg => msg.ReportChannel.GuildId);
+            ReceiveRedirectMsg<UnregisterReportChannel>(msg => msg.GuildId);
         }
 
         private async Task InitGuildActorMessage(InitGuildActorMessage _)

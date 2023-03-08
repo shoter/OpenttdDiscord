@@ -7,9 +7,6 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\OpenttdDiscord.Database\OpenttdDiscord.Database.csproj" />
-		<ProjectReference Include="..\OpenttdDiscord.Domain\OpenttdDiscord.Domain.csproj" />
-		<ProjectReference Include="..\OpenttdDiscord.Validation\OpenttdDiscord.Validation.csproj" />
 		<PackageReference Include="Serilog" Version="2.12.0" />
 		<PackageReference Include="Serilog.Extensions.Hosting" Version="5.0.1" />
 		<PackageReference Include="Serilog.Settings.Configuration" Version="3.4.0" />
@@ -18,6 +15,11 @@
 
 	<ItemGroup>
 	  <Folder Include="Servers\Actors\" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\OpenttdDiscord.Database\OpenttdDiscord.Database.csproj" />
+	  <ProjectReference Include="..\OpenttdDiscord.Validation\OpenttdDiscord.Validation.csproj" />
 	</ItemGroup>
 
 </Project>

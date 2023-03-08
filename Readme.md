@@ -179,6 +179,7 @@ some additional information and it will be uploaded as a file on discord channel
 
 ### Actors hierarchy
 
+![Actors hierarchy](./docs/akka.drawio.png)
 
 ### Database diagram
 

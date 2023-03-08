@@ -60,9 +60,11 @@ namespace OpenttdDiscord.Infrastructure.Ottd.Actors
             logging => logging.AddSerilog());
 
             RconConstructor();
+            ReportConstructor();
 
             Ready();
             RconReady();
+            ReportReady();
             Self.Tell(new InitGuildServerActorMessage());
         }
 
@@ -76,7 +78,7 @@ namespace OpenttdDiscord.Infrastructure.Ottd.Actors
             Receive<RegisterChatChannel>(RegisterChatChannel);
             ReceiveAsync<UnregisterChatChannel>(UnregisterChatChannel);
 
-            Receive<KillDanglingAction>(msg => msg.commandActor.GracefulStop(TimeSpan.FromSeconds(1)));
+            Receive<KillDanglingActor>(msg => msg.commandActor.GracefulStop(TimeSpan.FromSeconds(1)));
             Receive<IAdminEvent>(ev => adminEventSubscribers.TellMany(ev));
             Receive<SubscribeToAdminEvents>(m => adminEventSubscribers.Add(m.Subscriber));
             Receive<UnsubscribeFromAdminEvents>(m => adminEventSubscribers.Remove(m.subscriber));
@@ -121,6 +123,7 @@ namespace OpenttdDiscord.Infrastructure.Ottd.Actors
             client.SetAdminEventHandler(ev => self.Tell(ev));
 
             await RconInit();
+            await ReportInit();
 
             chatStorageActor = Some(Context.ActorOf(EventStorageActor.Create(SP, server, client)));
         }
@@ -129,7 +132,7 @@ namespace OpenttdDiscord.Infrastructure.Ottd.Actors
         {
             Props props = cmd.CreateCommandActorProps(SP, server, client);
             var commandActor = Context.ActorOf(props);
-            Timers.StartSingleTimer(commandActor, new KillDanglingAction(commandActor), cmd.TimeOut);
+            Timers.StartSingleTimer(commandActor, new KillDanglingActor(commandActor), cmd.TimeOut);
             commandActor.Tell(cmd);
         }
 

@@ -90,22 +90,6 @@ namespace OpenttdDiscord.Database.Migrations
                     b.ToTable("RconChannels");
                 });
 
-            modelBuilder.Entity("OpenttdDiscord.Database.Reporting.ReportChannelEntity", b =>
-                {
-                    b.Property<Guid>("ServerId")
-                        .HasColumnType("uuid");
-
-                    b.Property<decimal>("ChannelId")
-                        .HasColumnType("numeric(20,0)");
-
-                    b.Property<decimal>("GuildId")
-                        .HasColumnType("numeric(20,0)");
-
-                    b.HasKey("ServerId", "ChannelId");
-
-                    b.ToTable("ReportChannels");
-                });
-
             modelBuilder.Entity("OpenttdDiscord.Database.Statuses.StatusMonitorEntity", b =>
                 {
                     b.Property<Guid>("ServerId")

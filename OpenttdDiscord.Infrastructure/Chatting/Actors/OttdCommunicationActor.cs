@@ -12,6 +12,7 @@ using OpenTTDAdminPort.Events;
 using OpenTTDAdminPort.Game;
 using OpenTTDAdminPort.Messages;
 using OpenttdDiscord.Base.Ext;
+using OpenttdDiscord.Domain.Chatting.Translating;
 using OpenttdDiscord.Domain.Servers;
 using OpenttdDiscord.Infrastructure.Akkas;
 using OpenttdDiscord.Infrastructure.Chatting.Messages;

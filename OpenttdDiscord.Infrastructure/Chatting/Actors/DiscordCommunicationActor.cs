@@ -7,6 +7,7 @@ using OpenTTDAdminPort;
 using OpenTTDAdminPort.Game;
 using OpenTTDAdminPort.Messages;
 using OpenttdDiscord.Base.Ext;
+using OpenttdDiscord.Domain.Chatting.Translating;
 using OpenttdDiscord.Domain.Servers;
 using OpenttdDiscord.Infrastructure.Akkas;
 using OpenttdDiscord.Infrastructure.Chatting.Messages;
@@ -21,6 +22,7 @@ namespace OpenttdDiscord.Infrastructure.Chatting.Actors
         private readonly OttdServer ottdServer;
         private readonly AdminPortClient client;
         private readonly IAkkaService akkaService;
+        private readonly IChatTranslator chatTranslator;
         private Option<IActorRef> chatChannel = Option<IActorRef>.None;
 
         public DiscordCommunicationActor(
@@ -34,6 +36,7 @@ namespace OpenttdDiscord.Infrastructure.Chatting.Actors
             this.channelId = channelId;
             this.client = client;
             this.akkaService = SP.GetRequiredService<IAkkaService>();
+            this.chatTranslator = SP.GetRequiredService<IChatTranslator>();
 
             Ready();
             Self.Tell(new InitDiscordChannel());
@@ -65,11 +68,16 @@ namespace OpenttdDiscord.Infrastructure.Chatting.Actors
 
         private void HandleDiscordMessage(HandleDiscordMessage handle)
         {
+            string translated = chatTranslator
+                .FromDiscordToOttd(handle.Message)
+                .ThrowIfError()
+                .Right();
+
             var msg = new AdminChatMessage(
                 NetworkAction.NETWORK_ACTION_CHAT,
                 ChatDestination.DESTTYPE_BROADCAST,
                 default,
-                $"[Discord] {handle.Username}: {handle.Message}");
+                $"[Discord] {handle.Username}: {translated}");
 
             client.SendMessage(msg);
             parent.Tell(handle);

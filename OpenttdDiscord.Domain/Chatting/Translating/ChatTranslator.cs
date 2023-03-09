@@ -19,6 +19,7 @@ namespace OpenttdDiscord.Domain.Chatting.Translating
 
             return
                 from _1 in emojiTranslator.FromDiscordToOttd(sb)
+                from _2 in ReplaceNewLines(sb)
                 select sb.ToString();
         }
 
@@ -29,6 +30,12 @@ namespace OpenttdDiscord.Domain.Chatting.Translating
             return
                 from _1 in emojiTranslator.FromOttdToDiscord(sb)
                 select sb.ToString();
+        }
+
+        private EitherUnit ReplaceNewLines(StringBuilder sb)
+        {
+            sb.Replace('\n', '.');
+            return Unit.Default;
         }
     }
 }

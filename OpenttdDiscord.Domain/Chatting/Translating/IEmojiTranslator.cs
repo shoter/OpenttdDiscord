@@ -2,7 +2,7 @@
 
 namespace OpenttdDiscord.Domain.Chatting.Translating
 {
-    internal interface IEmojiTranslator
+    public interface IEmojiTranslator
     {
         EitherUnit FromDiscordToOttd(StringBuilder input);
 

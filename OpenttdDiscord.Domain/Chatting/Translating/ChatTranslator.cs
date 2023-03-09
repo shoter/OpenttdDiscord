@@ -1,21 +1,34 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Text;
+using LanguageExt;
+using OpenttdDiscord.Base.Ext;
 
 namespace OpenttdDiscord.Domain.Chatting.Translating
 {
     public class ChatTranslator : IChatTranslator
     {
-        public string FromDiscordToOttd(string input)
+        private readonly IEmojiTranslator emojiTranslator;
+
+        public ChatTranslator(IEmojiTranslator emojiTranslator)
         {
-            throw new NotImplementedException();
+            this.emojiTranslator = emojiTranslator;
         }
 
-        public string FromOttdToDiscord(string input)
+        public Either<IError, string> FromDiscordToOttd(string input)
         {
-            throw new NotImplementedException();
+            StringBuilder sb = new(input);
+
+            return
+                from _1 in emojiTranslator.FromDiscordToOttd(sb)
+                select sb.ToString();
+        }
+
+        public Either<IError, string> FromOttdToDiscord(string input)
+        {
+            StringBuilder sb = new(input);
+
+            return
+                from _1 in emojiTranslator.FromOttdToDiscord(sb)
+                select sb.ToString();
         }
     }
 }

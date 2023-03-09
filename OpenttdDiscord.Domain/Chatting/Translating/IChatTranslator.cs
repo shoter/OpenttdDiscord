@@ -1,9 +1,12 @@
-﻿namespace OpenttdDiscord.Domain.Chatting.Translating
+﻿using LanguageExt;
+using OpenttdDiscord.Base.Ext;
+
+namespace OpenttdDiscord.Domain.Chatting.Translating
 {
     public interface IChatTranslator
     {
-        string FromDiscordToOttd(string input);
+        Either<IError, string> FromDiscordToOttd(string input);
 
-        string FromOttdToDiscord(string input);
+        Either<IError, string> FromOttdToDiscord(string input);
     }
 }

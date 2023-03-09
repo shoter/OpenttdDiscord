@@ -5,6 +5,8 @@ using Discord.WebSocket;
 using LanguageExt;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using OpenttdDiscord.Base.Ext;
+using OpenttdDiscord.Domain.Chatting.Translating;
 using OpenttdDiscord.Domain.Statuses;
 using OpenttdDiscord.Infrastructure.Chatting.Messages;
 using OpenttdDiscord.Infrastructure.Discord.Messages;
@@ -15,6 +17,7 @@ namespace OpenttdDiscord.Infrastructure.Discord.Actors
     {
         private readonly DiscordSocketClient discord;
         private readonly ulong channelId;
+        private readonly IChatTranslator chatTranslator;
         private Option<IMessageChannel> messageChannel = new();
 
         public DiscordChannelActor(
@@ -22,6 +25,7 @@ namespace OpenttdDiscord.Infrastructure.Discord.Actors
             : base(serviceProvider)
         {
             this.discord = serviceProvider.GetRequiredService<DiscordSocketClient>();
+            this.chatTranslator = serviceProvider.GetRequiredService<IChatTranslator>();
             this.channelId = channelId;
 
             Ready();
@@ -73,7 +77,10 @@ namespace OpenttdDiscord.Infrastructure.Discord.Actors
 
         private async Task HandleOttdMessage(HandleOttdMessage msg)
         {
-            string message = $"[{msg.Server.Name}] {msg.Username}: {msg.Message}";
+            string translated = chatTranslator.FromOttdToDiscord(msg.Message)
+                .ThrowIfError()
+                .Right();
+            string message = $"[{msg.Server.Name}] {msg.Username}: {translated}";
             await messageChannel.IfSomeAsync(async channel =>
             {
                 await channel.SendMessageAsync(message);

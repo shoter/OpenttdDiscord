@@ -6,7 +6,7 @@ namespace OpenttdDiscord.Domain.Chatting.Translating
 {
     public class EmojiTranslator : IEmojiTranslator
     {
-        public Dictionary<string, string> EmojisToAscii = new Dictionary<string, string>()
+        public readonly Dictionary<string, string> EmojisToAscii = new Dictionary<string, string>()
         {
             { "😠", ">:(" },
             { "😛", ":P" },
@@ -21,7 +21,7 @@ namespace OpenttdDiscord.Domain.Chatting.Translating
             { "😡", ":@" },
         };
 
-        private UnicodeCategory[] categoriesToRemove = new UnicodeCategory[]
+        private readonly UnicodeCategory[] categoriesToRemove = new UnicodeCategory[]
         {
             UnicodeCategory.OtherLetter,
             UnicodeCategory.OtherSymbol,

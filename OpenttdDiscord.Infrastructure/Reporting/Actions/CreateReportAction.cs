@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using OpenTTDAdminPort;
 using OpenTTDAdminPort.Events;
+using OpenTTDAdminPort.Game;
 using OpenTTDAdminPort.Messages;
 using OpenttdDiscord.Domain.Servers;
 using OpenttdDiscord.Infrastructure.EventLogs.Messages;
@@ -49,6 +50,9 @@ namespace OpenttdDiscord.Infrastructure.Reporting.Actions
             await channel.SendFileAsync(ms,
                 $"Report-{server.Name}-{command.ReportingPlayer.Name}-{DateTime.Now:yyyy_MM_dd_HH_mm}.report.txt",
                 text: $"{command.ReportingPlayer.Name}({command.ReportingPlayer.Hostname}) have reported an issue on {server.Name}: \n{Format.BlockQuote(command.ReportMessage)}");
+
+            string message = $"Report has been sent";
+            client.SendMessage(new AdminChatMessage(NetworkAction.NETWORK_ACTION_CHAT, ChatDestination.DESTTYPE_BROADCAST, default, message));
         }
 
         private async Task WriteEventSection(StreamWriter sw)

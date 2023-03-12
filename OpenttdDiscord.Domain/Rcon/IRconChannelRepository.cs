@@ -1,10 +1,9 @@
 ﻿using LanguageExt;
-using OpenttdDiscord.Domain.DiscordRelated;
-using OpenttdDiscord.Domain.Rcon;
+using OpenttdDiscord.Base.Ext;
 
-namespace OpenttdDiscord.Database.Rcon
+namespace OpenttdDiscord.Domain.Rcon
 {
-    internal interface IRconChannelRepository
+    public interface IRconChannelRepository
     {
         EitherAsyncUnit Insert(RconChannel rconChannel);
 

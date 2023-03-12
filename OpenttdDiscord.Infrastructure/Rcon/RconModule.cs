@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using OpenttdDiscord.Database.Chatting;
 using OpenttdDiscord.Database.Rcon;
+using OpenttdDiscord.Domain.Rcon;
 using OpenttdDiscord.Domain.Rcon.UseCases;
 using OpenttdDiscord.Infrastructure.Discord.Commands;
 using OpenttdDiscord.Infrastructure.Modularity;

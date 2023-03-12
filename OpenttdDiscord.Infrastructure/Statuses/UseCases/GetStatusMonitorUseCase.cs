@@ -1,13 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using LanguageExt;
+﻿using LanguageExt;
 using OpenttdDiscord.Base.Ext;
-using OpenttdDiscord.Database.Servers;
-using OpenttdDiscord.Database.Statuses;
 using OpenttdDiscord.Domain.Security;
+using OpenttdDiscord.Domain.Servers;
 using OpenttdDiscord.Domain.Statuses;
 using OpenttdDiscord.Domain.Statuses.UseCases;
 

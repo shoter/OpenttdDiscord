@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using OpenttdDiscord.Database.Reporting;
+using OpenttdDiscord.Domain.Reporting;
 using OpenttdDiscord.Domain.Reporting.UseCases;
 using OpenttdDiscord.Infrastructure.Discord.Commands;
 using OpenttdDiscord.Infrastructure.Modularity;

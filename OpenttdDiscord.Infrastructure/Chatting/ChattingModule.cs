@@ -1,6 +1,7 @@
 ﻿using System.Net.Security;
 using Microsoft.Extensions.DependencyInjection;
 using OpenttdDiscord.Database.Chatting;
+using OpenttdDiscord.Domain.Chatting;
 using OpenttdDiscord.Domain.Chatting.Translating;
 using OpenttdDiscord.Domain.Chatting.UseCases;
 using OpenttdDiscord.Domain.EventLogs.UseCases;

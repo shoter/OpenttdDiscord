@@ -1,5 +1,6 @@
 ﻿using OpenttdDiscord.Database.Chatting;
 using OpenttdDiscord.Database.Statuses;
+using OpenttdDiscord.Domain.Chatting;
 using OpenttdDiscord.Domain.Chatting.UseCases;
 using OpenttdDiscord.Domain.Security;
 using OpenttdDiscord.Infrastructure.Akkas;

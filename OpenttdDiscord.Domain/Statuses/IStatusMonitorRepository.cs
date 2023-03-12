@@ -1,9 +1,9 @@
 ﻿using LanguageExt;
-using OpenttdDiscord.Domain.Statuses;
+using OpenttdDiscord.Base.Ext;
 
-namespace OpenttdDiscord.Database.Statuses
+namespace OpenttdDiscord.Domain.Statuses
 {
-    internal interface IStatusMonitorRepository
+    public interface IStatusMonitorRepository
     {
         EitherAsync<IError, StatusMonitor> Insert(StatusMonitor entity);
 

@@ -1,8 +1,6 @@
-﻿using Akka.Actor;
-using LanguageExt;
-using OpenttdDiscord.Base.Ext;
-using OpenttdDiscord.Database.Statuses;
+﻿using LanguageExt;
 using OpenttdDiscord.Domain.Security;
+using OpenttdDiscord.Domain.Statuses;
 using OpenttdDiscord.Domain.Statuses.UseCases;
 using OpenttdDiscord.Infrastructure.Akkas;
 using OpenttdDiscord.Infrastructure.Statuses.Messages;

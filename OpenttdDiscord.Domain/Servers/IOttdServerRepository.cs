@@ -1,8 +1,8 @@
 ﻿using LanguageExt;
-using LanguageExt.Common;
+using OpenttdDiscord.Base.Ext;
 using OpenttdDiscord.Domain.Servers;
 
-namespace OpenttdDiscord.Database.Servers
+namespace OpenttdDiscord.Domain.Servers
 {
     public interface IOttdServerRepository
     {

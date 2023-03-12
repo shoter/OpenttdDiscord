@@ -1,7 +1,7 @@
 ﻿using LanguageExt;
-using OpenttdDiscord.Domain.Chatting;
+using OpenttdDiscord.Base.Ext;
 
-namespace OpenttdDiscord.Database.Chatting
+namespace OpenttdDiscord.Domain.Chatting
 {
     public interface IChatChannelRepository
     {

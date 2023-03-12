@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using OpenttdDiscord.Database.Chatting;
+using OpenttdDiscord.Domain.Chatting;
 using OpenttdDiscord.Domain.EventLogs.UseCases;
 using OpenttdDiscord.Infrastructure.Discord.Commands;
 using OpenttdDiscord.Infrastructure.EventLogs.Commands;

@@ -2,11 +2,9 @@
 using LanguageExt;
 using OpenttdDiscord.Base.Basics;
 using OpenttdDiscord.Base.Ext;
-using OpenttdDiscord.Database.Servers;
 using OpenttdDiscord.Domain.Security;
+using OpenttdDiscord.Domain.Servers;
 using OpenttdDiscord.Domain.Statuses.UseCases;
-using OpenttdDiscord.Infrastructure.Discord;
-using OpenttdDiscord.Infrastructure.Discord.Commands;
 using OpenttdDiscord.Infrastructure.Discord.Responses;
 using OpenttdDiscord.Infrastructure.Discord.Runners;
 

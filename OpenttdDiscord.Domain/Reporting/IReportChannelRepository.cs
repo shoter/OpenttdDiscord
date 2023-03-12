@@ -1,9 +1,9 @@
 ﻿using LanguageExt;
-using OpenttdDiscord.Domain.Reporting;
+using OpenttdDiscord.Base.Ext;
 
-namespace OpenttdDiscord.Database.Reporting
+namespace OpenttdDiscord.Domain.Reporting
 {
-    internal interface IReportChannelRepository
+    public interface IReportChannelRepository
     {
         EitherAsyncUnit Insert(ReportChannel chatChannel);
 

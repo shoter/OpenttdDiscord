@@ -30,7 +30,7 @@ jobs:
         uses: codecov/codecov-action@v3
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-          file: ./coverage.xml
+          root_dir: /home/runner/work/OpenttdDiscord/OpenttdDiscord
           flags: unittests
           name: ${{ github.repository }}
           fail_ci_if_error: true

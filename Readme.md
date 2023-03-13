@@ -2,6 +2,7 @@
 
 ![GitHub](https://img.shields.io/github/license/shoter/OpenttdDiscord?style=plastic)
 ![Test badge](https://github.com/shoter/OpenttdDiscord/actions/workflows/test.yml/badge.svg)
+[![codecov](https://codecov.io/gh/shoter/OpenttdDiscord/branch/master/graph/badge.svg?token=1EC4AKIMD3)](https://codecov.io/gh/shoter/OpenttdDiscord)
 
 Provides ability to integrate Discord with your OpenTTD servers.
 
@@ -184,3 +185,7 @@ some additional information and it will be uploaded as a file on discord channel
 ### Database diagram
 
 ![Database diagram](./docs/database.drawio.png)
+
+## Test coverage
+
+![Test coverage graph](https://codecov.io/gh/shoter/OpenttdDiscord/branch/master/graphs/tree.svg?token=1EC4AKIMD3)

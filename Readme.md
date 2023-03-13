@@ -188,4 +188,4 @@ some additional information and it will be uploaded as a file on discord channel
 
 ## Test coverage
 
-![Test coverage graph](https://codecov.io/gh/shoter/OpenttdDiscord/branch/master/graphs/tree.svg?token=1EC4AKIMD3)
+[![Test coverage graph](https://codecov.io/gh/shoter/OpenttdDiscord/branch/master/graphs/tree.svg?token=1EC4AKIMD3)](https://app.codecov.io/gh/shoter/OpenttdDiscord)

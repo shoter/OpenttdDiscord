@@ -1,4 +1,5 @@
-﻿using System.Reflection.Metadata;
+﻿using System.Net;
+using System.Reflection.Metadata;
 using System.Runtime.InteropServices;
 using System.Text;
 using Akka.Actor;
@@ -60,6 +61,8 @@ namespace OpenttdDiscord.Infrastructure.EventLogs.Actors
         {
             Receive<string>(HandleChatMessage);
             ReceiveAsync<AdminChatMessageEvent>(HandleChatMessage);
+            Receive<AdminClientJoinEvent>(HandleClientJoin);
+            Receive<AdminClientDisconnectEvent>(HandleClientDisconnect);
             ReceiveAsync<StoreChatMessages>(StoreChatMessages);
             Receive<RetrieveEventLog>(RetrieveChatMessages);
             Receive<HandleDiscordMessage>(HandleDiscordMessage);
@@ -119,8 +122,25 @@ namespace OpenttdDiscord.Infrastructure.EventLogs.Actors
                 playerIp = info.Players[clientId].Hostname;
             }
 
-            string str = $"[{DateTime.Now:dd/MM HH:mm:ss}] {msg.Player.Name}({playerIp}): {msg.Message}";
+            string str = CreateMessage($"{msg.Player.Name}({playerIp}): {msg.Message}");
             self.Tell(str);
+        }
+
+        private static string CreateMessage(string message)
+        {
+            return $"[{DateTime.Now:dd/MM HH:mm:ss}] {message}";
+        }
+
+        private void HandleClientJoin(AdminClientJoinEvent ev)
+        {
+            string msg = CreateMessage($"{ev.Player.Name}({ev.Player.Hostname}) joins the game");
+            self.Tell(msg);
+        }
+
+        private void HandleClientDisconnect(AdminClientDisconnectEvent ev)
+        {
+            string msg = CreateMessage($"{ev.Player.Name}({ev.Player.Hostname}) disconnected");
+            self.Tell(msg);
         }
 
         private void HandleDiscordMessage(HandleDiscordMessage msg)

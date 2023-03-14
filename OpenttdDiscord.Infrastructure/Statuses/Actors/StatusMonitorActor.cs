@@ -42,6 +42,8 @@ namespace OpenttdDiscord.Infrastructure.Statuses.Actors
             Ready();
             Timers.StartPeriodicTimer("regenerate", new RegenerateStatusMonitor(), TimeSpan.FromMinutes(1));
             Self.Tell(new RegenerateStatusMonitor());
+
+            logger.LogDebug($"MonitorActor created for {statusMonitor.ServerId}-{statusMonitor.ChannelId}");
         }
 
         private void Ready()
@@ -59,33 +61,47 @@ namespace OpenttdDiscord.Infrastructure.Statuses.Actors
 
         private async Task RegenerateStatusMonitor(RegenerateStatusMonitor _)
         {
-            ServerStatus serverStatus = await client.QueryServerStatus();
-            AdminServerInfo info = serverStatus.AdminServerInfo;
-
-            Embed embed = EmbedBuilder.CreateServerStatusEmbed(client, serverStatus, info, ottdServer.Name);
+            Embed embed = await CreateEmbed();
             Optional<RestUserMessage> message = await GetMessage();
 
             if (!message.IsSpecified)
             {
-                var channel = (IMessageChannel)await discord.GetChannelAsync(statusMonitor.ChannelId);
-                var newMessage = await channel.SendMessageAsync(embed: embed);
-                Context.Parent.Tell(new UpdateStatusMonitor(this.statusMonitor with
-                {
-                    MessageId = newMessage.Id
-                }));
-
-                logger.LogDebug("No message detected. Created new - recreating status monitor for {0} at {1}", ottdServer.Name, statusMonitor.ChannelId);
+                await RegenerateMessage(embed);
+                return;
             }
-            else
+
+            await UpdateMessage(embed, message);
+        }
+
+        private async Task<Embed> CreateEmbed()
+        {
+            ServerStatus serverStatus = await client.QueryServerStatus();
+            AdminServerInfo info = serverStatus.AdminServerInfo;
+
+            return EmbedBuilder.CreateServerStatusEmbed(client, serverStatus, info, ottdServer.Name);
+        }
+
+        private async Task UpdateMessage(Embed embed, Optional<RestUserMessage> message)
+        {
+            await message.Value.ModifyAsync(x =>
             {
-                await message.Value.ModifyAsync(x =>
-                {
-                    x.Content = null;
-                    x.Embed = embed;
-                });
+                x.Content = null;
+                x.Embed = embed;
+            });
 
-                logger.LogDebug("Regenerated status monitor for {0} at {1}", ottdServer.Name, statusMonitor.ChannelId);
-            }
+            logger.LogDebug("Regenerated status monitor for {0} at {1}", ottdServer.Name, statusMonitor.ChannelId);
+        }
+
+        private async Task RegenerateMessage(Embed embed)
+        {
+            var channel = (IMessageChannel)await discord.GetChannelAsync(statusMonitor.ChannelId);
+            var newMessage = await channel.SendMessageAsync(embed: embed);
+            Context.Parent.Tell(new UpdateStatusMonitor(this.statusMonitor with
+            {
+                MessageId = newMessage.Id
+            }));
+
+            logger.LogDebug("No message detected. Created new - recreating status monitor for {0} at {1}", ottdServer.Name, statusMonitor.ChannelId);
         }
 
         private async Task<Optional<RestUserMessage>> GetMessage()
@@ -111,6 +127,12 @@ namespace OpenttdDiscord.Infrastructure.Statuses.Actors
             }
 
             await message.Value.DeleteAsync();
+        }
+
+        public override void AroundPreRestart(Exception cause, object message)
+        {
+            logger.LogError($"{statusMonitor.ServerId}-{statusMonitor.ChannelId} is being restarted after {message} because:\n {cause}");
+            base.AroundPreRestart(cause, message);
         }
     }
 }

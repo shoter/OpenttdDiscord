@@ -168,11 +168,11 @@ namespace OpenttdDiscord.Infrastructure.Ottd.Actors
 
         private async Task UpdateStatusMonitor(UpdateStatusMonitor usm)
         {
-            await this.RemoveStatusMonitor(new(usm.UpdatedMonitor.ServerId, usm.UpdatedMonitor.GuildId, usm.UpdatedMonitor.ChannelId));
             var self = Self;
             var monitorResult = await this.updateStatusMonitorUseCase.Execute(User.Master, usm.UpdatedMonitor);
-            monitorResult.Map(monitor =>
+            await monitorResult.MapAsync(async monitor =>
             {
+                await this.RemoveStatusMonitor(new(usm.UpdatedMonitor.ServerId, usm.UpdatedMonitor.GuildId, usm.UpdatedMonitor.ChannelId));
                 self.Tell(new RegisterStatusMonitor(monitor));
                 return Unit.Default;
             });

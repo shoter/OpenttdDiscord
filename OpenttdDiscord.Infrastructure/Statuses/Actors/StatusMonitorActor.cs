@@ -42,6 +42,8 @@ namespace OpenttdDiscord.Infrastructure.Statuses.Actors
             Ready();
             Timers.StartPeriodicTimer("regenerate", new RegenerateStatusMonitor(), TimeSpan.FromMinutes(1));
             Self.Tell(new RegenerateStatusMonitor());
+
+            logger.LogDebug($"MonitorActor created for {statusMonitor.ServerId}-{statusMonitor.ChannelId}");
         }
 
         private void Ready()
@@ -127,10 +129,10 @@ namespace OpenttdDiscord.Infrastructure.Statuses.Actors
             await message.Value.DeleteAsync();
         }
 
-        protected override void PostStop()
+        public override void AroundPreRestart(Exception cause, object message)
         {
-            base.PostStop();
-            logger.LogError($"{statusMonitor.ServerId}-{statusMonitor.ChannelId} is being stopped");
+            logger.LogError($"{statusMonitor.ServerId}-{statusMonitor.ChannelId} is being restarted after {message} because:\n {cause}");
+            base.AroundPreRestart(cause, message);
         }
     }
 }

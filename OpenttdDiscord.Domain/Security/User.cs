@@ -1,4 +1,6 @@
 ﻿using Discord.WebSocket;
+using LanguageExt;
+using OpenttdDiscord.Base.Ext;
 
 namespace OpenttdDiscord.Domain.Security;
 
@@ -24,5 +26,16 @@ public record User(string Name, UserLevel UserLevel)
         }
 
         return UserLevel.User;
+    }
+
+    public bool CheckIfHasCorrectUserLevel(UserLevel level)
+    {
+        return level switch
+        {
+            UserLevel.User => true,
+            UserLevel.Moderator => UserLevel == UserLevel.Moderator || UserLevel == UserLevel.Admin,
+            UserLevel.Admin => UserLevel == UserLevel.Admin,
+            _ => false
+        };
     }
 }

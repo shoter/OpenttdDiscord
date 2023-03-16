@@ -1,6 +1,7 @@
 ﻿using Akka.Actor;
 using LanguageExt;
 using OpenttdDiscord.Base.Ext;
+using OpenttdDiscord.Infrastructure.Ottd.Messages;
 
 namespace OpenttdDiscord.Infrastructure.Akkas
 {
@@ -30,5 +31,13 @@ namespace OpenttdDiscord.Infrastructure.Akkas
 
             return actorSystem.ActorSelection(path);
         }).ToEitherAsyncError();
+
+        public EitherAsyncUnit ExecuteServerAction(ExecuteServerAction executeAction)
+        {
+            return
+                from selection in SelectActor(MainActors.Paths.Guilds)
+                from _1 in selection.TellExt(executeAction).ToAsync()
+                select Unit.Default;
+        }
     }
 }

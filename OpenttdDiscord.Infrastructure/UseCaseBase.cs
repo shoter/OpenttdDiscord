@@ -8,17 +8,11 @@ namespace OpenttdDiscord.Infrastructure
     {
         protected EitherUnit CheckIfHasCorrectUserLevel(User user, UserLevel level)
         {
-            var hasLevel = level switch
-            {
-                UserLevel.User => true,
-                UserLevel.Moderator => user.UserLevel == UserLevel.Moderator || user.UserLevel == UserLevel.Admin,
-                UserLevel.Admin => user.UserLevel == UserLevel.Admin,
-                _ => false
-            };
+            var hasLevel = user.CheckIfHasCorrectUserLevel(level);
 
             if (!hasLevel)
             {
-                return new HumanReadableError("You do not have sufficient privileges to run this command!");
+                return new HumanReadableError("You do not have sufficient privileges to run this use case!");
             }
 
             return Unit.Default;

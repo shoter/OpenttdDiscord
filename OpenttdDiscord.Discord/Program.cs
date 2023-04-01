@@ -1,6 +1,7 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
 using System.Runtime.Loader;
+using Akka.Configuration;
 using Microsoft.Extensions.Hosting;
 using OpenttdDiscord;
 

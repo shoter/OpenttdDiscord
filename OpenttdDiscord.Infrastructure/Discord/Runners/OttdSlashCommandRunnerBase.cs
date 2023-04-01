@@ -37,5 +37,17 @@ namespace OpenttdDiscord.Infrastructure.Discord.Runners
 
             return new HumanReadableError("This command needs to be executed within channel!");
         }
+
+        protected EitherUnit CheckIfHasCorrectUserLevel(User user, UserLevel level)
+        {
+            var hasLevel = user.CheckIfHasCorrectUserLevel(level);
+
+            if (!hasLevel)
+            {
+                return new HumanReadableError("You do not have sufficient privileges to run this use case!");
+            }
+
+            return Unit.Default;
+        }
     }
 }

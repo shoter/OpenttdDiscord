@@ -12,7 +12,7 @@
     <PackageReference Include="LanguageExt.Core" Version="4.4.2" />
     <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="7.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="7.0.0" />
-	<PackageReference Include="Shoter.OpenTTD.AdminPort" Version="1.0.0-run-80" />
+	<PackageReference Include="Shoter.OpenTTD.AdminPort" Version="1.0.0-run-81" />
   </ItemGroup>
 
 </Project>

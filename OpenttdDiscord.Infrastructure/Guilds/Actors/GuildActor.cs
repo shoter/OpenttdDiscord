@@ -72,7 +72,7 @@ namespace OpenttdDiscord.Infrastructure.Guilds.Actors
             }
 
             Props props = GuildServerActor.Create(SP, s);
-            IActorRef actor = Context.ActorOf(props);
+            IActorRef actor = Context.ActorOf(props, $"server-{s.Id}");
             serverActors.Add(s.Id, actor);
             return Unit.Default;
         }

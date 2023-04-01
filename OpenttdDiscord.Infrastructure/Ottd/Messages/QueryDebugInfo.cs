@@ -1,11 +1,7 @@
 ﻿using Akka.Actor;
 using OpenTTDAdminPort;
 using OpenttdDiscord.Domain.Servers;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using OpenttdDiscord.Infrastructure.Ottd.Actions;
 
 namespace OpenttdDiscord.Infrastructure.Ottd.Messages
 {
@@ -13,7 +9,10 @@ namespace OpenttdDiscord.Infrastructure.Ottd.Messages
     {
         public override Props CreateCommandActorProps(IServiceProvider serviceProvider, OttdServer server, AdminPortClient client)
         {
-            throw new NotImplementedException();
+            return QueryDebugInfoAction.Create(
+                serviceProvider,
+                server,
+                client);
         }
     }
 }

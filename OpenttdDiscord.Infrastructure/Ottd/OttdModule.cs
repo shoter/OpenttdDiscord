@@ -23,6 +23,7 @@ namespace OpenttdDiscord.Infrastructure.Ottd
         public static IServiceCollection RegisterRunners(this IServiceCollection services)
         {
             services.AddScoped<QueryServerRunner>();
+            services.AddScoped<QueryDebugInfoRunner>();
 
             return services;
         }
@@ -30,6 +31,7 @@ namespace OpenttdDiscord.Infrastructure.Ottd
         public static IServiceCollection RegisterCommands(this IServiceCollection services)
         {
             services.AddSingleton<IOttdSlashCommand, QueryServerCommand>();
+            services.AddSingleton<IOttdSlashCommand, QueryDebugInfoCommand>();
 
             return services;
         }

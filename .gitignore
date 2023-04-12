@@ -138,3 +138,6 @@ Thumbs.db
 Desktop.ini
 .DS_Store
 
+Session.vim
+.undodir/
+

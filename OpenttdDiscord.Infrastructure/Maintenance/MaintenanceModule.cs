@@ -11,6 +11,12 @@ namespace OpenttdDiscord.Infrastructure.Maintenance
         {
             services.AddHealthChecks()
                 .AddCheck<DatabaseHealthcheck>("Db");
+            services.AddSingleton<IHealthCheckPublisher, HealthCheckPublisher>();
+            services.Configure<HealthCheckPublisherOptions>(options =>
+            {
+                options.Delay = TimeSpan.FromSeconds(5);
+                options.Period = TimeSpan.FromSeconds(20);
+            });
         }
     }
 }

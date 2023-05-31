@@ -67,7 +67,46 @@ namespace OpenttdDiscord.Infrastructure.EventLogs.Actors
             Receive<RetrieveEventLog>(RetrieveChatMessages);
             Receive<HandleDiscordMessage>(HandleDiscordMessage);
             Receive<HandleOttdMessage>(HandleOttdMessage);
+            ReceiveAsync<AdminCompanyInfoEvent>(HandleNewCompany);
+            ReceiveAsync<AdminCompanyUpdateEvent>(HandleCompanyUpdate);
+            ReceiveAsync<AdminCompanyRemovalEvent>(HandleCompanyRemoval);
             ReceiveIgnore<IAdminEvent>();
+        }
+
+        private async Task HandleCompanyRemoval(AdminCompanyRemovalEvent msg)
+        {
+            var status = await ottdClient.QueryServerStatus();
+            var players = string.Join(',',
+                                      status.Players
+                                          .Values
+                                          .Where(p => p.PlayingAs == msg.Company.Id)
+                                          .Select(p => $"{p.Name}({p.ClientId})[{p.Hostname}]"));
+            string str = CreateMessage($"Company {msg.Company.Name}({msg.Company.Id + 1}) has been removed (owners: {players})");
+            Self.Tell(str);
+        }
+
+        private async Task HandleNewCompany(AdminCompanyInfoEvent msg)
+        {
+            var status = await ottdClient.QueryServerStatus();
+            var players = string.Join(',',
+                                      status.Players
+                                          .Values
+                                          .Where(p => p.PlayingAs == msg.Company.Id)
+                                          .Select(p => $"{p.Name}({p.ClientId})[{p.Hostname}]"));
+            string str = CreateMessage($"Company {msg.Company.Name}({msg.Company.Id + 1}) has been created (owners: {players})");
+            Self.Tell(str);
+        }
+
+        private async Task HandleCompanyUpdate(AdminCompanyUpdateEvent msg)
+        {
+            var status = await ottdClient.QueryServerStatus();
+            var players = string.Join(',',
+                                      status.Players
+                                          .Values
+                                          .Where(p => p.PlayingAs == msg.Company.Id)
+                                          .Select(p => $"{p.Name}({p.ClientId})[{p.Hostname}]"));
+            string str = CreateMessage($"Company {msg.Company.Name}({msg.Company.Id + 1}) has been updated (owners: {players})");
+            Self.Tell(str);
         }
 
         private void HandleChatMessage(string msg)
@@ -101,7 +140,15 @@ namespace OpenttdDiscord.Infrastructure.EventLogs.Actors
                 sb.AppendLine(msg);
             }
 
-            await File.WriteAllTextAsync(GetChatFileName(), sb.ToString());
+            string filePath = GetChatFileName();
+            string directoryPath = Path.GetDirectoryName(filePath)!;
+            if (!Directory.Exists(directoryPath))
+            {
+                Directory.CreateDirectory(directoryPath);
+                Console.WriteLine("Directories created.");
+            }
+
+            await File.WriteAllTextAsync(filePath, sb.ToString());
 
             lastMessageStoreTime = lastMessageTime;
         }

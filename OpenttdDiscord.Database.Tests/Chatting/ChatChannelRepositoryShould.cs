@@ -22,7 +22,7 @@ namespace OpenttdDiscord.Database.Tests.Chatting
         [Fact]
         public async Task GetNoChatChannels_IfNoChatChannelsWereInserted()
         {
-            var repo = await CreateRpeository();
+            var repo = await CreateRepository();
 
             var chatChannels = await repo.GetChatChannelsForServer(Guid.NewGuid());
             chatChannels.ThrowIfError();
@@ -32,7 +32,7 @@ namespace OpenttdDiscord.Database.Tests.Chatting
         [Fact]
         public async Task InsertNewChatChannel()
         {
-            var repo = await CreateRpeository();
+            var repo = await CreateRepository();
             var server = await CreateServer();
             var chatChannel = Fix.Create<ChatChannel>() with
             {
@@ -53,7 +53,7 @@ namespace OpenttdDiscord.Database.Tests.Chatting
         [Fact]
         public async Task DeleteChatChannel()
         {
-            var repo = await CreateRpeository();
+            var repo = await CreateRepository();
             var server = await CreateServer();
             var chatChannel = Fix.Create<ChatChannel>() with
             {
@@ -73,7 +73,7 @@ namespace OpenttdDiscord.Database.Tests.Chatting
         [Fact]
         public async Task Fail_WhenInsertingSameChatChannelTwice_ForSameServer()
         {
-            var repo = await CreateRpeository();
+            var repo = await CreateRepository();
             var server = await CreateServer();
             var chatChannel = Fix.Create<ChatChannel>() with
             {
@@ -89,7 +89,7 @@ namespace OpenttdDiscord.Database.Tests.Chatting
             Assert.True(chatChannels.IsLeft);
         }
 
-        private async Task<ChatChannelRepository> CreateRpeository([CallerMemberName] string? databaseName = null)
+        private async Task<ChatChannelRepository> CreateRepository([CallerMemberName] string? databaseName = null)
         {
             var context = await CreateContext(databaseName);
             return new ChatChannelRepository(context);

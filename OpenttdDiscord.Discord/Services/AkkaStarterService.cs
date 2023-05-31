@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using OpenttdDiscord.Infrastructure.Akkas;
 using OpenttdDiscord.Infrastructure.Chatting.Actors;
 using OpenttdDiscord.Infrastructure.Guilds.Actors;
+using OpenttdDiscord.Infrastructure.Maintenance.Actors;
 
 namespace OpenttdDiscord.Discord.Services
 {
@@ -21,7 +22,8 @@ namespace OpenttdDiscord.Discord.Services
             ActorSystem actorSystem,
             ILogger<AkkaStarterService> logger,
             IAkkaService akkaService,
-            IServiceProvider serviceProvider)        {
+            IServiceProvider serviceProvider)
+        {
             this.actorSystem = actorSystem;
             this.logger = logger;
             this.akkaService = akkaService;
@@ -31,8 +33,15 @@ namespace OpenttdDiscord.Discord.Services
         protected override Task ExecuteAsync(CancellationToken stoppingToken)
         {
             logger.LogInformation("Starting all akka actors");
-            actorSystem.ActorOf(GuildsActor.Create(serviceProvider), MainActors.Names.Guilds);
-            actorSystem.ActorOf(ChatChannelManagerActor.Create(serviceProvider), MainActors.Names.ChatChannelManager);
+            actorSystem.ActorOf(
+                GuildsActor.Create(serviceProvider),
+                MainActors.Names.Guilds);
+            actorSystem.ActorOf(
+                ChatChannelManagerActor.Create(serviceProvider),
+                MainActors.Names.ChatChannelManager);
+            actorSystem.ActorOf(
+                HealthCheckActor.Create(serviceProvider),
+                MainActors.Names.HealthCheck);
             logger.LogInformation("Akka has been started!");
             akkaService.NotifyAboutAkkaStart();
             return Task.CompletedTask;

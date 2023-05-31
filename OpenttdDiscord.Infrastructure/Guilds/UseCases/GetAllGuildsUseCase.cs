@@ -14,7 +14,7 @@ namespace OpenttdDiscord.Infrastructure.Guilds.UseCases
             this.ottdServerRepository = ottdServerRepository;
         }
 
-        public Task<Either<IError, List<ulong>>> Execute()
+        public EitherAsync<IError, List<ulong>> Execute()
             => ottdServerRepository.GetAllGuilds();
     }
 }

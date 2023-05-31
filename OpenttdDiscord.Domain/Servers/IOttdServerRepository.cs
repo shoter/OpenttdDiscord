@@ -18,6 +18,6 @@ namespace OpenttdDiscord.Domain.Servers
 
         EitherAsync<IError, OttdServer> GetServerByName(ulong guildId, string serverName);
 
-        Task<Either<IError, List<ulong>>> GetAllGuilds();
+        EitherAsync<IError, List<ulong>> GetAllGuilds();
     }
 }

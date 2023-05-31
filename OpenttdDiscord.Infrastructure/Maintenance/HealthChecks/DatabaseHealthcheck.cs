@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Logging;
+using OpenttdDiscord.Base.Ext;
 using OpenttdDiscord.Domain.Servers;
 
 namespace OpenttdDiscord.Infrastructure.Maintenance.HealthChecks
@@ -26,7 +27,7 @@ namespace OpenttdDiscord.Infrastructure.Maintenance.HealthChecks
             {
                 Stopwatch stopWatch = new();
                 stopWatch.Start();
-                await serverRepository.GetAllGuilds();
+                (await serverRepository.GetAllGuilds()).ThrowIfError();
                 stopWatch.Stop();
 
                 var time = stopWatch.Elapsed;

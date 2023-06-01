@@ -1,4 +1,5 @@
-﻿using Discord.WebSocket;
+﻿using System.Text;
+using Discord.WebSocket;
 
 namespace OpenttdDiscord.Infrastructure.Discord.Responses
 {
@@ -9,6 +10,11 @@ namespace OpenttdDiscord.Infrastructure.Discord.Responses
         public TextCommandResponse(string response)
         {
             this.response = response;
+        }
+
+        public TextCommandResponse(StringBuilder sb)
+            : this(sb.ToString())
+        {
         }
 
         protected override async Task InternalExecute(SocketSlashCommand command)

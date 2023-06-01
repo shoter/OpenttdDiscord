@@ -8,9 +8,10 @@ namespace OpenttdDiscord.Infrastructure.Maintenance.Actors
     {
         private IReadOnlyDictionary<string, HealthReportEntry> currentEntries = new Dictionary<string, HealthReportEntry>();
 
-        protected HealthCheckActor(IServiceProvider serviceProvider)
+        public HealthCheckActor(IServiceProvider serviceProvider)
             : base(serviceProvider)
         {
+            Ready();
         }
 
         public static Props Create(IServiceProvider sp) => Props.Create(() => new HealthCheckActor(sp));

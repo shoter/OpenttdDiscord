@@ -30,6 +30,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenttdDiscord.DockerizedTe
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenttdDiscord.Database.Migrator", "OpenttdDiscord.Database.Migrator\OpenttdDiscord.Database.Migrator.csproj", "{91914F84-8AD3-4AF8-B5B7-C2551AE4889B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenttdDiscord.Infrastructure.Tests", "OpenttdDiscord.Infrastructure.Tests\OpenttdDiscord.Infrastructure.Tests.csproj", "{2AD961E8-947A-421D-B8D3-523B67BFB5BE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -76,6 +78,10 @@ Global
 		{91914F84-8AD3-4AF8-B5B7-C2551AE4889B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{91914F84-8AD3-4AF8-B5B7-C2551AE4889B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{91914F84-8AD3-4AF8-B5B7-C2551AE4889B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2AD961E8-947A-421D-B8D3-523B67BFB5BE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2AD961E8-947A-421D-B8D3-523B67BFB5BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2AD961E8-947A-421D-B8D3-523B67BFB5BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2AD961E8-947A-421D-B8D3-523B67BFB5BE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -84,6 +90,7 @@ Global
 		{5C31467F-F60B-4C1F-A78E-17869D44F5C8} = {1029E915-ADC4-4365-9E59-FC59C822350B}
 		{9CEB94CD-0358-4A33-BDA1-6DDFBA7C7BED} = {1029E915-ADC4-4365-9E59-FC59C822350B}
 		{724714CA-8376-46BD-B7CF-BBFD5C920A77} = {1029E915-ADC4-4365-9E59-FC59C822350B}
+		{2AD961E8-947A-421D-B8D3-523B67BFB5BE} = {1029E915-ADC4-4365-9E59-FC59C822350B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E49BE0BA-49A5-4D0D-B91D-01CA312FDD26}

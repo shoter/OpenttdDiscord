@@ -1,6 +1,7 @@
 ﻿using Akka.Actor;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using OpenttdDiscord.Base.Ext;
 
 namespace OpenttdDiscord.Base.Akkas
 {
@@ -40,5 +41,8 @@ namespace OpenttdDiscord.Base.Akkas
         /// Ignores all messages of type <typeparamref name="T"/> and does nothing with them.
         /// </summary>
         protected void ReceiveIgnore<T>() => Receive<T>(_ => { });
+
+        protected void ReceiveEitherAsync<T>(Func<T, EitherAsyncUnit> func) => ReceiveAsync<T>(
+            async (t) => (await func(t)).ThrowIfError());
     }
 }

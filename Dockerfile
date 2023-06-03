@@ -11,6 +11,7 @@ COPY ./OpenttdDiscord.Discord/OpenttdDiscord.Discord.csproj ./OpenttdDiscord.Dis
 COPY ./OpenttdDiscord.DockerizedTesting/OpenttdDiscord.DockerizedTesting.csproj ./OpenttdDiscord.DockerizedTesting/OpenttdDiscord.DockerizedTesting.csproj
 COPY ./OpenttdDiscord.Domain/OpenttdDiscord.Domain.csproj ./OpenttdDiscord.Domain/OpenttdDiscord.Domain.csproj
 COPY ./OpenttdDiscord.Infrastructure/OpenttdDiscord.Infrastructure.csproj ./OpenttdDiscord.Infrastructure/OpenttdDiscord.Infrastructure.csproj
+COPY ./OpenttdDiscord.Infrastructure.Tests/OpenttdDiscord.Infrastructure.Tests.csproj ./OpenttdDiscord.Infrastructure.Tests/OpenttdDiscord.Infrastructure.Tests.csproj
 COPY ./OpenttdDiscord.Validation/OpenttdDiscord.Validation.csproj ./OpenttdDiscord.Validation/OpenttdDiscord.Validation.csproj
 COPY ./OpenttdDiscord.Validation.Tests/OpenttdDiscord.Validation.Tests.csproj ./OpenttdDiscord.Validation.Tests/OpenttdDiscord.Validation.Tests.csproj
 #END_PUT_PROJECTS_BELOW_THIS_LINE
@@ -44,5 +45,6 @@ COPY ./startup.sh .
 RUN chmod a+x /app/startup.sh
 RUN mkdir -p /var/app/ottd/
 ENTRYPOINT ["bash", "-c", "./startup.sh"]
+
 
 

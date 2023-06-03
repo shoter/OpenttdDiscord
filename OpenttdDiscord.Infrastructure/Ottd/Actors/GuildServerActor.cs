@@ -18,6 +18,7 @@ using OpenttdDiscord.Infrastructure.Chatting.Messages;
 using OpenttdDiscord.Infrastructure.Discord.Messages;
 using OpenttdDiscord.Infrastructure.EventLogs.Actors;
 using OpenttdDiscord.Infrastructure.EventLogs.Messages;
+using OpenttdDiscord.Infrastructure.Maintenance.Actors;
 using OpenttdDiscord.Infrastructure.Ottd.Messages;
 using OpenttdDiscord.Infrastructure.Statuses.Actors;
 using OpenttdDiscord.Infrastructure.Statuses.Messages;
@@ -37,6 +38,7 @@ namespace OpenttdDiscord.Infrastructure.Ottd.Actors
         private readonly ExtDictionary<ulong, ChattingActors> chatChannelActors = new();
         private readonly System.Collections.Generic.HashSet<IActorRef> adminEventSubscribers = new();
         private Option<IActorRef> chatStorageActor = Option<IActorRef>.None;
+        private Option<IActorRef> healthCheckACtor = Option<IActorRef>.None;
 
         public ITimerScheduler Timers { get; set; } = default!;
 
@@ -126,6 +128,12 @@ namespace OpenttdDiscord.Infrastructure.Ottd.Actors
             await ReportInit();
 
             chatStorageActor = Some(Context.ActorOf(EventStorageActor.Create(SP, server, client)));
+            healthCheckACtor = Some(
+                Context.ActorOf(
+                    OttdServerHealthCheckActor.Create(
+                        client,
+                        server,
+                        SP)));
         }
 
         private void ExecuteServerAction(ExecuteServerAction cmd)

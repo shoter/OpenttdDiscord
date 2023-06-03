@@ -7,6 +7,8 @@ using Microsoft.Extensions.Diagnostics.HealthChecks;
 using OpenTTDAdminPort;
 using OpenTTDAdminPort.Events;
 using OpenTTDAdminPort.Messages;
+using OpenttdDiscord.Base.Ext;
+using OpenttdDiscord.Domain.Servers;
 using OpenttdDiscord.Infrastructure.Akkas;
 using OpenttdDiscord.Infrastructure.Maintenance.Messages;
 
@@ -20,15 +22,13 @@ namespace OpenttdDiscord.Infrastructure.Maintenance.Actors
 
         private IAdminPortClient AdminPortClient { get; }
 
-        private ulong GuildId { get; }
+        private OttdServer OttdServer { get; }
 
-        private Guid ServerId { get; }
 
 
         public OttdServerHealthCheckActor(
             IAdminPortClient adminPortClient,
-            ulong guildId,
-            Guid serverId,
+            OttdServer server,
             IServiceProvider serviceProvider)
             : base(serviceProvider)
         {
@@ -38,54 +38,83 @@ namespace OpenttdDiscord.Infrastructure.Maintenance.Actors
                 10.Seconds());
 
             this.AdminPortClient = adminPortClient;
-            this.GuildId = guildId;
-            this.ServerId = serverId;
+            this.OttdServer = server;
 
             this.akkaService = SP.GetRequiredService<IAkkaService>();
+
+            Ready();
         }
 
         public static Props Create(
             IAdminPortClient adminPortClient,
-            ulong guildId,
-            Guid serverId,
+            OttdServer server,
             IServiceProvider sp) => Props.Create(
             () => new OttdServerHealthCheckActor(
                 adminPortClient,
-                guildId,
-                serverId,
+                server,
                 sp));
+
+        private void Ready()
+        {
+            ReceiveEitherAsync<OttdServerHealthCheckBeep>(OttdServerHealthCheckBeep);
+        }
 
         public EitherAsyncUnit OttdServerHealthCheckBeep(OttdServerHealthCheckBeep _)
         {
-            Stopwatch sw = new();
-            sw.Start();
-            uint pingValue = (uint) Random.Shared.Next();
-            var msg = new AdminPingMessage(pingValue);
-            CancellationTokenSource cts = new();
-            var waitTask = AdminPortClient.WaitForEvent<AdminPongEvent>(
-                msg,
-                pong => pong.PongValue == pingValue,
-                cts.Token);
-            var delayTask = Task.Delay(3.Seconds());
-
-            await Task.WhenAny(
-                waitTask,
-                delayTask);
-
-            if (waitTask.IsCompletedSuccessfully == false)
-            {
-                OttdServerHealthCheck
-                cts.Cancel();
-                return;
-            }
-
-            sw.Stop();
-            bool isHealthy = sw.Elapsed.TotalSeconds < 1;
-            HealthStatus status = isHealthy ? HealthStatus.Healthy : HealthStatus.Degraded;
-
-            OttdServerHealthCheck
+            return
+            from report in
+                    SendPing()
+                        .BiBind(
+                            BindCorrect,
+                            BindError)
+                from _1 in SendHealthCheck(report)
+                select Unit.Default;
         }
 
+        private EitherAsync<IError, TimeSpan> SendPing() => TryAsync<Either<IError, TimeSpan>>(
+                async () =>
+                {
+                    Stopwatch sw = new();
+                    sw.Start();
+                    uint pingValue = (uint) Random.Shared.Next();
+                    var msg = new AdminPingMessage(pingValue);
+                    CancellationTokenSource cts = new();
+                    var waitTask = AdminPortClient.WaitForEvent<AdminPongEvent>(
+                        msg,
+                        pong => pong.PongValue == pingValue,
+                        cts.Token);
+                    var delayTask = Task.Delay(3.Seconds());
+
+                    await Task.WhenAny(
+                        waitTask,
+                        delayTask);
+                    
+                    sw.Stop();
+                    
+                    if (waitTask.IsCompletedSuccessfully == false)
+                    {
+                        return new HumanReadableError("Timeout when doing ping");
+                    }
+
+                    return sw.Elapsed;
+                })
+            .ToEitherAsyncErrorFlat();
+
+        private EitherAsync<IError, OttdServerHealthCheck> BindError(IError _) => new OttdServerHealthCheck(
+            DateTimeOffset.Now,
+            OttdServer.Id,
+            OttdServer.GuildId,
+            TimeSpan.Zero,
+            HealthStatus.Unhealthy
+        );
+        
+        private EitherAsync<IError, OttdServerHealthCheck> BindCorrect(TimeSpan span) => new OttdServerHealthCheck(
+            DateTimeOffset.Now,
+            OttdServer.Id,
+            OttdServer.GuildId,
+            span,
+            (span < 1.Seconds().ToTimeSpan()) ? HealthStatus.Healthy : HealthStatus.Degraded
+        );
         private EitherAsyncUnit SendHealthCheck(OttdServerHealthCheck check) =>
             from selection in akkaService.SelectActor(MainActors.Paths.HealthCheck)
             from _1 in selection.TellExt(check).ToAsync()

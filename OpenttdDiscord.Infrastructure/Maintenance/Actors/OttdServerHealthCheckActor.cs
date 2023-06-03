@@ -24,8 +24,6 @@ namespace OpenttdDiscord.Infrastructure.Maintenance.Actors
 
         private OttdServer OttdServer { get; }
 
-
-
         public OttdServerHealthCheckActor(
             IAdminPortClient adminPortClient,
             OttdServer server,
@@ -76,7 +74,7 @@ namespace OpenttdDiscord.Infrastructure.Maintenance.Actors
                 {
                     Stopwatch sw = new();
                     sw.Start();
-                    uint pingValue = (uint) Random.Shared.Next();
+                    uint pingValue = (uint)Random.Shared.Next();
                     var msg = new AdminPingMessage(pingValue);
                     CancellationTokenSource cts = new();
                     var waitTask = AdminPortClient.WaitForEvent<AdminPongEvent>(
@@ -88,9 +86,9 @@ namespace OpenttdDiscord.Infrastructure.Maintenance.Actors
                     await Task.WhenAny(
                         waitTask,
                         delayTask);
-                    
+
                     sw.Stop();
-                    
+
                     if (waitTask.IsCompletedSuccessfully == false)
                     {
                         return new HumanReadableError("Timeout when doing ping");
@@ -102,16 +100,14 @@ namespace OpenttdDiscord.Infrastructure.Maintenance.Actors
 
         private EitherAsync<IError, OttdServerHealthCheck> BindError(IError _) => new OttdServerHealthCheck(
             DateTimeOffset.Now,
-            OttdServer.Id,
-            OttdServer.GuildId,
+            OttdServer,
             TimeSpan.Zero,
             HealthStatus.Unhealthy
         );
-        
+
         private EitherAsync<IError, OttdServerHealthCheck> BindCorrect(TimeSpan span) => new OttdServerHealthCheck(
             DateTimeOffset.Now,
-            OttdServer.Id,
-            OttdServer.GuildId,
+            OttdServer,
             span,
             (span < 1.Seconds().ToTimeSpan()) ? HealthStatus.Healthy : HealthStatus.Degraded
         );

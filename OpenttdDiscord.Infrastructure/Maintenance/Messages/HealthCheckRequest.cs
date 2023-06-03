@@ -1,3 +1,3 @@
 namespace OpenttdDiscord.Infrastructure.Maintenance.Messages;
 
-public record HealthCheckRequest();
+public record HealthCheckRequest(ulong GuildId);

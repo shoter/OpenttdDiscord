@@ -32,7 +32,7 @@ namespace OpenttdDiscord.Infrastructure.Maintenance.Runners
                         UserLevel.Moderator)
                     .ToAsync()
                 from selection in akkaService.SelectActor(MainActors.Paths.HealthCheck)
-                from healthCheckResponse in selection.TryAsk<HealthCheckResponse>(new HealthCheckRequest())
+                from healthCheckResponse in selection.TryAsk<HealthCheckResponse>(new HealthCheckRequest(command.GuildId!.Value))
                 select CreateResponse(healthCheckResponse);
         }
 
@@ -46,6 +46,16 @@ namespace OpenttdDiscord.Infrastructure.Maintenance.Runners
                 var entry = kp.Value;
 
                 sb.AppendLine($"{key} - {entry.Status} - {entry.Duration.TotalSeconds:0.00} s");
+            }
+
+            sb.AppendLine("Servers: ");
+
+            foreach (var s in response.ServersHealthChecks)
+            {
+                var serverId = s.Key;
+                var entry = s.Value;
+
+                sb.AppendLine($"{entry.server.Name} - {entry.HealthStatus} - {entry.CheckTime.TotalSeconds:0.00} s");
             }
 
             return new TextCommandResponse(sb);

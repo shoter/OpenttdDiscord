@@ -2,6 +2,7 @@ using Akka.Actor;
 using Akka.TestKit;
 using Akka.TestKit.Xunit2;
 using AutoFixture;
+using LanguageExt.UnitsOfMeasure;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -23,7 +24,11 @@ namespace OpenttdDiscord.Infrastructure.Tests.Roles.Actors
         public GuildRoleActorShould()
         {
             ServiceCollection services = new();
-            services.AddLogging();
+            services.AddLogging(
+                () =>
+                {
+                    
+                })
             services.AddSingleton(rolesRepository.Object);
             serviceProvider = services.BuildServiceProvider();
             guildRoleActor = ActorOf(GuildRoleActor.Create(serviceProvider));
@@ -31,7 +36,7 @@ namespace OpenttdDiscord.Infrastructure.Tests.Roles.Actors
             probe = CreateTestProbe();
         }
 
-        [Fact]
+        [Fact(Timeout = 10_000)]
         public async Task RegisterAndRetrieve_Role()
         {
             // Arrange
@@ -60,7 +65,7 @@ namespace OpenttdDiscord.Infrastructure.Tests.Roles.Actors
                 });
         }
 
-        [Fact]
+        [Fact(Timeout = 10_000)]
         public async Task SaveDataInDatabase_WhenRegisteringRole()
         {
             // Arrange
@@ -78,7 +83,7 @@ namespace OpenttdDiscord.Infrastructure.Tests.Roles.Actors
                 });
         }
 
-        [Fact]
+        [Fact(Timeout = 10_000)]
         public void RemoveDataInDatabase_WhenRemovingRole()
         {
             // Arrange

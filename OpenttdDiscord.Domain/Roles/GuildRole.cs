@@ -5,6 +5,6 @@ namespace OpenttdDiscord.Domain.Roles
     public record GuildRole(
         ulong GuildId,
         ulong RoleId,
-        UserLevel UserLevel
+        UserLevel RoleLevel
         );
 }

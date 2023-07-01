@@ -19,7 +19,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="Roles" />
 	  <Folder Include="Servers\Actors\" />
 	</ItemGroup>
 

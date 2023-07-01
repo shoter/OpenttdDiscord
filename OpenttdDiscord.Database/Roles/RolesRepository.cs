@@ -22,7 +22,7 @@ namespace OpenttdDiscord.Database.Roles
                             new GuildRoleEntity(
                                 role.GuildId,
                                 role.RoleId,
-                                (int)role.UserLevel));
+                                (int)role.RoleLevel));
 
                     await Db.SaveChangesAsync();
 

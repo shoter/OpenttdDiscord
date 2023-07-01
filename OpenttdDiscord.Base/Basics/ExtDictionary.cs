@@ -1,4 +1,5 @@
 ﻿using LanguageExt;
+using OpenttdDiscord.Base.Ext;
 
 namespace OpenttdDiscord.Base.Basics
 {
@@ -41,6 +42,22 @@ namespace OpenttdDiscord.Base.Basics
             }
 
             return Option<TAs>.None;
+        }
+
+        public EitherUnit AddExt(
+            TKey key,
+            TValue value)
+        {
+            Add(
+                key,
+                value);
+
+            return Unit.Default;
+        }
+
+        public Either<IError, bool> RemoveExt(TKey key)
+        {
+            return Remove(key);
         }
     }
 }

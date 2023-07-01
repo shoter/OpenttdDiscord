@@ -15,6 +15,18 @@ namespace OpenttdDiscord.Infrastructure.Roles.Runners
             User user,
             ExtDictionary<string, object> options)
         {
+            ulong guildID = command.GuildId!.Value;
+            SocketRole? role = options["role"] as SocketRole;
+            UserLevel roleLevel = (UserLevel)options["role-level"];
+
+            if (role == null)
+            {
+                throw new ArgumentException(
+                    options["role"]
+                        .GetType()
+                        .Name);
+            }
+
             throw new NotImplementedException();
         }
     }

@@ -1,7 +1,7 @@
 using LanguageExt.UnitsOfMeasure;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Logging.Abstractions;
-using Moq;
+using NSubstitute.Core;
 using OpenttdDiscord.Base.Ext;
 using OpenttdDiscord.Domain.Servers;
 using OpenttdDiscord.Infrastructure.Maintenance.HealthChecks;
@@ -10,14 +10,14 @@ namespace OpenttdDiscord.Infrastructure.Tests.Maintenance.HealthChecks
 {
     public class DatabaseHealthcheckShould
     {
-        private readonly Mock<IOttdServerRepository> ottdServerRepositoryMock = new();
+        private readonly IOttdServerRepository ottdServerRepositoryMock = Substitute.For<IOttdServerRepository>();
 
         private readonly IHealthCheck databaseHealthCheck;
 
         public DatabaseHealthcheckShould()
         {
             databaseHealthCheck = new DatabaseHealthcheck(
-                ottdServerRepositoryMock.Object,
+                ottdServerRepositoryMock,
                 NullLogger<DatabaseHealthcheck>.Instance);
         }
 
@@ -25,7 +25,7 @@ namespace OpenttdDiscord.Infrastructure.Tests.Maintenance.HealthChecks
         public async Task ReturnHealthyStatus_WhenServerResponseIsReturnedImmedietally()
         {
             ottdServerRepositoryMock
-                .Setup(x => x.GetAllGuilds())
+                .GetAllGuilds()
                 .Returns(EitherAsync<IError, List<ulong>>.Right(new List<ulong>()));
 
             Assert.Equal(
@@ -37,14 +37,12 @@ namespace OpenttdDiscord.Infrastructure.Tests.Maintenance.HealthChecks
         public async Task ReturnDegradedStatus_WhenServerResponseIsNotReturnedASAP()
         {
             ottdServerRepositoryMock
-                .Setup(x => x.GetAllGuilds())
-                .Callback(
-                    () =>
-                    {
-                        Task.Delay(2.Seconds())
-                            .Wait();
-                    })
-                .Returns(EitherAsync<IError, List<ulong>>.Right(new List<ulong>()));
+                .GetAllGuilds()
+                .Returns(_ =>
+                {
+                    Task.Delay(TimeSpan.FromSeconds(2)).Wait();
+                    return EitherAsync<IError, List<ulong>>.Right(new List<ulong>());
+                });
 
             Assert.Equal(
                 HealthStatus.Degraded,
@@ -55,7 +53,7 @@ namespace OpenttdDiscord.Infrastructure.Tests.Maintenance.HealthChecks
         public async Task ReturnUnhealthy_InCaseOfError()
         {
             ottdServerRepositoryMock
-                .Setup(x => x.GetAllGuilds())
+                .GetAllGuilds()
                 .Returns(EitherAsync<IError, List<ulong>>.Left(new HumanReadableError("Boom!")));
 
             Assert.Equal(

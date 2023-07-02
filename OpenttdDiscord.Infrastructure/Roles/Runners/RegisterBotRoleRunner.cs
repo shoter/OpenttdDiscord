@@ -26,7 +26,7 @@ namespace OpenttdDiscord.Infrastructure.Roles.Runners
         {
             ulong guildID = command.GuildId!.Value;
             SocketRole? role = options["role"] as SocketRole;
-            UserLevel roleLevel = (UserLevel)options["role-level"];
+            long roleLevel = (long)options["role-level"];
 
             if (role == null)
             {
@@ -39,7 +39,7 @@ namespace OpenttdDiscord.Infrastructure.Roles.Runners
             RegisterNewRole msg = new(
                 guildID,
                 role.Id,
-                roleLevel);
+                (UserLevel)roleLevel);
 
             return
                 from actor in akkaService.SelectActor(MainActors.Paths.Guilds)

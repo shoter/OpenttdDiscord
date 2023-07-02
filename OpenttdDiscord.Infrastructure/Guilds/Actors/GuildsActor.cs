@@ -50,6 +50,7 @@ namespace OpenttdDiscord.Infrastructure.Guilds.Actors
             ReceiveRedirectMsg<RetrieveEventLog>(msg => msg.GuildId);
             ReceiveRedirectMsg<RegisterReportChannel>(msg => msg.ReportChannel.GuildId);
             ReceiveRedirectMsg<UnregisterReportChannel>(msg => msg.GuildId);
+            ReceiveRedirectMsg<IGuildMessage>(msg => msg.GuildId);
         }
 
         private async Task InitGuildActorMessage(InitGuildActorMessage _)

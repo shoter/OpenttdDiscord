@@ -103,7 +103,7 @@ namespace OpenttdDiscord.Infrastructure.Tests.Roles.Actors
                 });
         }
 
-        [Fact(Timeout = 12_000)]
+        [Fact(Timeout = 2_000)]
         public async Task RemoveDataInDatabase_WhenRemovingRole()
         {
             // Arrange

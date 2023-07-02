@@ -3,6 +3,7 @@ using LanguageExt;
 using OpenttdDiscord.Base.Basics;
 using OpenttdDiscord.Base.Ext;
 using OpenttdDiscord.Domain.Security;
+using OpenttdDiscord.Infrastructure.Akkas;
 using OpenttdDiscord.Infrastructure.Discord.Responses;
 using OpenttdDiscord.Infrastructure.Discord.Runners;
 
@@ -10,6 +11,13 @@ namespace OpenttdDiscord.Infrastructure.Roles.Runners
 {
     internal class RegisterBotRoleRunner : OttdSlashCommandRunnerBase
     {
+        private readonly IAkkaService akkaService;
+
+        public RegisterBotRoleRunner(IAkkaService akkaService)
+        {
+            this.akkaService = akkaService;
+        }
+
         protected override EitherAsync<IError, ISlashCommandResponse> RunInternal(
             SocketSlashCommand command,
             User user,
@@ -26,6 +34,9 @@ namespace OpenttdDiscord.Infrastructure.Roles.Runners
                         .GetType()
                         .Name);
             }
+
+            var x =
+                from _1 in akkaService.SelectActor(MainActors.Paths.Guilds)
 
             throw new NotImplementedException();
         }

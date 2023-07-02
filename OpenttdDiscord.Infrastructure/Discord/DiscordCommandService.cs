@@ -117,8 +117,9 @@ namespace OpenttdDiscord.Infrastructure.Discord
             var runner = command.CreateRunner(scope.ServiceProvider);
             logger.LogDebug("Created runner");
 
-            Task<ISlashCommandResponse> responseTask = GetSlashCommandResponse(arg,
-                                                                           runner);
+            Task<ISlashCommandResponse> responseTask = GetSlashCommandResponse(
+                arg,
+                runner);
             Task timeoutTask = Task.Delay(
                 2.Seconds()
                     .ToTimeSpan());
@@ -138,9 +139,7 @@ namespace OpenttdDiscord.Infrastructure.Discord
                 await ExecuteResponse(
                     arg,
                     new TextCommandResponse("Command has time outed :("));
-
             }
-
         }
 
         private async Task<ISlashCommandResponse> GetSlashCommandResponse(

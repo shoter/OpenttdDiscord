@@ -11,7 +11,7 @@
     <ItemGroup>
         <PackageReference Include="Akka.TestKit.Xunit2" Version="1.5.7" />
         <PackageReference Include="AutoFixture" Version="4.18.0" />
-        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.6.0" />
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.6.2" />
         <PackageReference Include="NSubstitute" Version="5.0.0" />
         <PackageReference Include="NSubstitute.Analyzers.CSharp" Version="1.0.16">
           <PrivateAssets>all</PrivateAssets>
@@ -34,7 +34,6 @@
 
     <ItemGroup>
       <ProjectReference Include="..\OpenttdDiscord.Infrastructure\OpenttdDiscord.Infrastructure.csproj" />
-      <ProjectReference Include="..\OpenttdDiscord.Tests.Common\OpenttdDiscord.Tests.Common.csproj" />
     </ItemGroup>
 
 </Project>

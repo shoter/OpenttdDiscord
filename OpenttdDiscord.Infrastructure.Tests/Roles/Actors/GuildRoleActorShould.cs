@@ -6,7 +6,9 @@ using LanguageExt.UnitsOfMeasure;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
+using OpenttdDiscord.Base.Akkas;
 using OpenttdDiscord.Domain.Roles;
+using OpenttdDiscord.Domain.Security;
 using OpenttdDiscord.Infrastructure.Roles.Actors;
 using OpenttdDiscord.Infrastructure.Roles.Messages;
 using OpenttdDiscord.Tests.Common.Xunits;
@@ -37,6 +39,16 @@ namespace OpenttdDiscord.Infrastructure.Tests.Roles.Actors
 
             rolesRepositoryMock
                 .InsertRole(default!)
+                .ReturnsForAnyArgs(Unit.Default);
+
+            rolesRepositoryMock
+                .DeleteRole(
+                    default!,
+                    default!)
+                .ReturnsForAnyArgs(Unit.Default);
+
+            rolesRepositoryMock
+                .DeleteRole(default!)
                 .ReturnsForAnyArgs(Unit.Default);
 
             probe = CreateTestProbe();
@@ -82,31 +94,40 @@ namespace OpenttdDiscord.Infrastructure.Tests.Roles.Actors
                 TimeSpan.FromSeconds(1),
                 () =>
                 {
-                    // rolesRepositoryMock.Verify(x => x.InsertRole(It.Is<GuildRole>(gr =>
-                    //     gr.RoleId == registerNewRole.RoleId &&
-                    //     gr.GuildId == registerNewRole.GuildId &&
-                    //     gr.RoleLevel == registerNewRole.RoleLevel)), Times.Once);
+                    rolesRepositoryMock
+                        .Received(1)
+                        .InsertRole(Arg.Is<GuildRole>(gr =>
+                                                          gr.RoleId == registerNewRole.RoleId &&
+                                                          gr.GuildId == registerNewRole.GuildId &&
+                                                          gr.RoleLevel == registerNewRole.RoleLevel));
                 });
         }
 
-        [Fact(Timeout = 2_000)]
-        public void RemoveDataInDatabase_WhenRemovingRole()
+        [Fact(Timeout = 12_000)]
+        public async Task RemoveDataInDatabase_WhenRemovingRole()
         {
             // Arrange
-            var registerNewRole = fix.Create<RegisterNewRole>();
-            guildRoleActor.Tell(registerNewRole);
+            var registerNewRole = fix.Create<RegisterNewRole>() with { RoleLevel = UserLevel.Admin };
+            await guildRoleActor.TryAsk(registerNewRole);
             var deleteRole = new DeleteRole(
                 registerNewRole.GuildId,
-                registerNewRole.GuildId);
+                registerNewRole.RoleId);
+            await guildRoleActor.TryAsk(deleteRole);
+            var getRole = new GetRoleLevel(
+                deleteRole.GuildId,
+                deleteRole.RoleId);
 
-            Within(
+            await WithinAsync(
                 TimeSpan.FromSeconds(1),
-                () =>
+                async () =>
                 {
-                    // rolesRepositoryMock.Verify(
-                    //     x => x.DeleteRole(
-                    //         registerNewRole.GuildId,
-                    //         registerNewRole.RoleId), Times.Once);
+                    var response = await guildRoleActor.Ask<GetRoleLevelResponse>(getRole);
+
+                    Assert.Equal(UserLevel.User, response.RoleLevel);
+
+                    await rolesRepositoryMock
+                        .Received(1)
+                        .DeleteRole(registerNewRole.GuildId, registerNewRole.RoleId);
                 });
         }
     }

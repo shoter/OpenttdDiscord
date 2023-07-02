@@ -62,12 +62,10 @@ namespace OpenttdDiscord.Infrastructure.Roles.Actors
                 });
         }
 
-        private EitherAsyncUnit DeleteRole(DeleteRole msg)
-        {
-            return
-                from _1 in rolesRepository.DeleteRole(msg.GuildId, msg.RoleId)
-                from _2 in guildRoles.RemoveExt(msg.RoleId).ToAsync()
-                select Unit.Default;
-        }
+        private EitherAsyncUnit DeleteRole(DeleteRole msg) =>
+            from _1 in rolesRepository.DeleteRole(msg.GuildId, msg.RoleId)
+            from _2 in guildRoles.RemoveExt(msg.RoleId).ToAsync()
+            from _3 in Sender.TellExt(Unit.Default).ToAsync()
+            select Unit.Default;
     }
 }

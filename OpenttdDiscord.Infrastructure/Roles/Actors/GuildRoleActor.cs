@@ -4,6 +4,7 @@ using LanguageExt.SomeHelp;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using OpenttdDiscord.Base.Basics;
+using OpenttdDiscord.Base.Ext;
 using OpenttdDiscord.Domain.Roles;
 using OpenttdDiscord.Domain.Security;
 using OpenttdDiscord.Infrastructure.Roles.Messages;
@@ -39,6 +40,12 @@ namespace OpenttdDiscord.Infrastructure.Roles.Actors
                 msg.GuildId,
                 msg.RoleId,
                 msg.RoleLevel);
+
+            if (guildRoles.ContainsKey(msg.RoleId))
+            {
+                Sender.TellExt(new HumanReadableError("This role is already defined"));
+                return Unit.Default;
+            }
 
             return
                 from _1 in rolesRepository.InsertRole(guildRole)

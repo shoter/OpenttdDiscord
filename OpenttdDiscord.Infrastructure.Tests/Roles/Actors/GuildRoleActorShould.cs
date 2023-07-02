@@ -2,11 +2,10 @@ using Akka.Actor;
 using Akka.TestKit;
 using Akka.TestKit.Xunit2;
 using AutoFixture;
-using LanguageExt.UnitsOfMeasure;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Abstractions;
 using OpenttdDiscord.Base.Akkas;
+using OpenttdDiscord.Base.Ext;
 using OpenttdDiscord.Domain.Roles;
 using OpenttdDiscord.Domain.Security;
 using OpenttdDiscord.Infrastructure.Roles.Actors;
@@ -18,11 +17,11 @@ namespace OpenttdDiscord.Infrastructure.Tests.Roles.Actors
 {
     public sealed class GuildRoleActorShould : TestKit
     {
-        private readonly IActorRef guildRoleActor = default!;
         private readonly IFixture fix = new Fixture();
+        private readonly IActorRef guildRoleActor = default!;
+        private readonly TestProbe probe;
         private readonly IRolesRepository rolesRepositoryMock = Substitute.For<IRolesRepository>();
         private readonly IServiceProvider serviceProvider;
-        private readonly TestProbe probe;
 
         public GuildRoleActorShould(ITestOutputHelper testOutputHelper)
         {
@@ -58,8 +57,10 @@ namespace OpenttdDiscord.Infrastructure.Tests.Roles.Actors
         public async Task RegisterAndRetrieve_Role()
         {
             // Arrange
-            var registerNewRole = fix.Create<RegisterNewRole>();
-            guildRoleActor.Tell(registerNewRole, probe.Ref);
+            RegisterNewRole? registerNewRole = fix.Create<RegisterNewRole>();
+            guildRoleActor.Tell(
+                registerNewRole,
+                probe.Ref);
             probe.ExpectMsg<Unit>();
 
             await probe.WithinAsync(
@@ -67,14 +68,14 @@ namespace OpenttdDiscord.Infrastructure.Tests.Roles.Actors
                 async () =>
                 {
                     // Act
-                    var getRoleLevel = new GetRoleLevel(
+                    GetRoleLevel getRoleLevel = new(
                         registerNewRole.GuildId,
                         registerNewRole.RoleId);
                     guildRoleActor.Tell(
                         getRoleLevel,
                         probe.Ref);
 
-                    var response = await probe.ExpectMsgAsync<GetRoleLevelResponse>();
+                    GetRoleLevelResponse? response = await probe.ExpectMsgAsync<GetRoleLevelResponse>();
 
                     // Assert
                     Assert.Equal(
@@ -84,10 +85,31 @@ namespace OpenttdDiscord.Infrastructure.Tests.Roles.Actors
         }
 
         [Fact(Timeout = 2_000)]
+        public async Task NotBeAbleTo_RegisterSameRole_Twice()
+        {
+            // Arrange
+            RegisterNewRole? registerNewRole = fix.Create<RegisterNewRole>();
+            guildRoleActor.Tell(
+                registerNewRole,
+                probe.Ref);
+            probe.ExpectMsg<Unit>();
+
+            await probe.WithinAsync(
+                TimeSpan.FromSeconds(1),
+                async () =>
+                {
+                    guildRoleActor.Tell(
+                        registerNewRole,
+                        probe.Ref);
+                    await probe.ExpectMsgAsync<IError>();
+                });
+        }
+
+        [Fact(Timeout = 2_000)]
         public async Task SaveDataInDatabase_WhenRegisteringRole()
         {
             // Arrange
-            var registerNewRole = fix.Create<RegisterNewRole>();
+            RegisterNewRole? registerNewRole = fix.Create<RegisterNewRole>();
             await guildRoleActor.Ask(registerNewRole);
 
             Within(
@@ -96,10 +118,12 @@ namespace OpenttdDiscord.Infrastructure.Tests.Roles.Actors
                 {
                     rolesRepositoryMock
                         .Received(1)
-                        .InsertRole(Arg.Is<GuildRole>(gr =>
-                                                          gr.RoleId == registerNewRole.RoleId &&
-                                                          gr.GuildId == registerNewRole.GuildId &&
-                                                          gr.RoleLevel == registerNewRole.RoleLevel));
+                        .InsertRole(
+                            Arg.Is<GuildRole>(
+                                gr =>
+                                    gr.RoleId == registerNewRole.RoleId &&
+                                    gr.GuildId == registerNewRole.GuildId &&
+                                    gr.RoleLevel == registerNewRole.RoleLevel));
                 });
         }
 
@@ -107,13 +131,13 @@ namespace OpenttdDiscord.Infrastructure.Tests.Roles.Actors
         public async Task RemoveDataInDatabase_WhenRemovingRole()
         {
             // Arrange
-            var registerNewRole = fix.Create<RegisterNewRole>() with { RoleLevel = UserLevel.Admin };
+            RegisterNewRole registerNewRole = fix.Create<RegisterNewRole>() with { RoleLevel = UserLevel.Admin };
             await guildRoleActor.TryAsk(registerNewRole);
-            var deleteRole = new DeleteRole(
+            DeleteRole deleteRole = new(
                 registerNewRole.GuildId,
                 registerNewRole.RoleId);
             await guildRoleActor.TryAsk(deleteRole);
-            var getRole = new GetRoleLevel(
+            GetRoleLevel getRole = new(
                 deleteRole.GuildId,
                 deleteRole.RoleId);
 
@@ -121,13 +145,17 @@ namespace OpenttdDiscord.Infrastructure.Tests.Roles.Actors
                 TimeSpan.FromSeconds(1),
                 async () =>
                 {
-                    var response = await guildRoleActor.Ask<GetRoleLevelResponse>(getRole);
+                    GetRoleLevelResponse? response = await guildRoleActor.Ask<GetRoleLevelResponse>(getRole);
 
-                    Assert.Equal(UserLevel.User, response.RoleLevel);
+                    Assert.Equal(
+                        UserLevel.User,
+                        response.RoleLevel);
 
                     await rolesRepositoryMock
                         .Received(1)
-                        .DeleteRole(registerNewRole.GuildId, registerNewRole.RoleId);
+                        .DeleteRole(
+                            registerNewRole.GuildId,
+                            registerNewRole.RoleId);
                 });
         }
     }

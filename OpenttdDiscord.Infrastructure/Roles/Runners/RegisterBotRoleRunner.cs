@@ -6,6 +6,7 @@ using OpenttdDiscord.Domain.Security;
 using OpenttdDiscord.Infrastructure.Akkas;
 using OpenttdDiscord.Infrastructure.Discord.Responses;
 using OpenttdDiscord.Infrastructure.Discord.Runners;
+using OpenttdDiscord.Infrastructure.Roles.Messages;
 
 namespace OpenttdDiscord.Infrastructure.Roles.Runners
 {
@@ -35,10 +36,15 @@ namespace OpenttdDiscord.Infrastructure.Roles.Runners
                         .Name);
             }
 
-            var x =
-                from _1 in akkaService.SelectActor(MainActors.Paths.Guilds)
+            RegisterNewRole msg = new(
+                guildID,
+                role.Id,
+                roleLevel);
 
-            throw new NotImplementedException();
+            return
+                from actor in akkaService.SelectActor(MainActors.Paths.Guilds)
+                from _1 in actor.TryAsk(msg)
+                select new TextCommandResponse("Role has been registered") as ISlashCommandResponse;
         }
     }
 }

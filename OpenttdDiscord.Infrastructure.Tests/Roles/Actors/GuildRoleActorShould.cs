@@ -34,7 +34,7 @@ namespace OpenttdDiscord.Infrastructure.Tests.Roles.Actors
                 });
             services.AddSingleton(rolesRepositoryMock);
             serviceProvider = services.BuildServiceProvider();
-            guildRoleActor = ActorOf(GuildRoleActor.Create(serviceProvider));
+            guildRoleActor = ActorOf(GuildRoleActor.Create(serviceProvider, 12345));
 
             rolesRepositoryMock
                 .InsertRole(default!)
@@ -49,6 +49,10 @@ namespace OpenttdDiscord.Infrastructure.Tests.Roles.Actors
             rolesRepositoryMock
                 .DeleteRole(default!)
                 .ReturnsForAnyArgs(Unit.Default);
+
+            rolesRepositoryMock
+                .GetRoles(default)
+                .ReturnsForAnyArgs(new List<GuildRole>());
 
             probe = CreateTestProbe();
         }

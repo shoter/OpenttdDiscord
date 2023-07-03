@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using Akka.Actor;
+﻿using Akka.Actor;
 using LanguageExt;
 using Microsoft.Extensions.DependencyInjection;
 using OpenttdDiscord.Base.Ext;
@@ -13,25 +12,34 @@ using OpenttdDiscord.Infrastructure.Ottd.Actors;
 using OpenttdDiscord.Infrastructure.Ottd.Messages;
 using OpenttdDiscord.Infrastructure.Rcon.Messages;
 using OpenttdDiscord.Infrastructure.Reporting.Messages;
+using OpenttdDiscord.Infrastructure.Roles.Actors;
+using OpenttdDiscord.Infrastructure.Roles.Messages;
 using OpenttdDiscord.Infrastructure.Servers.Messages;
-using OpenttdDiscord.Infrastructure.Servers.UseCases;
 using OpenttdDiscord.Infrastructure.Statuses.Messages;
 
 namespace OpenttdDiscord.Infrastructure.Guilds.Actors
 {
     public class GuildActor : ReceiveActorBase
     {
-        private readonly IListOttdServersUseCase listOttdServersUseCase;
-
         private readonly ulong guildId;
+
+        private readonly IActorRef guildRoleActor;
+        private readonly IListOttdServersUseCase listOttdServersUseCase;
 
         private readonly Dictionary<Guid, IActorRef> serverActors = new();
 
-        public GuildActor(IServiceProvider serviceProvider, ulong guildId)
+        public GuildActor(
+            IServiceProvider serviceProvider,
+            ulong guildId)
             : base(serviceProvider)
         {
             listOttdServersUseCase = SP.GetRequiredService<IListOttdServersUseCase>();
             this.guildId = guildId;
+            guildRoleActor = Context.ActorOf(
+                GuildRoleActor
+                    .Create(serviceProvider, guildId),
+                "GuildRoleActor");
+
             Ready();
             Self.Tell(new InitGuildsActorMessage());
         }
@@ -42,26 +50,41 @@ namespace OpenttdDiscord.Infrastructure.Guilds.Actors
             Receive<InformAboutServerRegistration>(InformAboutServerRegistration);
             ReceiveAsync<InformAboutServerDeletion>(InformAboutServerDeletion);
 
-            ReceiveRedirectMsg<ExecuteServerAction>(msg => msg.ServerId);
-            ReceiveRedirectMsg<RegisterStatusMonitor>(msg => msg.StatusMonitor.ServerId);
-            ReceiveRedirectMsg<RemoveStatusMonitor>(msg => msg.ServerId);
-            ReceiveRedirectMsg<RegisterChatChannel>(msg => msg.chatChannel.ServerId);
-            ReceiveRedirectMsg<UnregisterChatChannel>(msg => msg.ServerId);
-            ReceiveRedirectMsg<RegisterNewRconChannel>(msg => msg.ServerId);
-            ReceiveRedirectMsg<UnregisterRconChannel>(msg => msg.ServerId);
-            ReceiveRedirectMsg<RetrieveEventLog>(msg => msg.ServerId);
-            ReceiveRedirectMsg<RegisterReportChannel>(msg => msg.ReportChannel.ServerId);
-            ReceiveRedirectMsg<UnregisterReportChannel>(msg => msg.ServerId);
+            ReceiveRedirect<GetRoleLevel>(guildRoleActor);
+            ReceiveRedirect<DeleteRole>(guildRoleActor);
+            ReceiveRedirect<RegisterNewRole>(guildRoleActor);
+
+            ReceiveRedirectToServer<ExecuteServerAction>(msg => msg.ServerId);
+            ReceiveRedirectToServer<RegisterStatusMonitor>(msg => msg.StatusMonitor.ServerId);
+            ReceiveRedirectToServer<RemoveStatusMonitor>(msg => msg.ServerId);
+            ReceiveRedirectToServer<RegisterChatChannel>(msg => msg.chatChannel.ServerId);
+            ReceiveRedirectToServer<UnregisterChatChannel>(msg => msg.ServerId);
+            ReceiveRedirectToServer<RegisterNewRconChannel>(msg => msg.ServerId);
+            ReceiveRedirectToServer<UnregisterRconChannel>(msg => msg.ServerId);
+            ReceiveRedirectToServer<RetrieveEventLog>(msg => msg.ServerId);
+            ReceiveRedirectToServer<RegisterReportChannel>(msg => msg.ReportChannel.ServerId);
+            ReceiveRedirectToServer<UnregisterReportChannel>(msg => msg.ServerId);
         }
 
-        public static Props Create(IServiceProvider sp, ulong guildId)
-            => Props.Create(() => new GuildActor(sp, guildId));
+        public static Props Create(
+            IServiceProvider sp,
+            ulong guildId)
+        {
+            return Props.Create(
+                () => new GuildActor(
+                    sp,
+                    guildId));
+        }
 
         private async Task InitGuildsActorMessage(InitGuildsActorMessage _)
         {
-            (await listOttdServersUseCase.Execute(User.Master, guildId))
+            (await listOttdServersUseCase.Execute(
+                    User.Master,
+                    guildId))
                 .ThrowIfError()
-                .Map(servers => servers.Select(CreateServerActor).ToList());
+                .Map(
+                    servers => servers.Select(CreateServerActor)
+                        .ToList());
         }
 
         private EitherUnit CreateServerActor(OttdServer s)
@@ -71,9 +94,15 @@ namespace OpenttdDiscord.Infrastructure.Guilds.Actors
                 return new HumanReadableError("Server is already registered");
             }
 
-            Props props = GuildServerActor.Create(SP, s);
-            IActorRef actor = Context.ActorOf(props, $"server-{s.Id}");
-            serverActors.Add(s.Id, actor);
+            Props props = GuildServerActor.Create(
+                SP,
+                s);
+            IActorRef actor = Context.ActorOf(
+                props,
+                $"server-{s.Id}");
+            serverActors.Add(
+                s.Id,
+                actor);
             return Unit.Default;
         }
 
@@ -82,19 +111,11 @@ namespace OpenttdDiscord.Infrastructure.Guilds.Actors
             CreateServerActor(msg.server);
         }
 
-        private void ExecuteServerAction(ExecuteServerAction msg)
-        {
-            if (!serverActors.TryGetValue(msg.ServerId, out var server))
-            {
-                return;
-            }
-
-            server.Tell(msg);
-        }
-
         private async Task InformAboutServerDeletion(InformAboutServerDeletion msg)
         {
-            if (!serverActors.TryGetValue(msg.server.Id, out var server))
+            if (!serverActors.TryGetValue(
+                    msg.server.Id,
+                    out IActorRef? server))
             {
                 return;
             }
@@ -103,15 +124,20 @@ namespace OpenttdDiscord.Infrastructure.Guilds.Actors
             serverActors.Remove(msg.server.Id);
         }
 
-        private void ReceiveRedirectMsg<TMsg>(Func<TMsg, Guid> serverSelector)
-                   => Receive((TMsg msg) =>
-                   {
-                       if (!serverActors.TryGetValue(serverSelector(msg), out var actor))
-                       {
-                           return;
-                       }
+        private void ReceiveRedirectToServer<TMsg>(Func<TMsg, Guid> serverSelector)
+        {
+            Receive(
+                (TMsg msg) =>
+                {
+                    if (!serverActors.TryGetValue(
+                            serverSelector(msg),
+                            out IActorRef? actor))
+                    {
+                        return;
+                    }
 
-                       actor.Forward(msg);
-                   });
+                    actor.Forward(msg);
+                });
+        }
     }
 }

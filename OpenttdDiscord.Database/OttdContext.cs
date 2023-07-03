@@ -4,6 +4,7 @@ using OpenttdDiscord.Database.Chatting;
 using OpenttdDiscord.Database.Ottd.Servers;
 using OpenttdDiscord.Database.Rcon;
 using OpenttdDiscord.Database.Reporting;
+using OpenttdDiscord.Database.Roles;
 using OpenttdDiscord.Database.Statuses;
 
 namespace OpenttdDiscord.Database
@@ -20,6 +21,8 @@ namespace OpenttdDiscord.Database
 
         public DbSet<ReportChannelEntity> ReportChannels { get; set; } = default!;
 
+        public DbSet<GuildRoleEntity> GuildRoles { get; set; } = default!;
+
         public OttdContext(DbContextOptions<OttdContext> options)
             : base(options)
         {
@@ -34,6 +37,7 @@ namespace OpenttdDiscord.Database
             ChatChannelEntity.OnModelCreating(modelBuilder);
             RconChannelEntity.OnModelCreating(modelBuilder);
             ReportChannelEntity.OnModelCreating(modelBuilder);
+            GuildRoleEntity.OnModelCreating(modelBuilder);
         }
     }
 }

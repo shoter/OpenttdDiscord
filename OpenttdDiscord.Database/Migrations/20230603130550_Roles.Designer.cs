@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using OpenttdDiscord.Database;
@@ -11,9 +12,11 @@ using OpenttdDiscord.Database;
 namespace OpenttdDiscord.Database.Migrations
 {
     [DbContext(typeof(OttdContext))]
-    partial class OttdContextModelSnapshot : ModelSnapshot
+    [Migration("20230603130550_Roles")]
+    partial class Roles
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

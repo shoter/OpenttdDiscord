@@ -37,6 +37,14 @@ namespace OpenttdDiscord.Base.Akkas
             serviceScope.Dispose();
         }
 
+        protected override void PostRestart(Exception reason)
+        {
+            this.logger.LogError($"Restarted due to {reason}");
+            base.PostRestart(reason);
+        }
+
+        protected void ReceiveRedirect<T>(IActorRef redirect) => Receive<T>(msg => redirect.Forward(msg));
+
         /// <summary>
         /// Ignores all messages of type <typeparamref name="T"/> and does nothing with them.
         /// </summary>

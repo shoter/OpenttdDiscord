@@ -85,7 +85,12 @@ namespace OpenttdDiscord.Infrastructure.Guilds.Actors
             {
                 if (!guildActors.TryGetValue(guildSelector(msg), out IActorRef? actor))
                 {
-                    return;
+                    actor = Context.ActorOf(
+                        GuildActor.Create(
+                            SP,
+                            guildSelector(msg)));
+
+                    guildActors.Add(guildSelector(msg), actor);
                 }
 
                 actor.Forward(msg);

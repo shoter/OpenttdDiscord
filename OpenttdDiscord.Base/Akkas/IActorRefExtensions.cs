@@ -47,6 +47,11 @@ namespace OpenttdDiscord.Base.Akkas
                     return exe;
                 }
 
+                if (t is IError error)
+                {
+                    return Either<IError, T>.Left(error);
+                }
+
                 if (t is T final)
                 {
                     return final;

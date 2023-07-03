@@ -35,11 +35,13 @@ namespace OpenttdDiscord.Infrastructure.Guilds.Actors
         {
             listOttdServersUseCase = SP.GetRequiredService<IListOttdServersUseCase>();
             this.guildId = guildId;
-            Ready();
-            Self.Tell(new InitGuildsActorMessage());
             guildRoleActor = Context.ActorOf(
                 GuildRoleActor
-                    .Create(serviceProvider));
+                    .Create(serviceProvider, guildId),
+                "GuildRoleActor");
+
+            Ready();
+            Self.Tell(new InitGuildsActorMessage());
         }
 
         private void Ready()

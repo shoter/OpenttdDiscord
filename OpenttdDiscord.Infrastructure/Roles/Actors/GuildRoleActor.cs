@@ -15,23 +15,46 @@ namespace OpenttdDiscord.Infrastructure.Roles.Actors
     {
         private readonly IRolesRepository rolesRepository;
 
+        private readonly ulong guildId;
+
         private ExtDictionary<ulong, GuildRole> guildRoles = new();
 
-        public GuildRoleActor(IServiceProvider serviceProvider)
+        public GuildRoleActor(IServiceProvider serviceProvider, ulong guildId)
             : base(serviceProvider)
         {
             rolesRepository = SP.GetRequiredService<IRolesRepository>();
+            this.guildId = guildId;
             Ready();
+            Self.Tell(new InitGuildRoleActor());
         }
 
-        public static Props Create(IServiceProvider serviceProvider) =>
-            Props.Create(() => new GuildRoleActor(serviceProvider));
+        public static Props Create(IServiceProvider serviceProvider, ulong guildId) =>
+            Props.Create(() => new GuildRoleActor(serviceProvider, guildId));
 
         private void Ready()
         {
             ReceiveEitherAsync<RegisterNewRole>(RegisterNewRole);
             ReceiveEitherAsync<DeleteRole>(DeleteRole);
+            ReceiveEitherAsync<InitGuildRoleActor>(InitGuildRoleActor);
             Receive<GetRoleLevel>(GetRoleLevel);
+        }
+
+        private EitherAsyncUnit InitGuildRoleActor(InitGuildRoleActor _)
+        {
+            return
+                from roles in rolesRepository.GetRoles(guildId)
+                from _1 in AddRoles(roles).ToAsync()
+                select Unit.Default;
+        }
+
+        private EitherUnit AddRoles(List<GuildRole> roles)
+        {
+            foreach (var role in roles)
+            {
+                guildRoles.Add(role.RoleId, role);
+            }
+
+            return Unit.Default;
         }
 
         private EitherAsyncUnit RegisterNewRole(RegisterNewRole msg)
@@ -47,10 +70,11 @@ namespace OpenttdDiscord.Infrastructure.Roles.Actors
                 return Unit.Default;
             }
 
+            var sender = Sender;
             return
                 from _1 in rolesRepository.InsertRole(guildRole)
                 from _2 in guildRoles.AddExt(msg.RoleId, guildRole).ToAsync()
-                from _3 in Sender.TellExt(Unit.Default).ToAsync()
+                from _3 in sender.TellExt(Unit.Default).ToAsync()
                 select Unit.Default;
         }
 

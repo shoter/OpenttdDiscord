@@ -1,4 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
+using OpenttdDiscord.Database.Roles;
+using OpenttdDiscord.Domain.Roles;
 using OpenttdDiscord.Infrastructure.Discord.Commands;
 using OpenttdDiscord.Infrastructure.Modularity;
 using OpenttdDiscord.Infrastructure.Roles.Commands;
@@ -11,6 +13,7 @@ namespace OpenttdDiscord.Infrastructure.Roles
         public void RegisterDependencies(IServiceCollection services)
         {
             services
+                .AddScoped<IRolesRepository, RolesRepository>()
                 .RegisterUseCases()
                 .RegisterCommands()
                 .RegisterRunners();

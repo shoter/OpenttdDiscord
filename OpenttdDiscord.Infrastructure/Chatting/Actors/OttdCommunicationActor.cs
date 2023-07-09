@@ -92,6 +92,11 @@ namespace OpenttdDiscord.Infrastructure.Chatting.Actors
                 return;
             }
 
+            if (msg.ChatDestination != ChatDestination.DESTTYPE_BROADCAST)
+            {
+                return;
+            }
+
             this.chatChannel.TellMany(new HandleOttdMessage(server, msg.Player.Name, msg.Message));
         }
 

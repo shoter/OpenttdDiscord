@@ -39,10 +39,6 @@ namespace OpenttdDiscord.Infrastructure.Tests.Chatting
         {
             var channelId = fix.Create<ulong>();
             var server = fix.Create<OttdServer>();
-
-
-
         }
-
     }
 }

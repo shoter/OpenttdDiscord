@@ -15,26 +15,23 @@ using Xunit.Abstractions;
 
 namespace OpenttdDiscord.Infrastructure.Tests.Roles.Actors
 {
-    public sealed class GuildRoleActorShould : TestKit
+    public sealed class GuildRoleActorShould : BaseActorTestKit
     {
-        private readonly IFixture fix = new Fixture();
         private readonly IActorRef guildRoleActor = default!;
-        private readonly TestProbe probe;
         private readonly IRolesRepository rolesRepositoryMock = Substitute.For<IRolesRepository>();
-        private readonly IServiceProvider serviceProvider;
+
+        protected override void InitializeServiceProvider(IServiceCollection services)
+        {
+            services.AddSingleton(rolesRepositoryMock);
+        }
 
         public GuildRoleActorShould(ITestOutputHelper testOutputHelper)
+            : base(testOutputHelper)
         {
-            ServiceCollection services = new();
-            services.AddLogging(
-                logging =>
-                {
-                    logging.SetMinimumLevel(LogLevel.Trace);
-                    logging.AddProvider(new XUnitLoggerProvider(testOutputHelper));
-                });
-            services.AddSingleton(rolesRepositoryMock);
-            serviceProvider = services.BuildServiceProvider();
-            guildRoleActor = ActorOf(GuildRoleActor.Create(serviceProvider, 12345));
+            guildRoleActor = ActorOf(
+                GuildRoleActor.Create(
+                    Sp,
+                    12345));
 
             rolesRepositoryMock
                 .InsertRole(default!)
@@ -53,8 +50,6 @@ namespace OpenttdDiscord.Infrastructure.Tests.Roles.Actors
             rolesRepositoryMock
                 .GetRoles(default)
                 .ReturnsForAnyArgs(new List<GuildRole>());
-
-            probe = CreateTestProbe();
         }
 
         [Fact(Timeout = 2_000)]

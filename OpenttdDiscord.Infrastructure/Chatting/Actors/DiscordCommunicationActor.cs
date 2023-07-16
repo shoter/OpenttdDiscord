@@ -20,7 +20,7 @@ namespace OpenttdDiscord.Infrastructure.Chatting.Actors
     {
         private readonly ulong channelId;
         private readonly OttdServer ottdServer;
-        private readonly AdminPortClient client;
+        private readonly IAdminPortClient client;
         private readonly IAkkaService akkaService;
         private readonly IChatTranslator chatTranslator;
         private Option<IActorRef> chatChannel = Option<IActorRef>.None;
@@ -28,7 +28,7 @@ namespace OpenttdDiscord.Infrastructure.Chatting.Actors
         public DiscordCommunicationActor(
             IServiceProvider serviceProvider,
             ulong channelId,
-            AdminPortClient client,
+            IAdminPortClient client,
             OttdServer ottdServer)
             : base(serviceProvider)
         {
@@ -42,7 +42,7 @@ namespace OpenttdDiscord.Infrastructure.Chatting.Actors
             Self.Tell(new InitDiscordChannel());
         }
 
-        public static Props Create(IServiceProvider serviceProvider, ulong channelId, AdminPortClient client, OttdServer ottdServer)
+        public static Props Create(IServiceProvider serviceProvider, ulong channelId, IAdminPortClient client, OttdServer ottdServer)
             => Props.Create(() => new DiscordCommunicationActor(serviceProvider, channelId, client, ottdServer));
 
         private void Ready()

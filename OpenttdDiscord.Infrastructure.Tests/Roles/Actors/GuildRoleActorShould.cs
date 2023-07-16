@@ -17,9 +17,7 @@ namespace OpenttdDiscord.Infrastructure.Tests.Roles.Actors
 {
     public sealed class GuildRoleActorShould : BaseActorTestKit
     {
-        private readonly IFixture fix = new Fixture();
         private readonly IActorRef guildRoleActor = default!;
-        private readonly TestProbe probe;
         private readonly IRolesRepository rolesRepositoryMock = Substitute.For<IRolesRepository>();
 
         protected override void InitializeServiceProvider(IServiceCollection services)
@@ -30,7 +28,6 @@ namespace OpenttdDiscord.Infrastructure.Tests.Roles.Actors
         public GuildRoleActorShould(ITestOutputHelper testOutputHelper)
             : base(testOutputHelper)
         {
-            probe = CreateTestProbe();
             guildRoleActor = ActorOf(
                 GuildRoleActor.Create(
                     Sp,

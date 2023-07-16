@@ -4,5 +4,15 @@ namespace OpenttdDiscord.Infrastructure.Roles.Messages
 {
     public record GetRoleLevel(
         ulong GuildId,
-        ulong RoleId) : IGuildMessage;
+        IEnumerable<ulong> RoleIds) : IGuildMessage
+    {
+        public GetRoleLevel(
+            ulong guildId,
+            ulong roleId)
+            : this(
+                guildId,
+                new[] { roleId })
+        {
+        }
+    }
 }

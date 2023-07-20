@@ -5,6 +5,7 @@ using OpenttdDiscord.Database.Chatting;
 using OpenttdDiscord.Domain.Chatting;
 using OpenttdDiscord.Domain.Chatting.UseCases;
 using OpenttdDiscord.Domain.Security;
+using OpenttdDiscord.Infrastructure.Akkas;
 
 namespace OpenttdDiscord.Infrastructure.Chatting.UseCases
 {
@@ -12,7 +13,9 @@ namespace OpenttdDiscord.Infrastructure.Chatting.UseCases
     {
         private readonly IChatChannelRepository chatChannelRepository;
 
-        public GetChatChannelUseCase(IChatChannelRepository chatChannelRepository)
+        public GetChatChannelUseCase(IChatChannelRepository chatChannelRepository,
+                                     IAkkaService akkaService)
+        : base(akkaService)
         {
             this.chatChannelRepository = chatChannelRepository;
         }

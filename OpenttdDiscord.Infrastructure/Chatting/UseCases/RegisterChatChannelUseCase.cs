@@ -10,14 +10,13 @@ namespace OpenttdDiscord.Infrastructure.Chatting.UseCases
     internal class RegisterChatChannelUseCase : UseCaseBase, IRegisterChatChannelUseCase
     {
         private readonly IChatChannelRepository chatChannelRepository;
-        private readonly IAkkaService akkaService;
 
         public RegisterChatChannelUseCase(
             IChatChannelRepository chatChannelRepository,
             IAkkaService akkaService)
+        : base(akkaService)
         {
             this.chatChannelRepository = chatChannelRepository;
-            this.akkaService = akkaService;
         }
 
         public EitherAsyncUnit Execute(User user, ChatChannel chatChannel)
@@ -25,7 +24,7 @@ namespace OpenttdDiscord.Infrastructure.Chatting.UseCases
             return
                 from _1 in CheckIfHasCorrectUserLevel(user, UserLevel.Admin).ToAsync()
                 from _2 in chatChannelRepository.Insert(chatChannel)
-                from actor in akkaService.SelectActor(MainActors.Paths.Guilds)
+                from actor in AkkaService.SelectActor(MainActors.Paths.Guilds)
                 from _3 in actor.TellExt(new RegisterChatChannel(chatChannel)).ToAsync()
                 select _3;
         }

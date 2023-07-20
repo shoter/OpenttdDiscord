@@ -4,6 +4,7 @@ using OpenttdDiscord.Database.Statuses;
 using OpenttdDiscord.Domain.Security;
 using OpenttdDiscord.Domain.Statuses;
 using OpenttdDiscord.Domain.Statuses.UseCases;
+using OpenttdDiscord.Infrastructure.Akkas;
 
 namespace OpenttdDiscord.Infrastructure.Statuses.UseCases
 {
@@ -11,15 +12,22 @@ namespace OpenttdDiscord.Infrastructure.Statuses.UseCases
     {
         private readonly IStatusMonitorRepository statusMonitorRepository;
 
-        public UpdateStatusMonitorUseCase(IStatusMonitorRepository statusMonitorRepository)
+        public UpdateStatusMonitorUseCase(IStatusMonitorRepository statusMonitorRepository,
+                                          IAkkaService akkaService)
+            : base(akkaService)
         {
             this.statusMonitorRepository = statusMonitorRepository;
         }
 
-        public EitherAsync<IError, StatusMonitor> Execute(User user, StatusMonitor monitor)
+        public EitherAsync<IError, StatusMonitor> Execute(
+            User user,
+            StatusMonitor monitor)
         {
             return
-                from _1 in CheckIfHasCorrectUserLevel(user, UserLevel.Admin).ToAsync()
+                from _1 in CheckIfHasCorrectUserLevel(
+                        user,
+                        UserLevel.Admin)
+                    .ToAsync()
                 from statusMonitor in statusMonitorRepository.UpdateStatusMonitor(monitor)
                 select statusMonitor;
         }

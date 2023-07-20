@@ -12,12 +12,10 @@ namespace OpenttdDiscord.Infrastructure.Chatting.UseCases
     {
         private readonly IChatChannelRepository chatChannelRepository;
 
-        private readonly IAkkaService akkaService;
-
         public UnregisterChatChannelUseCase(IChatChannelRepository statusMonitorRepository, IAkkaService akkaService)
+        : base(akkaService)
         {
             this.chatChannelRepository = statusMonitorRepository;
-            this.akkaService = akkaService;
         }
 
         public EitherAsyncUnit Execute(User user, Guid serverId, ulong guildId, ulong chatChannelId)
@@ -25,7 +23,7 @@ namespace OpenttdDiscord.Infrastructure.Chatting.UseCases
             return
                 from _1 in CheckIfHasCorrectUserLevel(user, UserLevel.Admin).ToAsync()
                 from _2 in chatChannelRepository.Delete(serverId, chatChannelId)
-                from actor in akkaService.SelectActor(MainActors.Paths.Guilds)
+                from actor in AkkaService.SelectActor(MainActors.Paths.Guilds)
                 from _3 in actor.TellExt(new UnregisterChatChannel(serverId, guildId, chatChannelId)).ToAsync()
                 select _3;
         }

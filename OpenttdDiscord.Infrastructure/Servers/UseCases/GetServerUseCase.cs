@@ -4,6 +4,7 @@ using OpenttdDiscord.Database.Servers;
 using OpenttdDiscord.Domain.Security;
 using OpenttdDiscord.Domain.Servers;
 using OpenttdDiscord.Domain.Servers.UseCases;
+using OpenttdDiscord.Infrastructure.Akkas;
 
 namespace OpenttdDiscord.Infrastructure.Servers.UseCases
 {
@@ -11,7 +12,8 @@ namespace OpenttdDiscord.Infrastructure.Servers.UseCases
     {
         private readonly IOttdServerRepository ottdServerRepository;
 
-        public GetServerUseCase(IOttdServerRepository ottdServerRepository)
+        public GetServerUseCase(IOttdServerRepository ottdServerRepository, IAkkaService akkaService)
+        : base(akkaService)
         {
             this.ottdServerRepository = ottdServerRepository;
         }

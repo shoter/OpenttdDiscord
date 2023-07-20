@@ -4,6 +4,7 @@ using OpenttdDiscord.Database.Rcon;
 using OpenttdDiscord.Domain.Rcon;
 using OpenttdDiscord.Domain.Rcon.UseCases;
 using OpenttdDiscord.Domain.Security;
+using OpenttdDiscord.Infrastructure.Akkas;
 
 namespace OpenttdDiscord.Infrastructure.Rcon.UseCases
 {
@@ -11,7 +12,8 @@ namespace OpenttdDiscord.Infrastructure.Rcon.UseCases
     {
         private readonly IRconChannelRepository rconChannelRepository;
 
-        public ListRconChannelsUseCase(IRconChannelRepository rconChannelRepository)
+        public ListRconChannelsUseCase(IRconChannelRepository rconChannelRepository, IAkkaService akkaService)
+        : base(akkaService)
         {
             this.rconChannelRepository = rconChannelRepository;
         }

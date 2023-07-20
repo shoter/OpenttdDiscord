@@ -9,19 +9,26 @@ namespace OpenttdDiscord.Infrastructure.EventLogs.UseCases
 {
     internal class QueryEventLogUseCase : UseCaseBase, IQueryEventLogUseCase
     {
-        private readonly IAkkaService akkaService;
-
         public QueryEventLogUseCase(IAkkaService akkaService)
+            : base(akkaService)
         {
-            this.akkaService = akkaService;
         }
 
-        public EitherAsync<IError, IReadOnlyList<string>> Execute(User user, Guid serverId, ulong guildId)
+        public EitherAsync<IError, IReadOnlyList<string>> Execute(
+            User user,
+            Guid serverId,
+            ulong guildId)
         {
             return
-                from _1 in CheckIfHasCorrectUserLevel(user, UserLevel.Admin).ToAsync()
-                from actor in akkaService.SelectActor(MainActors.Paths.Guilds)
-                from response in actor.TryAsk<RetrievedEventLog>(new RetrieveEventLog(serverId, guildId))
+                from _1 in CheckIfHasCorrectUserLevel(
+                        user,
+                        UserLevel.Admin)
+                    .ToAsync()
+                from actor in AkkaService.SelectActor(MainActors.Paths.Guilds)
+                from response in actor.TryAsk<RetrievedEventLog>(
+                    new RetrieveEventLog(
+                        serverId,
+                        guildId))
                 select response.Messages;
         }
     }

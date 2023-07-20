@@ -16,28 +16,37 @@ namespace OpenttdDiscord.Infrastructure.Servers.UseCases
     {
         private readonly IOttdServerRepository ottdServerRepository;
         private readonly ILogger logger;
-        private readonly IAkkaService akkaService;
 
         public RemoveOttdServerUseCase(
             IOttdServerRepository ottdServerRepository,
             IAkkaService akkaService,
             ILogger<RemoveOttdServerUseCase> logger)
+            : base(akkaService)
         {
             this.logger = logger;
-            this.akkaService = akkaService;
             this.ottdServerRepository = ottdServerRepository;
         }
 
-        public async Task<EitherUnit> Execute(User user, ulong guildId, string serverName)
+        public async Task<EitherUnit> Execute(
+            User user,
+            ulong guildId,
+            string serverName)
         {
             logger.LogInformation($"Removing {serverName} for {user}");
             return await
-            (from _1 in CheckIfHasCorrectUserLevel(user, UserLevel.Admin).ToAsync()
-             from server in ottdServerRepository.GetServerByName(guildId, serverName)
-             from _2 in ottdServerRepository.DeleteServer(server.Id).ToAsync()
-             from actor in akkaService.SelectActor(MainActors.Paths.Guilds)
-             from _3 in actor.TellExt(new InformAboutServerDeletion(server)).ToAsync()
-             select _3);
+                (from _1 in CheckIfHasCorrectUserLevel(
+                            user,
+                            UserLevel.Admin)
+                        .ToAsync()
+                    from server in ottdServerRepository.GetServerByName(
+                        guildId,
+                        serverName)
+                    from _2 in ottdServerRepository.DeleteServer(server.Id)
+                        .ToAsync()
+                    from actor in AkkaService.SelectActor(MainActors.Paths.Guilds)
+                    from _3 in actor.TellExt(new InformAboutServerDeletion(server))
+                        .ToAsync()
+                    select _3);
         }
     }
 }

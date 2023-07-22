@@ -12,6 +12,7 @@ using OpenttdDiscord.Domain.Rcon;
 using OpenttdDiscord.Domain.Rcon.UseCases;
 using OpenttdDiscord.Domain.Security;
 using OpenttdDiscord.Domain.Servers.UseCases;
+using OpenttdDiscord.Infrastructure.Akkas;
 using OpenttdDiscord.Infrastructure.Discord.Responses;
 using OpenttdDiscord.Infrastructure.Discord.Runners;
 
@@ -28,7 +29,9 @@ namespace OpenttdDiscord.Infrastructure.Rcon.Runners
         public ListRconChannelsRunner(
             DiscordSocketClient discord,
             IGetServerUseCase getServerUseCase,
-            IListRconChannelsUseCase listRconChannelsUseCase)
+            IListRconChannelsUseCase listRconChannelsUseCase,
+            IAkkaService akkaService)
+        : base(akkaService)
         {
             this.discord = discord;
             this.getServerUseCase = getServerUseCase;

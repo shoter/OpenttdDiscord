@@ -4,6 +4,7 @@ using OpenttdDiscord.Base.Basics;
 using OpenttdDiscord.Base.Ext;
 using OpenttdDiscord.Domain.Security;
 using OpenttdDiscord.Domain.Servers.UseCases;
+using OpenttdDiscord.Infrastructure.Akkas;
 using OpenttdDiscord.Infrastructure.Discord;
 using OpenttdDiscord.Infrastructure.Discord.Commands;
 using OpenttdDiscord.Infrastructure.Discord.Responses;
@@ -12,11 +13,12 @@ using OpenttdDiscord.Infrastructure.Servers.UseCases;
 
 namespace OpenttdDiscord.Infrastructure.Servers.Runners
 {
-    internal class RemoveOttdServerRunner : OttdSlashCommandRunnerBase, IOttdSlashCommandRunner
+    internal class RemoveOttdServerRunner : OttdSlashCommandRunnerBase
     {
         private readonly IRemoveOttdServerUseCase removeOttdServerUseCase;
 
-        public RemoveOttdServerRunner(IRemoveOttdServerUseCase removeOttdServerUseCase)
+        public RemoveOttdServerRunner(IRemoveOttdServerUseCase removeOttdServerUseCase, IAkkaService akkaService)
+        : base(akkaService)
         {
             this.removeOttdServerUseCase = removeOttdServerUseCase;
         }

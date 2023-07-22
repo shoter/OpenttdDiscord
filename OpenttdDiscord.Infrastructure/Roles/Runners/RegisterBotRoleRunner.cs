@@ -12,11 +12,9 @@ namespace OpenttdDiscord.Infrastructure.Roles.Runners
 {
     internal class RegisterBotRoleRunner : OttdSlashCommandRunnerBase
     {
-        private readonly IAkkaService akkaService;
-
         public RegisterBotRoleRunner(IAkkaService akkaService)
+        : base(akkaService)
         {
-            this.akkaService = akkaService;
         }
 
         protected override EitherAsync<IError, ISlashCommandResponse> RunInternal(
@@ -42,7 +40,7 @@ namespace OpenttdDiscord.Infrastructure.Roles.Runners
                 (UserLevel)roleLevel);
 
             return
-                from actor in akkaService.SelectActor(MainActors.Paths.Guilds)
+                from actor in AkkaService.SelectActor(MainActors.Paths.Guilds)
                 from _1 in actor.TryAsk(msg)
                 select new TextCommandResponse("Role has been registered") as ISlashCommandResponse;
         }

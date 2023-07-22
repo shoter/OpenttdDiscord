@@ -5,6 +5,7 @@ using OpenttdDiscord.Base.Ext;
 using OpenttdDiscord.Domain.Reporting.UseCases;
 using OpenttdDiscord.Domain.Security;
 using OpenttdDiscord.Domain.Servers.UseCases;
+using OpenttdDiscord.Infrastructure.Akkas;
 using OpenttdDiscord.Infrastructure.Discord.Responses;
 using OpenttdDiscord.Infrastructure.Discord.Runners;
 
@@ -17,7 +18,9 @@ namespace OpenttdDiscord.Infrastructure.Reporting.Runners
 
         public UnregisterReportChannelRunner(
             IGetServerUseCase getServerByNameUseCase,
-            IUnregisterReportChannelUseCase unregisterReportChannelUseCase)
+            IUnregisterReportChannelUseCase unregisterReportChannelUseCase,
+            IAkkaService akkaService)
+        : base(akkaService)
         {
             this.getServerByNameUseCase = getServerByNameUseCase;
             this.unregisterReportChannelUseCase = unregisterReportChannelUseCase;

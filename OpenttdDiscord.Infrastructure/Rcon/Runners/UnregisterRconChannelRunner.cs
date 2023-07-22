@@ -10,6 +10,7 @@ using OpenttdDiscord.Base.Ext;
 using OpenttdDiscord.Domain.Rcon.UseCases;
 using OpenttdDiscord.Domain.Security;
 using OpenttdDiscord.Domain.Servers.UseCases;
+using OpenttdDiscord.Infrastructure.Akkas;
 using OpenttdDiscord.Infrastructure.Discord.Responses;
 using OpenttdDiscord.Infrastructure.Discord.Runners;
 
@@ -22,7 +23,9 @@ namespace OpenttdDiscord.Infrastructure.Rcon.Runners
 
         public UnregisterRconChannelRunner(
             IGetServerUseCase getServerByNameUseCase,
-            IUnregisterRconChannelUseCase unregisterRconChannelUseCase)
+            IUnregisterRconChannelUseCase unregisterRconChannelUseCase,
+            IAkkaService akkaService)
+        : base(akkaService)
         {
             this.getServerByNameUseCase = getServerByNameUseCase;
             this.unregisterRconChannelUseCase = unregisterRconChannelUseCase;

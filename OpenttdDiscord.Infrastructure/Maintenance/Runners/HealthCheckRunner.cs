@@ -14,11 +14,9 @@ namespace OpenttdDiscord.Infrastructure.Maintenance.Runners
 {
     internal class HealthCheckRunner : OttdSlashCommandRunnerBase
     {
-        private readonly IAkkaService akkaService;
-
         public HealthCheckRunner(IAkkaService akkaService)
+            : base(akkaService)
         {
-            this.akkaService = akkaService;
         }
 
         protected override EitherAsync<IError, ISlashCommandResponse> RunInternal(
@@ -31,8 +29,9 @@ namespace OpenttdDiscord.Infrastructure.Maintenance.Runners
                         user,
                         UserLevel.Moderator)
                     .ToAsync()
-                from selection in akkaService.SelectActor(MainActors.Paths.HealthCheck)
-                from healthCheckResponse in selection.TryAsk<HealthCheckResponse>(new HealthCheckRequest(command.GuildId!.Value))
+                from selection in AkkaService.SelectActor(MainActors.Paths.HealthCheck)
+                from healthCheckResponse in selection.TryAsk<HealthCheckResponse>(
+                    new HealthCheckRequest(command.GuildId!.Value))
                 select CreateResponse(healthCheckResponse);
         }
 

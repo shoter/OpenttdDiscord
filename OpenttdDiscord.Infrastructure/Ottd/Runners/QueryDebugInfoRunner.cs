@@ -13,13 +13,12 @@ namespace OpenttdDiscord.Infrastructure.Ottd.Runners
 {
     internal class QueryDebugInfoRunner : OttdSlashCommandRunnerBase
     {
-        private readonly IAkkaService akkaService;
 
         private readonly IGetServerUseCase getServerUseCase;
 
         public QueryDebugInfoRunner(IAkkaService akkaService, IGetServerUseCase getServerUseCase)
+        : base(akkaService)
         {
-            this.akkaService = akkaService;
             this.getServerUseCase = getServerUseCase;
         }
 
@@ -32,7 +31,7 @@ namespace OpenttdDiscord.Infrastructure.Ottd.Runners
             return
                 from _1 in CheckIfHasCorrectUserLevel(user, UserLevel.Moderator).ToAsync()
                 from server in getServerUseCase.Execute(user, serverName, guildId)
-                from _2 in akkaService.ExecuteServerAction(new QueryDebugInfo(server.Id, guildId, channelId))
+                from _2 in AkkaService.ExecuteServerAction(new QueryDebugInfo(server.Id, guildId, channelId))
                 select (ISlashCommandResponse)new TextCommandResponse("Executing");
         }
     }

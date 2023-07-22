@@ -6,6 +6,7 @@ using OpenttdDiscord.Domain.Chatting;
 using OpenttdDiscord.Domain.Chatting.UseCases;
 using OpenttdDiscord.Domain.Security;
 using OpenttdDiscord.Domain.Servers.UseCases;
+using OpenttdDiscord.Infrastructure.Akkas;
 using OpenttdDiscord.Infrastructure.Discord.Responses;
 using OpenttdDiscord.Infrastructure.Discord.Runners;
 
@@ -22,7 +23,9 @@ namespace OpenttdDiscord.Infrastructure.Chatting.Runners
         public RegisterChatChannelRunner(
             IGetServerUseCase getServerByNameUseCase,
             IRegisterChatChannelUseCase registerChatChannelUseCase,
-            IGetChatChannelUseCase getChatChannelUseCase)
+            IGetChatChannelUseCase getChatChannelUseCase,
+            IAkkaService akkaService)
+        : base(akkaService)
         {
             this.getServerByNameUseCase = getServerByNameUseCase;
             this.registerChatChannelUseCase = registerChatChannelUseCase;

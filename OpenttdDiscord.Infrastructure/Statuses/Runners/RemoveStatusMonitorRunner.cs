@@ -5,6 +5,7 @@ using OpenttdDiscord.Base.Ext;
 using OpenttdDiscord.Domain.Security;
 using OpenttdDiscord.Domain.Servers;
 using OpenttdDiscord.Domain.Statuses.UseCases;
+using OpenttdDiscord.Infrastructure.Akkas;
 using OpenttdDiscord.Infrastructure.Discord.Responses;
 using OpenttdDiscord.Infrastructure.Discord.Runners;
 
@@ -18,7 +19,9 @@ namespace OpenttdDiscord.Infrastructure.Statuses.Runners
 
         public RemoveStatusMonitorRunner(
             IRemoveStatusMonitorUseCase removeStatusMonitorUseCase,
-            IOttdServerRepository ottdServerRepository)
+            IOttdServerRepository ottdServerRepository,
+            IAkkaService akkaService)
+        : base(akkaService)
         {
             this.removeStatusMonitorUseCase = removeStatusMonitorUseCase;
             this.ottdServerRepository = ottdServerRepository;

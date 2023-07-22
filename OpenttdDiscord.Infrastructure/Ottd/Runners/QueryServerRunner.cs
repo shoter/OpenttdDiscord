@@ -17,14 +17,13 @@ namespace OpenttdDiscord.Infrastructure.Ottd.Runners
 {
     internal class QueryServerRunner : OttdSlashCommandRunnerBase
     {
-        private readonly IAkkaService akkaService;
         private readonly IOttdServerRepository ottdServerRepository;
 
         public QueryServerRunner(
             IAkkaService akkaService,
             IOttdServerRepository ottdServerRepository)
+        : base(akkaService)
         {
-            this.akkaService = akkaService;
             this.ottdServerRepository = ottdServerRepository;
         }
 
@@ -40,7 +39,7 @@ namespace OpenttdDiscord.Infrastructure.Ottd.Runners
 
             return
                 from server in ottdServerRepository.GetServerByName(command.GuildId!.Value, serverName)
-                from actor in akkaService.SelectActor(MainActors.Paths.Guilds)
+                from actor in AkkaService.SelectActor(MainActors.Paths.Guilds)
                 from _1 in actor.TellExt(new QueryServer(server.Id, command.GuildId!.Value, channelId)).ToAsync()
                 select (ISlashCommandResponse)new TextCommandResponse("Executing command");
         }

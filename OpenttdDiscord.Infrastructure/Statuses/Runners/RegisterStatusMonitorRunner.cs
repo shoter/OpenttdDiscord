@@ -5,6 +5,7 @@ using OpenttdDiscord.Base.Ext;
 using OpenttdDiscord.Domain.Security;
 using OpenttdDiscord.Domain.Servers;
 using OpenttdDiscord.Domain.Statuses.UseCases;
+using OpenttdDiscord.Infrastructure.Akkas;
 using OpenttdDiscord.Infrastructure.Discord.Responses;
 using OpenttdDiscord.Infrastructure.Discord.Runners;
 
@@ -21,7 +22,9 @@ namespace OpenttdDiscord.Infrastructure.Statuses.Runners
         public RegisterStatusMonitorRunner(
             IOttdServerRepository ottdServerRepository,
             IRegisterStatusMonitorUseCase registerStatusMonitorUseCase,
-            ICheckIfStatusMonitorExistsUseCase checkIfStatusMonitorExistsUseCase)
+            ICheckIfStatusMonitorExistsUseCase checkIfStatusMonitorExistsUseCase,
+            IAkkaService akkaService)
+        : base(akkaService)
         {
             this.ottdServerRepository = ottdServerRepository;
             this.registerStatusMonitorUseCase = registerStatusMonitorUseCase;

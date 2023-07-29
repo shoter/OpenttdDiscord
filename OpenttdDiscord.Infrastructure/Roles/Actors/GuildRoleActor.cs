@@ -85,7 +85,7 @@ namespace OpenttdDiscord.Infrastructure.Roles.Actors
             {
                 var guildRoleMaybe = guildRoles.MaybeGetValue(roleId);
 
-                guildRoleMaybe.Some(
+                guildRoleMaybe.IfSome(
                     roleLevel =>
                     {
                         if (roleLevel.RoleLevel > userLevel)
@@ -95,7 +95,7 @@ namespace OpenttdDiscord.Infrastructure.Roles.Actors
                     });
             }
 
-            Sender.Tell(userLevel);
+            Sender.Tell(new GetRoleLevelResponse(userLevel));
         }
 
         private EitherAsyncUnit DeleteRole(DeleteRole msg) =>

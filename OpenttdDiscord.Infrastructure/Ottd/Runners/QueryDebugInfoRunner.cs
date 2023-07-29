@@ -13,26 +13,40 @@ namespace OpenttdDiscord.Infrastructure.Ottd.Runners
 {
     internal class QueryDebugInfoRunner : OttdSlashCommandRunnerBase
     {
-
         private readonly IGetServerUseCase getServerUseCase;
 
-        public QueryDebugInfoRunner(IAkkaService akkaService, IGetServerUseCase getServerUseCase)
-        : base(akkaService)
+        public QueryDebugInfoRunner(
+            IAkkaService akkaService,
+            IGetServerUseCase getServerUseCase)
+            : base(akkaService)
         {
             this.getServerUseCase = getServerUseCase;
         }
 
-        protected override EitherAsync<IError, ISlashCommandResponse> RunInternal(SocketSlashCommand command, User user, ExtDictionary<string, object> options)
+        protected override EitherAsync<IError, ISlashCommandResponse> RunInternal(
+            SocketSlashCommand command,
+            User user,
+            ExtDictionary<string, object> options)
         {
             string serverName = options.GetValueAs<string>("server-name");
             ulong guildId = command.GuildId!.Value;
             ulong channelId = command.ChannelId!.Value;
 
             return
-                from _1 in CheckIfHasCorrectUserLevel(user, UserLevel.Moderator).ToAsync()
-                from server in getServerUseCase.Execute(user, serverName, guildId)
-                from _2 in AkkaService.ExecuteServerAction(new QueryDebugInfo(server.Id, guildId, channelId))
-                select (ISlashCommandResponse)new TextCommandResponse("Executing");
+                from _1 in CheckIfHasCorrectUserLevel(
+                        user,
+                        UserLevel.Moderator)
+                    .ToAsync()
+                from server in getServerUseCase.Execute(
+                    user,
+                    serverName,
+                    guildId)
+                from _2 in AkkaService.ExecuteServerAction(
+                    new QueryDebugInfo(
+                        server.Id,
+                        guildId,
+                        channelId))
+                select (ISlashCommandResponse) new TextCommandResponse("Executing");
         }
     }
 }

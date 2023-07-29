@@ -37,8 +37,8 @@ namespace OpenttdDiscord.Infrastructure.Chatting.Runners
             string serverName = options.GetValueAs<string>("server-name");
 
             return
-                from guildId in CheckIfGuildCommand(command).ToAsync()
-                from channelId in CheckIfChannelCommand(command).ToAsync()
+                from guildId in EnsureItIsGuildCommand(command).ToAsync()
+                from channelId in EnsureItIsChannelCommand(command).ToAsync()
                 from server in getServerByNameUseCase.Execute(user, serverName, guildId)
                 from _1 in ReturnErrorIfChatChannelExists(user, server.Id, channelId)
                 from _2 in registerChatChannelUseCase.Execute(user, new ChatChannel(server.Id, guildId, channelId))

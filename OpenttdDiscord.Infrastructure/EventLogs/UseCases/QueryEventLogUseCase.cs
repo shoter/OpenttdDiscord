@@ -9,9 +9,11 @@ namespace OpenttdDiscord.Infrastructure.EventLogs.UseCases
 {
     internal class QueryEventLogUseCase : UseCaseBase, IQueryEventLogUseCase
     {
+        private readonly IAkkaService akkaService;
+
         public QueryEventLogUseCase(IAkkaService akkaService)
-            : base(akkaService)
         {
+            this.akkaService = akkaService;
         }
 
         public EitherAsync<IError, IReadOnlyList<string>> Execute(
@@ -24,7 +26,7 @@ namespace OpenttdDiscord.Infrastructure.EventLogs.UseCases
                         user,
                         UserLevel.Admin)
                     .ToAsync()
-                from actor in AkkaService.SelectActor(MainActors.Paths.Guilds)
+                from actor in akkaService.SelectActor(MainActors.Paths.Guilds)
                 from response in actor.TryAsk<RetrievedEventLog>(
                     new RetrieveEventLog(
                         serverId,

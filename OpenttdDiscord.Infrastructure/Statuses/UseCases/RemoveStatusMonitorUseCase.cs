@@ -11,12 +11,14 @@ namespace OpenttdDiscord.Infrastructure.Statuses.UseCases
     {
         private readonly IStatusMonitorRepository statusMonitorRepository;
 
+        private readonly IAkkaService akkaService;
+
         public RemoveStatusMonitorUseCase(
             IStatusMonitorRepository statusMonitorRepository,
             IAkkaService akkaService)
-            : base(akkaService)
         {
             this.statusMonitorRepository = statusMonitorRepository;
+            this.akkaService = akkaService;
         }
 
         public EitherAsyncUnit Execute(
@@ -38,7 +40,7 @@ namespace OpenttdDiscord.Infrastructure.Statuses.UseCases
                 from _2 in statusMonitorRepository.RemoveStatusMonitor(
                     serverId,
                     channelId)
-                from guilds in AkkaService.SelectActor(MainActors.Paths.Guilds)
+                from guilds in akkaService.SelectActor(MainActors.Paths.Guilds)
                 from _3 in guilds.TryAsk(
                     msg,
                     TimeSpan.FromSeconds(1))

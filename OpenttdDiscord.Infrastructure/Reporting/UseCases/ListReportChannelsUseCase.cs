@@ -13,9 +13,7 @@ namespace OpenttdDiscord.Infrastructure.Reporting.UseCases
         private readonly IReportChannelRepository reportChannelRepository;
 
         public ListReportChannelsUseCase(
-            IReportChannelRepository reportChannelRepository,
-            IAkkaService akkaService)
-            : base(akkaService)
+            IReportChannelRepository reportChannelRepository)
         {
             this.reportChannelRepository = reportChannelRepository;
         }

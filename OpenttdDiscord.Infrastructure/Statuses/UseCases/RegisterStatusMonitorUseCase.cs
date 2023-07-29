@@ -18,14 +18,16 @@ namespace OpenttdDiscord.Infrastructure.Statuses.UseCases
 
         private readonly DiscordSocketClient discord;
 
+        private readonly IAkkaService akkaService;
+
         public RegisterStatusMonitorUseCase(
             IStatusMonitorRepository statusMonitorRepository,
-            IAkkaService akkaService,
-            DiscordSocketClient discord)
-        : base(akkaService)
+            DiscordSocketClient discord,
+            IAkkaService akkaService)
         {
             this.statusMonitorRepository = statusMonitorRepository;
             this.discord = discord;
+            this.akkaService = akkaService;
         }
 
         public EitherAsync<IError, StatusMonitor> Execute(User user, OttdServer server, ulong guildId, ulong channelId)
@@ -43,7 +45,7 @@ namespace OpenttdDiscord.Infrastructure.Statuses.UseCases
                  channelId,
                  messageId,
                  DateTime.MinValue.ToUniversalTime()))
-             from guilds in AkkaService.SelectActor(MainActors.Paths.Guilds)
+             from guilds in akkaService.SelectActor(MainActors.Paths.Guilds)
              from _3 in guilds.TryAsk(new RegisterStatusMonitor(statusMonitor), TimeSpan.FromSeconds(1))
              select statusMonitor)
              .LeftRollback(transactionLog);

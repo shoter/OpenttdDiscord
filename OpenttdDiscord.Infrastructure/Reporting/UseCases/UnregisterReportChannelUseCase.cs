@@ -11,12 +11,14 @@ namespace OpenttdDiscord.Infrastructure.Reporting.UseCases
     {
         private readonly IReportChannelRepository reportChannelRepository;
 
+        private readonly IAkkaService akkaService;
+
         public UnregisterReportChannelUseCase(
             IReportChannelRepository reportChannelRepository,
             IAkkaService akkaService)
-            : base(akkaService)
         {
             this.reportChannelRepository = reportChannelRepository;
+            this.akkaService = akkaService;
         }
 
         public EitherAsyncUnit Execute(
@@ -33,7 +35,7 @@ namespace OpenttdDiscord.Infrastructure.Reporting.UseCases
                 from _2 in reportChannelRepository.Delete(
                     serverId,
                     channelId)
-                from actor in AkkaService.SelectActor(MainActors.Paths.Guilds)
+                from actor in akkaService.SelectActor(MainActors.Paths.Guilds)
                 from _3 in actor.TellExt(
                         new UnregisterReportChannel(
                             serverId,

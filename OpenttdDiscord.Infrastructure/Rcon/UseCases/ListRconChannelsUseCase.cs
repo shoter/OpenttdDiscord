@@ -12,24 +12,34 @@ namespace OpenttdDiscord.Infrastructure.Rcon.UseCases
     {
         private readonly IRconChannelRepository rconChannelRepository;
 
-        public ListRconChannelsUseCase(IRconChannelRepository rconChannelRepository, IAkkaService akkaService)
-        : base(akkaService)
+        public ListRconChannelsUseCase(
+            IRconChannelRepository rconChannelRepository)
         {
             this.rconChannelRepository = rconChannelRepository;
         }
 
-        public EitherAsync<IError, List<RconChannel>> Execute(User user, Guid serverId)
+        public EitherAsync<IError, List<RconChannel>> Execute(
+            User user,
+            Guid serverId)
         {
             return
-                from _1 in CheckIfHasCorrectUserLevel(user, UserLevel.Moderator).ToAsync()
+                from _1 in CheckIfHasCorrectUserLevel(
+                        user,
+                        UserLevel.Moderator)
+                    .ToAsync()
                 from rconChannels in rconChannelRepository.GetRconChannelsForTheServer(serverId)
                 select rconChannels;
         }
 
-        public EitherAsync<IError, List<RconChannel>> Execute(User user, ulong guildId)
+        public EitherAsync<IError, List<RconChannel>> Execute(
+            User user,
+            ulong guildId)
         {
             return
-                from _1 in CheckIfHasCorrectUserLevel(user, UserLevel.Moderator).ToAsync()
+                from _1 in CheckIfHasCorrectUserLevel(
+                        user,
+                        UserLevel.Moderator)
+                    .ToAsync()
                 from rconChannels in rconChannelRepository.GetRconChannelsForTheGuild(guildId)
                 select rconChannels;
         }

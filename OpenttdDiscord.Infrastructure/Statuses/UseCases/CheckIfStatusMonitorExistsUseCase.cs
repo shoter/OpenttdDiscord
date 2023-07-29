@@ -11,9 +11,7 @@ namespace OpenttdDiscord.Infrastructure.Statuses.UseCases
     {
         private readonly IStatusMonitorRepository statusMonitorRepository;
 
-        public CheckIfStatusMonitorExistsUseCase(IStatusMonitorRepository statusMonitorRepository,
-                                                 IAkkaService akkaService)
-        : base(akkaService)
+        public CheckIfStatusMonitorExistsUseCase(IStatusMonitorRepository statusMonitorRepository)
         {
             this.statusMonitorRepository = statusMonitorRepository;
         }

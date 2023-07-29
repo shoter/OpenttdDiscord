@@ -13,9 +13,7 @@ namespace OpenttdDiscord.Infrastructure.Chatting.UseCases
     {
         private readonly IChatChannelRepository chatChannelRepository;
 
-        public GetChatChannelUseCase(IChatChannelRepository chatChannelRepository,
-                                     IAkkaService akkaService)
-        : base(akkaService)
+        public GetChatChannelUseCase(IChatChannelRepository chatChannelRepository)
         {
             this.chatChannelRepository = chatChannelRepository;
         }

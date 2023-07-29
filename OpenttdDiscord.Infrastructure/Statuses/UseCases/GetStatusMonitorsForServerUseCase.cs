@@ -12,9 +12,7 @@ namespace OpenttdDiscord.Infrastructure.Statuses.UseCases
     {
         private readonly IStatusMonitorRepository statusMonitorRepository;
 
-        public GetStatusMonitorsForServerUseCase(IStatusMonitorRepository statusMonitorRepository,
-                                                 IAkkaService akkaService)
-        : base(akkaService)
+        public GetStatusMonitorsForServerUseCase(IStatusMonitorRepository statusMonitorRepository)
         {
             this.statusMonitorRepository = statusMonitorRepository;
         }

@@ -16,14 +16,15 @@ namespace OpenttdDiscord.Infrastructure.Servers.UseCases
     {
         private readonly IOttdServerRepository ottdServerRepository;
         private readonly ILogger logger;
+        private readonly IAkkaService akkaService;
 
         public RemoveOttdServerUseCase(
             IOttdServerRepository ottdServerRepository,
-            IAkkaService akkaService,
-            ILogger<RemoveOttdServerUseCase> logger)
-            : base(akkaService)
+            ILogger<RemoveOttdServerUseCase> logger,
+            IAkkaService akkaService)
         {
             this.logger = logger;
+            this.akkaService = akkaService;
             this.ottdServerRepository = ottdServerRepository;
         }
 
@@ -43,7 +44,7 @@ namespace OpenttdDiscord.Infrastructure.Servers.UseCases
                         serverName)
                     from _2 in ottdServerRepository.DeleteServer(server.Id)
                         .ToAsync()
-                    from actor in AkkaService.SelectActor(MainActors.Paths.Guilds)
+                    from actor in akkaService.SelectActor(MainActors.Paths.Guilds)
                     from _3 in actor.TellExt(new InformAboutServerDeletion(server))
                         .ToAsync()
                     select _3);

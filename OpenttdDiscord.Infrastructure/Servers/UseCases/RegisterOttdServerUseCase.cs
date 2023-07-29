@@ -21,15 +21,15 @@ namespace OpenttdDiscord.Infrastructure.Servers.UseCases
         private readonly IOttdServerRepository ottdServerRepository;
         private readonly ILogger logger;
         private readonly OttdValidator<OttdServerValidator, OttdServer> validator = new(new());
+        private readonly IAkkaService akkaService;
 
         public RegisterOttdServerUseCase(
             ILogger<RegisterOttdServerUseCase> logger,
-            IAkkaService akkaService,
-            IOttdServerRepository ottdServerRepository
-            )
-        : base(akkaService)
+            IOttdServerRepository ottdServerRepository,
+            IAkkaService akkaService)
         {
             this.ottdServerRepository = ottdServerRepository;
+            this.akkaService = akkaService;
             this.logger = logger;
         }
 
@@ -42,7 +42,7 @@ namespace OpenttdDiscord.Infrastructure.Servers.UseCases
                 from _1 in validator.Validate(server).ToAsync()
                 from _2 in CheckIfSerwerExists(server.GuildId, server.Name)
                 from _3 in ottdServerRepository.InsertServer(server).ToAsync()
-                from selection in AkkaService.SelectActor(MainActors.Paths.Guilds)
+                from selection in akkaService.SelectActor(MainActors.Paths.Guilds)
                 from _4 in selection.TellExt(new InformAboutServerRegistration(server)).ToAsync()
                 select _4;
         }

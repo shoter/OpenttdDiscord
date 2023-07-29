@@ -32,12 +32,7 @@ namespace OpenttdDiscord.Infrastructure.Roles.Runners
             ulong guildId = command.GuildId!.Value;
 
             return
-                from guildsActor in AkkaService.SelectActor(MainActors.Paths.Guilds)
-                from roleLevel in guildsActor.TryAsk<GetRoleLevelResponse>(
-                    new GetRoleLevel(
-                        guildId,
-                        guildUser.Roles.Select(x => x.Id)))
-                select new TextCommandResponse($"Your role level - {roleLevel.RoleLevel}") as ISlashCommandResponse;
+                 new TextCommandResponse($"Your role level - {user.UserLevel}");
         }
     }
 }

@@ -3,6 +3,7 @@ using LanguageExt;
 using LanguageExt.Common;
 using OpenttdDiscord.Base.Basics;
 using OpenttdDiscord.Base.Ext;
+using OpenttdDiscord.Domain.Roles.UseCases;
 using OpenttdDiscord.Domain.Security;
 using OpenttdDiscord.Domain.Servers;
 using OpenttdDiscord.Domain.Servers.UseCases;
@@ -20,8 +21,11 @@ namespace OpenttdDiscord.Infrastructure.Servers.Runners
 
         public RegisterServerRunner(
             IRegisterOttdServerUseCase useCase,
-            IAkkaService akkaService)
-            : base(akkaService)
+            IAkkaService akkaService,
+            IGetRoleLevelUseCase getRoleLevelUseCase)
+            : base(
+                akkaService,
+                getRoleLevelUseCase)
         {
             this.useCase = useCase;
         }

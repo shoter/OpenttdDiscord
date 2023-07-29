@@ -2,6 +2,7 @@
 using LanguageExt;
 using OpenttdDiscord.Base.Basics;
 using OpenttdDiscord.Base.Ext;
+using OpenttdDiscord.Domain.Roles.UseCases;
 using OpenttdDiscord.Domain.Security;
 using OpenttdDiscord.Domain.Servers;
 using OpenttdDiscord.Domain.Statuses.UseCases;
@@ -23,8 +24,9 @@ namespace OpenttdDiscord.Infrastructure.Statuses.Runners
             IOttdServerRepository ottdServerRepository,
             IRegisterStatusMonitorUseCase registerStatusMonitorUseCase,
             ICheckIfStatusMonitorExistsUseCase checkIfStatusMonitorExistsUseCase,
-            IAkkaService akkaService)
-        : base(akkaService)
+            IAkkaService akkaService,
+            IGetRoleLevelUseCase getRoleLevelUseCase)
+        : base(akkaService, getRoleLevelUseCase)
         {
             this.ottdServerRepository = ottdServerRepository;
             this.registerStatusMonitorUseCase = registerStatusMonitorUseCase;

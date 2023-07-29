@@ -4,6 +4,7 @@ using LanguageExt;
 using OpenttdDiscord.Base.Basics;
 using OpenttdDiscord.Base.Ext;
 using OpenttdDiscord.Database.Servers;
+using OpenttdDiscord.Domain.Roles.UseCases;
 using OpenttdDiscord.Domain.Security;
 using OpenttdDiscord.Domain.Servers;
 using OpenttdDiscord.Infrastructure.Akkas;
@@ -21,8 +22,9 @@ namespace OpenttdDiscord.Infrastructure.Ottd.Runners
 
         public QueryServerRunner(
             IAkkaService akkaService,
-            IOttdServerRepository ottdServerRepository)
-        : base(akkaService)
+            IOttdServerRepository ottdServerRepository,
+            IGetRoleLevelUseCase getRoleLevelUseCase)
+        : base(akkaService, getRoleLevelUseCase)
         {
             this.ottdServerRepository = ottdServerRepository;
         }

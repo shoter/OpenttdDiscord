@@ -10,6 +10,7 @@ using OpenttdDiscord.Base.Basics;
 using OpenttdDiscord.Base.Ext;
 using OpenttdDiscord.Domain.Rcon;
 using OpenttdDiscord.Domain.Rcon.UseCases;
+using OpenttdDiscord.Domain.Roles.UseCases;
 using OpenttdDiscord.Domain.Security;
 using OpenttdDiscord.Domain.Servers.UseCases;
 using OpenttdDiscord.Infrastructure.Akkas;
@@ -30,8 +31,9 @@ namespace OpenttdDiscord.Infrastructure.Rcon.Runners
             DiscordSocketClient discord,
             IGetServerUseCase getServerUseCase,
             IListRconChannelsUseCase listRconChannelsUseCase,
-            IAkkaService akkaService)
-        : base(akkaService)
+            IAkkaService akkaService,
+            IGetRoleLevelUseCase getRoleLevelUseCase)
+        : base(akkaService, getRoleLevelUseCase)
         {
             this.discord = discord;
             this.getServerUseCase = getServerUseCase;

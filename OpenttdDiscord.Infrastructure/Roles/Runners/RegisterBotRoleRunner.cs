@@ -2,6 +2,7 @@ using Discord.WebSocket;
 using LanguageExt;
 using OpenttdDiscord.Base.Basics;
 using OpenttdDiscord.Base.Ext;
+using OpenttdDiscord.Domain.Roles.UseCases;
 using OpenttdDiscord.Domain.Security;
 using OpenttdDiscord.Infrastructure.Akkas;
 using OpenttdDiscord.Infrastructure.Discord.Responses;
@@ -12,8 +13,9 @@ namespace OpenttdDiscord.Infrastructure.Roles.Runners
 {
     internal class RegisterBotRoleRunner : OttdSlashCommandRunnerBase
     {
-        public RegisterBotRoleRunner(IAkkaService akkaService)
-        : base(akkaService)
+        public RegisterBotRoleRunner(IAkkaService akkaService,
+                                     IGetRoleLevelUseCase getRoleLevelUseCase)
+        : base(akkaService, getRoleLevelUseCase)
         {
         }
 

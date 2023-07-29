@@ -1,6 +1,7 @@
 ﻿using Akka.Actor;
 using LanguageExt;
 using OpenttdDiscord.Base.Ext;
+using OpenttdDiscord.Infrastructure.Ottd.Messages;
 
 namespace OpenttdDiscord.Infrastructure.Akkas
 {

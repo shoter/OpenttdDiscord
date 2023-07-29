@@ -4,6 +4,7 @@ using Discord.WebSocket;
 using LanguageExt;
 using OpenttdDiscord.Base.Basics;
 using OpenttdDiscord.Base.Ext;
+using OpenttdDiscord.Domain.Roles.UseCases;
 using OpenttdDiscord.Domain.Security;
 using OpenttdDiscord.Infrastructure.Akkas;
 using OpenttdDiscord.Infrastructure.Discord.Responses;
@@ -14,8 +15,9 @@ namespace OpenttdDiscord.Infrastructure.Maintenance.Runners
 {
     internal class HealthCheckRunner : OttdSlashCommandRunnerBase
     {
-        public HealthCheckRunner(IAkkaService akkaService)
-            : base(akkaService)
+        public HealthCheckRunner(IAkkaService akkaService,
+                                 IGetRoleLevelUseCase getRoleLevelUseCase)
+            : base(akkaService, getRoleLevelUseCase)
         {
         }
 

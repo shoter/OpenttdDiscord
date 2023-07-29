@@ -14,8 +14,9 @@ namespace OpenttdDiscord.Infrastructure.Discord.Runners
     {
         private IGetRoleLevelUseCase GetRoleLevelUseCase { get; }
 
-        protected OttdSlashCommandRunnerBase(IAkkaService akkaService,
-                                             IGetRoleLevelUseCase getRoleLevelUseCase)
+        protected OttdSlashCommandRunnerBase(
+            IAkkaService akkaService,
+            IGetRoleLevelUseCase getRoleLevelUseCase)
         {
             AkkaService = akkaService;
             GetRoleLevelUseCase = getRoleLevelUseCase;
@@ -29,7 +30,7 @@ namespace OpenttdDiscord.Infrastructure.Discord.Runners
                 o => o.Name,
                 o => o.Value);
 
-            var x =
+            return
                 from userLevel in GetRoleLevelUseCase.Execute(command.User)
                 from result in RunInternal(
                     command,

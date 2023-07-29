@@ -4,6 +4,7 @@ using OpenttdDiscord.Base.Basics;
 using OpenttdDiscord.Base.Ext;
 using OpenttdDiscord.Domain.Chatting;
 using OpenttdDiscord.Domain.Chatting.UseCases;
+using OpenttdDiscord.Domain.Roles.UseCases;
 using OpenttdDiscord.Domain.Security;
 using OpenttdDiscord.Domain.Servers.UseCases;
 using OpenttdDiscord.Infrastructure.Akkas;
@@ -24,8 +25,9 @@ namespace OpenttdDiscord.Infrastructure.Chatting.Runners
             IGetServerUseCase getServerByNameUseCase,
             IRegisterChatChannelUseCase registerChatChannelUseCase,
             IGetChatChannelUseCase getChatChannelUseCase,
-            IAkkaService akkaService)
-        : base(akkaService)
+            IAkkaService akkaService,
+            IGetRoleLevelUseCase getRoleLevelUseCase)
+        : base(akkaService, getRoleLevelUseCase)
         {
             this.getServerByNameUseCase = getServerByNameUseCase;
             this.registerChatChannelUseCase = registerChatChannelUseCase;

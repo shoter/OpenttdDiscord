@@ -3,6 +3,7 @@ using LanguageExt;
 using OpenttdDiscord.Base.Basics;
 using OpenttdDiscord.Base.Ext;
 using OpenttdDiscord.Domain.Rcon.UseCases;
+using OpenttdDiscord.Domain.Roles.UseCases;
 using OpenttdDiscord.Domain.Security;
 using OpenttdDiscord.Domain.Servers.UseCases;
 using OpenttdDiscord.Infrastructure.Akkas;
@@ -23,8 +24,9 @@ namespace OpenttdDiscord.Infrastructure.Rcon.Runners
             IRegisterRconChannelUseCase registerRconChannelUseCase,
             IGetRconChannelUseCase getRconChannelUseCase,
             IGetServerUseCase getServerByNameUseCase,
-            IAkkaService akkaService)
-            : base(akkaService)
+            IAkkaService akkaService,
+            IGetRoleLevelUseCase getRoleLevelUseCase)
+            : base(akkaService, getRoleLevelUseCase)
         {
             this.registerRconChannelUseCase = registerRconChannelUseCase;
             this.getRconChannelUseCase = getRconChannelUseCase;

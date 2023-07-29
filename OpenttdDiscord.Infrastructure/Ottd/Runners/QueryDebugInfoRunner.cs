@@ -2,6 +2,7 @@
 using LanguageExt;
 using OpenttdDiscord.Base.Basics;
 using OpenttdDiscord.Base.Ext;
+using OpenttdDiscord.Domain.Roles.UseCases;
 using OpenttdDiscord.Domain.Security;
 using OpenttdDiscord.Domain.Servers.UseCases;
 using OpenttdDiscord.Infrastructure.Akkas;
@@ -17,8 +18,9 @@ namespace OpenttdDiscord.Infrastructure.Ottd.Runners
 
         public QueryDebugInfoRunner(
             IAkkaService akkaService,
-            IGetServerUseCase getServerUseCase)
-            : base(akkaService)
+            IGetServerUseCase getServerUseCase,
+            IGetRoleLevelUseCase getRoleLevelUseCase)
+            : base(akkaService, getRoleLevelUseCase)
         {
             this.getServerUseCase = getServerUseCase;
         }

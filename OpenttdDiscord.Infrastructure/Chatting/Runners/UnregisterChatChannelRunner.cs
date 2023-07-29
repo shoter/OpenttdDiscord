@@ -8,6 +8,7 @@ using LanguageExt;
 using OpenttdDiscord.Base.Basics;
 using OpenttdDiscord.Base.Ext;
 using OpenttdDiscord.Domain.Chatting.UseCases;
+using OpenttdDiscord.Domain.Roles.UseCases;
 using OpenttdDiscord.Domain.Security;
 using OpenttdDiscord.Domain.Servers.UseCases;
 using OpenttdDiscord.Infrastructure.Akkas;
@@ -25,8 +26,9 @@ namespace OpenttdDiscord.Infrastructure.Chatting.Runners
         public UnregisterChatChannelRunner(
             IUnregisterChatChannelUseCase unregisterChatChannelUseCase,
             IGetServerUseCase getServerByNameUseCase,
-            IAkkaService akkaService)
-        : base(akkaService)
+            IAkkaService akkaService,
+            IGetRoleLevelUseCase getRoleLevelUseCase)
+        : base(akkaService, getRoleLevelUseCase)
         {
             this.unregisterChatChannelUseCase = unregisterChatChannelUseCase;
             this.getServerByNameUseCase = getServerByNameUseCase;

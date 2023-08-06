@@ -1,9 +1,11 @@
 ﻿using Akka.Actor;
+using Discord;
 using Discord.WebSocket;
 using LanguageExt;
 using OpenttdDiscord.Base.Basics;
 using OpenttdDiscord.Base.Ext;
 using OpenttdDiscord.Database.Servers;
+using OpenttdDiscord.Domain.Roles.UseCases;
 using OpenttdDiscord.Domain.Security;
 using OpenttdDiscord.Domain.Servers;
 using OpenttdDiscord.Infrastructure.Akkas;
@@ -17,18 +19,23 @@ namespace OpenttdDiscord.Infrastructure.Ottd.Runners
 {
     internal class QueryServerRunner : OttdSlashCommandRunnerBase
     {
-        private readonly IAkkaService akkaService;
         private readonly IOttdServerRepository ottdServerRepository;
 
         public QueryServerRunner(
             IAkkaService akkaService,
-            IOttdServerRepository ottdServerRepository)
+            IOttdServerRepository ottdServerRepository,
+            IGetRoleLevelUseCase getRoleLevelUseCase)
+            : base(
+                akkaService,
+                getRoleLevelUseCase)
         {
-            this.akkaService = akkaService;
             this.ottdServerRepository = ottdServerRepository;
         }
 
-        protected override EitherAsync<IError, ISlashCommandResponse> RunInternal(SocketSlashCommand command, User user, ExtDictionary<string, object> options)
+        protected override EitherAsync<IError, ISlashCommandResponse> RunInternal(
+            ISlashCommandInteraction command,
+            User user,
+            ExtDictionary<string, object> options)
         {
             if (!command.ChannelId.HasValue)
             {
@@ -39,10 +46,17 @@ namespace OpenttdDiscord.Infrastructure.Ottd.Runners
             ulong channelId = command.ChannelId.Value;
 
             return
-                from server in ottdServerRepository.GetServerByName(command.GuildId!.Value, serverName)
-                from actor in akkaService.SelectActor(MainActors.Paths.Guilds)
-                from _1 in actor.TellExt(new QueryServer(server.Id, command.GuildId!.Value, channelId)).ToAsync()
-                select (ISlashCommandResponse)new TextCommandResponse("Executing command");
+                from server in ottdServerRepository.GetServerByName(
+                    command.GuildId!.Value,
+                    serverName)
+                from actor in AkkaService.SelectActor(MainActors.Paths.Guilds)
+                from _1 in actor.TellExt(
+                        new QueryServer(
+                            server.Id,
+                            command.GuildId!.Value,
+                            channelId))
+                    .ToAsync()
+                select (ISlashCommandResponse) new TextCommandResponse("Executing command");
         }
     }
 }

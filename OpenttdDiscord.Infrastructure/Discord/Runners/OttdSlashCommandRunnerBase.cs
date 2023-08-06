@@ -1,24 +1,52 @@
-﻿using Discord.WebSocket;
+﻿using Discord;
+using Discord.WebSocket;
 using LanguageExt;
 using OpenttdDiscord.Base.Basics;
 using OpenttdDiscord.Base.Ext;
+using OpenttdDiscord.Domain.Roles.UseCases;
 using OpenttdDiscord.Domain.Security;
+using OpenttdDiscord.Infrastructure.Akkas;
 using OpenttdDiscord.Infrastructure.Discord.Responses;
 
 namespace OpenttdDiscord.Infrastructure.Discord.Runners
 {
     internal abstract class OttdSlashCommandRunnerBase : IOttdSlashCommandRunner
     {
-        public EitherAsync<IError, ISlashCommandResponse> Run(SocketSlashCommand command)
+        private IGetRoleLevelUseCase GetRoleLevelUseCase { get; }
+
+        protected OttdSlashCommandRunnerBase(
+            IAkkaService akkaService,
+            IGetRoleLevelUseCase getRoleLevelUseCase)
         {
-            var options = command.Data.Options.ToExtDictionary(o => o.Name, o => o.Value);
-            var user = new User(command.User);
-            return RunInternal(command, user, options);
+            AkkaService = akkaService;
+            GetRoleLevelUseCase = getRoleLevelUseCase;
         }
 
-        protected abstract EitherAsync<IError, ISlashCommandResponse> RunInternal(SocketSlashCommand command, User user, ExtDictionary<string, object> options);
+        protected IAkkaService AkkaService { get; }
 
-        protected Either<IError, ulong> CheckIfGuildCommand(SocketSlashCommand command)
+        public EitherAsync<IError, ISlashCommandResponse> Run(ISlashCommandInteraction command)
+        {
+            var options = command.Data.Options.ToExtDictionary(
+                o => o.Name,
+                o => o.Value);
+
+            return
+                from userLevel in GetRoleLevelUseCase.Execute(command.User)
+                from result in RunInternal(
+                    command,
+                    new User(
+                        command.User,
+                        userLevel),
+                    options)
+                select result;
+        }
+
+        protected abstract EitherAsync<IError, ISlashCommandResponse> RunInternal(
+            ISlashCommandInteraction command,
+            User user,
+            ExtDictionary<string, object> options);
+
+        protected Either<IError, ulong> EnsureItIsGuildCommand(ISlashCommandInteraction command)
         {
             if (command.GuildId.HasValue)
             {
@@ -28,7 +56,7 @@ namespace OpenttdDiscord.Infrastructure.Discord.Runners
             return new HumanReadableError("This command needs to be executed within guild!");
         }
 
-        protected Either<IError, ulong> CheckIfChannelCommand(SocketSlashCommand command)
+        protected Either<IError, ulong> EnsureItIsChannelCommand(ISlashCommandInteraction command)
         {
             if (command.ChannelId.HasValue)
             {
@@ -38,7 +66,9 @@ namespace OpenttdDiscord.Infrastructure.Discord.Runners
             return new HumanReadableError("This command needs to be executed within channel!");
         }
 
-        protected EitherUnit CheckIfHasCorrectUserLevel(User user, UserLevel level)
+        protected EitherUnit CheckIfHasCorrectUserLevel(
+            User user,
+            UserLevel level)
         {
             var hasLevel = user.CheckIfHasCorrectUserLevel(level);
 

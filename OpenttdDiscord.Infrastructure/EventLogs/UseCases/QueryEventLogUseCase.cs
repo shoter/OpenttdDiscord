@@ -16,12 +16,21 @@ namespace OpenttdDiscord.Infrastructure.EventLogs.UseCases
             this.akkaService = akkaService;
         }
 
-        public EitherAsync<IError, IReadOnlyList<string>> Execute(User user, Guid serverId, ulong guildId)
+        public EitherAsync<IError, IReadOnlyList<string>> Execute(
+            User user,
+            Guid serverId,
+            ulong guildId)
         {
             return
-                from _1 in CheckIfHasCorrectUserLevel(user, UserLevel.Admin).ToAsync()
+                from _1 in CheckIfHasCorrectUserLevel(
+                        user,
+                        UserLevel.Admin)
+                    .ToAsync()
                 from actor in akkaService.SelectActor(MainActors.Paths.Guilds)
-                from response in actor.TryAsk<RetrievedEventLog>(new RetrieveEventLog(serverId, guildId))
+                from response in actor.TryAsk<RetrievedEventLog>(
+                    new RetrieveEventLog(
+                        serverId,
+                        guildId))
                 select response.Messages;
         }
     }

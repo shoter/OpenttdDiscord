@@ -1,10 +1,12 @@
 using Microsoft.Extensions.DependencyInjection;
 using OpenttdDiscord.Database.Roles;
 using OpenttdDiscord.Domain.Roles;
+using OpenttdDiscord.Domain.Roles.UseCases;
 using OpenttdDiscord.Infrastructure.Discord.Commands;
 using OpenttdDiscord.Infrastructure.Modularity;
 using OpenttdDiscord.Infrastructure.Roles.Commands;
 using OpenttdDiscord.Infrastructure.Roles.Runners;
+using OpenttdDiscord.Infrastructure.Roles.UseCases;
 
 namespace OpenttdDiscord.Infrastructure.Roles
 {
@@ -26,12 +28,14 @@ namespace OpenttdDiscord.Infrastructure.Roles
     {
         public static IServiceCollection RegisterUseCases(this IServiceCollection services)
         {
-            return services;
+            return
+                services.AddScoped<IGetRoleLevelUseCase, GetRoleLevelUseCase>();
         }
 
         public static IServiceCollection RegisterRunners(this IServiceCollection services)
         {
             services.AddScoped<RegisterBotRoleRunner>();
+            services.AddScoped<GetRoleRunner>();
 
             return services;
         }
@@ -39,6 +43,7 @@ namespace OpenttdDiscord.Infrastructure.Roles
         public static IServiceCollection RegisterCommands(this IServiceCollection services)
         {
             services.AddSingleton<IOttdSlashCommand, RegisterBotRoleCommand>();
+            services.AddSingleton<IOttdSlashCommand, GetRoleCommand>();
 
             return services;
         }

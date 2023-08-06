@@ -22,12 +22,12 @@ namespace OpenttdDiscord.Infrastructure.Statuses.UseCases
 
         public RegisterStatusMonitorUseCase(
             IStatusMonitorRepository statusMonitorRepository,
-            IAkkaService akkaService,
-            DiscordSocketClient discord)
+            DiscordSocketClient discord,
+            IAkkaService akkaService)
         {
             this.statusMonitorRepository = statusMonitorRepository;
-            this.akkaService = akkaService;
             this.discord = discord;
+            this.akkaService = akkaService;
         }
 
         public EitherAsync<IError, StatusMonitor> Execute(User user, OttdServer server, ulong guildId, ulong channelId)

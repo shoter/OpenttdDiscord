@@ -12,7 +12,7 @@ namespace OpenttdDiscord.Infrastructure.Discord.Responses
             this.embed = embed;
         }
 
-        protected override Task InternalExecute(SocketSlashCommand command)
+        protected override Task InternalExecute(ISlashCommandInteraction command)
         {
             return command.RespondAsync(embed: embed);
         }

@@ -10,6 +10,7 @@ namespace OpenttdDiscord.Infrastructure.Chatting.UseCases
     internal class RegisterChatChannelUseCase : UseCaseBase, IRegisterChatChannelUseCase
     {
         private readonly IChatChannelRepository chatChannelRepository;
+
         private readonly IAkkaService akkaService;
 
         public RegisterChatChannelUseCase(

@@ -1,4 +1,5 @@
-﻿using Discord.WebSocket;
+﻿using Discord;
+using Discord.WebSocket;
 using LanguageExt;
 using OpenttdDiscord.Base.Ext;
 
@@ -6,7 +7,7 @@ namespace OpenttdDiscord.Infrastructure.Discord.Responses
 {
     public abstract class SlashCommandResponseBase : ISlashCommandResponse
     {
-        public async Task<EitherUnit> Execute(SocketSlashCommand command)
+        public async Task<EitherUnit> Execute(ISlashCommandInteraction command)
         {
             try
             {
@@ -19,6 +20,6 @@ namespace OpenttdDiscord.Infrastructure.Discord.Responses
             }
         }
 
-        protected abstract Task InternalExecute(SocketSlashCommand command);
+        protected abstract Task InternalExecute(ISlashCommandInteraction command);
     }
 }

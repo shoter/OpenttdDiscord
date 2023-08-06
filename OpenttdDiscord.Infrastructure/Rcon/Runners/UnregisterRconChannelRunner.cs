@@ -3,13 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Discord;
 using Discord.WebSocket;
 using LanguageExt;
 using OpenttdDiscord.Base.Basics;
 using OpenttdDiscord.Base.Ext;
 using OpenttdDiscord.Domain.Rcon.UseCases;
+using OpenttdDiscord.Domain.Roles.UseCases;
 using OpenttdDiscord.Domain.Security;
 using OpenttdDiscord.Domain.Servers.UseCases;
+using OpenttdDiscord.Infrastructure.Akkas;
 using OpenttdDiscord.Infrastructure.Discord.Responses;
 using OpenttdDiscord.Infrastructure.Discord.Runners;
 
@@ -22,13 +25,16 @@ namespace OpenttdDiscord.Infrastructure.Rcon.Runners
 
         public UnregisterRconChannelRunner(
             IGetServerUseCase getServerByNameUseCase,
-            IUnregisterRconChannelUseCase unregisterRconChannelUseCase)
+            IUnregisterRconChannelUseCase unregisterRconChannelUseCase,
+            IAkkaService akkaService,
+            IGetRoleLevelUseCase getRoleLevelUseCase)
+        : base(akkaService, getRoleLevelUseCase)
         {
             this.getServerByNameUseCase = getServerByNameUseCase;
             this.unregisterRconChannelUseCase = unregisterRconChannelUseCase;
         }
 
-        protected override EitherAsync<IError, ISlashCommandResponse> RunInternal(SocketSlashCommand command, User user, ExtDictionary<string, object> options)
+        protected override EitherAsync<IError, ISlashCommandResponse> RunInternal(ISlashCommandInteraction command, User user, ExtDictionary<string, object> options)
         {
             string serverName = options.GetValueAs<string>("server-name");
             ulong guildId = command.GuildId!.Value;

@@ -1,4 +1,6 @@
 ﻿using Akka.Actor;
+using Discord;
+using Discord.WebSocket;
 using LanguageExt;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -20,10 +22,12 @@ namespace OpenttdDiscord.Infrastructure.Guilds.Actors
     {
         private readonly IGetAllGuildsUseCase getAllGuildsUseCase;
         private readonly Dictionary<ulong, IActorRef> guildActors = new();
+        private readonly DiscordSocketClient discordSocketClient;
 
         public GuildsActor(IServiceProvider serviceProvider)
             : base(serviceProvider)
         {
+            this.discordSocketClient = SP.GetRequiredService<DiscordSocketClient>();
             getAllGuildsUseCase = SP.GetRequiredService<IGetAllGuildsUseCase>();
             Ready();
 
@@ -55,10 +59,16 @@ namespace OpenttdDiscord.Infrastructure.Guilds.Actors
 
         private async Task InitGuildActorMessage(InitGuildActorMessage _)
         {
-            (await getAllGuildsUseCase.Execute())
-                .ThrowIfError()
-                .Select(guilds => guilds.Select(g => new AddNewGuildActorMessage(g)))
-                .Map(msgs => Self.TellMany(msgs));
+            while (discordSocketClient.ConnectionState != ConnectionState.Connected)
+            {
+                await Task.Delay(1);
+            }
+
+            foreach (var guild in discordSocketClient.Guilds)
+            {
+                var message = new AddNewGuildActorMessage(guild.Id);
+                Self.Tell(message);
+            }
         }
 
         private void AddNewGuildActorMessage(AddNewGuildActorMessage msg)

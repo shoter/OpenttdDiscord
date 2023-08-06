@@ -1,7 +1,9 @@
-﻿using Discord.WebSocket;
+﻿using Discord;
+using Discord.WebSocket;
 using LanguageExt;
 using OpenttdDiscord.Base.Basics;
 using OpenttdDiscord.Base.Ext;
+using OpenttdDiscord.Domain.Roles.UseCases;
 using OpenttdDiscord.Domain.Security;
 using OpenttdDiscord.Domain.Servers.UseCases;
 using OpenttdDiscord.Infrastructure.Akkas;
@@ -13,27 +15,41 @@ namespace OpenttdDiscord.Infrastructure.Ottd.Runners
 {
     internal class QueryDebugInfoRunner : OttdSlashCommandRunnerBase
     {
-        private readonly IAkkaService akkaService;
-
         private readonly IGetServerUseCase getServerUseCase;
 
-        public QueryDebugInfoRunner(IAkkaService akkaService, IGetServerUseCase getServerUseCase)
+        public QueryDebugInfoRunner(
+            IAkkaService akkaService,
+            IGetServerUseCase getServerUseCase,
+            IGetRoleLevelUseCase getRoleLevelUseCase)
+            : base(akkaService, getRoleLevelUseCase)
         {
-            this.akkaService = akkaService;
             this.getServerUseCase = getServerUseCase;
         }
 
-        protected override EitherAsync<IError, ISlashCommandResponse> RunInternal(SocketSlashCommand command, User user, ExtDictionary<string, object> options)
+        protected override EitherAsync<IError, ISlashCommandResponse> RunInternal(
+            ISlashCommandInteraction command,
+            User user,
+            ExtDictionary<string, object> options)
         {
             string serverName = options.GetValueAs<string>("server-name");
             ulong guildId = command.GuildId!.Value;
             ulong channelId = command.ChannelId!.Value;
 
             return
-                from _1 in CheckIfHasCorrectUserLevel(user, UserLevel.Moderator).ToAsync()
-                from server in getServerUseCase.Execute(user, serverName, guildId)
-                from _2 in akkaService.ExecuteServerAction(new QueryDebugInfo(server.Id, guildId, channelId))
-                select (ISlashCommandResponse)new TextCommandResponse("Executing");
+                from _1 in CheckIfHasCorrectUserLevel(
+                        user,
+                        UserLevel.Moderator)
+                    .ToAsync()
+                from server in getServerUseCase.Execute(
+                    user,
+                    serverName,
+                    guildId)
+                from _2 in AkkaService.ExecuteServerAction(
+                    new QueryDebugInfo(
+                        server.Id,
+                        guildId,
+                        channelId))
+                select (ISlashCommandResponse) new TextCommandResponse("Executing");
         }
     }
 }

@@ -10,6 +10,7 @@ namespace OpenttdDiscord.Infrastructure.Reporting.UseCases
     internal class RegisterReportChannelUseCase : UseCaseBase, IRegisterReportChannelUseCase
     {
         private readonly IReportChannelRepository reportChannelRepository;
+
         private readonly IAkkaService akkaService;
 
         public RegisterReportChannelUseCase(

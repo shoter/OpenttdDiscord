@@ -5,6 +5,7 @@ using OpenttdDiscord.Database.Rcon;
 using OpenttdDiscord.Domain.Rcon;
 using OpenttdDiscord.Domain.Rcon.UseCases;
 using OpenttdDiscord.Domain.Security;
+using OpenttdDiscord.Infrastructure.Akkas;
 
 namespace OpenttdDiscord.Infrastructure.Rcon.UseCases
 {
@@ -12,16 +13,25 @@ namespace OpenttdDiscord.Infrastructure.Rcon.UseCases
     {
         private readonly IRconChannelRepository rconChannelRepository;
 
-        public GetRconChannelUseCase(IRconChannelRepository rconChannelRepository)
+        public GetRconChannelUseCase(
+            IRconChannelRepository rconChannelRepository)
         {
             this.rconChannelRepository = rconChannelRepository;
         }
 
-        public EitherAsync<IError, Option<RconChannel>> Execute(User user, Guid serverId,  ulong channelId)
+        public EitherAsync<IError, Option<RconChannel>> Execute(
+            User user,
+            Guid serverId,
+            ulong channelId)
         {
             return
-                from _1 in CheckIfHasCorrectUserLevel(user, UserLevel.Moderator).ToAsync()
-                from option in rconChannelRepository.GetRconChannel(serverId, channelId)
+                from _1 in CheckIfHasCorrectUserLevel(
+                        user,
+                        UserLevel.Moderator)
+                    .ToAsync()
+                from option in rconChannelRepository.GetRconChannel(
+                    serverId,
+                    channelId)
                 select option;
         }
     }

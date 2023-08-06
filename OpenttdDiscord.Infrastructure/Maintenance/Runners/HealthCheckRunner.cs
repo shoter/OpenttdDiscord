@@ -1,9 +1,11 @@
 using System.Text;
 using Akka.Actor;
+using Discord;
 using Discord.WebSocket;
 using LanguageExt;
 using OpenttdDiscord.Base.Basics;
 using OpenttdDiscord.Base.Ext;
+using OpenttdDiscord.Domain.Roles.UseCases;
 using OpenttdDiscord.Domain.Security;
 using OpenttdDiscord.Infrastructure.Akkas;
 using OpenttdDiscord.Infrastructure.Discord.Responses;
@@ -14,15 +16,14 @@ namespace OpenttdDiscord.Infrastructure.Maintenance.Runners
 {
     internal class HealthCheckRunner : OttdSlashCommandRunnerBase
     {
-        private readonly IAkkaService akkaService;
-
-        public HealthCheckRunner(IAkkaService akkaService)
+        public HealthCheckRunner(IAkkaService akkaService,
+                                 IGetRoleLevelUseCase getRoleLevelUseCase)
+            : base(akkaService, getRoleLevelUseCase)
         {
-            this.akkaService = akkaService;
         }
 
         protected override EitherAsync<IError, ISlashCommandResponse> RunInternal(
-            SocketSlashCommand command,
+            ISlashCommandInteraction command,
             User user,
             ExtDictionary<string, object> options)
         {
@@ -31,8 +32,9 @@ namespace OpenttdDiscord.Infrastructure.Maintenance.Runners
                         user,
                         UserLevel.Moderator)
                     .ToAsync()
-                from selection in akkaService.SelectActor(MainActors.Paths.HealthCheck)
-                from healthCheckResponse in selection.TryAsk<HealthCheckResponse>(new HealthCheckRequest(command.GuildId!.Value))
+                from selection in AkkaService.SelectActor(MainActors.Paths.HealthCheck)
+                from healthCheckResponse in selection.TryAsk<HealthCheckResponse>(
+                    new HealthCheckRequest(command.GuildId!.Value))
                 select CreateResponse(healthCheckResponse);
         }
 

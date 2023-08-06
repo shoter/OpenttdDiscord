@@ -16,27 +16,35 @@ namespace OpenttdDiscord.Infrastructure.Akkas
             this.actorSystem = actorSystem;
         }
 
+        public EitherAsync<IError, TExpectedMessage> SelectAndAsk<TExpectedMessage>(
+            string path,
+            object message) => from actor in SelectActor(path)
+            from response in actor.TryAsk<TExpectedMessage>(message)
+            select response;
+
         public void NotifyAboutAkkaStart()
         {
             isAkkaStared = true;
         }
 
-        public EitherAsync<IError, ActorSelection> SelectActor(string path)
-        => TryAsync(async () =>
-        {
-            while (isAkkaStared == false)
-            {
-                await Task.Delay(TimeSpan.FromSeconds(1));
-            }
+        public EitherAsync<IError, ActorSelection> SelectActor(string path) => TryAsync(
+                async () =>
+                {
+                    while (isAkkaStared == false)
+                    {
+                        await Task.Delay(TimeSpan.FromSeconds(1));
+                    }
 
-            return actorSystem.ActorSelection(path);
-        }).ToEitherAsyncError();
+                    return actorSystem.ActorSelection(path);
+                })
+            .ToEitherAsyncError();
 
         public EitherAsyncUnit ExecuteServerAction(ExecuteServerAction executeAction)
         {
             return
                 from selection in SelectActor(MainActors.Paths.Guilds)
-                from _1 in selection.TellExt(executeAction).ToAsync()
+                from _1 in selection.TellExt(executeAction)
+                    .ToAsync()
                 select Unit.Default;
         }
     }

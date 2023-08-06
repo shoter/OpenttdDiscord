@@ -1,4 +1,5 @@
-﻿using Discord.WebSocket;
+﻿using Discord;
+using Discord.WebSocket;
 
 namespace OpenttdDiscord.Infrastructure.Discord.Responses
 {
@@ -16,7 +17,7 @@ namespace OpenttdDiscord.Infrastructure.Discord.Responses
             this.dispose = dispose;
         }
 
-        protected override async Task InternalExecute(SocketSlashCommand command)
+        protected override async Task InternalExecute(ISlashCommandInteraction command)
         {
             await command.RespondWithFileAsync(stream, fileName);
             if(dispose)

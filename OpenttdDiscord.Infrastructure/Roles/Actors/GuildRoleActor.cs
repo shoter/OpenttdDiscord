@@ -80,17 +80,22 @@ namespace OpenttdDiscord.Infrastructure.Roles.Actors
 
         private void GetRoleLevel(GetRoleLevel msg)
         {
-            var guildRoleMaybe = guildRoles.MaybeGetValue(msg.RoleId);
+            var userLevel = UserLevel.User;
+            foreach (var roleId in msg.RoleIds)
+            {
+                var guildRoleMaybe = guildRoles.MaybeGetValue(roleId);
 
-            guildRoleMaybe.BiIter(
-                (guildRole) =>
-                {
-                    Sender.Tell(new GetRoleLevelResponse(guildRole.RoleLevel));
-                },
-                () =>
-                {
-                    Sender.Tell(new GetRoleLevelResponse(UserLevel.User));
-                });
+                guildRoleMaybe.IfSome(
+                    roleLevel =>
+                    {
+                        if (roleLevel.RoleLevel > userLevel)
+                        {
+                            userLevel = roleLevel.RoleLevel;
+                        }
+                    });
+            }
+
+            Sender.Tell(new GetRoleLevelResponse(userLevel));
         }
 
         private EitherAsyncUnit DeleteRole(DeleteRole msg) =>

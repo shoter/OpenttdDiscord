@@ -10,8 +10,10 @@ using OpenttdDiscord.Base.Basics;
 using OpenttdDiscord.Base.Ext;
 using OpenttdDiscord.Domain.Rcon;
 using OpenttdDiscord.Domain.Rcon.UseCases;
+using OpenttdDiscord.Domain.Roles.UseCases;
 using OpenttdDiscord.Domain.Security;
 using OpenttdDiscord.Domain.Servers.UseCases;
+using OpenttdDiscord.Infrastructure.Akkas;
 using OpenttdDiscord.Infrastructure.Discord.Responses;
 using OpenttdDiscord.Infrastructure.Discord.Runners;
 
@@ -28,14 +30,17 @@ namespace OpenttdDiscord.Infrastructure.Rcon.Runners
         public ListRconChannelsRunner(
             DiscordSocketClient discord,
             IGetServerUseCase getServerUseCase,
-            IListRconChannelsUseCase listRconChannelsUseCase)
+            IListRconChannelsUseCase listRconChannelsUseCase,
+            IAkkaService akkaService,
+            IGetRoleLevelUseCase getRoleLevelUseCase)
+        : base(akkaService, getRoleLevelUseCase)
         {
             this.discord = discord;
             this.getServerUseCase = getServerUseCase;
             this.listRconChannelsUseCase = listRconChannelsUseCase;
         }
 
-        protected override EitherAsync<IError, ISlashCommandResponse> RunInternal(SocketSlashCommand command, User user, ExtDictionary<string, object> options)
+        protected override EitherAsync<IError, ISlashCommandResponse> RunInternal(ISlashCommandInteraction command, User user, ExtDictionary<string, object> options)
         {
             ulong guildId = command.GuildId!.Value;
 

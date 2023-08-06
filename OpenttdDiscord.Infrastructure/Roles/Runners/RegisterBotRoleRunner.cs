@@ -1,7 +1,9 @@
+using Discord;
 using Discord.WebSocket;
 using LanguageExt;
 using OpenttdDiscord.Base.Basics;
 using OpenttdDiscord.Base.Ext;
+using OpenttdDiscord.Domain.Roles.UseCases;
 using OpenttdDiscord.Domain.Security;
 using OpenttdDiscord.Infrastructure.Akkas;
 using OpenttdDiscord.Infrastructure.Discord.Responses;
@@ -12,15 +14,14 @@ namespace OpenttdDiscord.Infrastructure.Roles.Runners
 {
     internal class RegisterBotRoleRunner : OttdSlashCommandRunnerBase
     {
-        private readonly IAkkaService akkaService;
-
-        public RegisterBotRoleRunner(IAkkaService akkaService)
+        public RegisterBotRoleRunner(IAkkaService akkaService,
+                                     IGetRoleLevelUseCase getRoleLevelUseCase)
+        : base(akkaService, getRoleLevelUseCase)
         {
-            this.akkaService = akkaService;
         }
 
         protected override EitherAsync<IError, ISlashCommandResponse> RunInternal(
-            SocketSlashCommand command,
+            ISlashCommandInteraction command,
             User user,
             ExtDictionary<string, object> options)
         {
@@ -42,7 +43,7 @@ namespace OpenttdDiscord.Infrastructure.Roles.Runners
                 (UserLevel)roleLevel);
 
             return
-                from actor in akkaService.SelectActor(MainActors.Paths.Guilds)
+                from actor in AkkaService.SelectActor(MainActors.Paths.Guilds)
                 from _1 in actor.TryAsk(msg)
                 select new TextCommandResponse("Role has been registered") as ISlashCommandResponse;
         }

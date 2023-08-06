@@ -25,9 +25,8 @@ namespace OpenttdDiscord.Infrastructure.Servers.UseCases
 
         public RegisterOttdServerUseCase(
             ILogger<RegisterOttdServerUseCase> logger,
-            IAkkaService akkaService,
-            IOttdServerRepository ottdServerRepository
-            )
+            IOttdServerRepository ottdServerRepository,
+            IAkkaService akkaService)
         {
             this.ottdServerRepository = ottdServerRepository;
             this.akkaService = akkaService;

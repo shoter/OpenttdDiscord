@@ -29,7 +29,7 @@ namespace OpenttdDiscord.Infrastructure.Servers.Runners
             listServersUseCase = listOttdServersUseCase;
         }
 
-        public EitherAsync<IError, ISlashCommandResponse> Run(SocketSlashCommand command)
+        public EitherAsync<IError, ISlashCommandResponse> Run(ISlashCommandInteraction command)
         {
             if (command.GuildId.HasValue == false)
             {

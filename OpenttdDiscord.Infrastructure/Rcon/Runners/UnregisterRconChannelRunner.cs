@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Discord;
 using Discord.WebSocket;
 using LanguageExt;
 using OpenttdDiscord.Base.Basics;
@@ -33,7 +34,7 @@ namespace OpenttdDiscord.Infrastructure.Rcon.Runners
             this.unregisterRconChannelUseCase = unregisterRconChannelUseCase;
         }
 
-        protected override EitherAsync<IError, ISlashCommandResponse> RunInternal(SocketSlashCommand command, User user, ExtDictionary<string, object> options)
+        protected override EitherAsync<IError, ISlashCommandResponse> RunInternal(ISlashCommandInteraction command, User user, ExtDictionary<string, object> options)
         {
             string serverName = options.GetValueAs<string>("server-name");
             ulong guildId = command.GuildId!.Value;

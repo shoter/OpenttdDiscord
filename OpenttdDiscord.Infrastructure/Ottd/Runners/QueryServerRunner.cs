@@ -1,4 +1,5 @@
 ﻿using Akka.Actor;
+using Discord;
 using Discord.WebSocket;
 using LanguageExt;
 using OpenttdDiscord.Base.Basics;
@@ -24,12 +25,17 @@ namespace OpenttdDiscord.Infrastructure.Ottd.Runners
             IAkkaService akkaService,
             IOttdServerRepository ottdServerRepository,
             IGetRoleLevelUseCase getRoleLevelUseCase)
-        : base(akkaService, getRoleLevelUseCase)
+            : base(
+                akkaService,
+                getRoleLevelUseCase)
         {
             this.ottdServerRepository = ottdServerRepository;
         }
 
-        protected override EitherAsync<IError, ISlashCommandResponse> RunInternal(SocketSlashCommand command, User user, ExtDictionary<string, object> options)
+        protected override EitherAsync<IError, ISlashCommandResponse> RunInternal(
+            ISlashCommandInteraction command,
+            User user,
+            ExtDictionary<string, object> options)
         {
             if (!command.ChannelId.HasValue)
             {
@@ -40,10 +46,17 @@ namespace OpenttdDiscord.Infrastructure.Ottd.Runners
             ulong channelId = command.ChannelId.Value;
 
             return
-                from server in ottdServerRepository.GetServerByName(command.GuildId!.Value, serverName)
+                from server in ottdServerRepository.GetServerByName(
+                    command.GuildId!.Value,
+                    serverName)
                 from actor in AkkaService.SelectActor(MainActors.Paths.Guilds)
-                from _1 in actor.TellExt(new QueryServer(server.Id, command.GuildId!.Value, channelId)).ToAsync()
-                select (ISlashCommandResponse)new TextCommandResponse("Executing command");
+                from _1 in actor.TellExt(
+                        new QueryServer(
+                            server.Id,
+                            command.GuildId!.Value,
+                            channelId))
+                    .ToAsync()
+                select (ISlashCommandResponse) new TextCommandResponse("Executing command");
         }
     }
 }

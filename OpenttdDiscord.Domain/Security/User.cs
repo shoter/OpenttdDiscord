@@ -1,4 +1,5 @@
-﻿using Discord.WebSocket;
+﻿using Discord;
+using Discord.WebSocket;
 using LanguageExt;
 using OpenttdDiscord.Base.Ext;
 
@@ -8,7 +9,7 @@ public record User(
     string Name,
     UserLevel UserLevel)
 {
-    public User(SocketUser user)
+    public User(IUser user)
         : this(
             user.Username,
             DetermineUserLevel(user))
@@ -16,7 +17,7 @@ public record User(
     }
 
     public User(
-        SocketUser user,
+        IUser user,
         UserLevel userLevel)
         : this(
             user.Username,
@@ -30,9 +31,9 @@ public record User(
         "Master",
         UserLevel.Admin);
 
-    private static UserLevel DetermineUserLevel(SocketUser user)
+    private static UserLevel DetermineUserLevel(IUser user)
     {
-        if (user is SocketGuildUser guildUser)
+        if (user is IGuildUser guildUser)
         {
             if (guildUser.GuildPermissions.ManageGuild)
             {

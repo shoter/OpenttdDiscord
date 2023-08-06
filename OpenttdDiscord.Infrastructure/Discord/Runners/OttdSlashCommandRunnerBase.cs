@@ -1,4 +1,5 @@
-﻿using Discord.WebSocket;
+﻿using Discord;
+using Discord.WebSocket;
 using LanguageExt;
 using OpenttdDiscord.Base.Basics;
 using OpenttdDiscord.Base.Ext;
@@ -6,7 +7,6 @@ using OpenttdDiscord.Domain.Roles.UseCases;
 using OpenttdDiscord.Domain.Security;
 using OpenttdDiscord.Infrastructure.Akkas;
 using OpenttdDiscord.Infrastructure.Discord.Responses;
-using OpenttdDiscord.Infrastructure.Roles.Messages;
 
 namespace OpenttdDiscord.Infrastructure.Discord.Runners
 {
@@ -24,7 +24,7 @@ namespace OpenttdDiscord.Infrastructure.Discord.Runners
 
         protected IAkkaService AkkaService { get; }
 
-        public EitherAsync<IError, ISlashCommandResponse> Run(SocketSlashCommand command)
+        public EitherAsync<IError, ISlashCommandResponse> Run(ISlashCommandInteraction command)
         {
             var options = command.Data.Options.ToExtDictionary(
                 o => o.Name,
@@ -42,11 +42,11 @@ namespace OpenttdDiscord.Infrastructure.Discord.Runners
         }
 
         protected abstract EitherAsync<IError, ISlashCommandResponse> RunInternal(
-            SocketSlashCommand command,
+            ISlashCommandInteraction command,
             User user,
             ExtDictionary<string, object> options);
 
-        protected Either<IError, ulong> EnsureItIsGuildCommand(SocketSlashCommand command)
+        protected Either<IError, ulong> EnsureItIsGuildCommand(ISlashCommandInteraction command)
         {
             if (command.GuildId.HasValue)
             {
@@ -56,7 +56,7 @@ namespace OpenttdDiscord.Infrastructure.Discord.Runners
             return new HumanReadableError("This command needs to be executed within guild!");
         }
 
-        protected Either<IError, ulong> EnsureItIsChannelCommand(SocketSlashCommand command)
+        protected Either<IError, ulong> EnsureItIsChannelCommand(ISlashCommandInteraction command)
         {
             if (command.ChannelId.HasValue)
             {

@@ -1,4 +1,5 @@
-﻿using Discord.WebSocket;
+﻿using Discord;
+using Discord.WebSocket;
 using LanguageExt;
 using OpenttdDiscord.Base.Basics;
 using OpenttdDiscord.Base.Ext;
@@ -26,7 +27,7 @@ namespace OpenttdDiscord.Infrastructure.Ottd.Runners
         }
 
         protected override EitherAsync<IError, ISlashCommandResponse> RunInternal(
-            SocketSlashCommand command,
+            ISlashCommandInteraction command,
             User user,
             ExtDictionary<string, object> options)
         {

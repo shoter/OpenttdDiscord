@@ -40,7 +40,7 @@ namespace OpenttdDiscord.Infrastructure.Rcon.Runners
             this.listRconChannelsUseCase = listRconChannelsUseCase;
         }
 
-        protected override EitherAsync<IError, ISlashCommandResponse> RunInternal(SocketSlashCommand command, User user, ExtDictionary<string, object> options)
+        protected override EitherAsync<IError, ISlashCommandResponse> RunInternal(ISlashCommandInteraction command, User user, ExtDictionary<string, object> options)
         {
             ulong guildId = command.GuildId!.Value;
 

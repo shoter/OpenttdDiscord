@@ -37,7 +37,7 @@ namespace OpenttdDiscord.Infrastructure.Reporting.Runners
         }
 
         protected override EitherAsync<IError, ISlashCommandResponse> RunInternal(
-            SocketSlashCommand command,
+            ISlashCommandInteraction command,
             User user,
             ExtDictionary<string, object> options)
         {

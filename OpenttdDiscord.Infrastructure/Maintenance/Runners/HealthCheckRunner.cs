@@ -1,5 +1,6 @@
 using System.Text;
 using Akka.Actor;
+using Discord;
 using Discord.WebSocket;
 using LanguageExt;
 using OpenttdDiscord.Base.Basics;
@@ -22,7 +23,7 @@ namespace OpenttdDiscord.Infrastructure.Maintenance.Runners
         }
 
         protected override EitherAsync<IError, ISlashCommandResponse> RunInternal(
-            SocketSlashCommand command,
+            ISlashCommandInteraction command,
             User user,
             ExtDictionary<string, object> options)
         {

@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using Discord;
 using Discord.WebSocket;
 
 namespace OpenttdDiscord.Infrastructure.Discord.Responses
@@ -17,7 +18,7 @@ namespace OpenttdDiscord.Infrastructure.Discord.Responses
         {
         }
 
-        protected override async Task InternalExecute(SocketSlashCommand command)
+        protected override async Task InternalExecute(ISlashCommandInteraction command)
         {
             await command.RespondAsync(response);
         }

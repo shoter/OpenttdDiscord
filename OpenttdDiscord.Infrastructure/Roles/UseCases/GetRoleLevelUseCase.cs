@@ -31,11 +31,11 @@ namespace OpenttdDiscord.Infrastructure.Roles.UseCases
                 return UserLevel.Admin;
             }
 
-            ulong guildId = guildUser.Guild.Id;
+            ulong guildId = guildUser.GuildId;
 
             return
-                from guildsActor in AkkaService.SelectActor(MainActors.Paths.Guilds)
-                from roleLevelResponse in guildsActor.TryAsk<GetRoleLevelResponse>(
+                from roleLevelResponse in AkkaService.SelectAndAsk<GetRoleLevelResponse>(
+                    MainActors.Paths.Guilds,
                     new GetRoleLevel(
                         guildId,
                         guildUser.RoleIds))

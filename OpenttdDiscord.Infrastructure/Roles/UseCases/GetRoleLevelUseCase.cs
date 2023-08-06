@@ -1,4 +1,5 @@
 using System.Linq;
+using Discord;
 using Discord.WebSocket;
 using LanguageExt;
 using OpenttdDiscord.Base.Ext;
@@ -18,9 +19,9 @@ namespace OpenttdDiscord.Infrastructure.Roles.UseCases
             this.AkkaService = akkaService;
         }
 
-        public EitherAsync<IError, UserLevel> Execute(SocketUser user)
+        public EitherAsync<IError, UserLevel> Execute(IUser user)
         {
-            if (!(user is SocketGuildUser guildUser))
+            if (!(user is IGuildUser guildUser))
             {
                 return UserLevel.User;
             }
@@ -37,7 +38,7 @@ namespace OpenttdDiscord.Infrastructure.Roles.UseCases
                 from roleLevelResponse in guildsActor.TryAsk<GetRoleLevelResponse>(
                     new GetRoleLevel(
                         guildId,
-                        guildUser.Roles.Select(x => x.Id)))
+                        guildUser.RoleIds))
                 select roleLevelResponse.RoleLevel;
         }
     }

@@ -1,3 +1,4 @@
+using Discord;
 using Discord.WebSocket;
 using LanguageExt;
 using OpenttdDiscord.Base.Ext;
@@ -7,6 +8,6 @@ namespace OpenttdDiscord.Domain.Roles.UseCases
 {
     public interface IGetRoleLevelUseCase
     {
-        EitherAsync<IError, UserLevel> Execute(SocketUser user);
+        EitherAsync<IError, UserLevel> Execute(IUser user);
     }
 }

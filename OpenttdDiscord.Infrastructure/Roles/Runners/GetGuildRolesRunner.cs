@@ -16,13 +16,13 @@ namespace OpenttdDiscord.Infrastructure.Roles.Runners
     internal class GetGuildRolesRunner : OttdSlashCommandRunnerBase
     {
         private readonly IRolesRepository rolesRepository;
-        private readonly DiscordSocketClient discord;
+        private readonly IDiscordClient discord;
 
         public GetGuildRolesRunner(
             IAkkaService akkaService,
             IGetRoleLevelUseCase getRoleLevelUseCase,
             IRolesRepository rolesRepository,
-            DiscordSocketClient discord)
+            IDiscordClient discord)
             : base(
                 akkaService,
                 getRoleLevelUseCase)
@@ -51,18 +51,20 @@ namespace OpenttdDiscord.Infrastructure.Roles.Runners
 
         private EitherAsync<IError, ISlashCommandResponse> GenerateResponse(
             ulong guildId,
-            IEnumerable<GuildRole> guildRoles)
-        {
-            StringBuilder sbResponse = new();
-            var guild = discord.GetGuild(guildId);
+            IEnumerable<GuildRole> guildRoles) => TryAsync<Either<IError, ISlashCommandResponse>>(
+                async () =>
+                {
+                    StringBuilder sbResponse = new();
+                    var guild = await discord.GetGuildAsync(guildId);
 
-            foreach (var role in guildRoles)
-            {
-                var discordRole = guild.GetRole(role.RoleId);
-                sbResponse.AppendLine($"{discordRole.Name} - {role.RoleLevel}");
-            }
+                    foreach (var role in guildRoles)
+                    {
+                        var discordRole = guild.GetRole(role.RoleId);
+                        sbResponse.AppendLine($"{discordRole.Name} - {role.RoleLevel}");
+                    }
 
-            return new TextCommandResponse(sbResponse);
-        }
+                    return new TextCommandResponse(sbResponse);
+                })
+            .ToEitherAsyncErrorFlat();
     }
 }

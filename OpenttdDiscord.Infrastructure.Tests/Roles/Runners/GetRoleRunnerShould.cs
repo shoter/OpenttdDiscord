@@ -1,3 +1,4 @@
+using AutoFixture;
 using Discord;
 using NSubstitute;
 using OpenttdDiscord.Base.Ext;
@@ -18,6 +19,8 @@ namespace OpenttdDiscord.Infrastructure.Tests.Roles.Runners
 
         private readonly GetRoleRunner sut;
 
+        private readonly Fixture fix = new();
+
         public GetRoleRunnerShould()
         {
             sut = new(
@@ -33,16 +36,18 @@ namespace OpenttdDiscord.Infrastructure.Tests.Roles.Runners
         {
             var commandSub = Substitute.For<ISlashCommandInteraction>();
             var data = Substitute.For<IApplicationCommandInteractionData>();
-            IUser user = Substitute.For<IUser>();
+            IUser user = Substitute.For<IGuildUser>();
 
             commandSub.Data.Returns(data);
+            commandSub.User.Returns(user);
+            commandSub.GuildId.Returns(fix.Create<ulong>());
             data.Options.Returns(Array.Empty<IApplicationCommandInteractionDataOption>());
 
             var response = (await sut.Run(commandSub)).Right();
             await response.Execute(commandSub);
 
             await commandSub.Received()
-                .RespondAsync(Arg.Is<string>(txt => txt.Contains("user")));
+                .RespondAsync(Arg.Is<string>(txt => txt.Contains("Admin")));
         }
     }
 }

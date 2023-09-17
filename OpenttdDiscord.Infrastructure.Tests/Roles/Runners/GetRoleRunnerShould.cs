@@ -11,43 +11,28 @@ using Array = System.Array;
 
 namespace OpenttdDiscord.Infrastructure.Tests.Roles.Runners
 {
-    public class GetRoleRunnerShould
+    public class GetRoleRunnerShould : RunnerTestBase
     {
-        private readonly IAkkaService akkaServiceSub = Substitute.For<IAkkaService>();
-
-        private readonly IGetRoleLevelUseCase getRoleLevelUseCaseSub = Substitute.For<IGetRoleLevelUseCase>();
-
         private readonly GetRoleRunner sut;
-
-        private readonly Fixture fix = new();
 
         public GetRoleRunnerShould()
         {
             sut = new(
                 akkaServiceSub,
                 getRoleLevelUseCaseSub);
-
-            getRoleLevelUseCaseSub.Execute(default!)
-                .ReturnsForAnyArgs(UserLevel.Admin);
         }
 
-        [Fact]
-        public async Task ReturnTextCommandResponse_WithWordUser_ForNonGuildUser()
+        [Theory]
+        [InlineData(UserLevel.Admin)]
+        [InlineData(UserLevel.Moderator)]
+        [InlineData(UserLevel.User)]
+        public async Task ReturnTextCommandResponse_WithWordUser_ForNonGuildUser(UserLevel userLevel)
         {
-            var commandSub = Substitute.For<ISlashCommandInteraction>();
-            var data = Substitute.For<IApplicationCommandInteractionData>();
-            IUser user = Substitute.For<IGuildUser>();
-
-            commandSub.Data.Returns(data);
-            commandSub.User.Returns(user);
-            commandSub.GuildId.Returns(fix.Create<ulong>());
-            data.Options.Returns(Array.Empty<IApplicationCommandInteractionDataOption>());
-
-            var response = (await sut.Run(commandSub)).Right();
-            await response.Execute(commandSub);
-
-            await commandSub.Received()
-                .RespondAsync(Arg.Is<string>(txt => txt.Contains("Admin")));
+            await (await WithUserLevel(userLevel)
+                    .WithGuildUser()
+                    .Run(sut))
+                .Received()
+                .RespondAsync(Arg.Is<string>(txt => txt.Contains(userLevel.ToString(), StringComparison.InvariantCultureIgnoreCase)));
         }
     }
 }

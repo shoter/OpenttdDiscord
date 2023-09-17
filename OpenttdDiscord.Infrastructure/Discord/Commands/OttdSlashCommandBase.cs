@@ -1,9 +1,13 @@
-﻿using Discord;
+﻿using System.Diagnostics.CodeAnalysis;
+using Discord;
 using Microsoft.Extensions.DependencyInjection;
 using OpenttdDiscord.Infrastructure.Discord.Runners;
 
 namespace OpenttdDiscord.Infrastructure.Discord.Commands
 {
+    // This class is excluded from code coverage due to it's very declarative nature.
+    // There is no build logic here all of the classes that are deriving from this abstract class.
+    [ExcludeFromCodeCoverage]
     internal abstract class OttdSlashCommandBase<TRunner> : IOttdSlashCommand
         where TRunner : IOttdSlashCommandRunner
     {

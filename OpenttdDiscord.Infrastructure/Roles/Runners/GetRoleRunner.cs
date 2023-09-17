@@ -25,7 +25,7 @@ namespace OpenttdDiscord.Infrastructure.Roles.Runners
             User user,
             ExtDictionary<string, object> options)
         {
-            if (!(command.User is SocketGuildUser guildUser))
+            if (!(command.User is IGuildUser))
             {
                 return new TextCommandResponse("You filthy user!");
             }

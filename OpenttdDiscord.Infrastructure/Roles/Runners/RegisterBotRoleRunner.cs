@@ -43,6 +43,9 @@ namespace OpenttdDiscord.Infrastructure.Roles.Runners
                 (UserLevel)roleLevel);
 
             return
+                from _0 in CheckIfHasCorrectUserLevel(
+                    user,
+                    UserLevel.Admin).ToAsync()
                 from actor in AkkaService.SelectActor(MainActors.Paths.Guilds)
                 from _1 in actor.TryAsk(msg)
                 select new TextCommandResponse("Role has been registered") as ISlashCommandResponse;

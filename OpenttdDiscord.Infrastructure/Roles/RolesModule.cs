@@ -36,6 +36,7 @@ namespace OpenttdDiscord.Infrastructure.Roles
         {
             services.AddScoped<RegisterBotRoleRunner>();
             services.AddScoped<GetRoleRunner>();
+            services.AddScoped<GetGuildRolesRunner>();
 
             return services;
         }
@@ -44,6 +45,7 @@ namespace OpenttdDiscord.Infrastructure.Roles
         {
             services.AddSingleton<IOttdSlashCommand, RegisterBotRoleCommand>();
             services.AddSingleton<IOttdSlashCommand, GetRoleCommand>();
+            services.AddSingleton<IOttdSlashCommand, GetGuildRolesCommand>();
 
             return services;
         }

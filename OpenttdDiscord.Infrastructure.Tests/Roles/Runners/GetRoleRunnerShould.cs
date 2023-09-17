@@ -38,7 +38,7 @@ namespace OpenttdDiscord.Infrastructure.Tests.Roles.Runners
         [Fact]
         public async Task ReturnTextCommandResponse_WithWordUser_ForNonGuildUser()
         {
-            await (await WithGuildUser()
+            await (await WithNonGuildUser()
                     .Run(sut))
                 .Received()
                 .RespondAsync(Arg.Is<string>(txt => txt.Contains("user", StringComparison.InvariantCultureIgnoreCase)));

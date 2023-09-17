@@ -10,19 +10,13 @@ using OpenttdDiscord.Infrastructure.Roles.Runners;
 
 namespace OpenttdDiscord.Infrastructure.Tests.Roles.Runners
 {
-    public class GetGuildRolesRunnerShould
+    public class GetGuildRolesRunnerShould : RunnerTestBase
     {
-        private readonly IAkkaService akkaServiceSub = Substitute.For<IAkkaService>();
-
-        private readonly IGetRoleLevelUseCase getRoleLevelUseCaseSub = Substitute.For<IGetRoleLevelUseCase>();
-
         private readonly IRolesRepository rolesRepositorySub = Substitute.For<IRolesRepository>();
 
         private readonly IDiscordClient discordClientSub = Substitute.For<IDiscordClient>();
 
         private readonly GetGuildRolesRunner sut;
-
-        private readonly Fixture fix = new();
 
         public GetGuildRolesRunnerShould()
         {
@@ -31,16 +25,50 @@ namespace OpenttdDiscord.Infrastructure.Tests.Roles.Runners
                 getRoleLevelUseCaseSub,
                 rolesRepositorySub,
                 discordClientSub
-                );
-
-            getRoleLevelUseCaseSub.Execute(default!)
-                .ReturnsForAnyArgs(UserLevel.Admin);
+            );
         }
 
         [Fact]
-        public Task ReturnTextCommandResponse_WithWordUser_ForNonGuildUser()
+        public async Task Return_ListOfRoles_WithCorrectUserLevel()
         {
-            return Task.CompletedTask;
+            var guildRoles = fix.Create<List<GuildRole>>();
+
+            rolesRepositorySub
+                .GetRoles(GuildId)
+                .Returns(guildRoles);
+
+            IGuild guildSub = Substitute.For<IGuild>();
+            discordClientSub.GetGuildAsync(GuildId)
+                .Returns(guildSub);
+
+            foreach (var guildRole in guildRoles)
+            {
+                var roleSub = Substitute.For<IRole>();
+                roleSub.Name.Returns($"id-{guildRole.RoleId}");
+                guildSub.GetRole(guildRole.RoleId)
+                    .Returns(roleSub);
+            }
+
+            await (await WithGuildUser()
+                    .WithUserLevel(UserLevel.Moderator)
+                    .Run(sut))
+                .Received()
+                .RespondAsync(
+                    Arg.Is<string>(
+                        txt =>
+                            guildRoles.All(
+                                guildRole =>
+                                    txt
+                                        .Split(
+                                            Environment.NewLine,
+                                            StringSplitOptions.None)
+                                        .Count(
+                                            line => line.Contains(
+                                                        guildRole.RoleLevel.ToString(),
+                                                        StringComparison.InvariantCultureIgnoreCase) &&
+                                                    line.Contains(
+                                                        $"id-{guildRole.RoleId}",
+                                                        StringComparison.InvariantCultureIgnoreCase)) == 1)));
         }
     }
 }

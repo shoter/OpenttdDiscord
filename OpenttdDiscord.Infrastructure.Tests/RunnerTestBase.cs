@@ -53,6 +53,14 @@ namespace OpenttdDiscord.Infrastructure.Tests
 
         public RunnerTestBase WithGuildUser() => WithUser(Substitute.For<IGuildUser>());
 
+        public IGuildUser WithGuildUserReturn()
+        {
+            IGuildUser guildUserSub = Substitute.For<IGuildUser>();
+            guildUserSub.Id.Returns(fix.Create<ulong>());
+            WithUser(guildUserSub);
+            return guildUserSub;
+        }
+
         public RunnerTestBase WithNonGuildUser() => WithUser(Substitute.For<IUser>());
 
         public RunnerTestBase WithUserLevel(UserLevel userLevel)

@@ -26,13 +26,22 @@ namespace OpenttdDiscord.Infrastructure.Tests.Roles.Runners
         [InlineData(UserLevel.Admin)]
         [InlineData(UserLevel.Moderator)]
         [InlineData(UserLevel.User)]
-        public async Task ReturnTextCommandResponse_WithWordUser_ForNonGuildUser(UserLevel userLevel)
+        public async Task ReturnTextCommandResponse_WithUserLevel_ForGuildUser(UserLevel userLevel)
         {
             await (await WithUserLevel(userLevel)
                     .WithGuildUser()
                     .Run(sut))
                 .Received()
                 .RespondAsync(Arg.Is<string>(txt => txt.Contains(userLevel.ToString(), StringComparison.InvariantCultureIgnoreCase)));
+        }
+
+        [Fact]
+        public async Task ReturnTextCommandResponse_WithWordUser_ForNonGuildUser()
+        {
+            await (await WithGuildUser()
+                    .Run(sut))
+                .Received()
+                .RespondAsync(Arg.Is<string>(txt => txt.Contains("user", StringComparison.InvariantCultureIgnoreCase)));
         }
     }
 }

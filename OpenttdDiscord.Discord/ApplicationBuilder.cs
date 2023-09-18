@@ -37,13 +37,16 @@ namespace OpenttdDiscord
         {
             return hostBuilder.ConfigureServices((HostBuilderContext context, IServiceCollection services) =>
             {
-                services
-                    .AddSingleton(ActorSystem.Create("OttdDiscord"))
-                    .AddSingleton(new DiscordSocketClient(new()
+                var discordClient = new DiscordSocketClient(
+                    new()
                     {
                         GatewayIntents = GatewayIntents.MessageContent | GatewayIntents.AllUnprivileged,
                         UseInteractionSnowflakeDate = false,
-                    }))
+                    });
+                services
+                    .AddSingleton(ActorSystem.Create("OttdDiscord"))
+                    .AddSingleton(discordClient)
+                    .AddSingleton<IDiscordClient>(discordClient)
                     .RegisterModules()
                     .AddHostedServices()
                     .ConfigureOptions(context);

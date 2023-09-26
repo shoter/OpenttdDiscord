@@ -11,6 +11,10 @@ namespace OpenttdDiscord.Infrastructure.Discord.Responses
         public TextCommandResponse(string response)
         {
             this.response = response;
+            if (string.IsNullOrWhiteSpace(this.response))
+            {
+                this.response = "Empty response";
+            }
         }
 
         public TextCommandResponse(StringBuilder sb)

@@ -37,11 +37,11 @@ namespace OpenttdDiscord.Infrastructure.Servers.Runners
                         user,
                         UserLevel.Moderator)
                     .ToAsync()
-                from _1 in EnsureItIsGuildCommand(command)
+                from guildId in EnsureItIsGuildCommand(command)
                     .ToAsync()
                 from servers in listServersUseCase.Execute(
                         new User(command.User),
-                        command.GuildId.Value)
+                        guildId)
                     .ToAsync()
                 from embed in CreateEmbed(servers)
                     .ToAsync()

@@ -45,6 +45,7 @@ namespace OpenttdDiscord.Infrastructure.Rcon.Runners
             ulong guildId = command.GuildId!.Value;
 
             return
+                from _0 in CheckIfHasCorrectUserLevel(user, UserLevel.Moderator).ToAsync()
                 from rconServers in listRconChannelsUseCase.Execute(user, guildId)
                 from response in GenerateResponse(rconServers)
                 select (ISlashCommandResponse)new TextCommandResponse(response);

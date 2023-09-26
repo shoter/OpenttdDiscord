@@ -24,7 +24,7 @@ namespace OpenttdDiscord.Infrastructure.EventLogs.UseCases
             return
                 from _1 in CheckIfHasCorrectUserLevel(
                         user,
-                        UserLevel.Admin)
+                        UserLevel.Moderator)
                     .ToAsync()
                 from actor in akkaService.SelectActor(MainActors.Paths.Guilds)
                 from response in actor.TryAsk<RetrievedEventLog>(

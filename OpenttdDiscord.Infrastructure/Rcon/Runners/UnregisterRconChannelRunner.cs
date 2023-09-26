@@ -41,6 +41,7 @@ namespace OpenttdDiscord.Infrastructure.Rcon.Runners
             ulong channelId = command.ChannelId!.Value;
 
             return
+                from _0 in CheckIfHasCorrectUserLevel(user, UserLevel.Admin).ToAsync()
                 from server in getServerByNameUseCase.Execute(user, serverName, guildId)
                 from _1 in unregisterRconChannelUseCase.Execute(user, server.Id, guildId, channelId)
                 select (ISlashCommandResponse)new TextCommandResponse($"Unregistered RCON channel for {serverName}");

@@ -40,6 +40,7 @@ namespace OpenttdDiscord.Infrastructure.Statuses.Runners
             string serverName = options.GetValueAs<string>("server-name");
 
             var _ =
+                from _0 in CheckIfHasCorrectUserLevel(user, UserLevel.Admin).ToAsync()
                 from server in ottdServerRepository.GetServerByName(
                     command.GuildId!.Value,
                     serverName)

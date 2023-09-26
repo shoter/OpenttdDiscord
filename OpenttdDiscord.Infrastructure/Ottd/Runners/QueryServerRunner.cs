@@ -46,6 +46,7 @@ namespace OpenttdDiscord.Infrastructure.Ottd.Runners
             ulong channelId = command.ChannelId.Value;
 
             return
+                from _0 in CheckIfHasCorrectUserLevel(user, UserLevel.Moderator).ToAsync()
                 from server in ottdServerRepository.GetServerByName(
                     command.GuildId!.Value,
                     serverName)

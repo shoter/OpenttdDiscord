@@ -46,6 +46,7 @@ namespace OpenttdDiscord.Infrastructure.Rcon.Runners
             string prefix = options.GetValueAs<string>("prefix");
 
             return
+                from _0 in CheckIfHasCorrectUserLevel(user, UserLevel.Admin).ToAsync()
                 from server in getServerByNameUseCase.Execute(
                     user,
                     serverName,

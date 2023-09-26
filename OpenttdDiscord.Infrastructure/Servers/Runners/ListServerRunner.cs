@@ -14,17 +14,17 @@ namespace OpenttdDiscord.Infrastructure.Servers.Runners
 {
     internal class ListServerRunner : OttdSlashCommandRunnerBase
     {
-        private readonly IListOttdServersUseCase listServersUseCase;
+        private IOttdServerRepository ottdServerRepository;
 
         public ListServerRunner(
             IAkkaService akkaService,
             IGetRoleLevelUseCase getRoleLevelUseCase,
-            IListOttdServersUseCase listServersUseCase)
+            IOttdServerRepository ottdServerRepository)
             : base(
                 akkaService,
                 getRoleLevelUseCase)
         {
-            this.listServersUseCase = listServersUseCase;
+            this.ottdServerRepository = ottdServerRepository;
         }
 
         protected override EitherAsync<IError, ISlashCommandResponse> RunInternal(
@@ -39,10 +39,7 @@ namespace OpenttdDiscord.Infrastructure.Servers.Runners
                     .ToAsync()
                 from guildId in EnsureItIsGuildCommand(command)
                     .ToAsync()
-                from servers in listServersUseCase.Execute(
-                        new User(command.User),
-                        guildId)
-                    .ToAsync()
+                from servers in ottdServerRepository.GetServersForGuild(guildId)
                 from embed in CreateEmbed(servers)
                     .ToAsync()
                 select (ISlashCommandResponse) new EmbedCommandResponse(embed);

@@ -5,6 +5,6 @@ namespace OpenttdDiscord.Infrastructure.Discord.Responses
 {
     public interface ISlashCommandResponse
     {
-        public Task<EitherUnit> Execute(ISlashCommandInteraction command);
+        public EitherAsyncUnit Execute(ISlashCommandInteraction command);
     }
 }

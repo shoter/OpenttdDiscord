@@ -3,6 +3,7 @@ using Discord.WebSocket;
 using LanguageExt;
 using OpenttdDiscord.Base.Basics;
 using OpenttdDiscord.Base.Ext;
+using OpenttdDiscord.Domain.Roles.Errors;
 using OpenttdDiscord.Domain.Roles.UseCases;
 using OpenttdDiscord.Domain.Security;
 using OpenttdDiscord.Infrastructure.Akkas;
@@ -74,7 +75,7 @@ namespace OpenttdDiscord.Infrastructure.Discord.Runners
 
             if (!hasLevel)
             {
-                return new HumanReadableError("You do not have sufficient privileges to run this use case!");
+                return new IncorrectUserLevelError("You do not have sufficient privileges to run this use case!");
             }
 
             return Unit.Default;

@@ -18,7 +18,9 @@ namespace OpenttdDiscord.Infrastructure.Tests
 
         protected IUser UserSub { get; private set; } = Substitute.For<IGuildUser>();
 
-        protected ulong GuildId { get; }
+        protected ulong GuildId { get; private set; }
+
+        protected ulong ChannelId { get; private set; }
 
         protected ISlashCommandInteraction CommandInteractionSub { get; } = Substitute.For<ISlashCommandInteraction>();
 
@@ -29,18 +31,26 @@ namespace OpenttdDiscord.Infrastructure.Tests
 
         public RunnerTestBase()
         {
-            GuildId = fix.Create<ulong>();
             CommandInteractionSub.Data.Returns(dataSub);
             dataSub.Options.Returns(options);
 
             WithUserLevel(UserLevel.Admin)
                 .WithGuildUser()
-                .WithGuildId(GuildId);
+                .WithGuildId(fix.Create<ulong>())
+                .WithChannelId(fix.Create<ulong>());
         }
 
         public RunnerTestBase WithGuildId(ulong guildId)
         {
             CommandInteractionSub.GuildId.Returns(guildId);
+            GuildId = guildId;
+            return this;
+        }
+
+        public RunnerTestBase WithChannelId(ulong channelId)
+        {
+            CommandInteractionSub.ChannelId.Returns(channelId);
+            ChannelId = channelId;
             return this;
         }
 
@@ -73,7 +83,7 @@ namespace OpenttdDiscord.Infrastructure.Tests
         public RunnerTestBase WithOption(
             string name,
             string value,
-            ApplicationCommandOptionType type)
+            ApplicationCommandOptionType type = ApplicationCommandOptionType.String)
         {
             var option = Substitute.For<IApplicationCommandInteractionDataOption>();
             option.Name.Returns(name);
@@ -91,5 +101,10 @@ namespace OpenttdDiscord.Infrastructure.Tests
 
             return CommandInteractionSub;
         }
+
+        public EitherAsync<IError, ISlashCommandInteraction> RunExt(IOttdSlashCommandRunner commandRunner) =>
+            from response in commandRunner.Run(CommandInteractionSub)
+            from result in response.Execute(CommandInteractionSub)
+            select CommandInteractionSub;
     }
 }

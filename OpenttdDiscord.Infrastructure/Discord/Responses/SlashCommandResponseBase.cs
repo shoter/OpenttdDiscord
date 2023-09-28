@@ -7,18 +7,13 @@ namespace OpenttdDiscord.Infrastructure.Discord.Responses
 {
     public abstract class SlashCommandResponseBase : ISlashCommandResponse
     {
-        public async Task<EitherUnit> Execute(ISlashCommandInteraction command)
-        {
-            try
-            {
-                await InternalExecute(command);
-                return Unit.Default;
-            }
-            catch (Exception ex)
-            {
-                return new ExceptionError(ex);
-            }
-        }
+        public EitherAsyncUnit Execute(ISlashCommandInteraction command) => TryAsync<EitherUnit>(
+                async () =>
+                {
+                    await InternalExecute(command);
+                    return Unit.Default;
+                })
+            .ToEitherAsyncErrorFlat();
 
         protected abstract Task InternalExecute(ISlashCommandInteraction command);
     }

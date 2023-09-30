@@ -1,28 +1,25 @@
-using OpenttdDiscord.Domain.Chatting.UseCases;
+using OpenttdDiscord.Domain.Reporting.UseCases;
 using OpenttdDiscord.Domain.Roles.Errors;
 using OpenttdDiscord.Domain.Security;
 using OpenttdDiscord.Domain.Servers.UseCases;
-using OpenttdDiscord.Infrastructure.Chatting.Runners;
+using OpenttdDiscord.Infrastructure.Reporting.Runners;
 
-namespace OpenttdDiscord.Infrastructure.Tests.Chatting.Runner
+namespace OpenttdDiscord.Infrastructure.Tests.Reporting.Runners
 {
-    public class RegisterChatChannelRunnerShould : RunnerTestBase
+    public class RegisterReportChannelRunnerShould : RunnerTestBase
     {
         private readonly IGetServerUseCase getServerUseCaseSubsitute = Substitute.For<IGetServerUseCase>();
 
-        private readonly IRegisterChatChannelUseCase registerChatChannelUseCaseSubstitute =
-            Substitute.For<IRegisterChatChannelUseCase>();
+        private readonly IRegisterReportChannelUseCase registerChatChannelUseCaseSub =
+            Substitute.For<IRegisterReportChannelUseCase>();
 
-        private readonly IGetChatChannelUseCase getChatChannelUseCaseSub = Substitute.For<IGetChatChannelUseCase>();
+        private readonly RegisterReportChannelRunner sut;
 
-        private readonly RegisterChatChannelRunner sut;
-
-        public RegisterChatChannelRunnerShould()
+        public RegisterReportChannelRunnerShould()
         {
             sut = new(
                 getServerUseCaseSubsitute,
-                registerChatChannelUseCaseSubstitute,
-                getChatChannelUseCaseSub,
+                registerChatChannelUseCaseSub,
                 akkaServiceSub,
                 getRoleLevelUseCaseSub);
         }

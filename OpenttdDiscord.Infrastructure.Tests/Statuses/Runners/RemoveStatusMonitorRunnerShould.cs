@@ -4,26 +4,22 @@ using OpenttdDiscord.Domain.Servers;
 using OpenttdDiscord.Domain.Statuses.UseCases;
 using OpenttdDiscord.Infrastructure.Statuses.Runners;
 
-namespace OpenttdDiscord.Infrastructure.Tests.Servers.Runners
+namespace OpenttdDiscord.Infrastructure.Tests.Statuses.Runners
 {
-    public class RegisterStatusMonitorRunnerShould : RunnerTestBase
+    public class RemoveStatusMonitorRunnerShould : RunnerTestBase
     {
-        private readonly IRegisterStatusMonitorUseCase registerStatusMonitorUseCaseSub =
-            Substitute.For<IRegisterStatusMonitorUseCase>();
-
-        private readonly ICheckIfStatusMonitorExistsUseCase checkIfStatusMonitorExistsUseCaseSub =
-            Substitute.For<ICheckIfStatusMonitorExistsUseCase>();
+        private readonly IRemoveStatusMonitorUseCase removeStatusMonitorUseCaseSub =
+            Substitute.For<IRemoveStatusMonitorUseCase>();
 
         private readonly IOttdServerRepository ottdServerRepositorySub = Substitute.For<IOttdServerRepository>();
 
-        private readonly RegisterStatusMonitorRunner sut;
+        private readonly RemoveStatusMonitorRunner sut;
 
-        public RegisterStatusMonitorRunnerShould()
+        public RemoveStatusMonitorRunnerShould()
         {
             sut = new(
+                removeStatusMonitorUseCaseSub,
                 ottdServerRepositorySub,
-                registerStatusMonitorUseCaseSub,
-                checkIfStatusMonitorExistsUseCaseSub,
                 akkaServiceSub,
                 getRoleLevelUseCaseSub);
         }

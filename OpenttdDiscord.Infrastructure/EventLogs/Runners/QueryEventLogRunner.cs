@@ -39,6 +39,7 @@ namespace OpenttdDiscord.Infrastructure.EventLogs.Runners
             string serverName = options.GetValueAs<string>("server-name");
 
             return
+                from _0 in CheckIfHasCorrectUserLevel(user, UserLevel.Moderator).ToAsync()
                 from server in getServerUseCase.Execute(
                     user,
                     serverName,

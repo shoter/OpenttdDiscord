@@ -46,6 +46,7 @@ namespace OpenttdDiscord.Infrastructure.Statuses.Runners
             ulong guildId = command.GuildId!.Value;
 
             return
+                from _0 in CheckIfHasCorrectUserLevel(user, UserLevel.Admin).ToAsync()
                 from server in ottdServerRepository.GetServerByName(
                     guildId,
                     serverName)

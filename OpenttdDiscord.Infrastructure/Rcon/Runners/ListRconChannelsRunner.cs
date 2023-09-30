@@ -21,21 +21,17 @@ namespace OpenttdDiscord.Infrastructure.Rcon.Runners
 {
     internal class ListRconChannelsRunner : OttdSlashCommandRunnerBase
     {
-        private readonly DiscordSocketClient discord;
-
         private readonly IGetServerUseCase getServerUseCase;
 
         private readonly IListRconChannelsUseCase listRconChannelsUseCase;
 
         public ListRconChannelsRunner(
-            DiscordSocketClient discord,
             IGetServerUseCase getServerUseCase,
             IListRconChannelsUseCase listRconChannelsUseCase,
             IAkkaService akkaService,
             IGetRoleLevelUseCase getRoleLevelUseCase)
         : base(akkaService, getRoleLevelUseCase)
         {
-            this.discord = discord;
             this.getServerUseCase = getServerUseCase;
             this.listRconChannelsUseCase = listRconChannelsUseCase;
         }
@@ -45,6 +41,7 @@ namespace OpenttdDiscord.Infrastructure.Rcon.Runners
             ulong guildId = command.GuildId!.Value;
 
             return
+                from _0 in CheckIfHasCorrectUserLevel(user, UserLevel.Moderator).ToAsync()
                 from rconServers in listRconChannelsUseCase.Execute(user, guildId)
                 from response in GenerateResponse(rconServers)
                 select (ISlashCommandResponse)new TextCommandResponse(response);

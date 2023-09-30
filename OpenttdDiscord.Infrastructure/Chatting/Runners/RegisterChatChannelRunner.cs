@@ -28,33 +28,62 @@ namespace OpenttdDiscord.Infrastructure.Chatting.Runners
             IGetChatChannelUseCase getChatChannelUseCase,
             IAkkaService akkaService,
             IGetRoleLevelUseCase getRoleLevelUseCase)
-        : base(akkaService, getRoleLevelUseCase)
+            : base(
+                akkaService,
+                getRoleLevelUseCase)
         {
             this.getServerByNameUseCase = getServerByNameUseCase;
             this.registerChatChannelUseCase = registerChatChannelUseCase;
             this.getChatChannelUseCase = getChatChannelUseCase;
         }
 
-        protected override EitherAsync<IError, ISlashCommandResponse> RunInternal(ISlashCommandInteraction command, User user, ExtDictionary<string, object> options)
+        protected override EitherAsync<IError, ISlashCommandResponse> RunInternal(
+            ISlashCommandInteraction command,
+            User user,
+            ExtDictionary<string, object> options)
         {
             string serverName = options.GetValueAs<string>("server-name");
 
             return
-                from guildId in EnsureItIsGuildCommand(command).ToAsync()
-                from channelId in EnsureItIsChannelCommand(command).ToAsync()
-                from server in getServerByNameUseCase.Execute(user, serverName, guildId)
-                from _1 in ReturnErrorIfChatChannelExists(user, server.Id, channelId)
-                from _2 in registerChatChannelUseCase.Execute(user, new ChatChannel(server.Id, guildId, channelId))
-                select (ISlashCommandResponse)new TextCommandResponse("Chat channel registered!");
+                from guildId in EnsureItIsGuildCommand(command)
+                    .ToAsync()
+                from channelId in EnsureItIsChannelCommand(command)
+                    .ToAsync()
+                from _0 in CheckIfHasCorrectUserLevel(
+                        user,
+                        UserLevel.Admin)
+                    .ToAsync()
+                from server in getServerByNameUseCase.Execute(
+                    user,
+                    serverName,
+                    guildId)
+                from _1 in ReturnErrorIfChatChannelExists(
+                    user,
+                    server.Id,
+                    channelId)
+                from _2 in registerChatChannelUseCase.Execute(
+                    user,
+                    new ChatChannel(
+                        server.Id,
+                        guildId,
+                        channelId))
+                select (ISlashCommandResponse) new TextCommandResponse("Chat channel registered!");
         }
 
-        private EitherAsyncUnit ReturnErrorIfChatChannelExists(User user, Guid serverId, ulong channelId)
+        private EitherAsyncUnit ReturnErrorIfChatChannelExists(
+            User user,
+            Guid serverId,
+            ulong channelId)
         {
-            var result = getChatChannelUseCase.Execute(user, serverId, channelId);
-            return result.Bind(chatChannel =>
-                chatChannel.IsNone ?
-            EitherAsyncUnit.Right(Unit.Default) :
-            EitherAsyncUnit.Left(new HumanReadableError("Chat channel already exists!")));
+            var result = getChatChannelUseCase.Execute(
+                user,
+                serverId,
+                channelId);
+            return result.Bind(
+                chatChannel =>
+                    chatChannel.IsNone
+                        ? EitherAsyncUnit.Right(Unit.Default)
+                        : EitherAsyncUnit.Left(new HumanReadableError("Chat channel already exists!")));
         }
     }
 }

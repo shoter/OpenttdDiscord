@@ -24,7 +24,7 @@ namespace OpenttdDiscord.Infrastructure.Guilds.Actors
         private readonly ulong guildId;
 
         private readonly IActorRef guildRoleActor;
-        private readonly IListOttdServersUseCase listOttdServersUseCase;
+        private readonly IOttdServerRepository ottdServerRepository;
 
         private readonly Dictionary<Guid, IActorRef> serverActors = new();
 
@@ -33,7 +33,7 @@ namespace OpenttdDiscord.Infrastructure.Guilds.Actors
             ulong guildId)
             : base(serviceProvider)
         {
-            listOttdServersUseCase = SP.GetRequiredService<IListOttdServersUseCase>();
+            ottdServerRepository = SP.GetRequiredService<IOttdServerRepository>();
             this.guildId = guildId;
             guildRoleActor = Context.ActorOf(
                 GuildRoleActor
@@ -78,9 +78,7 @@ namespace OpenttdDiscord.Infrastructure.Guilds.Actors
 
         private async Task InitGuildsActorMessage(InitGuildsActorMessage _)
         {
-            (await listOttdServersUseCase.Execute(
-                    User.Master,
-                    guildId))
+            (await ottdServerRepository.GetServersForGuild(guildId))
                 .ThrowIfError()
                 .Map(
                     servers => servers.Select(CreateServerActor)

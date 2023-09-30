@@ -17,21 +17,17 @@ namespace OpenttdDiscord.Infrastructure.Reporting.Runners
 {
     internal class ListReportChannelsRunner : OttdSlashCommandRunnerBase
     {
-        private readonly DiscordSocketClient discord;
-
         private readonly IGetServerUseCase getServerUseCase;
 
         private readonly IListReportChannelsUseCase listReportChannelsUseCase;
 
         public ListReportChannelsRunner(
-            DiscordSocketClient discord,
             IGetServerUseCase getServerUseCase,
             IListReportChannelsUseCase listReportChannelsUseCase,
             IAkkaService akkaService,
             IGetRoleLevelUseCase getRoleLevelUseCase)
             : base(akkaService, getRoleLevelUseCase)
         {
-            this.discord = discord;
             this.getServerUseCase = getServerUseCase;
             this.listReportChannelsUseCase = listReportChannelsUseCase;
         }
@@ -44,6 +40,7 @@ namespace OpenttdDiscord.Infrastructure.Reporting.Runners
             ulong guildId = command.GuildId!.Value;
 
             return
+                from _1 in CheckIfHasCorrectUserLevel(user, UserLevel.Moderator).ToAsync()
                 from reportServers in listReportChannelsUseCase.Execute(
                     user,
                     guildId)

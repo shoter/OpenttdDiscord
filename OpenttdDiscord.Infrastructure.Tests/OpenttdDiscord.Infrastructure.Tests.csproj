@@ -37,4 +37,12 @@
       <ProjectReference Include="..\OpenttdDiscord.Tests.Common\OpenttdDiscord.Tests.Common.csproj" />
     </ItemGroup>
 
+
+
+
+
+
+
+
+
 </Project>

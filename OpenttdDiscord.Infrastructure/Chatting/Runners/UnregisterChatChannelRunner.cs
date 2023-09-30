@@ -29,22 +29,39 @@ namespace OpenttdDiscord.Infrastructure.Chatting.Runners
             IGetServerUseCase getServerByNameUseCase,
             IAkkaService akkaService,
             IGetRoleLevelUseCase getRoleLevelUseCase)
-        : base(akkaService, getRoleLevelUseCase)
+            : base(
+                akkaService,
+                getRoleLevelUseCase)
         {
             this.unregisterChatChannelUseCase = unregisterChatChannelUseCase;
             this.getServerByNameUseCase = getServerByNameUseCase;
         }
 
-        protected override EitherAsync<IError, ISlashCommandResponse> RunInternal(ISlashCommandInteraction command, User user, ExtDictionary<string, object> options)
+        protected override EitherAsync<IError, ISlashCommandResponse> RunInternal(
+            ISlashCommandInteraction command,
+            User user,
+            ExtDictionary<string, object> options)
         {
             string serverName = options.GetValueAs<string>("server-name");
             ulong guildId = command.GuildId!.Value;
             ulong channelId = command.ChannelId!.Value;
 
             return
-            from server in getServerByNameUseCase.Execute(user, serverName, guildId)
-            from _1 in unregisterChatChannelUseCase.Execute(user, server.Id, guildId, channelId)
-            select (ISlashCommandResponse)new TextCommandResponse($"{server.Name} unregistered from this chat channel");
+                from _0 in CheckIfHasCorrectUserLevel(
+                        user,
+                        UserLevel.Admin)
+                    .ToAsync()
+                from server in getServerByNameUseCase.Execute(
+                    user,
+                    serverName,
+                    guildId)
+                from _1 in unregisterChatChannelUseCase.Execute(
+                    user,
+                    server.Id,
+                    guildId,
+                    channelId)
+                select (ISlashCommandResponse) new TextCommandResponse(
+                    $"{server.Name} unregistered from this chat channel");
         }
     }
 }

@@ -56,6 +56,7 @@ namespace OpenttdDiscord.Infrastructure.Servers.Runners
             );
 
             return
+                from _0 in CheckIfHasCorrectUserLevel(user, UserLevel.Admin).ToAsync()
                 from _1 in useCase.Execute(
                     user,
                     server)

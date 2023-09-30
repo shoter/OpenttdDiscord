@@ -26,7 +26,7 @@ namespace OpenttdDiscord.Infrastructure.Roles.Runners
             ExtDictionary<string, object> options)
         {
             ulong guildID = command.GuildId!.Value;
-            SocketRole? role = options["role"] as SocketRole;
+            IRole? role = options["role"] as IRole;
             long roleLevel = (long)options["role-level"];
 
             if (role == null)

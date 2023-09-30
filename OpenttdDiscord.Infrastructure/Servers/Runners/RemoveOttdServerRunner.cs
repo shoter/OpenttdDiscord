@@ -36,6 +36,7 @@ namespace OpenttdDiscord.Infrastructure.Servers.Runners
             string serverName = options.GetValueAs<string>("server-name");
 
             return
+                from _0 in CheckIfHasCorrectUserLevel(user, UserLevel.Admin).ToAsync()
                 from _1 in removeOttdServerUseCase.Execute(
                         user,
                         command.GuildId!.Value,

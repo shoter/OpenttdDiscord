@@ -1,13 +1,5 @@
-using AutoFixture;
-using Discord;
-using NSubstitute;
-using OpenttdDiscord.Base.Ext;
-using OpenttdDiscord.Domain.Roles.UseCases;
 using OpenttdDiscord.Domain.Security;
-using OpenttdDiscord.Infrastructure.Akkas;
-using OpenttdDiscord.Infrastructure.Discord.Responses;
 using OpenttdDiscord.Infrastructure.Roles.Runners;
-using Array = System.Array;
 
 namespace OpenttdDiscord.Infrastructure.Tests.Roles.Runners
 {
@@ -32,7 +24,11 @@ namespace OpenttdDiscord.Infrastructure.Tests.Roles.Runners
                     .WithGuildUser()
                     .Run(sut))
                 .Received()
-                .RespondAsync(Arg.Is<string>(txt => txt.Contains(userLevel.ToString(), StringComparison.InvariantCultureIgnoreCase)));
+                .RespondAsync(
+                    Arg.Is<string>(
+                        txt => txt.Contains(
+                            userLevel.ToString(),
+                            StringComparison.InvariantCultureIgnoreCase)));
         }
 
         [Fact]
@@ -41,7 +37,11 @@ namespace OpenttdDiscord.Infrastructure.Tests.Roles.Runners
             await (await WithNonGuildUser()
                     .Run(sut))
                 .Received()
-                .RespondAsync(Arg.Is<string>(txt => txt.Contains("user", StringComparison.InvariantCultureIgnoreCase)));
+                .RespondAsync(
+                    Arg.Is<string>(
+                        txt => txt.Contains(
+                            "user",
+                            StringComparison.InvariantCultureIgnoreCase)));
         }
     }
 }

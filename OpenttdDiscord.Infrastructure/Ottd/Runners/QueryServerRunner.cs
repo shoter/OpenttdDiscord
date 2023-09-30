@@ -22,8 +22,8 @@ namespace OpenttdDiscord.Infrastructure.Ottd.Runners
         private readonly IOttdServerRepository ottdServerRepository;
 
         public QueryServerRunner(
-            IAkkaService akkaService,
             IOttdServerRepository ottdServerRepository,
+            IAkkaService akkaService,
             IGetRoleLevelUseCase getRoleLevelUseCase)
             : base(
                 akkaService,
@@ -46,6 +46,7 @@ namespace OpenttdDiscord.Infrastructure.Ottd.Runners
             ulong channelId = command.ChannelId.Value;
 
             return
+                from _0 in CheckIfHasCorrectUserLevel(user, UserLevel.Moderator).ToAsync()
                 from server in ottdServerRepository.GetServerByName(
                     command.GuildId!.Value,
                     serverName)

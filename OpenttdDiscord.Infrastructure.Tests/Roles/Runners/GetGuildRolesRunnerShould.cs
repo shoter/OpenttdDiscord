@@ -1,11 +1,8 @@
 using AutoFixture;
 using Discord;
-using NSubstitute;
-using OpenttdDiscord.Base.Ext;
 using OpenttdDiscord.Domain.Roles;
-using OpenttdDiscord.Domain.Roles.UseCases;
+using OpenttdDiscord.Domain.Roles.Errors;
 using OpenttdDiscord.Domain.Security;
-using OpenttdDiscord.Infrastructure.Akkas;
 using OpenttdDiscord.Infrastructure.Roles.Runners;
 
 namespace OpenttdDiscord.Infrastructure.Tests.Roles.Runners
@@ -69,6 +66,18 @@ namespace OpenttdDiscord.Infrastructure.Tests.Roles.Runners
                                                     line.Contains(
                                                         $"id-{guildRole.RoleId}",
                                                         StringComparison.InvariantCultureIgnoreCase)) == 1)));
+        }
+
+        [Theory]
+        [InlineData(UserLevel.User)]
+        public async Task NotExecuteForNonModerator(UserLevel userLevel)
+        {
+            var result = await WithGuildUser()
+                .WithUserLevel(userLevel)
+                .RunExt(sut);
+
+            Assert.True(result.IsLeft);
+            Assert.True(result.Left() is IncorrectUserLevelError);
         }
     }
 }

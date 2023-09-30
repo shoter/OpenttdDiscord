@@ -29,7 +29,7 @@ namespace OpenttdDiscord.Infrastructure.Tests.Servers.Runners
             var result = await WithGuildUser()
                 .WithOption("name", "whatever")
                 .WithOption("password", "dupa")
-                .WithOption("port", 1234)
+                .WithOption("port", 1234L)
                 .WithOption("ip", "127.0.0.1")
                 .WithUserLevel(userLevel)
                 .RunExt(sut);

@@ -21,8 +21,7 @@ namespace OpenttdDiscord.Infrastructure.Tests.Ottd.Runners
 
         [Theory]
         [InlineData(UserLevel.User)]
-        [InlineData(UserLevel.Moderator)]
-        public async Task NotExecuteForNonAdmin(UserLevel userLevel)
+        public async Task NotExecuteForNonModerator(UserLevel userLevel)
         {
             var result = await WithGuildUser()
                 .WithOption("server-name", "whatever")

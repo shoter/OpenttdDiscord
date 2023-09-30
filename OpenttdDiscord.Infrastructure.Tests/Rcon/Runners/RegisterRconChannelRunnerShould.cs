@@ -40,6 +40,9 @@ namespace OpenttdDiscord.Infrastructure.Tests.Rcon.Runners
                 .WithOption(
                     "server-name",
                     "whatever")
+                .WithOption(
+                    "prefix",
+                    "whatever")
                 .WithUserLevel(userLevel)
                 .RunExt(sut);
 

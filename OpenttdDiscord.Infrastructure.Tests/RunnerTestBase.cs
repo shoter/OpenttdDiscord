@@ -82,7 +82,7 @@ namespace OpenttdDiscord.Infrastructure.Tests
 
         public RunnerTestBase WithOption(
             string name,
-            string value,
+            object value,
             ApplicationCommandOptionType type = ApplicationCommandOptionType.String)
         {
             var option = Substitute.For<IApplicationCommandInteractionDataOption>();
@@ -93,6 +93,14 @@ namespace OpenttdDiscord.Infrastructure.Tests
             options.Add(option);
             return this;
         }
+
+        public RunnerTestBase WithOption(
+            string name,
+            int value) => WithOption(name, value, ApplicationCommandOptionType.Integer);
+
+        public RunnerTestBase WithOption(
+            string name,
+            long value) => WithOption(name, value, ApplicationCommandOptionType.Integer);
 
         public async Task<ISlashCommandInteraction> Run(IOttdSlashCommandRunner commandRunner)
         {

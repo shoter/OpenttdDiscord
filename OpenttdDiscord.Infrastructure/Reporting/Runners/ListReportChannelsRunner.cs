@@ -40,6 +40,7 @@ namespace OpenttdDiscord.Infrastructure.Reporting.Runners
             ulong guildId = command.GuildId!.Value;
 
             return
+                from _1 in CheckIfHasCorrectUserLevel(user, UserLevel.Moderator).ToAsync()
                 from reportServers in listReportChannelsUseCase.Execute(
                     user,
                     guildId)

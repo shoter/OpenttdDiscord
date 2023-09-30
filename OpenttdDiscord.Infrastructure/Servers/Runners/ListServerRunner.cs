@@ -14,12 +14,12 @@ namespace OpenttdDiscord.Infrastructure.Servers.Runners
 {
     internal class ListServerRunner : OttdSlashCommandRunnerBase
     {
-        private IOttdServerRepository ottdServerRepository;
+        private readonly IOttdServerRepository ottdServerRepository;
 
         public ListServerRunner(
+            IOttdServerRepository ottdServerRepository,
             IAkkaService akkaService,
-            IGetRoleLevelUseCase getRoleLevelUseCase,
-            IOttdServerRepository ottdServerRepository)
+            IGetRoleLevelUseCase getRoleLevelUseCase)
             : base(
                 akkaService,
                 getRoleLevelUseCase)

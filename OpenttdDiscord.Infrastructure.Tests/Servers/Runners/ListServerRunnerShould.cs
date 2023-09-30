@@ -26,7 +26,6 @@ namespace OpenttdDiscord.Infrastructure.Tests.Servers.Runners
         public async Task NotExecuteForNonModerator(UserLevel userLevel)
         {
             var result = await WithGuildUser()
-                .WithOption("server-name", "whatever")
                 .WithUserLevel(userLevel)
                 .RunExt(sut);
 

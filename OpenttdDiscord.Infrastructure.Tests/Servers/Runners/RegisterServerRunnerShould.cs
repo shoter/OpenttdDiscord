@@ -1,29 +1,30 @@
 using OpenttdDiscord.Domain.Chatting.UseCases;
 using OpenttdDiscord.Domain.Roles.Errors;
 using OpenttdDiscord.Domain.Security;
-using OpenttdDiscord.Domain.Servers;
 using OpenttdDiscord.Domain.Servers.UseCases;
 using OpenttdDiscord.Infrastructure.Servers.Runners;
 
 namespace OpenttdDiscord.Infrastructure.Tests.Servers.Runners
 {
-    public class ListServerRunnerShould : RunnerTestBase
+    public class RegisterServerRunnerShould : RunnerTestBase
     {
-        private IOttdServerRepository OttdServerRepositorySub { get; } = Substitute.For<IOttdServerRepository>();
+        private readonly IRegisterOttdServerUseCase registerOttdServerUseCaseSub =
+            Substitute.For<IRegisterOttdServerUseCase>();
 
-        private readonly ListServerRunner sut;
+        private readonly RegisterServerRunner sut;
 
-        public ListServerRunnerShould()
+        public RegisterServerRunnerShould()
         {
             sut = new(
-                OttdServerRepositorySub,
+                registerOttdServerUseCaseSub,
                 akkaServiceSub,
                 getRoleLevelUseCaseSub);
         }
 
         [Theory]
         [InlineData(UserLevel.User)]
-        public async Task NotExecuteForNonModerator(UserLevel userLevel)
+        [InlineData(UserLevel.Moderator)]
+        public async Task NotExecuteForNonAdmin(UserLevel userLevel)
         {
             var result = await WithGuildUser()
                 .WithOption("server-name", "whatever")

@@ -18,8 +18,8 @@ namespace OpenttdDiscord.Infrastructure.Ottd.Runners
         private readonly IGetServerUseCase getServerUseCase;
 
         public QueryDebugInfoRunner(
-            IAkkaService akkaService,
             IGetServerUseCase getServerUseCase,
+            IAkkaService akkaService,
             IGetRoleLevelUseCase getRoleLevelUseCase)
             : base(akkaService, getRoleLevelUseCase)
         {

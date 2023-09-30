@@ -1,0 +1,36 @@
+using OpenttdDiscord.Domain.Roles.Errors;
+using OpenttdDiscord.Domain.Security;
+using OpenttdDiscord.Domain.Servers.UseCases;
+using OpenttdDiscord.Infrastructure.Ottd.Runners;
+
+namespace OpenttdDiscord.Infrastructure.Tests.Ottd.Runners
+{
+    public class QueryDebugInfoRunnerShould : RunnerTestBase
+    {
+        private readonly IGetServerUseCase getServerUseCaseSubsitute = Substitute.For<IGetServerUseCase>();
+
+        private readonly QueryDebugInfoRunner sut;
+
+        public QueryDebugInfoRunnerShould()
+        {
+            sut = new(
+                getServerUseCaseSubsitute,
+                akkaServiceSub,
+                getRoleLevelUseCaseSub);
+        }
+
+        [Theory]
+        [InlineData(UserLevel.User)]
+        [InlineData(UserLevel.Moderator)]
+        public async Task NotExecuteForNonAdmin(UserLevel userLevel)
+        {
+            var result = await WithGuildUser()
+                .WithOption("server-name", "whatever")
+                .WithUserLevel(userLevel)
+                .RunExt(sut);
+
+            Assert.True(result.IsLeft);
+            Assert.True(result.Left() is IncorrectUserLevelError);
+        }
+    }
+}

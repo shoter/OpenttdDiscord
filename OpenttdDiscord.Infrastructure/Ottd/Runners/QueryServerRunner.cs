@@ -22,8 +22,8 @@ namespace OpenttdDiscord.Infrastructure.Ottd.Runners
         private readonly IOttdServerRepository ottdServerRepository;
 
         public QueryServerRunner(
-            IAkkaService akkaService,
             IOttdServerRepository ottdServerRepository,
+            IAkkaService akkaService,
             IGetRoleLevelUseCase getRoleLevelUseCase)
             : base(
                 akkaService,

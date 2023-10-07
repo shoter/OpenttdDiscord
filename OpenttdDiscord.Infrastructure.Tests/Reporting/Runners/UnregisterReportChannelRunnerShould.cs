@@ -21,8 +21,8 @@ namespace OpenttdDiscord.Infrastructure.Tests.Reporting.Runners
             sut = new(
                 getServerUseCaseSubsitute,
                 unregisterReportChannelUseCaseSub,
-                akkaServiceSub,
-                getRoleLevelUseCaseSub);
+                AkkaServiceSub,
+                GetRoleLevelUseCaseSub);
         }
 
         [Theory]

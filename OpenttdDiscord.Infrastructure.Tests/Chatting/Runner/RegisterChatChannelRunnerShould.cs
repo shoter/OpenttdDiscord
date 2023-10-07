@@ -23,8 +23,8 @@ namespace OpenttdDiscord.Infrastructure.Tests.Chatting.Runner
                 getServerUseCaseSubsitute,
                 registerChatChannelUseCaseSubstitute,
                 getChatChannelUseCaseSub,
-                akkaServiceSub,
-                getRoleLevelUseCaseSub);
+                AkkaServiceSub,
+                GetRoleLevelUseCaseSub);
         }
 
         [Theory]

@@ -24,8 +24,8 @@ namespace OpenttdDiscord.Infrastructure.Tests.Statuses.Runners
                 ottdServerRepositorySub,
                 registerStatusMonitorUseCaseSub,
                 checkIfStatusMonitorExistsUseCaseSub,
-                akkaServiceSub,
-                getRoleLevelUseCaseSub);
+                AkkaServiceSub,
+                GetRoleLevelUseCaseSub);
         }
 
         [Theory]

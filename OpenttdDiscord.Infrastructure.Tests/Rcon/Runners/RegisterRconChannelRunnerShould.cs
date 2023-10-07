@@ -27,8 +27,8 @@ namespace OpenttdDiscord.Infrastructure.Tests.Rcon.Runners
                 registerRconChannelUseCaseSubstitute,
                 getRconChannelUseCaseSub,
                 getServerUseCaseSubsitute,
-                akkaServiceSub,
-                getRoleLevelUseCaseSub);
+                AkkaServiceSub,
+                GetRoleLevelUseCaseSub);
         }
 
         [Theory]

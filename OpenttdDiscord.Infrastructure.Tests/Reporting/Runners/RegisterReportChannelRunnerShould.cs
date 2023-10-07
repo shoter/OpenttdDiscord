@@ -20,8 +20,8 @@ namespace OpenttdDiscord.Infrastructure.Tests.Reporting.Runners
             sut = new(
                 getServerUseCaseSubsitute,
                 registerChatChannelUseCaseSub,
-                akkaServiceSub,
-                getRoleLevelUseCaseSub);
+                AkkaServiceSub,
+                GetRoleLevelUseCaseSub);
         }
 
         [Theory]

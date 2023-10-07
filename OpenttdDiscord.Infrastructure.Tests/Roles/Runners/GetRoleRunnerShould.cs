@@ -10,8 +10,8 @@ namespace OpenttdDiscord.Infrastructure.Tests.Roles.Runners
         public GetRoleRunnerShould()
         {
             sut = new(
-                akkaServiceSub,
-                getRoleLevelUseCaseSub);
+                AkkaServiceSub,
+                GetRoleLevelUseCaseSub);
         }
 
         [Theory]

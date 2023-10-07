@@ -20,8 +20,8 @@ namespace OpenttdDiscord.Infrastructure.Tests.Statuses.Runners
             sut = new(
                 removeStatusMonitorUseCaseSub,
                 ottdServerRepositorySub,
-                akkaServiceSub,
-                getRoleLevelUseCaseSub);
+                AkkaServiceSub,
+                GetRoleLevelUseCaseSub);
         }
 
         [Theory]

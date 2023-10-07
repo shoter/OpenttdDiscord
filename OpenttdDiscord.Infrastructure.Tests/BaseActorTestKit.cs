@@ -3,6 +3,7 @@ using Akka.TestKit.Xunit2;
 using AutoFixture;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using OpenttdDiscord.Infrastructure.Akkas;
 using OpenttdDiscord.Tests.Common.Xunits;
 using Xunit.Abstractions;
 

@@ -11,8 +11,8 @@ namespace OpenttdDiscord.Infrastructure.Tests.Maintenance.Runners
         public HealthCheckRunnerShould()
         {
             sut = new(
-                akkaServiceSub,
-                getRoleLevelUseCaseSub);
+                AkkaServiceSub,
+                GetRoleLevelUseCaseSub);
         }
 
         [Theory]

@@ -1,3 +1,4 @@
+global using AutoFixture;
 global using LanguageExt;
 global using NSubstitute;
 global using OpenttdDiscord.Base.Ext;

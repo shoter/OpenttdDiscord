@@ -1,9 +1,6 @@
-using Discord;
-using OpenttdDiscord.Domain.Roles.Errors;
 using OpenttdDiscord.Domain.Roles.UseCases;
 using OpenttdDiscord.Domain.Security;
 using OpenttdDiscord.Infrastructure.Roles.Runners;
-using OpenttdDiscord.Infrastructure.Roles.UseCases;
 
 namespace OpenttdDiscord.Infrastructure.Tests.Roles.Runners
 {
@@ -13,14 +10,44 @@ namespace OpenttdDiscord.Infrastructure.Tests.Roles.Runners
 
         private readonly IDeleteRoleLevelUseCase deleteRoleLevelUseCaseSub = Substitute.For<IDeleteRoleLevelUseCase>();
 
+        private readonly ulong roleId;
+
         public DeleteRoleRunnerShould()
         {
+            roleId = fix.Create<ulong>();
+            WithOption(
+                "role-id",
+                roleId);
+
             sut = new(
-                akkaServiceSub,
-                getRoleLevelUseCaseSub,
+                AkkaServiceSub,
+                GetRoleLevelUseCaseSub,
                 deleteRoleLevelUseCaseSub);
         }
 
+        [Theory]
+        [InlineData(UserLevel.User)]
+        [InlineData(UserLevel.Moderator)]
+        public async Task NotExecuteForNonAdmin(UserLevel userLevel)
+        {
+            await
+                NotExecuteFor(
+                    sut,
+                    userLevel);
+        }
 
+        [Fact]
+        public async Task DeleteRoleFromDatabase()
+        {
+            await WithGuildUser()
+                .WithUserLevel(UserLevel.Admin)
+                .RunExt(sut);
+
+            await deleteRoleLevelUseCaseSub
+                .Received()
+                .Execute(
+                    GuildId,
+                    roleId);
+        }
     }
 }

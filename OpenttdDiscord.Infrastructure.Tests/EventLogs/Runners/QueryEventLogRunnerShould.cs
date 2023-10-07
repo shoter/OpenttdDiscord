@@ -19,8 +19,8 @@ namespace OpenttdDiscord.Infrastructure.Tests.EventLogs.Runners
             sut = new(
                 getServerUseCaseSubsitute,
                 queryEventLogUseCaseSubstitute,
-                akkaServiceSub,
-                getRoleLevelUseCaseSub);
+                AkkaServiceSub,
+                GetRoleLevelUseCaseSub);
         }
 
         [Theory]

@@ -20,8 +20,8 @@ namespace OpenttdDiscord.Infrastructure.Tests.Rcon.Runners
             sut = new(
                 getServerUseCaseSubsitute,
                 unregisterRconChannelUseCaseSubstitute,
-                akkaServiceSub,
-                getRoleLevelUseCaseSub);
+                AkkaServiceSub,
+                GetRoleLevelUseCaseSub);
         }
 
         [Theory]

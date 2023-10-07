@@ -11,9 +11,9 @@ namespace OpenttdDiscord.Infrastructure.Tests
 {
     public class RunnerTestBase
     {
-        protected readonly IAkkaService akkaServiceSub = Substitute.For<IAkkaService>();
+        protected readonly IAkkaService AkkaServiceSub = Substitute.For<IAkkaService>();
 
-        protected readonly IGetRoleLevelUseCase getRoleLevelUseCaseSub = Substitute.For<IGetRoleLevelUseCase>();
+        protected readonly IGetRoleLevelUseCase GetRoleLevelUseCaseSub = Substitute.For<IGetRoleLevelUseCase>();
 
         protected readonly Fixture fix = new();
 
@@ -76,7 +76,7 @@ namespace OpenttdDiscord.Infrastructure.Tests
 
         public RunnerTestBase WithUserLevel(UserLevel userLevel)
         {
-            getRoleLevelUseCaseSub.Execute(default!)
+            GetRoleLevelUseCaseSub.Execute(default!)
                 .ReturnsForAnyArgs(userLevel);
             return this;
         }
@@ -122,10 +122,14 @@ namespace OpenttdDiscord.Infrastructure.Tests
             from result in response.Execute(CommandInteractionSub)
             select CommandInteractionSub;
 
-        protected EitherAsync<IError, ISlashCommandInteraction> NotExecuteFor(IOttdSlashCommandRunner runner,
-                                           UserLevel userLevel)
+        public EitherAsync<IError, ISlashCommandInteraction> NotExecuteFor(
+            IOttdSlashCommandRunner runner,
+            UserLevel userLevel)
         {
-            var either = RunExt(runner);
+            var either =
+                WithGuildUser()
+                .WithUserLevel(userLevel)
+                .RunExt(runner);
             either.IfRight(_ => Assert.Fail("Wrong user level"));
             either.IfLeft(err => Assert.True(err is IncorrectUserLevelError));
             return either;

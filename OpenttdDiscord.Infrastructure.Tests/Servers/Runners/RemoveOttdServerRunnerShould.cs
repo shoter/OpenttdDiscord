@@ -17,8 +17,8 @@ namespace OpenttdDiscord.Infrastructure.Tests.Servers.Runners
         {
             sut = new(
                 removeOttdServerUseCaseSub,
-                akkaServiceSub,
-                getRoleLevelUseCaseSub);
+                AkkaServiceSub,
+                GetRoleLevelUseCaseSub);
         }
 
         [Theory]

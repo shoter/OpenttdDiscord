@@ -1,25 +1,35 @@
 using AutoFixture;
 using OpenttdDiscord.Domain.Roles;
+using OpenttdDiscord.Infrastructure.Akkas;
+using OpenttdDiscord.Infrastructure.Roles.Messages;
 using OpenttdDiscord.Infrastructure.Roles.UseCases;
+using Xunit.Abstractions;
 
 namespace OpenttdDiscord.Infrastructure.Tests.Roles.UseCases
 {
-    public class DeleteRoleLevelUseCaseShould
+    public class DeleteRoleLevelUseCaseShould : BaseActorTestKit
     {
-        private readonly Fixture fix = new();
-
         private readonly DeleteRoleLevelUseCase sut;
 
         private readonly IRolesRepository rolesRepository = Substitute.For<IRolesRepository>();
 
-        public DeleteRoleLevelUseCaseShould()
+        private readonly IAkkaService akkaService = Substitute.For<IAkkaService>();
+
+        public DeleteRoleLevelUseCaseShould(ITestOutputHelper testOutputHelper)
+            : base(testOutputHelper)
         {
-            sut = new(rolesRepository);
+            sut = new(rolesRepository, akkaService);
+
             rolesRepository
                 .DeleteRole(
                     default,
                     default)
                 .ReturnsForAnyArgs(EitherAsyncUnit.Right(Unit.Default));
+
+            akkaService
+                .ReturnsActorOnSelect(
+                    MainActors.Paths.Guilds,
+                    probe);
         }
 
         [Fact]
@@ -38,6 +48,12 @@ namespace OpenttdDiscord.Infrastructure.Tests.Roles.UseCases
                 .DeleteRole(
                     guildId,
                     roleId);
+
+            probe
+                .ExpectMsg<DeleteRole>(
+                    msg =>
+                        msg.GuildId == guildId &&
+                        msg.RoleId == roleId);
         }
     }
 }

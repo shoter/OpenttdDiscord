@@ -45,11 +45,9 @@ namespace OpenttdDiscord.Infrastructure.Tests.Chatting
                         _ => chatChannelProbe))
                 .Wait();
 
-            akkaServiceMock.SelectActor(MainActors.Paths.ChatChannelManager)
-                .Returns(
-                    new ActorSelection(
-                        chatManagerTester,
-                        new string[0]));
+            akkaServiceMock.ReturnsActorOnSelect(
+                MainActors.Paths.ChatChannelManager,
+                chatManagerTester);
 
             sut = ActorOf(
                 OttdCommunicationActor.Create(

@@ -13,14 +13,14 @@ namespace OpenttdDiscord.Infrastructure.Roles.Runners
     internal class DeleteRoleRunner : OttdSlashCommandRunnerBase
     {
         private readonly IDeleteRoleLevelUseCase deleteRoleLevelUseCase;
-        
+
         public DeleteRoleRunner(
             IAkkaService akkaService,
             IGetRoleLevelUseCase getRoleLevelUseCase,
             IDeleteRoleLevelUseCase deleteRoleLevelUseCase)
             : base(
-            akkaService,
-            getRoleLevelUseCase)
+                akkaService,
+                getRoleLevelUseCase)
         {
             this.deleteRoleLevelUseCase = deleteRoleLevelUseCase;
         }
@@ -30,7 +30,19 @@ namespace OpenttdDiscord.Infrastructure.Roles.Runners
             User user,
             ExtDictionary<string, object> options)
         {
-            throw new NotImplementedException();
+            ulong roleId = (ulong) options["role-id"];
+
+            return
+                from guildId in EnsureItIsGuildCommand(command)
+                    .ToAsync()
+                from _1 in CheckIfHasCorrectUserLevel(
+                        user,
+                        UserLevel.Admin)
+                    .ToAsync()
+                from _2 in deleteRoleLevelUseCase.Execute(
+                    guildId,
+                    roleId)
+                select new TextCommandResponse("Role deleted!") as ISlashCommandResponse;
         }
     }
 }

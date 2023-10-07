@@ -30,7 +30,7 @@ namespace OpenttdDiscord.Infrastructure.Roles.Runners
             User user,
             ExtDictionary<string, object> options)
         {
-            ulong roleId = (ulong) options["role-id"];
+            var role = (IRole) options["role"];
 
             return
                 from guildId in EnsureItIsGuildCommand(command)
@@ -41,7 +41,7 @@ namespace OpenttdDiscord.Infrastructure.Roles.Runners
                     .ToAsync()
                 from _2 in deleteRoleLevelUseCase.Execute(
                     guildId,
-                    roleId)
+                    role.Id)
                 select new TextCommandResponse("Role deleted!") as ISlashCommandResponse;
         }
     }

@@ -1,3 +1,4 @@
+using Discord;
 using OpenttdDiscord.Domain.Roles.UseCases;
 using OpenttdDiscord.Domain.Security;
 using OpenttdDiscord.Infrastructure.Roles.Runners;
@@ -10,14 +11,15 @@ namespace OpenttdDiscord.Infrastructure.Tests.Roles.Runners
 
         private readonly IDeleteRoleLevelUseCase deleteRoleLevelUseCaseSub = Substitute.For<IDeleteRoleLevelUseCase>();
 
-        private readonly ulong roleId;
+        private readonly IRole role;
 
         public DeleteRoleRunnerShould()
         {
-            roleId = fix.Create<ulong>();
+            role = Substitute.For<IRole>();
+
             WithOption(
-                "role-id",
-                roleId);
+                "role",
+                role);
 
             sut = new(
                 AkkaServiceSub,
@@ -47,7 +49,7 @@ namespace OpenttdDiscord.Infrastructure.Tests.Roles.Runners
                 .Received()
                 .Execute(
                     GuildId,
-                    roleId);
+                    role.Id);
         }
     }
 }

@@ -29,23 +29,29 @@ namespace OpenttdDiscord.Infrastructure.Roles
         public static IServiceCollection RegisterUseCases(this IServiceCollection services)
         {
             return
-                services.AddScoped<IGetRoleLevelUseCase, GetRoleLevelUseCase>();
+                services
+                    .AddScoped<IGetRoleLevelUseCase, GetRoleLevelUseCase>()
+                    .AddScoped<IDeleteRoleLevelUseCase, DeleteRoleLevelUseCase>();
         }
 
         public static IServiceCollection RegisterRunners(this IServiceCollection services)
         {
-            services.AddScoped<RegisterBotRoleRunner>();
-            services.AddScoped<GetRoleRunner>();
-            services.AddScoped<GetGuildRolesRunner>();
+            services
+                .AddScoped<DeleteRoleRunner>()
+                .AddScoped<RegisterBotRoleRunner>()
+                .AddScoped<GetRoleRunner>()
+                .AddScoped<GetGuildRolesRunner>();
 
             return services;
         }
 
         public static IServiceCollection RegisterCommands(this IServiceCollection services)
         {
-            services.AddSingleton<IOttdSlashCommand, RegisterBotRoleCommand>();
-            services.AddSingleton<IOttdSlashCommand, GetRoleCommand>();
-            services.AddSingleton<IOttdSlashCommand, GetGuildRolesCommand>();
+            services
+                .AddSingleton<IOttdSlashCommand, RegisterBotRoleCommand>()
+                .AddSingleton<IOttdSlashCommand, GetRoleCommand>()
+                .AddSingleton<IOttdSlashCommand, GetGuildRolesCommand>()
+                .AddSingleton<IOttdSlashCommand, DeleteRoleCommand>();
 
             return services;
         }

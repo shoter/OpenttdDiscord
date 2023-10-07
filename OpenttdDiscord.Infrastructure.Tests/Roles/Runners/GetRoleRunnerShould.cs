@@ -28,7 +28,8 @@ namespace OpenttdDiscord.Infrastructure.Tests.Roles.Runners
                     Arg.Is<string>(
                         txt => txt.Contains(
                             userLevel.ToString(),
-                            StringComparison.InvariantCultureIgnoreCase)));
+                            StringComparison.InvariantCultureIgnoreCase)),
+                    ephemeral: true);
         }
 
         [Fact]
@@ -41,7 +42,8 @@ namespace OpenttdDiscord.Infrastructure.Tests.Roles.Runners
                     Arg.Is<string>(
                         txt => txt.Contains(
                             "user",
-                            StringComparison.InvariantCultureIgnoreCase)));
+                            StringComparison.InvariantCultureIgnoreCase)),
+                    ephemeral: true);
         }
     }
 }

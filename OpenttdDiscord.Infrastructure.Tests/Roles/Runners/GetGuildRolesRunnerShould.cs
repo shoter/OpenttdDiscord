@@ -65,7 +65,8 @@ namespace OpenttdDiscord.Infrastructure.Tests.Roles.Runners
                                                         StringComparison.InvariantCultureIgnoreCase) &&
                                                     line.Contains(
                                                         $"id-{guildRole.RoleId}",
-                                                        StringComparison.InvariantCultureIgnoreCase)) == 1)));
+                                                        StringComparison.InvariantCultureIgnoreCase)) == 1)),
+                    ephemeral: true);
         }
 
         [Theory]

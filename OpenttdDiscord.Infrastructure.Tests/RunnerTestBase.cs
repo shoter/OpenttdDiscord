@@ -1,5 +1,6 @@
 using AutoFixture;
 using Discord;
+using OpenttdDiscord.Domain.Roles.Errors;
 using OpenttdDiscord.Domain.Roles.UseCases;
 using OpenttdDiscord.Domain.Security;
 using OpenttdDiscord.Infrastructure.Akkas;
@@ -96,11 +97,17 @@ namespace OpenttdDiscord.Infrastructure.Tests
 
         public RunnerTestBase WithOption(
             string name,
-            int value) => WithOption(name, value, ApplicationCommandOptionType.Integer);
+            int value) => WithOption(
+            name,
+            value,
+            ApplicationCommandOptionType.Integer);
 
         public RunnerTestBase WithOption(
             string name,
-            long value) => WithOption(name, value, ApplicationCommandOptionType.Integer);
+            long value) => WithOption(
+            name,
+            value,
+            ApplicationCommandOptionType.Integer);
 
         public async Task<ISlashCommandInteraction> Run(IOttdSlashCommandRunner commandRunner)
         {
@@ -114,5 +121,14 @@ namespace OpenttdDiscord.Infrastructure.Tests
             from response in commandRunner.Run(CommandInteractionSub)
             from result in response.Execute(CommandInteractionSub)
             select CommandInteractionSub;
+
+        protected EitherAsync<IError, ISlashCommandInteraction> NotExecuteFor(IOttdSlashCommandRunner runner,
+                                           UserLevel userLevel)
+        {
+            var either = RunExt(runner);
+            either.IfRight(_ => Assert.Fail("Wrong user level"));
+            either.IfLeft(err => Assert.True(err is IncorrectUserLevelError));
+            return either;
+        }
     }
 }

@@ -19,7 +19,9 @@ namespace OpenttdDiscord.Infrastructure.Roles.Actors
 
         private ExtDictionary<ulong, GuildRole> guildRoles = new();
 
-        public GuildRoleActor(IServiceProvider serviceProvider, ulong guildId)
+        public GuildRoleActor(
+            IServiceProvider serviceProvider,
+            ulong guildId)
             : base(serviceProvider)
         {
             rolesRepository = SP.GetRequiredService<IRolesRepository>();
@@ -28,8 +30,12 @@ namespace OpenttdDiscord.Infrastructure.Roles.Actors
             Self.Tell(new InitGuildRoleActor());
         }
 
-        public static Props Create(IServiceProvider serviceProvider, ulong guildId) =>
-            Props.Create(() => new GuildRoleActor(serviceProvider, guildId));
+        public static Props Create(
+            IServiceProvider serviceProvider,
+            ulong guildId) => Props.Create(
+            () => new GuildRoleActor(
+                serviceProvider,
+                guildId));
 
         private void Ready()
         {
@@ -43,7 +49,8 @@ namespace OpenttdDiscord.Infrastructure.Roles.Actors
         {
             return
                 from roles in rolesRepository.GetRoles(guildId)
-                from _1 in AddRoles(roles).ToAsync()
+                from _1 in AddRoles(roles)
+                    .ToAsync()
                 select Unit.Default;
         }
 
@@ -51,7 +58,9 @@ namespace OpenttdDiscord.Infrastructure.Roles.Actors
         {
             foreach (var role in roles)
             {
-                guildRoles.Add(role.RoleId, role);
+                guildRoles.Add(
+                    role.RoleId,
+                    role);
             }
 
             return Unit.Default;
@@ -73,8 +82,12 @@ namespace OpenttdDiscord.Infrastructure.Roles.Actors
             var sender = Sender;
             return
                 from _1 in rolesRepository.InsertRole(guildRole)
-                from _2 in guildRoles.AddExt(msg.RoleId, guildRole).ToAsync()
-                from _3 in sender.TellExt(Unit.Default).ToAsync()
+                from _2 in guildRoles.AddExt(
+                        msg.RoleId,
+                        guildRole)
+                    .ToAsync()
+                from _3 in sender.TellExt(Unit.Default)
+                    .ToAsync()
                 select Unit.Default;
         }
 
@@ -98,10 +111,18 @@ namespace OpenttdDiscord.Infrastructure.Roles.Actors
             Sender.Tell(new GetRoleLevelResponse(userLevel));
         }
 
-        private EitherAsyncUnit DeleteRole(DeleteRole msg) =>
-            from _1 in rolesRepository.DeleteRole(msg.GuildId, msg.RoleId)
-            from _2 in guildRoles.RemoveExt(msg.RoleId).ToAsync()
-            from _3 in Sender.TellExt(Unit.Default).ToAsync()
-            select Unit.Default;
+        private EitherAsyncUnit DeleteRole(DeleteRole msg)
+        {
+            var sender = Sender;
+            return
+                from _1 in rolesRepository.DeleteRole(
+                    msg.GuildId,
+                    msg.RoleId)
+                from _2 in guildRoles.RemoveExt(msg.RoleId)
+                    .ToAsync()
+                from _3 in sender.TellExt(Unit.Default)
+                    .ToAsync()
+                select Unit.Default;
+        }
     }
 }

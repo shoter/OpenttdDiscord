@@ -4,6 +4,7 @@ using System.Runtime.Loader;
 using Akka.Configuration;
 using Microsoft.Extensions.Hosting;
 using OpenttdDiscord;
+using OpenttdDiscord.Discord;
 
 var host = ApplicationBuilder
     .CreateHostBuilder()

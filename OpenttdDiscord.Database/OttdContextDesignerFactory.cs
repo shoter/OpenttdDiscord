@@ -1,4 +1,5 @@
 ﻿using System.Configuration;
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Extensions.Configuration;
@@ -7,6 +8,7 @@ namespace OpenttdDiscord.Database
 {
     internal class OttdContextDesignerFactory : IDesignTimeDbContextFactory<OttdContext>
     {
+        [ExcludeFromCodeCoverage]
         public OttdContext CreateDbContext(string[] args)
         {
             ConfigurationBuilder configBuilder = new();

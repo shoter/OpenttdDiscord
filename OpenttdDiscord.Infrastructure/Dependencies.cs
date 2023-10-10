@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Diagnostics.CodeAnalysis;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using OpenttdDiscord.Database;
@@ -20,6 +21,7 @@ namespace OpenttdDiscord.Infrastructure
 {
     public static class Dependencies
     {
+        [ExcludeFromCodeCoverage]
         public static IServiceCollection RegisterModules(this IServiceCollection services)
         {
             services.AddDbContextFactory<OttdContext>((IServiceProvider sp, DbContextOptionsBuilder builder) =>

@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Diagnostics.CodeAnalysis;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using OpenttdDiscord.Database.Chatting;
 using OpenttdDiscord.Database.Ottd.Servers;
@@ -28,6 +29,7 @@ namespace OpenttdDiscord.Database
         {
         }
 
+        [ExcludeFromCodeCoverage]
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Diagnostics.CodeAnalysis;
+using Microsoft.EntityFrameworkCore;
 using OpenttdDiscord.Database.Statuses;
 using OpenttdDiscord.Domain.Servers;
 
@@ -37,6 +38,7 @@ string AdminPortPassword
             AdminPortPassword);
     }
 
+    [ExcludeFromCodeCoverage]
     public static void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<OttdServerEntity>()

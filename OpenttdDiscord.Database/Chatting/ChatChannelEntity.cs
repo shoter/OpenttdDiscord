@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Diagnostics.CodeAnalysis;
+using Microsoft.EntityFrameworkCore;
 using OpenttdDiscord.Database.Statuses;
 using OpenttdDiscord.Domain.Chatting;
 
@@ -28,6 +29,7 @@ namespace OpenttdDiscord.Database.Chatting
             GuildId,
             ChannelId);
 
+        [ExcludeFromCodeCoverage]
         public static void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<ChatChannelEntity>()

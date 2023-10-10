@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Diagnostics.CodeAnalysis;
+using Microsoft.EntityFrameworkCore;
 using OpenttdDiscord.Database.Ottd.Servers;
 using OpenttdDiscord.Domain.Statuses;
 
@@ -41,7 +42,8 @@ public class StatusMonitorEntity
             LastUpdateTime.ToUniversalTime()
             );
     }
-
+    
+    [ExcludeFromCodeCoverage]
     public static void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<StatusMonitorEntity>()

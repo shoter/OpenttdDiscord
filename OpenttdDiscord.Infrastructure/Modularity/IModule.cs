@@ -3,9 +3,9 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace OpenttdDiscord.Infrastructure.Modularity
 {
-    [ExcludeFromCodeCoverage]
     internal interface IModule
     {
+        [ExcludeFromCodeCoverage]
         public void RegisterDependencies(IServiceCollection services);
     }
 }

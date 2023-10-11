@@ -23,7 +23,7 @@ namespace OpenttdDiscord.Infrastructure.Roles.UseCases
             IRole role,
             UserLevel userLevel)
         {
-            RegisterNewRole msg = new(
+            UpsertRole msg = new(
                 guildId,
                 role.Id,
                 userLevel);

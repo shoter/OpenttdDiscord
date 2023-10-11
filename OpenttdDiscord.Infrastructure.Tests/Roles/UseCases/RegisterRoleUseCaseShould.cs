@@ -29,7 +29,7 @@ namespace OpenttdDiscord.Infrastructure.Tests.Roles.UseCases
 
             akkaServiceSubstitute.SelectAndAsk<object>(
                     MainActors.Paths.Guilds,
-                    Arg.Is<RegisterNewRole>(_ => true))
+                    Arg.Is<UpsertRole>(_ => true))
                 .Returns(Unit.Default);
 
             await sut.Execute(
@@ -41,7 +41,7 @@ namespace OpenttdDiscord.Infrastructure.Tests.Roles.UseCases
                 .Received(1)
                 .SelectAndAsk<object>(
                     MainActors.Paths.Guilds,
-                    Arg.Is<RegisterNewRole>(
+                    Arg.Is<UpsertRole>(
                         msg =>
                             msg.GuildId == guildId &&
                             msg.RoleLevel == UserLevel.Moderator &&

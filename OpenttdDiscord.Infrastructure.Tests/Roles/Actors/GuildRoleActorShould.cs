@@ -56,7 +56,7 @@ namespace OpenttdDiscord.Infrastructure.Tests.Roles.Actors
         public async Task RegisterAndRetrieve_Role()
         {
             // Arrange
-            RegisterNewRole? registerNewRole = fix.Create<RegisterNewRole>();
+            UpsertRole? registerNewRole = fix.Create<UpsertRole>();
             guildRoleActor.Tell(
                 registerNewRole,
                 probe.Ref);
@@ -87,7 +87,7 @@ namespace OpenttdDiscord.Infrastructure.Tests.Roles.Actors
         public async Task NotBeAbleTo_RegisterSameRole_Twice()
         {
             // Arrange
-            RegisterNewRole? registerNewRole = fix.Create<RegisterNewRole>();
+            UpsertRole? registerNewRole = fix.Create<UpsertRole>();
             guildRoleActor.Tell(
                 registerNewRole,
                 probe.Ref);
@@ -108,7 +108,7 @@ namespace OpenttdDiscord.Infrastructure.Tests.Roles.Actors
         public async Task SaveDataInDatabase_WhenRegisteringRole()
         {
             // Arrange
-            RegisterNewRole? registerNewRole = fix.Create<RegisterNewRole>();
+            UpsertRole? registerNewRole = fix.Create<UpsertRole>();
             await guildRoleActor.Ask(registerNewRole);
 
             Within(
@@ -130,11 +130,11 @@ namespace OpenttdDiscord.Infrastructure.Tests.Roles.Actors
         public async Task RemoveDataInDatabase_WhenRemovingRole()
         {
             // Arrange
-            RegisterNewRole registerNewRole = fix.Create<RegisterNewRole>() with { RoleLevel = UserLevel.Admin };
-            await guildRoleActor.TryAsk(registerNewRole);
+            UpsertRole upsertRole = fix.Create<UpsertRole>() with { RoleLevel = UserLevel.Admin };
+            await guildRoleActor.TryAsk(upsertRole);
             DeleteRole deleteRole = new(
-                registerNewRole.GuildId,
-                registerNewRole.RoleId);
+                upsertRole.GuildId,
+                upsertRole.RoleId);
             await guildRoleActor.TryAsk(deleteRole);
             GetRoleLevel getRole = new(
                 deleteRole.GuildId,
@@ -153,8 +153,8 @@ namespace OpenttdDiscord.Infrastructure.Tests.Roles.Actors
                     await rolesRepositoryMock
                         .Received(1)
                         .DeleteRole(
-                            registerNewRole.GuildId,
-                            registerNewRole.RoleId);
+                            upsertRole.GuildId,
+                            upsertRole.RoleId);
                 });
         }
     }

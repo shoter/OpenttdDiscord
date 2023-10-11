@@ -7,10 +7,11 @@ namespace OpenttdDiscord.Database.Roles;
 
 public record GuildRoleEntity(
     ulong GuildId,
-    ulong RoleId,
-    int UserLevel
+    ulong RoleId
 )
 {
+    public int UserLevel { get; set; }
+
     [ExcludeFromCodeCoverage]
     public static void OnModelCreating(ModelBuilder modelBuilder)
     {

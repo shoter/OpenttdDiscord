@@ -39,7 +39,7 @@ namespace OpenttdDiscord.Infrastructure.Roles.Actors
 
         private void Ready()
         {
-            ReceiveEitherAsync<RegisterNewRole>(RegisterNewRole);
+            ReceiveEitherAsync<UpsertRole>(UpsertRole);
             ReceiveEitherAsync<DeleteRole>(DeleteRole);
             ReceiveEitherAsync<InitGuildRoleActor>(InitGuildRoleActor);
             Receive<GetRoleLevel>(GetRoleLevel);
@@ -66,20 +66,28 @@ namespace OpenttdDiscord.Infrastructure.Roles.Actors
             return Unit.Default;
         }
 
-        private EitherAsyncUnit RegisterNewRole(RegisterNewRole msg)
+        private EitherAsyncUnit UpsertRole(UpsertRole msg)
         {
             var guildRole = new GuildRole(
                 msg.GuildId,
                 msg.RoleId,
                 msg.RoleLevel);
 
+            var sender = Sender;
+
             if (guildRoles.ContainsKey(msg.RoleId))
             {
-                Sender.TellExt(new HumanReadableError("This role is already defined"));
-                return Unit.Default;
+                return
+                    from _1 in rolesRepository.UpdateRole(guildRole)
+                    from _2 in guildRoles.ReplaceExt(
+                            msg.RoleId,
+                            guildRole)
+                        .ToAsync()
+                    from _3 in sender.TellExt(Unit.Default)
+                        .ToAsync()
+                    select Unit.Default;
             }
 
-            var sender = Sender;
             return
                 from _1 in rolesRepository.InsertRole(guildRole)
                 from _2 in guildRoles.AddExt(

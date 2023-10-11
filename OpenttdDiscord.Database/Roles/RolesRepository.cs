@@ -13,7 +13,7 @@ namespace OpenttdDiscord.Database.Roles
 
         private OttdContext Db { get; }
 
-        public EitherAsync<IError, Unit> InsertRole(GuildRole role) => TryAsync<EitherUnit>(
+        public EitherAsyncUnit InsertRole(GuildRole role) => TryAsync<EitherUnit>(
                 async () =>
                 {
                     await Db
@@ -21,8 +21,11 @@ namespace OpenttdDiscord.Database.Roles
                         .AddAsync(
                             new GuildRoleEntity(
                                 role.GuildId,
-                                role.RoleId,
-                                (int)role.RoleLevel));
+                                role.RoleId)
+                            {
+                                UserLevel = (int) role.RoleLevel,
+                            }
+                        );
 
                     await Db.SaveChangesAsync();
 
@@ -30,17 +33,40 @@ namespace OpenttdDiscord.Database.Roles
                 })
             .ToEitherAsyncErrorFlat();
 
-        public EitherAsync<IError, List<GuildRole>> GetRoles(ulong guildId)
-        => TryAsync<Either<IError, List<GuildRole>>>(
-        async () =>
-        {
-            return (await Db
-                    .GuildRoles
-                    .Where(r => r.GuildId == guildId)
-                    .ToListAsync())
-                .Select(x => x.ToDomain())
-                .ToList();
-        }).ToEitherAsyncErrorFlat();
+        public EitherAsyncUnit UpdateRole(GuildRole updatedRole) => TryAsync<EitherUnit>(
+                async () =>
+                {
+                    var role = await Db
+                        .GuildRoles
+                        .Where(
+                            gr =>
+                                gr.GuildId == updatedRole.GuildId &&
+                                gr.RoleId == updatedRole.RoleId)
+                        .FirstOrDefaultAsync();
+
+                    if (role == null)
+                    {
+                        return new ExceptionError("Role should not be null here!");
+                    }
+
+                    role.UserLevel = (int) updatedRole.RoleLevel;
+                    await Db.SaveChangesAsync();
+                    return Unit.Default;
+                })
+            .ToEitherAsyncErrorFlat();
+
+        public EitherAsync<IError, List<GuildRole>> GetRoles(ulong guildId) =>
+            TryAsync<Either<IError, List<GuildRole>>>(
+                    async () =>
+                    {
+                        return (await Db
+                                .GuildRoles
+                                .Where(r => r.GuildId == guildId)
+                                .ToListAsync())
+                            .Select(x => x.ToDomain())
+                            .ToList();
+                    })
+                .ToEitherAsyncErrorFlat();
 
         public EitherAsync<IError, Unit> DeleteRole(
             ulong guildId,

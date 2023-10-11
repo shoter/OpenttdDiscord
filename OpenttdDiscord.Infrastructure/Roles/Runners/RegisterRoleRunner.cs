@@ -12,12 +12,19 @@ using OpenttdDiscord.Infrastructure.Roles.Messages;
 
 namespace OpenttdDiscord.Infrastructure.Roles.Runners
 {
-    internal class RegisterBotRoleRunner : OttdSlashCommandRunnerBase
+    internal class RegisterRoleRunner : OttdSlashCommandRunnerBase
     {
-        public RegisterBotRoleRunner(IAkkaService akkaService,
-                                     IGetRoleLevelUseCase getRoleLevelUseCase)
-        : base(akkaService, getRoleLevelUseCase)
+        private readonly IRegisterRoleUseCase registerRoleUseCase;
+
+        public RegisterRoleRunner(
+            IAkkaService akkaService,
+            IGetRoleLevelUseCase getRoleLevelUseCase,
+            IRegisterRoleUseCase registerRoleUseCase)
+            : base(
+                akkaService,
+                getRoleLevelUseCase)
         {
+            this.registerRoleUseCase = registerRoleUseCase;
         }
 
         protected override EitherAsync<IError, ISlashCommandResponse> RunInternal(
@@ -25,9 +32,8 @@ namespace OpenttdDiscord.Infrastructure.Roles.Runners
             User user,
             ExtDictionary<string, object> options)
         {
-            ulong guildID = command.GuildId!.Value;
             IRole? role = options["role"] as IRole;
-            long roleLevel = (long)options["role-level"];
+            long roleLevel = (long) options["role-level"];
 
             if (role == null)
             {
@@ -37,17 +43,17 @@ namespace OpenttdDiscord.Infrastructure.Roles.Runners
                         .Name);
             }
 
-            RegisterNewRole msg = new(
-                guildID,
-                role.Id,
-                (UserLevel)roleLevel);
-
             return
+                from guildId in EnsureItIsGuildCommand(command)
+                    .ToAsync()
                 from _0 in CheckIfHasCorrectUserLevel(
-                    user,
-                    UserLevel.Admin).ToAsync()
-                from actor in AkkaService.SelectActor(MainActors.Paths.Guilds)
-                from _1 in actor.TryAsk(msg)
+                        user,
+                        UserLevel.Admin)
+                    .ToAsync()
+                from _1 in registerRoleUseCase.Execute(
+                    guildId,
+                    role,
+                    (UserLevel) roleLevel)
                 select new TextCommandResponse("Role has been registered") as ISlashCommandResponse;
         }
     }

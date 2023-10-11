@@ -5,7 +5,7 @@ using OpenttdDiscord.Infrastructure.Roles.Runners;
 
 namespace OpenttdDiscord.Infrastructure.Roles.Commands
 {
-    internal class RegisterBotRoleCommand : OttdSlashCommandBase<RegisterBotRoleRunner>
+    internal class RegisterBotRoleCommand : OttdSlashCommandBase<RegisterRoleRunner>
     {
         public RegisterBotRoleCommand()
             : base("register-role")

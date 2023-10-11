@@ -31,14 +31,15 @@ namespace OpenttdDiscord.Infrastructure.Roles
             return
                 services
                     .AddScoped<IGetRoleLevelUseCase, GetRoleLevelUseCase>()
-                    .AddScoped<IDeleteRoleLevelUseCase, DeleteRoleLevelUseCase>();
+                    .AddScoped<IDeleteRoleLevelUseCase, DeleteRoleLevelUseCase>()
+                    .AddScoped<IRegisterRoleUseCase, RegisterRoleUseCase>();
         }
 
         public static IServiceCollection RegisterRunners(this IServiceCollection services)
         {
             services
                 .AddScoped<DeleteRoleRunner>()
-                .AddScoped<RegisterBotRoleRunner>()
+                .AddScoped<RegisterRoleRunner>()
                 .AddScoped<GetRoleRunner>()
                 .AddScoped<GetGuildRolesRunner>();
 

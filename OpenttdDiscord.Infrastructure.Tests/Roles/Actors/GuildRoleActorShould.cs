@@ -2,6 +2,7 @@ using Akka.Actor;
 using Akka.TestKit;
 using Akka.TestKit.Xunit2;
 using AutoFixture;
+using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using OpenttdDiscord.Base.Akkas;
@@ -18,11 +19,11 @@ namespace OpenttdDiscord.Infrastructure.Tests.Roles.Actors
     public sealed class GuildRoleActorShould : BaseActorTestKit
     {
         private readonly IActorRef guildRoleActor = default!;
-        private readonly IRolesRepository rolesRepositoryMock = Substitute.For<IRolesRepository>();
+        private readonly IRolesRepository rolesRepositorySub = Substitute.For<IRolesRepository>();
 
         protected override void InitializeServiceProvider(IServiceCollection services)
         {
-            services.AddSingleton(rolesRepositoryMock);
+            services.AddSingleton(rolesRepositorySub);
         }
 
         public GuildRoleActorShould(ITestOutputHelper testOutputHelper)
@@ -33,30 +34,34 @@ namespace OpenttdDiscord.Infrastructure.Tests.Roles.Actors
                     Sp,
                     12345));
 
-            rolesRepositoryMock
+            rolesRepositorySub
                 .InsertRole(default!)
                 .ReturnsForAnyArgs(Unit.Default);
 
-            rolesRepositoryMock
+            rolesRepositorySub
                 .DeleteRole(
                     default!,
                     default!)
                 .ReturnsForAnyArgs(Unit.Default);
 
-            rolesRepositoryMock
+            rolesRepositorySub
                 .DeleteRole(default!)
                 .ReturnsForAnyArgs(Unit.Default);
 
-            rolesRepositoryMock
+            rolesRepositorySub
                 .GetRoles(default)
                 .ReturnsForAnyArgs(new List<GuildRole>());
+
+            rolesRepositorySub
+                .UpdateRole(default!)
+                .ReturnsForAnyArgs(Unit.Default);
         }
 
         [Fact(Timeout = 2_000)]
         public async Task RegisterAndRetrieve_Role()
         {
             // Arrange
-            RegisterNewRole? registerNewRole = fix.Create<RegisterNewRole>();
+            UpsertRole? registerNewRole = fix.Create<UpsertRole>();
             guildRoleActor.Tell(
                 registerNewRole,
                 probe.Ref);
@@ -84,38 +89,48 @@ namespace OpenttdDiscord.Infrastructure.Tests.Roles.Actors
         }
 
         [Fact(Timeout = 2_000)]
-        public async Task NotBeAbleTo_RegisterSameRole_Twice()
+        public async Task UpdateRole_AfterRegistration()
         {
             // Arrange
-            RegisterNewRole? registerNewRole = fix.Create<RegisterNewRole>();
+            UpsertRole? registerNewRole = fix.Create<UpsertRole>() with { RoleLevel = UserLevel.Moderator };
             guildRoleActor.Tell(
                 registerNewRole,
                 probe.Ref);
             probe.ExpectMsg<Unit>();
 
-            await probe.WithinAsync(
-                TimeSpan.FromSeconds(1),
-                async () =>
-                {
-                    guildRoleActor.Tell(
-                        registerNewRole,
-                        probe.Ref);
-                    await probe.ExpectMsgAsync<IError>();
-                });
+            await guildRoleActor.Ask(registerNewRole with { RoleLevel = UserLevel.Admin });
+
+            await rolesRepositorySub
+                .Received()
+                .UpdateRole(
+                    new GuildRole(
+                        registerNewRole.GuildId,
+                        registerNewRole.RoleId,
+                        UserLevel.Admin
+                    ));
+
+            var response = await guildRoleActor.Ask<GetRoleLevelResponse>(
+                new GetRoleLevel(
+                    registerNewRole.GuildId,
+                    registerNewRole.RoleId));
+
+            Assert.Equal(
+                UserLevel.Admin,
+                response.RoleLevel);
         }
 
         [Fact(Timeout = 2_000)]
         public async Task SaveDataInDatabase_WhenRegisteringRole()
         {
             // Arrange
-            RegisterNewRole? registerNewRole = fix.Create<RegisterNewRole>();
+            UpsertRole? registerNewRole = fix.Create<UpsertRole>();
             await guildRoleActor.Ask(registerNewRole);
 
             Within(
                 TimeSpan.FromSeconds(1),
                 () =>
                 {
-                    rolesRepositoryMock
+                    rolesRepositorySub
                         .Received(1)
                         .InsertRole(
                             Arg.Is<GuildRole>(
@@ -130,11 +145,11 @@ namespace OpenttdDiscord.Infrastructure.Tests.Roles.Actors
         public async Task RemoveDataInDatabase_WhenRemovingRole()
         {
             // Arrange
-            RegisterNewRole registerNewRole = fix.Create<RegisterNewRole>() with { RoleLevel = UserLevel.Admin };
-            await guildRoleActor.TryAsk(registerNewRole);
+            UpsertRole upsertRole = fix.Create<UpsertRole>() with { RoleLevel = UserLevel.Admin };
+            await guildRoleActor.TryAsk(upsertRole);
             DeleteRole deleteRole = new(
-                registerNewRole.GuildId,
-                registerNewRole.RoleId);
+                upsertRole.GuildId,
+                upsertRole.RoleId);
             await guildRoleActor.TryAsk(deleteRole);
             GetRoleLevel getRole = new(
                 deleteRole.GuildId,
@@ -150,11 +165,11 @@ namespace OpenttdDiscord.Infrastructure.Tests.Roles.Actors
                         UserLevel.User,
                         response.RoleLevel);
 
-                    await rolesRepositoryMock
+                    await rolesRepositorySub
                         .Received(1)
                         .DeleteRole(
-                            registerNewRole.GuildId,
-                            registerNewRole.RoleId);
+                            upsertRole.GuildId,
+                            upsertRole.RoleId);
                 });
         }
     }

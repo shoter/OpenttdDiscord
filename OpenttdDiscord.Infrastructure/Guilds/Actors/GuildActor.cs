@@ -52,7 +52,7 @@ namespace OpenttdDiscord.Infrastructure.Guilds.Actors
 
             ReceiveRedirect<GetRoleLevel>(guildRoleActor);
             ReceiveRedirect<DeleteRole>(guildRoleActor);
-            ReceiveRedirect<RegisterNewRole>(guildRoleActor);
+            ReceiveRedirect<UpsertRole>(guildRoleActor);
 
             ReceiveRedirectToServer<ExecuteServerAction>(msg => msg.ServerId);
             ReceiveRedirectToServer<RegisterStatusMonitor>(msg => msg.StatusMonitor.ServerId);

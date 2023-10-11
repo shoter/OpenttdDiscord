@@ -54,7 +54,7 @@ namespace OpenttdDiscord.Infrastructure.Tests.Roles.Runners
                         (long) UserLevel.Admin)
                     .RunExt(sut);
 
-            registerRoleUseCaseSub
+            await registerRoleUseCaseSub
                 .Received()
                 .Execute(
                     GuildId,

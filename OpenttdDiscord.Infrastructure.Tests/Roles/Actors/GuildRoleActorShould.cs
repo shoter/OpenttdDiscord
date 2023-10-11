@@ -88,7 +88,7 @@ namespace OpenttdDiscord.Infrastructure.Tests.Roles.Actors
                 });
         }
 
-        [Fact(Timeout = 2_0000)]
+        [Fact(Timeout = 2_000)]
         public async Task UpdateRole_AfterRegistration()
         {
             // Arrange

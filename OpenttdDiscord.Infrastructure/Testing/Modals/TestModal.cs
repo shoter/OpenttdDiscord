@@ -1,7 +1,8 @@
 using Discord;
-using OpenttdDiscord.Infrastructure.Discord.ModalRunners;
+using OpenttdDiscord.Infrastructure.Discord.Modals;
+using OpenttdDiscord.Infrastructure.Testing.ModalRunners;
 
-namespace OpenttdDiscord.Infrastructure.Discord.Modals
+namespace OpenttdDiscord.Infrastructure.Testing.Modals
 {
     public class TestModal : OttdModalBase<TestModalRunner>
     {

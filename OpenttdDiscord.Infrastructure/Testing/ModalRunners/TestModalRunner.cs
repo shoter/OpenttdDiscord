@@ -4,8 +4,9 @@ using OpenttdDiscord.Base.Ext;
 using OpenttdDiscord.Domain.Roles.UseCases;
 using OpenttdDiscord.Domain.Security;
 using OpenttdDiscord.Infrastructure.Discord.ModalResponses;
+using OpenttdDiscord.Infrastructure.Discord.ModalRunners;
 
-namespace OpenttdDiscord.Infrastructure.Discord.ModalRunners
+namespace OpenttdDiscord.Infrastructure.Testing.ModalRunners
 {
     public class TestModalRunner : OttdModalRunnerBase
     {
@@ -18,6 +19,7 @@ namespace OpenttdDiscord.Infrastructure.Discord.ModalRunners
             IModalInteraction modal,
             User user)
         {
+            return new ModalTextResponse("Twoja stara XD");
         }
     }
 }

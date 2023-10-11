@@ -11,7 +11,7 @@ namespace OpenttdDiscord.Infrastructure.Maintenance.Commands
         {
         }
 
-        public override void Configure(SlashCommandBuilder builder)
+        protected override void Configure(SlashCommandBuilder builder)
         {
             builder
                 .WithDescription("Checks health of application");

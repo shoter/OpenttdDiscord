@@ -12,7 +12,7 @@ namespace OpenttdDiscord.Infrastructure.Roles.Commands
         {
         }
 
-        public override void Configure(SlashCommandBuilder builder)
+        protected override void Configure(SlashCommandBuilder builder)
         {
             builder
                 .WithDescription("Registers given role to execute bot commands")

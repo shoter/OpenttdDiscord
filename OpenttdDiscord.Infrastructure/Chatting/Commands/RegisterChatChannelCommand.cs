@@ -11,7 +11,7 @@ namespace OpenttdDiscord.Infrastructure.Chatting.Commands
         {
         }
 
-        public override void Configure(SlashCommandBuilder builder)
+        protected override void Configure(SlashCommandBuilder builder)
         {
             builder
                 .WithDescription("Register channel on which this message will be sent as chat channel for given server.")

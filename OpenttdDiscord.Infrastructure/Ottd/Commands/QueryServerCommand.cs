@@ -11,7 +11,7 @@ namespace OpenttdDiscord.Infrastructure.Ottd.Commands
         {
         }
 
-        public override void Configure(SlashCommandBuilder builder)
+        protected override void Configure(SlashCommandBuilder builder)
         {
             builder
                 .WithDescription("Displays basic information about the server")

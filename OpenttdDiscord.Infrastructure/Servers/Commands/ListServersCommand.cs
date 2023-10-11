@@ -11,7 +11,7 @@ namespace OpenttdDiscord.Infrastructure.Servers.Commands
         {
         }
 
-        public override void Configure(SlashCommandBuilder builder)
+        protected override void Configure(SlashCommandBuilder builder)
         {
             builder.WithDescription("List all registered ottd servers on this discord server");
         }

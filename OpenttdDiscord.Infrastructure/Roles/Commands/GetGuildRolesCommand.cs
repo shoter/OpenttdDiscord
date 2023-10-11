@@ -11,7 +11,7 @@ namespace OpenttdDiscord.Infrastructure.Roles.Commands
         {
         }
 
-        public override void Configure(SlashCommandBuilder builder)
+        protected override void Configure(SlashCommandBuilder builder)
         {
             builder
                 .WithDescription("Gets all guild roles which have preconfigured user level within OpenttdDiscord bot.");

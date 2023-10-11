@@ -11,7 +11,7 @@ namespace OpenttdDiscord.Infrastructure.Reporting.Commands
         {
         }
 
-        public override void Configure(SlashCommandBuilder builder)
+        protected override void Configure(SlashCommandBuilder builder)
         {
             builder
                 .WithDescription("Creates user's report channel. Single discord channel can be used by multiple servers")

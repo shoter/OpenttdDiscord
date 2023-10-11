@@ -2,10 +2,12 @@ using System;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
+using Akka.Util.Internal;
 using AutoFixture;
 using OpenttdDiscord.Base.Ext;
 using OpenttdDiscord.Database.Roles;
 using OpenttdDiscord.Domain.Roles;
+using OpenttdDiscord.Domain.Security;
 using OpenttdDiscord.Domain.Servers;
 using Xunit;
 
@@ -48,6 +50,23 @@ namespace OpenttdDiscord.Database.Tests.Roles
                     select roleList).Right();
 
             Assert.Empty(roles);
+        }
+
+        [Fact]
+        public async Task UpdateRoleInDatabase()
+        {
+            var repository = await CreateRpeository();
+            var expectedRole = Fix.Create<GuildRole>() with { RoleLevel = UserLevel.Moderator };
+            var updateRole = expectedRole with { RoleLevel = UserLevel.Admin };
+
+            var roles =
+                (from _1 in repository.InsertRole(expectedRole)
+                    from _2 in repository.UpdateRole(updateRole)
+                    from roleList in repository.GetRoles(expectedRole.GuildId)
+                    select roleList).Right();
+
+            var role = roles.Single();
+            Assert.Equal(updateRole, role);
         }
 
         private async Task<IRolesRepository> CreateRpeository([CallerMemberName] string? databaseName = null)

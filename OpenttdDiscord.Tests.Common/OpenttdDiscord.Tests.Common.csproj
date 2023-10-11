@@ -7,8 +7,12 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="Akka.TestKit.Xunit2" Version="1.5.8" />
+      <PackageReference Include="Akka.TestKit.Xunit2" Version="1.5.13" />
       <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="7.0.1" />
+      <PackageReference Update="Roslynator.Analyzers" Version="4.5.0">
+        <PrivateAssets>all</PrivateAssets>
+        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      </PackageReference>
     </ItemGroup>
 
     <ItemGroup>

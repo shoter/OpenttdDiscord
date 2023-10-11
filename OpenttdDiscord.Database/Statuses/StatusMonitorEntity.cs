@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Diagnostics.CodeAnalysis;
+using Microsoft.EntityFrameworkCore;
 using OpenttdDiscord.Database.Ottd.Servers;
 using OpenttdDiscord.Domain.Statuses;
 
@@ -39,13 +40,19 @@ public class StatusMonitorEntity
             ChannelId,
             MessageId,
             LastUpdateTime.ToUniversalTime()
-            );
+        );
     }
 
+    [ExcludeFromCodeCoverage]
     public static void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<StatusMonitorEntity>()
-            .HasKey(x => new { x.ServerId, x.ChannelId });
+            .HasKey(
+                x => new
+                {
+                    x.ServerId,
+                    x.ChannelId,
+                });
 
         modelBuilder.Entity<StatusMonitorEntity>()
             .HasOne(x => x.Server)

@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Diagnostics.CodeAnalysis;
+using Microsoft.EntityFrameworkCore;
 using OpenttdDiscord.Domain.Rcon;
 
 namespace OpenttdDiscord.Database.Rcon
@@ -32,10 +33,16 @@ namespace OpenttdDiscord.Database.Rcon
             ChannelId,
             Prefix);
 
+        [ExcludeFromCodeCoverage]
         public static void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<RconChannelEntity>()
-                .HasKey(x => new { x.ServerId, x.ChannelId });
+                .HasKey(
+                    x => new
+                    {
+                        x.ServerId,
+                        x.ChannelId,
+                    });
         }
     }
 }

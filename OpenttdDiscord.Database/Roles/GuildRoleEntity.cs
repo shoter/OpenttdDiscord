@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
 using OpenttdDiscord.Domain.Roles;
 using OpenttdDiscord.Domain.Security;
@@ -10,6 +11,7 @@ public record GuildRoleEntity(
     int UserLevel
 )
 {
+    [ExcludeFromCodeCoverage]
     public static void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<GuildRoleEntity>()

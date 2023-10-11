@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Diagnostics.CodeAnalysis;
+using Microsoft.EntityFrameworkCore;
 using OpenttdDiscord.Domain.Reporting;
 
 namespace OpenttdDiscord.Database.Reporting
@@ -27,10 +28,16 @@ namespace OpenttdDiscord.Database.Reporting
             GuildId,
             ChannelId);
 
+        [ExcludeFromCodeCoverage]
         public static void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<ReportChannelEntity>()
-                .HasKey(x => new { x.ServerId, x.ChannelId });
+                .HasKey(
+                    x => new
+                    {
+                        x.ServerId,
+                        x.ChannelId,
+                    });
         }
     }
 }

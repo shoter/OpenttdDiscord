@@ -40,7 +40,9 @@ namespace OpenttdDiscord.Infrastructure.Tests.Maintenance.HealthChecks
                 .GetAllGuilds()
                 .Returns(_ =>
                 {
+#pragma warning disable xUnit1031
                     Task.Delay(TimeSpan.FromSeconds(2)).Wait();
+#pragma warning restore xUnit1031
                     return EitherAsync<IError, List<ulong>>.Right(new List<ulong>());
                 });
 

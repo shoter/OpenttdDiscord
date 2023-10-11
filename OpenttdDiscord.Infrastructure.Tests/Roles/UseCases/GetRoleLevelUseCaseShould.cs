@@ -1,7 +1,4 @@
-using AutoFixture;
 using Discord;
-using Discord.WebSocket;
-using OpenttdDiscord.Base.Ext;
 using OpenttdDiscord.Domain.Security;
 using OpenttdDiscord.Infrastructure.Akkas;
 using OpenttdDiscord.Infrastructure.Roles.Messages;

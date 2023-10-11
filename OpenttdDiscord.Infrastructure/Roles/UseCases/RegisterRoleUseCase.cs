@@ -1,5 +1,7 @@
 using Discord;
 using LanguageExt;
+using OpenttdDiscord.Base.Ext;
+using OpenttdDiscord.Domain.Roles.Errors;
 using OpenttdDiscord.Domain.Roles.UseCases;
 using OpenttdDiscord.Domain.Security;
 using OpenttdDiscord.Infrastructure.Akkas;
@@ -26,9 +28,15 @@ namespace OpenttdDiscord.Infrastructure.Roles.UseCases
                 role.Id,
                 userLevel);
 
+            if (!Enum.IsDefined(
+                    typeof(UserLevel),
+                    userLevel))
+            {
+                return new UndefinedUserLevelError();
+            }
+
             return
-                from actor in akkaService.SelectActor(MainActors.Paths.Guilds)
-                from _1 in actor.TryAsk(msg)
+                from _1 in akkaService.SelectAndAsk<object>(MainActors.Paths.Guilds, msg)
                 select Unit.Default;
         }
     }

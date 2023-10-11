@@ -11,7 +11,7 @@ namespace OpenttdDiscord.Infrastructure.Tests.Roles.Runners
     {
         private readonly RegisterRoleRunner sut;
 
-        private readonly IRegisterRoleUseCase registerRoleUseCaseSub = Substitute.For<IRegisterRoleUseCase>();;
+        private readonly IRegisterRoleUseCase registerRoleUseCaseSub = Substitute.For<IRegisterRoleUseCase>();
 
         public RegisterBotRoleRunnerShould()
         {

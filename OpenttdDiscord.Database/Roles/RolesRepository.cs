@@ -21,8 +21,11 @@ namespace OpenttdDiscord.Database.Roles
                         .AddAsync(
                             new GuildRoleEntity(
                                 role.GuildId,
-                                role.RoleId,
-                                (int) role.RoleLevel));
+                                role.RoleId)
+                            {
+                                UserLevel = (int) role.RoleLevel,
+                            }
+                        );
 
                     await Db.SaveChangesAsync();
 
@@ -51,7 +54,6 @@ namespace OpenttdDiscord.Database.Roles
                     return Unit.Default;
                 })
             .ToEitherAsyncErrorFlat();
-
 
         public EitherAsync<IError, List<GuildRole>> GetRoles(ulong guildId) =>
             TryAsync<Either<IError, List<GuildRole>>>(

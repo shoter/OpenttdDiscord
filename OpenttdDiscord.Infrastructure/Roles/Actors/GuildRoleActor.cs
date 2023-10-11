@@ -75,7 +75,6 @@ namespace OpenttdDiscord.Infrastructure.Roles.Actors
 
             var sender = Sender;
 
-
             if (guildRoles.ContainsKey(msg.RoleId))
             {
                 return

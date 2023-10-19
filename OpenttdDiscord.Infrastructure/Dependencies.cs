@@ -16,6 +16,7 @@ using OpenttdDiscord.Infrastructure.Reporting;
 using OpenttdDiscord.Infrastructure.Roles;
 using OpenttdDiscord.Infrastructure.Servers;
 using OpenttdDiscord.Infrastructure.Statuses;
+using OpenttdDiscord.Infrastructure.Testing;
 
 namespace OpenttdDiscord.Infrastructure
 {
@@ -46,7 +47,8 @@ namespace OpenttdDiscord.Infrastructure
                 .RegisterDependencies<EventLogModule>()
                 .RegisterDependencies<ReportingModule>()
                 .RegisterDependencies<MaintenanceModule>()
-                .RegisterDependencies<RolesModule>();
+                .RegisterDependencies<RolesModule>()
+                .RegisterDependencies<TestingModule>();
 
             return services;
         }

@@ -1,7 +1,10 @@
 using Microsoft.Extensions.DependencyInjection;
 using OpenttdDiscord.Database.Statuses;
 using OpenttdDiscord.Domain.Statuses;
+using OpenttdDiscord.Infrastructure.Discord.Modals;
 using OpenttdDiscord.Infrastructure.Modularity;
+using OpenttdDiscord.Infrastructure.Testing.ModalRunners;
+using OpenttdDiscord.Infrastructure.Testing.Modals;
 
 namespace OpenttdDiscord.Infrastructure.Testing
 {
@@ -34,11 +37,13 @@ namespace OpenttdDiscord.Infrastructure.Testing
 
         public static IServiceCollection RegisterModals(this IServiceCollection services)
         {
+            services.AddSingleton<IOttdModal, TestModal>();
             return services;
         }
 
         public static IServiceCollection RegisterModalRunners(this IServiceCollection services)
         {
+            services.AddScoped<TestModalRunner>();
             return services;
         }
     }

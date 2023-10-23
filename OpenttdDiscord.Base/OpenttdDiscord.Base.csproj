@@ -13,7 +13,7 @@
     <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="7.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="7.0.1" />
 	<PackageReference Include="Shoter.OpenTTD.AdminPort" Version="1.0.0-run-89" />
-	<PackageReference Update="Roslynator.Analyzers" Version="4.5.0">
+	<PackageReference Update="Roslynator.Analyzers" Version="4.6.0">
 	  <PrivateAssets>all</PrivateAssets>
 	  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 	</PackageReference>

@@ -20,8 +20,6 @@
 
 	<ItemGroup>
 	  <Folder Include="Servers\Actors\" />
-	  <Folder Include="Testing\CommandRunners\" />
-	  <Folder Include="Testing\Commands\" />
 	</ItemGroup>
 
 	<ItemGroup>

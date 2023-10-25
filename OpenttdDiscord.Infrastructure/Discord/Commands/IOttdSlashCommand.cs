@@ -1,6 +1,6 @@
 ﻿using Discord;
 using Microsoft.Extensions.DependencyInjection;
-using OpenttdDiscord.Infrastructure.Discord.Runners;
+using OpenttdDiscord.Infrastructure.Discord.CommandRunners;
 
 namespace OpenttdDiscord.Infrastructure.Discord.Commands
 {

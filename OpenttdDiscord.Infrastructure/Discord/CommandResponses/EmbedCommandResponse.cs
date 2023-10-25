@@ -1,7 +1,6 @@
 ﻿using Discord;
-using Discord.WebSocket;
 
-namespace OpenttdDiscord.Infrastructure.Discord.Responses
+namespace OpenttdDiscord.Infrastructure.Discord.CommandResponses
 {
     public class EmbedCommandResponse : SlashCommandResponseBase
     {

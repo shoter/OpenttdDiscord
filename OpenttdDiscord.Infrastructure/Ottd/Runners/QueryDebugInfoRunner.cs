@@ -7,8 +7,8 @@ using OpenttdDiscord.Domain.Roles.UseCases;
 using OpenttdDiscord.Domain.Security;
 using OpenttdDiscord.Domain.Servers.UseCases;
 using OpenttdDiscord.Infrastructure.Akkas;
-using OpenttdDiscord.Infrastructure.Discord.Responses;
-using OpenttdDiscord.Infrastructure.Discord.Runners;
+using OpenttdDiscord.Infrastructure.Discord.CommandResponses;
+using OpenttdDiscord.Infrastructure.Discord.CommandRunners;
 using OpenttdDiscord.Infrastructure.Ottd.Messages;
 
 namespace OpenttdDiscord.Infrastructure.Ottd.Runners

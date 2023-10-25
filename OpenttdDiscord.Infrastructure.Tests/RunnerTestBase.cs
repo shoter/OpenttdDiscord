@@ -4,7 +4,7 @@ using OpenttdDiscord.Domain.Roles.Errors;
 using OpenttdDiscord.Domain.Roles.UseCases;
 using OpenttdDiscord.Domain.Security;
 using OpenttdDiscord.Infrastructure.Akkas;
-using OpenttdDiscord.Infrastructure.Discord.Runners;
+using OpenttdDiscord.Infrastructure.Discord.CommandRunners;
 using Array = System.Array;
 
 namespace OpenttdDiscord.Infrastructure.Tests

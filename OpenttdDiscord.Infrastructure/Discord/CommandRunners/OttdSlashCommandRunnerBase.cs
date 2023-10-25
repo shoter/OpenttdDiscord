@@ -1,5 +1,4 @@
 ﻿using Discord;
-using Discord.WebSocket;
 using LanguageExt;
 using OpenttdDiscord.Base.Basics;
 using OpenttdDiscord.Base.Ext;
@@ -7,9 +6,9 @@ using OpenttdDiscord.Domain.Roles.Errors;
 using OpenttdDiscord.Domain.Roles.UseCases;
 using OpenttdDiscord.Domain.Security;
 using OpenttdDiscord.Infrastructure.Akkas;
-using OpenttdDiscord.Infrastructure.Discord.Responses;
+using OpenttdDiscord.Infrastructure.Discord.CommandResponses;
 
-namespace OpenttdDiscord.Infrastructure.Discord.Runners
+namespace OpenttdDiscord.Infrastructure.Discord.CommandRunners
 {
     internal abstract class OttdSlashCommandRunnerBase : IOttdSlashCommandRunner
     {

@@ -4,9 +4,9 @@ using LanguageExt.UnitsOfMeasure;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using OpenttdDiscord.Base.Ext;
+using OpenttdDiscord.Infrastructure.Discord.CommandResponses;
+using OpenttdDiscord.Infrastructure.Discord.CommandRunners;
 using OpenttdDiscord.Infrastructure.Discord.Commands;
-using OpenttdDiscord.Infrastructure.Discord.Responses;
-using OpenttdDiscord.Infrastructure.Discord.Runners;
 using OpenttdDiscord.Infrastructure.Statuses.Commands;
 using OpenttdDiscord.Validation;
 

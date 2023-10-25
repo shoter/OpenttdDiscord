@@ -1,9 +1,8 @@
 ﻿using Discord;
-using Discord.WebSocket;
 using LanguageExt;
 using OpenttdDiscord.Base.Ext;
 
-namespace OpenttdDiscord.Infrastructure.Discord.Responses
+namespace OpenttdDiscord.Infrastructure.Discord.CommandResponses
 {
     public abstract class SlashCommandResponseBase : ISlashCommandResponse
     {

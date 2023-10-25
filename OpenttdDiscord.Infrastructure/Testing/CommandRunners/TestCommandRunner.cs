@@ -31,7 +31,11 @@ namespace OpenttdDiscord.Infrastructure.Testing.CommandRunners
             User user,
             ExtDictionary<string, object> options)
         {
-            return new ModalCommandResponse(testModal);
+            return from _ in CheckIfHasCorrectUserLevel(
+                        user,
+                        UserLevel.Admin)
+                    .ToAsync()
+                select new ModalCommandResponse(testModal) as ISlashCommandResponse;
         }
     }
 }

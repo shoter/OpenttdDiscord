@@ -26,7 +26,7 @@ namespace OpenttdDiscord.Infrastructure.Testing.CommandRunners
             this.testModal = testModal;
         }
 
-        protected override EitherAsync<IError, ISlashCommandResponse> RunInternal(
+        protected override EitherAsync<IError, IInteractionResponse> RunInternal(
             ISlashCommandInteraction command,
             User user,
             ExtDictionary<string, object> options)
@@ -35,7 +35,7 @@ namespace OpenttdDiscord.Infrastructure.Testing.CommandRunners
                         user,
                         UserLevel.Admin)
                     .ToAsync()
-                select new ModalCommandResponse(testModal) as ISlashCommandResponse;
+                select new ModalResponse(testModal) as IInteractionResponse;
         }
     }
 }

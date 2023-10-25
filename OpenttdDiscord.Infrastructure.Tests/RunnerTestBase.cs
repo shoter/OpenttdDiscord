@@ -1,4 +1,3 @@
-using AutoFixture;
 using Discord;
 using OpenttdDiscord.Domain.Roles.Errors;
 using OpenttdDiscord.Domain.Roles.UseCases;

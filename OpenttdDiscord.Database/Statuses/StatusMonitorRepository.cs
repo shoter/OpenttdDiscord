@@ -1,10 +1,6 @@
-﻿using System.Threading.Channels;
-using Discord;
-using LanguageExt;
-using LanguageExt.Pipes;
+﻿using LanguageExt;
 using Microsoft.EntityFrameworkCore;
 using OpenttdDiscord.Domain.Statuses;
-using static LanguageExt.Prelude;
 
 namespace OpenttdDiscord.Database.Statuses
 {

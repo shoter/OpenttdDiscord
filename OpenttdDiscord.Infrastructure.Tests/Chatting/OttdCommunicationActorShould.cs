@@ -1,11 +1,9 @@
 using Akka.Actor;
 using Akka.TestKit;
-using AutoFixture;
 using Microsoft.Extensions.DependencyInjection;
 using OpenTTDAdminPort;
 using OpenTTDAdminPort.Events;
 using OpenTTDAdminPort.Game;
-using OpenttdDiscord.Domain.Chatting.Translating;
 using OpenttdDiscord.Domain.Servers;
 using OpenttdDiscord.Infrastructure.Akkas;
 using OpenttdDiscord.Infrastructure.Chatting.Actors;

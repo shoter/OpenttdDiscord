@@ -1,5 +1,4 @@
 ﻿using Discord;
-using Discord.WebSocket;
 using LanguageExt;
 using OpenttdDiscord.Base.Basics;
 using OpenttdDiscord.Base.Ext;
@@ -34,7 +33,7 @@ namespace OpenttdDiscord.Infrastructure.Rcon.Runners
             this.getServerByNameUseCase = getServerByNameUseCase;
         }
 
-        protected override EitherAsync<IError, ISlashCommandResponse> RunInternal(
+        protected override EitherAsync<IError, IInteractionResponse> RunInternal(
             ISlashCommandInteraction command,
             User user,
             ExtDictionary<string, object> options)
@@ -61,7 +60,7 @@ namespace OpenttdDiscord.Infrastructure.Rcon.Runners
                     guildId,
                     channelId,
                     prefix)
-                select (ISlashCommandResponse) new TextCommandResponse("Rcon channel registered!");
+                select (IInteractionResponse) new TextResponse("Rcon channel registered!");
         }
 
         private EitherAsyncUnit ErrorIfRconChannelExists(

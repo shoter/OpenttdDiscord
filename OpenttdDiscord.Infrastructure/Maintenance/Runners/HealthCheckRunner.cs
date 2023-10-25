@@ -1,7 +1,5 @@
 using System.Text;
-using Akka.Actor;
 using Discord;
-using Discord.WebSocket;
 using LanguageExt;
 using OpenttdDiscord.Base.Basics;
 using OpenttdDiscord.Base.Ext;
@@ -22,7 +20,7 @@ namespace OpenttdDiscord.Infrastructure.Maintenance.Runners
         {
         }
 
-        protected override EitherAsync<IError, ISlashCommandResponse> RunInternal(
+        protected override EitherAsync<IError, IInteractionResponse> RunInternal(
             ISlashCommandInteraction command,
             User user,
             ExtDictionary<string, object> options)
@@ -38,7 +36,7 @@ namespace OpenttdDiscord.Infrastructure.Maintenance.Runners
                 select CreateResponse(healthCheckResponse);
         }
 
-        private ISlashCommandResponse CreateResponse(HealthCheckResponse response)
+        private IInteractionResponse CreateResponse(HealthCheckResponse response)
         {
             StringBuilder sb = new();
 
@@ -60,7 +58,7 @@ namespace OpenttdDiscord.Infrastructure.Maintenance.Runners
                 sb.AppendLine($"{entry.server.Name} - {entry.HealthStatus} - {entry.CheckTime.TotalSeconds:0.00} s");
             }
 
-            return new TextCommandResponse(sb);
+            return new TextResponse(sb);
         }
     }
 }

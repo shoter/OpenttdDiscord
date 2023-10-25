@@ -3,7 +3,7 @@ using LanguageExt;
 using OpenttdDiscord.Base.Ext;
 using OpenttdDiscord.Domain.Roles.UseCases;
 using OpenttdDiscord.Domain.Security;
-using OpenttdDiscord.Infrastructure.Discord.ModalResponses;
+using OpenttdDiscord.Infrastructure.Discord.CommandResponses;
 
 namespace OpenttdDiscord.Infrastructure.Discord.ModalRunners
 {
@@ -16,7 +16,7 @@ namespace OpenttdDiscord.Infrastructure.Discord.ModalRunners
 
         private IGetRoleLevelUseCase GetRoleLevelUseCase { get; }
 
-        public EitherAsync<IError, IModalResponse> Run(IModalInteraction modalInteraction)
+        public EitherAsync<IError, IInteractionResponse> Run(IModalInteraction modalInteraction)
         {
             return
                 from userLevel in GetRoleLevelUseCase.Execute(modalInteraction.User)
@@ -28,7 +28,7 @@ namespace OpenttdDiscord.Infrastructure.Discord.ModalRunners
                 select result;
         }
 
-        protected abstract EitherAsync<IError, IModalResponse> RunInternal(
+        protected abstract EitherAsync<IError, IInteractionResponse> RunInternal(
             IModalInteraction modal,
             User user);
     }

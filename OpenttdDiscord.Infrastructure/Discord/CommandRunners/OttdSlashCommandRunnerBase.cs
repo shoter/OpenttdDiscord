@@ -24,7 +24,7 @@ namespace OpenttdDiscord.Infrastructure.Discord.CommandRunners
 
         protected IAkkaService AkkaService { get; }
 
-        public EitherAsync<IError, ISlashCommandResponse> Run(ISlashCommandInteraction command)
+        public EitherAsync<IError, IInteractionResponse> Run(ISlashCommandInteraction command)
         {
             var options = command.Data.Options.ToExtDictionary(
                 o => o.Name,
@@ -41,7 +41,7 @@ namespace OpenttdDiscord.Infrastructure.Discord.CommandRunners
                 select result;
         }
 
-        protected abstract EitherAsync<IError, ISlashCommandResponse> RunInternal(
+        protected abstract EitherAsync<IError, IInteractionResponse> RunInternal(
             ISlashCommandInteraction command,
             User user,
             ExtDictionary<string, object> options);

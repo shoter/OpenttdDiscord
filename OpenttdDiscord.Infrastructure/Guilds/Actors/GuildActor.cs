@@ -2,9 +2,7 @@
 using LanguageExt;
 using Microsoft.Extensions.DependencyInjection;
 using OpenttdDiscord.Base.Ext;
-using OpenttdDiscord.Domain.Security;
 using OpenttdDiscord.Domain.Servers;
-using OpenttdDiscord.Domain.Servers.UseCases;
 using OpenttdDiscord.Infrastructure.Chatting.Messages;
 using OpenttdDiscord.Infrastructure.EventLogs.Messages;
 using OpenttdDiscord.Infrastructure.Guilds.Messages;

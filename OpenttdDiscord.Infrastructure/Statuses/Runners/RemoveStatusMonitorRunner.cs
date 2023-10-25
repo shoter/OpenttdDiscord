@@ -1,5 +1,4 @@
 ﻿using Discord;
-using Discord.WebSocket;
 using LanguageExt;
 using OpenttdDiscord.Base.Basics;
 using OpenttdDiscord.Base.Ext;
@@ -32,7 +31,7 @@ namespace OpenttdDiscord.Infrastructure.Statuses.Runners
             this.ottdServerRepository = ottdServerRepository;
         }
 
-        protected override EitherAsync<IError, ISlashCommandResponse> RunInternal(
+        protected override EitherAsync<IError, IInteractionResponse> RunInternal(
             ISlashCommandInteraction command,
             User user,
             ExtDictionary<string, object> options)
@@ -49,7 +48,7 @@ namespace OpenttdDiscord.Infrastructure.Statuses.Runners
                     server.Id,
                     command.GuildId!.Value,
                     command.ChannelId!.Value)
-                select (ISlashCommandResponse) new TextCommandResponse("Status monitor removed!");
+                select (IInteractionResponse) new TextResponse("Status monitor removed!");
             return _;
         }
     }

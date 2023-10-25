@@ -1,5 +1,4 @@
 using Akka.Actor;
-using OpenttdDiscord.Base.Ext;
 using OpenttdDiscord.Infrastructure.Akkas;
 using Xunit.Abstractions;
 

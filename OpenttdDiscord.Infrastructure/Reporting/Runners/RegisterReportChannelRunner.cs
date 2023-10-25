@@ -1,5 +1,4 @@
 ﻿using Discord;
-using Discord.WebSocket;
 using LanguageExt;
 using OpenttdDiscord.Base.Basics;
 using OpenttdDiscord.Base.Ext;
@@ -31,7 +30,7 @@ namespace OpenttdDiscord.Infrastructure.Reporting.Runners
             this.registerReportChannelUseCase = registerReportChannelUseCase;
         }
 
-        protected override EitherAsync<IError, ISlashCommandResponse> RunInternal(
+        protected override EitherAsync<IError, IInteractionResponse> RunInternal(
             ISlashCommandInteraction command,
             User user,
             ExtDictionary<string, object> options)
@@ -52,7 +51,7 @@ namespace OpenttdDiscord.Infrastructure.Reporting.Runners
                         server.Id,
                         guildId,
                         channelId))
-                select (ISlashCommandResponse) new TextCommandResponse("Report channel registered");
+                select (IInteractionResponse) new TextResponse("Report channel registered");
         }
     }
 }

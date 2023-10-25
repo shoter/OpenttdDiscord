@@ -3,11 +3,11 @@ using OpenttdDiscord.Infrastructure.Discord.Modals;
 
 namespace OpenttdDiscord.Infrastructure.Discord.CommandResponses
 {
-    public class ModalCommandResponse : SlashCommandResponseBase
+    public class ModalResponse : InteractionResponseBase
     {
         private readonly IOttdModal modal;
 
-        public ModalCommandResponse(IOttdModal modal)
+        public ModalResponse(IOttdModal modal)
         {
             this.modal = modal;
         }

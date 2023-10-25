@@ -1,6 +1,5 @@
 using System.Text;
 using Discord;
-using Discord.WebSocket;
 using LanguageExt;
 using OpenttdDiscord.Base.Basics;
 using OpenttdDiscord.Base.Ext;
@@ -31,7 +30,7 @@ namespace OpenttdDiscord.Infrastructure.Roles.Runners
             this.discord = discord;
         }
 
-        protected override EitherAsync<IError, ISlashCommandResponse> RunInternal(
+        protected override EitherAsync<IError, IInteractionResponse> RunInternal(
             ISlashCommandInteraction command,
             User user,
             ExtDictionary<string, object> options)
@@ -49,9 +48,9 @@ namespace OpenttdDiscord.Infrastructure.Roles.Runners
                 select response;
         }
 
-        private EitherAsync<IError, ISlashCommandResponse> GenerateResponse(
+        private EitherAsync<IError, IInteractionResponse> GenerateResponse(
             ulong guildId,
-            IEnumerable<GuildRole> guildRoles) => TryAsync<Either<IError, ISlashCommandResponse>>(
+            IEnumerable<GuildRole> guildRoles) => TryAsync<Either<IError, IInteractionResponse>>(
                 async () =>
                 {
                     StringBuilder sbResponse = new();
@@ -63,7 +62,7 @@ namespace OpenttdDiscord.Infrastructure.Roles.Runners
                         sbResponse.AppendLine($"{discordRole.Name} - {role.RoleLevel}");
                     }
 
-                    return new TextCommandResponse(sbResponse);
+                    return new TextResponse(sbResponse);
                 })
             .ToEitherAsyncErrorFlat();
     }

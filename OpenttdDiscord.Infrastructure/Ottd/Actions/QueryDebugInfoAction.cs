@@ -1,5 +1,4 @@
 ﻿using Akka.Actor;
-using Akka.Event;
 using Discord;
 using Discord.WebSocket;
 using Microsoft.Extensions.DependencyInjection;

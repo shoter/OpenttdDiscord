@@ -1,5 +1,4 @@
 ﻿using Discord;
-using Discord.WebSocket;
 using LanguageExt;
 using OpenttdDiscord.Base.Basics;
 using OpenttdDiscord.Base.Ext;
@@ -7,11 +6,8 @@ using OpenttdDiscord.Domain.Roles.UseCases;
 using OpenttdDiscord.Domain.Security;
 using OpenttdDiscord.Domain.Servers.UseCases;
 using OpenttdDiscord.Infrastructure.Akkas;
-using OpenttdDiscord.Infrastructure.Discord;
 using OpenttdDiscord.Infrastructure.Discord.CommandResponses;
 using OpenttdDiscord.Infrastructure.Discord.CommandRunners;
-using OpenttdDiscord.Infrastructure.Discord.Commands;
-using OpenttdDiscord.Infrastructure.Servers.UseCases;
 
 namespace OpenttdDiscord.Infrastructure.Servers.Runners
 {
@@ -28,7 +24,7 @@ namespace OpenttdDiscord.Infrastructure.Servers.Runners
             this.removeOttdServerUseCase = removeOttdServerUseCase;
         }
 
-        protected override EitherAsync<IError, ISlashCommandResponse> RunInternal(
+        protected override EitherAsync<IError, IInteractionResponse> RunInternal(
             ISlashCommandInteraction command,
             User user,
             ExtDictionary<string, object> options)
@@ -42,7 +38,7 @@ namespace OpenttdDiscord.Infrastructure.Servers.Runners
                         command.GuildId!.Value,
                         serverName)
                     .ToAsync()
-                select (ISlashCommandResponse) new TextCommandResponse($"{serverName} successfully deleted");
+                select (IInteractionResponse) new TextResponse($"{serverName} successfully deleted");
         }
     }
 }

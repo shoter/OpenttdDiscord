@@ -1,17 +1,12 @@
-﻿using System.Net.Security;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using OpenttdDiscord.Database.Chatting;
 using OpenttdDiscord.Domain.Chatting;
 using OpenttdDiscord.Domain.Chatting.Translating;
 using OpenttdDiscord.Domain.Chatting.UseCases;
-using OpenttdDiscord.Domain.EventLogs.UseCases;
 using OpenttdDiscord.Infrastructure.Chatting.Commands;
 using OpenttdDiscord.Infrastructure.Chatting.Runners;
 using OpenttdDiscord.Infrastructure.Chatting.UseCases;
 using OpenttdDiscord.Infrastructure.Discord.Commands;
-using OpenttdDiscord.Infrastructure.EventLogs.Commands;
-using OpenttdDiscord.Infrastructure.EventLogs.Runners;
-using OpenttdDiscord.Infrastructure.EventLogs.UseCases;
 using OpenttdDiscord.Infrastructure.Modularity;
 
 namespace OpenttdDiscord.Infrastructure.Chatting

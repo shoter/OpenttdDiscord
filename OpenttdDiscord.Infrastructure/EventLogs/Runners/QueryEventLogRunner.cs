@@ -1,5 +1,4 @@
 ﻿using Discord;
-using Discord.WebSocket;
 using LanguageExt;
 using OpenttdDiscord.Base.Basics;
 using OpenttdDiscord.Base.Ext;
@@ -30,7 +29,7 @@ namespace OpenttdDiscord.Infrastructure.EventLogs.Runners
             this.queryServerChatUseCase = queryServerChatUseCase;
         }
 
-        protected override EitherAsync<IError, ISlashCommandResponse> RunInternal(
+        protected override EitherAsync<IError, IInteractionResponse> RunInternal(
             ISlashCommandInteraction command,
             User user,
             ExtDictionary<string, object> options)
@@ -52,7 +51,7 @@ namespace OpenttdDiscord.Infrastructure.EventLogs.Runners
                 select response;
         }
 
-        private EitherAsync<IError, ISlashCommandResponse> ReplyWithFile(IReadOnlyList<string> text)
+        private EitherAsync<IError, IInteractionResponse> ReplyWithFile(IReadOnlyList<string> text)
         {
             MemoryStream ms = new();
             using (var sw = new StreamWriter(
@@ -65,7 +64,7 @@ namespace OpenttdDiscord.Infrastructure.EventLogs.Runners
                 }
             }
 
-            return new StreamCommandResponse(
+            return new StreamResponse(
                 ms,
                 "chat.txt",
                 dispose: true);

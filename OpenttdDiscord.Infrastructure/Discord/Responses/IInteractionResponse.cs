@@ -2,7 +2,7 @@
 
 namespace OpenttdDiscord.Infrastructure.Discord.CommandResponses
 {
-    public interface ISlashCommandResponse
+    public interface IInteractionResponse
     {
         public EitherAsyncUnit Execute(ISlashCommandInteraction command);
     }

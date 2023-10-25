@@ -5,7 +5,6 @@ using OpenttdDiscord.Base.Ext;
 using OpenttdDiscord.Domain.Roles.UseCases;
 using OpenttdDiscord.Domain.Security;
 using OpenttdDiscord.Domain.Servers;
-using OpenttdDiscord.Domain.Servers.UseCases;
 using OpenttdDiscord.Infrastructure.Akkas;
 using OpenttdDiscord.Infrastructure.Discord.CommandResponses;
 using OpenttdDiscord.Infrastructure.Discord.CommandRunners;
@@ -27,7 +26,7 @@ namespace OpenttdDiscord.Infrastructure.Servers.Runners
             this.ottdServerRepository = ottdServerRepository;
         }
 
-        protected override EitherAsync<IError, ISlashCommandResponse> RunInternal(
+        protected override EitherAsync<IError, IInteractionResponse> RunInternal(
             ISlashCommandInteraction command,
             User user,
             ExtDictionary<string, object> options)
@@ -42,7 +41,7 @@ namespace OpenttdDiscord.Infrastructure.Servers.Runners
                 from servers in ottdServerRepository.GetServersForGuild(guildId)
                 from embed in CreateEmbed(servers)
                     .ToAsync()
-                select (ISlashCommandResponse) new EmbedCommandResponse(embed);
+                select (IInteractionResponse) new EmbedResponse(embed);
         }
 
         private Either<IError, Embed> CreateEmbed(List<OttdServer> servers)

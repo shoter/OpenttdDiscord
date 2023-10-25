@@ -1,5 +1,4 @@
 ﻿using LanguageExt;
-using Microsoft.Extensions.Logging;
 
 namespace OpenttdDiscord.Base.Ext
 {

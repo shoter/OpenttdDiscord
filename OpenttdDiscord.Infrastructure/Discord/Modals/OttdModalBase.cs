@@ -1,6 +1,5 @@
 using Discord;
 using Microsoft.Extensions.DependencyInjection;
-using OpenttdDiscord.Domain.Roles.UseCases;
 using OpenttdDiscord.Infrastructure.Discord.ModalRunners;
 
 namespace OpenttdDiscord.Infrastructure.Discord.Modals

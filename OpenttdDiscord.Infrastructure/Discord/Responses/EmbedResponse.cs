@@ -2,11 +2,11 @@
 
 namespace OpenttdDiscord.Infrastructure.Discord.CommandResponses
 {
-    public class EmbedCommandResponse : SlashCommandResponseBase
+    public class EmbedResponse : InteractionResponseBase
     {
         private readonly Embed embed;
 
-        public EmbedCommandResponse(Embed embed)
+        public EmbedResponse(Embed embed)
         {
             this.embed = embed;
         }

@@ -1,10 +1,8 @@
 ﻿using Akka.Actor;
 using Discord;
 using Discord.WebSocket;
-using LanguageExt;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using OpenttdDiscord.Base.Ext;
 using OpenttdDiscord.Domain.Guilds.UseCases;
 using OpenttdDiscord.Infrastructure.Akkas;
 using OpenttdDiscord.Infrastructure.Chatting.Messages;

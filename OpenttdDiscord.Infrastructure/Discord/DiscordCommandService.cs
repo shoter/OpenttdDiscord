@@ -1,5 +1,4 @@
 ﻿using Discord.WebSocket;
-using LanguageExt;
 using LanguageExt.UnitsOfMeasure;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -7,7 +6,6 @@ using OpenttdDiscord.Base.Ext;
 using OpenttdDiscord.Infrastructure.Discord.CommandResponses;
 using OpenttdDiscord.Infrastructure.Discord.CommandRunners;
 using OpenttdDiscord.Infrastructure.Discord.Commands;
-using OpenttdDiscord.Infrastructure.Statuses.Commands;
 using OpenttdDiscord.Validation;
 
 namespace OpenttdDiscord.Infrastructure.Discord
@@ -117,7 +115,7 @@ namespace OpenttdDiscord.Infrastructure.Discord
             var runner = command.CreateRunner(scope.ServiceProvider);
             logger.LogDebug("Created runner");
 
-            Task<ISlashCommandResponse> responseTask = GetSlashCommandResponse(
+            Task<IInteractionResponse> responseTask = GetSlashCommandResponse(
                 arg,
                 runner);
             Task timeoutTask = Task.Delay(
@@ -138,11 +136,11 @@ namespace OpenttdDiscord.Infrastructure.Discord
             {
                 await ExecuteResponse(
                     arg,
-                    new TextCommandResponse("Command has time outed :("));
+                    new TextResponse("Command has time outed :("));
             }
         }
 
-        private async Task<ISlashCommandResponse> GetSlashCommandResponse(
+        private async Task<IInteractionResponse> GetSlashCommandResponse(
             SocketSlashCommand arg,
             IOttdSlashCommandRunner runner)
         {
@@ -156,7 +154,7 @@ namespace OpenttdDiscord.Infrastructure.Discord
 
         private async Task ExecuteResponse(
             SocketSlashCommand arg,
-            ISlashCommandResponse response)
+            IInteractionResponse response)
         {
             (await response.Execute(arg))
                 .MapLeft(
@@ -181,7 +179,7 @@ namespace OpenttdDiscord.Infrastructure.Discord
                     });
         }
 
-        private ISlashCommandResponse GenerateErrorResponse(
+        private IInteractionResponse GenerateErrorResponse(
             IError error,
             SocketSlashCommand arg)
         {
@@ -197,10 +195,10 @@ namespace OpenttdDiscord.Infrastructure.Discord
 
             if (error is ValidationError ve)
             {
-                return new EmbedCommandResponse(validationEmbedBuilder.BuildEmbed(ve));
+                return new EmbedResponse(validationEmbedBuilder.BuildEmbed(ve));
             }
 
-            return new TextCommandResponse(text);
+            return new TextResponse(text);
         }
     }
 }

@@ -1,6 +1,5 @@
 ﻿using LanguageExt;
 using OpenttdDiscord.Base.Ext;
-using OpenttdDiscord.Domain.Servers;
 
 namespace OpenttdDiscord.Domain.Servers
 {

@@ -4,7 +4,7 @@ using OpenttdDiscord.Base.Ext;
 
 namespace OpenttdDiscord.Infrastructure.Discord.CommandResponses
 {
-    public abstract class SlashCommandResponseBase : ISlashCommandResponse
+    public abstract class InteractionResponseBase : IInteractionResponse
     {
         public EitherAsyncUnit Execute(ISlashCommandInteraction command) => TryAsync<EitherUnit>(
                 async () =>

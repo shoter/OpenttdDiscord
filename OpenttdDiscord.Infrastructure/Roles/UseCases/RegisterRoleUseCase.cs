@@ -1,6 +1,5 @@
 using Discord;
 using LanguageExt;
-using OpenttdDiscord.Base.Ext;
 using OpenttdDiscord.Domain.Roles.Errors;
 using OpenttdDiscord.Domain.Roles.UseCases;
 using OpenttdDiscord.Domain.Security;

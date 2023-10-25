@@ -1,14 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
 using System.Threading.Tasks;
 using AutoFixture;
-using DotNet.Testcontainers.Builders;
-using LanguageExt;
-using Microsoft.EntityFrameworkCore;
-using OpenttdDiscord.Database.Ottd.Servers;
 using OpenttdDiscord.Database.Servers;
 using OpenttdDiscord.Domain.Servers;
 using Xunit;

@@ -1,5 +1,4 @@
 using Discord;
-using Discord.WebSocket;
 using LanguageExt;
 using OpenttdDiscord.Base.Basics;
 using OpenttdDiscord.Base.Ext;
@@ -8,7 +7,6 @@ using OpenttdDiscord.Domain.Security;
 using OpenttdDiscord.Infrastructure.Akkas;
 using OpenttdDiscord.Infrastructure.Discord.CommandResponses;
 using OpenttdDiscord.Infrastructure.Discord.CommandRunners;
-using OpenttdDiscord.Infrastructure.Roles.Messages;
 
 namespace OpenttdDiscord.Infrastructure.Roles.Runners
 {
@@ -27,7 +25,7 @@ namespace OpenttdDiscord.Infrastructure.Roles.Runners
             this.registerRoleUseCase = registerRoleUseCase;
         }
 
-        protected override EitherAsync<IError, ISlashCommandResponse> RunInternal(
+        protected override EitherAsync<IError, IInteractionResponse> RunInternal(
             ISlashCommandInteraction command,
             User user,
             ExtDictionary<string, object> options)
@@ -54,7 +52,7 @@ namespace OpenttdDiscord.Infrastructure.Roles.Runners
                     guildId,
                     role,
                     (UserLevel) roleLevel)
-                select new TextCommandResponse("Role has been registered") as ISlashCommandResponse;
+                select new TextResponse("Role has been registered") as IInteractionResponse;
         }
     }
 }

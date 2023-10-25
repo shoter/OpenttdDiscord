@@ -1,8 +1,6 @@
-using OpenttdDiscord.Domain.Chatting.UseCases;
 using OpenttdDiscord.Domain.Roles.Errors;
 using OpenttdDiscord.Domain.Security;
 using OpenttdDiscord.Domain.Servers;
-using OpenttdDiscord.Domain.Servers.UseCases;
 using OpenttdDiscord.Infrastructure.Servers.Runners;
 
 namespace OpenttdDiscord.Infrastructure.Tests.Servers.Runners

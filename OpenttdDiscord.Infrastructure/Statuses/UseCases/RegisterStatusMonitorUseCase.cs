@@ -2,7 +2,6 @@
 using Discord.WebSocket;
 using LanguageExt;
 using OpenttdDiscord.Base.Ext;
-using OpenttdDiscord.Database.Statuses;
 using OpenttdDiscord.Domain.Security;
 using OpenttdDiscord.Domain.Servers;
 using OpenttdDiscord.Domain.Statuses;

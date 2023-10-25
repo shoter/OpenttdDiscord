@@ -1,5 +1,4 @@
 ﻿using Discord;
-using Discord.WebSocket;
 using LanguageExt;
 using OpenttdDiscord.Base.Basics;
 using OpenttdDiscord.Base.Ext;
@@ -26,7 +25,7 @@ namespace OpenttdDiscord.Infrastructure.Ottd.Runners
             this.getServerUseCase = getServerUseCase;
         }
 
-        protected override EitherAsync<IError, ISlashCommandResponse> RunInternal(
+        protected override EitherAsync<IError, IInteractionResponse> RunInternal(
             ISlashCommandInteraction command,
             User user,
             ExtDictionary<string, object> options)
@@ -49,7 +48,7 @@ namespace OpenttdDiscord.Infrastructure.Ottd.Runners
                         server.Id,
                         guildId,
                         channelId))
-                select (ISlashCommandResponse) new TextCommandResponse("Executing");
+                select (IInteractionResponse) new TextResponse("Executing");
         }
     }
 }

@@ -1,8 +1,6 @@
 ﻿using LanguageExt;
 using OpenttdDiscord.Base.Ext;
-using OpenttdDiscord.Domain.Roles.UseCases;
 using OpenttdDiscord.Domain.Security;
-using OpenttdDiscord.Infrastructure.Akkas;
 
 namespace OpenttdDiscord.Infrastructure
 {

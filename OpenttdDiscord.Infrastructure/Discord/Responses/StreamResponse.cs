@@ -2,14 +2,14 @@
 
 namespace OpenttdDiscord.Infrastructure.Discord.CommandResponses
 {
-    internal class StreamCommandResponse : SlashCommandResponseBase, IDisposable
+    internal class StreamResponse : InteractionResponseBase, IDisposable
     {
         private readonly Stream stream;
         private readonly string fileName;
         private readonly bool dispose;
         private bool disposedValue;
 
-        public StreamCommandResponse(Stream stream, string fileName, bool dispose = true)
+        public StreamResponse(Stream stream, string fileName, bool dispose = true)
         {
             this.stream = stream;
             this.fileName = fileName;

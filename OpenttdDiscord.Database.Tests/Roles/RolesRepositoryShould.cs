@@ -1,14 +1,11 @@
-using System;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
-using Akka.Util.Internal;
 using AutoFixture;
 using OpenttdDiscord.Base.Ext;
 using OpenttdDiscord.Database.Roles;
 using OpenttdDiscord.Domain.Roles;
 using OpenttdDiscord.Domain.Security;
-using OpenttdDiscord.Domain.Servers;
 using Xunit;
 
 namespace OpenttdDiscord.Database.Tests.Roles

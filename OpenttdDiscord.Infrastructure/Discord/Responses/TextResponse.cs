@@ -3,13 +3,13 @@ using Discord;
 
 namespace OpenttdDiscord.Infrastructure.Discord.CommandResponses
 {
-    public class TextCommandResponse : SlashCommandResponseBase
+    public class TextResponse : InteractionResponseBase
     {
         private readonly string response;
 
         private readonly bool ephemeral;
 
-        public TextCommandResponse(string response, bool ephemeral = true)
+        public TextResponse(string response, bool ephemeral = true)
         {
             this.response = response;
             this.ephemeral = ephemeral;
@@ -19,7 +19,7 @@ namespace OpenttdDiscord.Infrastructure.Discord.CommandResponses
             }
         }
 
-        public TextCommandResponse(StringBuilder sb, bool ephemeral = true)
+        public TextResponse(StringBuilder sb, bool ephemeral = true)
             : this(sb.ToString(), ephemeral)
         {
         }

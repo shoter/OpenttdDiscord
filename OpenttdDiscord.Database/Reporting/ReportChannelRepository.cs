@@ -1,6 +1,5 @@
 ﻿using LanguageExt;
 using Microsoft.EntityFrameworkCore;
-using OpenttdDiscord.Domain.Rcon;
 using OpenttdDiscord.Domain.Reporting;
 
 namespace OpenttdDiscord.Database.Reporting

@@ -1,5 +1,4 @@
 ﻿using OpenttdDiscord.Domain.Chatting;
-using OpenttdDiscord.Domain.Servers;
 
 namespace OpenttdDiscord.Infrastructure.Chatting.Messages
 {

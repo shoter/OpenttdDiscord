@@ -1,9 +1,7 @@
 using Discord;
-using OpenttdDiscord.Domain.Roles.Errors;
 using OpenttdDiscord.Domain.Roles.UseCases;
 using OpenttdDiscord.Domain.Security;
 using OpenttdDiscord.Infrastructure.Roles.Runners;
-using OpenttdDiscord.Infrastructure.Tests.Roles.UseCases;
 
 namespace OpenttdDiscord.Infrastructure.Tests.Roles.Runners
 {

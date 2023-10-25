@@ -2,7 +2,6 @@
 
 using System.Reflection;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.Extensions.Configuration;
 using OpenttdDiscord.Database;
 

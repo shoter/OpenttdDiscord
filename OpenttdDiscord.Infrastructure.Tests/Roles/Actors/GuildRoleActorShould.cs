@@ -1,17 +1,10 @@
 using Akka.Actor;
-using Akka.TestKit;
-using Akka.TestKit.Xunit2;
-using AutoFixture;
-using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using OpenttdDiscord.Base.Akkas;
-using OpenttdDiscord.Base.Ext;
 using OpenttdDiscord.Domain.Roles;
 using OpenttdDiscord.Domain.Security;
 using OpenttdDiscord.Infrastructure.Roles.Actors;
 using OpenttdDiscord.Infrastructure.Roles.Messages;
-using OpenttdDiscord.Tests.Common.Xunits;
 using Xunit.Abstractions;
 
 namespace OpenttdDiscord.Infrastructure.Tests.Roles.Actors

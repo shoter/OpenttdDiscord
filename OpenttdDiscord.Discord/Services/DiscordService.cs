@@ -1,17 +1,11 @@
-﻿using System.Collections.Generic;
-using Discord;
+﻿using Discord;
 using Discord.WebSocket;
-using LanguageExt;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using OpenttdDiscord.Base.Discord;
-using OpenttdDiscord.Base.Ext;
 using OpenttdDiscord.Discord.Options;
 using OpenttdDiscord.Infrastructure.Discord;
-using OpenttdDiscord.Validation;
-using Serilog.Core;
 
 namespace OpenttdDiscord.Discord.Services
 {

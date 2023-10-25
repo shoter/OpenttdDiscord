@@ -24,9 +24,9 @@ namespace OpenttdDiscord.Infrastructure.Discord.CommandResponses
         {
         }
 
-        protected override async Task InternalExecute(ISlashCommandInteraction command)
+        protected override async Task InternalExecute(IDiscordInteraction interaction)
         {
-            await command.RespondAsync(response, ephemeral: ephemeral);
+            await interaction.RespondAsync(response, ephemeral: ephemeral);
         }
     }
 }

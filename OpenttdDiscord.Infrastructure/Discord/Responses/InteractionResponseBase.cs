@@ -6,14 +6,14 @@ namespace OpenttdDiscord.Infrastructure.Discord.CommandResponses
 {
     public abstract class InteractionResponseBase : IInteractionResponse
     {
-        public EitherAsyncUnit Execute(ISlashCommandInteraction command) => TryAsync<EitherUnit>(
+        public EitherAsyncUnit Execute(IDiscordInteraction interaction) => TryAsync<EitherUnit>(
                 async () =>
                 {
-                    await InternalExecute(command);
+                    await InternalExecute(interaction);
                     return Unit.Default;
                 })
             .ToEitherAsyncErrorFlat();
 
-        protected abstract Task InternalExecute(ISlashCommandInteraction command);
+        protected abstract Task InternalExecute(IDiscordInteraction interaction);
     }
 }

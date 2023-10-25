@@ -11,9 +11,9 @@ namespace OpenttdDiscord.Infrastructure.Discord.CommandResponses
             this.embed = embed;
         }
 
-        protected override Task InternalExecute(ISlashCommandInteraction command)
+        protected override Task InternalExecute(IDiscordInteraction interaction)
         {
-            return command.RespondAsync(embed: embed);
+            return interaction.RespondAsync(embed: embed);
         }
     }
 }

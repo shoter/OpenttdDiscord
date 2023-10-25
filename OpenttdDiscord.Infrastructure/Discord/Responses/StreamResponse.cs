@@ -16,7 +16,7 @@ namespace OpenttdDiscord.Infrastructure.Discord.CommandResponses
             this.dispose = dispose;
         }
 
-        protected override async Task InternalExecute(ISlashCommandInteraction command)
+        protected override async Task InternalExecute(IDiscordInteraction command)
         {
             await command.RespondWithFileAsync(stream, fileName);
             if(dispose)

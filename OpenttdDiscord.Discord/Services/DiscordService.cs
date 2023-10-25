@@ -14,19 +14,19 @@ namespace OpenttdDiscord.Discord.Services
         private readonly DiscordSocketClient client;
         private readonly ILogger logger;
         private readonly DiscordOptions options;
-        private readonly IDiscordCommandService discordCommandService;
+        private readonly IDiscordInteractionService discordInteractionService;
         private readonly IDiscordModalService discordModalService;
 
         public DiscordService(
             DiscordSocketClient client,
             ILogger<DiscordService> logger,
-            IDiscordCommandService discordCommandService,
+            IDiscordInteractionService discordInteractionService,
             IOptions<DiscordOptions> options,
             IDiscordModalService discordModalService)
         {
             this.client = client;
             this.logger = logger;
-            this.discordCommandService = discordCommandService;
+            this.discordInteractionService = discordInteractionService;
             this.discordModalService = discordModalService;
             this.options = options.Value;
             client.Log += OnDiscordLog;
@@ -35,7 +35,7 @@ namespace OpenttdDiscord.Discord.Services
 
         private async Task Client_Ready()
         {
-            await this.discordCommandService.Register();
+            await this.discordInteractionService.Register();
             await this.discordModalService.Register();
         }
 

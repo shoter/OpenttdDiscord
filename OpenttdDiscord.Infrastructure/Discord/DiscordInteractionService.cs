@@ -10,7 +10,7 @@ using OpenttdDiscord.Validation;
 
 namespace OpenttdDiscord.Infrastructure.Discord
 {
-    internal class DiscordCommandService : IDiscordCommandService
+    internal class DiscordInteractionService : IDiscordInteractionService
     {
         private readonly ILogger logger;
         private readonly DiscordSocketClient client;
@@ -18,9 +18,9 @@ namespace OpenttdDiscord.Infrastructure.Discord
         private readonly ValidationErrorEmbedBuilder validationEmbedBuilder = new();
         private readonly Dictionary<string, IOttdSlashCommand> commands = new();
 
-        public DiscordCommandService(
+        public DiscordInteractionService(
             IServiceProvider serviceProvider,
-            ILogger<DiscordCommandService> logger,
+            ILogger<DiscordInteractionService> logger,
             DiscordSocketClient client,
             IEnumerable<IOttdSlashCommand> commands
         )

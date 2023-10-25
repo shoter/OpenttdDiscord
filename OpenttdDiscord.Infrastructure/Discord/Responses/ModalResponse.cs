@@ -12,9 +12,9 @@ namespace OpenttdDiscord.Infrastructure.Discord.CommandResponses
             this.modal = modal;
         }
 
-        protected override Task InternalExecute(ISlashCommandInteraction command)
+        protected override Task InternalExecute(IDiscordInteraction interaction)
         {
-            return command.RespondWithModalAsync(modal.Build());
+            return interaction.RespondWithModalAsync(modal.Build());
         }
     }
 }

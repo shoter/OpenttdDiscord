@@ -1,6 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using OpenttdDiscord.Database.Statuses;
 using OpenttdDiscord.Domain.Statuses;
+using OpenttdDiscord.Infrastructure.Discord;
 using OpenttdDiscord.Infrastructure.Discord.Commands;
 using OpenttdDiscord.Infrastructure.Discord.Modals;
 using OpenttdDiscord.Infrastructure.Modularity;
@@ -17,6 +18,7 @@ namespace OpenttdDiscord.Infrastructure.Testing
         {
             services
                 .AddScoped<IStatusMonitorRepository, StatusMonitorRepository>()
+                .AddScoped<IDiscordModalService, DiscordModalService>()
                 .RegisterCommandRunners()
                 .RegisterCommands()
                 .RegisterModals()
@@ -42,7 +44,7 @@ namespace OpenttdDiscord.Infrastructure.Testing
 
         public static IServiceCollection RegisterModals(this IServiceCollection services)
         {
-            services.AddSingleton<IOttdModal, TestModal>();
+            services.AddSingleton<TestModal>();
             return services;
         }
 

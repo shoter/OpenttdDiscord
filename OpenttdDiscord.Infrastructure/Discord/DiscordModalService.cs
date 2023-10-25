@@ -5,7 +5,7 @@ using OpenttdDiscord.Infrastructure.Discord.Modals;
 
 namespace OpenttdDiscord.Infrastructure.Discord
 {
-    public class DiscordModalService
+    public class DiscordModalService : IDiscordModalService
     {
         private readonly ILogger logger;
         private readonly DiscordSocketClient client;

@@ -22,14 +22,19 @@ namespace OpenttdDiscord.Infrastructure.Discord.ModalRunners
                 from userLevel in GetRoleLevelUseCase.Execute(modalInteraction.User)
                 from result in RunInternal(
                     modalInteraction,
+                    GetInteractionComponentDictionary(modalInteraction),
                     new User(
                         modalInteraction.User,
                         userLevel))
                 select result;
         }
 
+        private Dictionary<string, IComponentInteractionData> GetInteractionComponentDictionary(IModalInteraction interaction) =>
+            interaction.Data.Components.ToDictionary(x => x.CustomId);
+
         protected abstract EitherAsync<IError, IInteractionResponse> RunInternal(
             IModalInteraction modal,
+            Dictionary<string, IComponentInteractionData> components,
             User user);
     }
 }

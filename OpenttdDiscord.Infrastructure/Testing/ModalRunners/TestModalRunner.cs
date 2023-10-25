@@ -17,9 +17,12 @@ namespace OpenttdDiscord.Infrastructure.Testing.ModalRunners
 
         protected override EitherAsync<IError, IInteractionResponse> RunInternal(
             IModalInteraction modal,
+            Dictionary<string, IComponentInteractionData> components,
             User user)
         {
-            return new TextResponse("Twoja stara XD", ephemeral: false);
+            var component = components["labelId"];
+            string value = component.Value;
+            return new TextResponse("You typed " + value, ephemeral: false);
         }
     }
 }

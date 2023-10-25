@@ -15,19 +15,16 @@ namespace OpenttdDiscord.Discord.Services
         private readonly ILogger logger;
         private readonly DiscordOptions options;
         private readonly IDiscordInteractionService discordInteractionService;
-        private readonly IDiscordModalService discordModalService;
 
         public DiscordService(
             DiscordSocketClient client,
             ILogger<DiscordService> logger,
             IDiscordInteractionService discordInteractionService,
-            IOptions<DiscordOptions> options,
-            IDiscordModalService discordModalService)
+            IOptions<DiscordOptions> options)
         {
             this.client = client;
             this.logger = logger;
             this.discordInteractionService = discordInteractionService;
-            this.discordModalService = discordModalService;
             this.options = options.Value;
             client.Log += OnDiscordLog;
             client.Ready += Client_Ready;
@@ -36,7 +33,6 @@ namespace OpenttdDiscord.Discord.Services
         private async Task Client_Ready()
         {
             await this.discordInteractionService.Register();
-            await this.discordModalService.Register();
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)

@@ -1,5 +1,6 @@
 ﻿using Discord;
 using OpenttdDiscord.Infrastructure.Discord.CommandRunners;
+using OpenttdDiscord.Infrastructure.Discord.ModalRunners;
 
 namespace OpenttdDiscord.Infrastructure.Discord.Commands
 {

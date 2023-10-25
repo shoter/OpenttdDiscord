@@ -1,4 +1,5 @@
-﻿using Discord.WebSocket;
+﻿using Discord;
+using Discord.WebSocket;
 using LanguageExt.UnitsOfMeasure;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -6,6 +7,8 @@ using OpenttdDiscord.Base.Ext;
 using OpenttdDiscord.Infrastructure.Discord.CommandResponses;
 using OpenttdDiscord.Infrastructure.Discord.CommandRunners;
 using OpenttdDiscord.Infrastructure.Discord.Commands;
+using OpenttdDiscord.Infrastructure.Discord.ModalRunners;
+using OpenttdDiscord.Infrastructure.Discord.Modals;
 using OpenttdDiscord.Validation;
 
 namespace OpenttdDiscord.Infrastructure.Discord
@@ -17,12 +20,14 @@ namespace OpenttdDiscord.Infrastructure.Discord
         private readonly IServiceProvider serviceProvider;
         private readonly ValidationErrorEmbedBuilder validationEmbedBuilder = new();
         private readonly Dictionary<string, IOttdSlashCommand> commands = new();
+        private readonly Dictionary<string, IOttdModal> modals = new();
 
         public DiscordInteractionService(
             IServiceProvider serviceProvider,
             ILogger<DiscordInteractionService> logger,
             DiscordSocketClient client,
-            IEnumerable<IOttdSlashCommand> commands
+            IEnumerable<IOttdSlashCommand> commands,
+            IEnumerable<IOttdModal> modals
         )
         {
             this.logger = logger;
@@ -34,11 +39,19 @@ namespace OpenttdDiscord.Infrastructure.Discord
                     c.Name,
                     c);
             }
+
+            foreach (var m in modals)
+            {
+                this.modals.Add(
+                    m.Id,
+                    m);
+            }
         }
 
         public async Task Register()
         {
             client.SlashCommandExecuted += Client_SlashCommandExecuted;
+            client.ModalSubmitted += ModalSubmitted;
 
             await RegisterCommands();
             await PruneCommands();
@@ -112,10 +125,48 @@ namespace OpenttdDiscord.Infrastructure.Discord
                 arg.CommandName);
             var command = this.commands[arg.Data.Name];
             using var scope = serviceProvider.CreateScope();
-            var runner = command.CreateRunner(scope.ServiceProvider);
+            IOttdSlashCommandRunner runner = command.CreateRunner(scope.ServiceProvider);
             logger.LogDebug("Created runner");
 
             Task<IInteractionResponse> responseTask = GetSlashCommandResponse(
+                arg,
+                runner);
+            Task timeoutTask = Task.Delay(
+                2.Seconds()
+                    .ToTimeSpan());
+
+            await Task.WhenAny(
+                timeoutTask,
+                responseTask);
+
+            if (responseTask.IsCompletedSuccessfully)
+            {
+                await ExecuteResponse(
+                    arg,
+                    responseTask.Result);
+            }
+            else
+            {
+                await ExecuteResponse(
+                    arg,
+                    new TextResponse("Command has time outed :("));
+            }
+        }
+
+        private async Task ModalSubmitted(SocketModal arg)
+        {
+            string name = arg.Data.CustomId;
+            logger.LogDebug(
+                "{0} executing {1}",
+                arg.User.Username,
+                name);
+
+            var modal = this.modals[name];
+            using var scope = serviceProvider.CreateScope();
+            IOttdModalRunner runner = modal.CreateRunner(scope.ServiceProvider);
+            logger.LogDebug($"Created runner {runner.GetType()} for {name}");
+
+            Task<IInteractionResponse> responseTask = GetModalResponse(
                 arg,
                 runner);
             Task timeoutTask = Task.Delay(
@@ -145,18 +196,24 @@ namespace OpenttdDiscord.Infrastructure.Discord
             IOttdSlashCommandRunner runner)
         {
             var response = (await runner.Run(arg))
-                .IfLeft(
-                    err => GenerateErrorResponse(
-                        err,
-                        arg));
+                .IfLeft(GenerateErrorResponse);
+            return response;
+        }
+
+        private async Task<IInteractionResponse> GetModalResponse(
+            SocketModal arg,
+            IOttdModalRunner runner)
+        {
+            var response = (await runner.Run(arg))
+                .IfLeft(GenerateErrorResponse);
             return response;
         }
 
         private async Task ExecuteResponse(
-            SocketSlashCommand arg,
+            IDiscordInteraction interaction,
             IInteractionResponse response)
         {
-            (await response.Execute(arg))
+            (await response.Execute(interaction))
                 .MapLeft(
                     (IError error) =>
                     {
@@ -164,24 +221,23 @@ namespace OpenttdDiscord.Infrastructure.Discord
                         {
                             logger.LogError(
                                 ee.Exception,
-                                $"Something went wrong while executing some command {arg.CommandName}.");
+                                $"Something went wrong while executing some command {interaction}.");
                         }
 
                         logger.LogWarning(
-                            $"{arg.User.Username} executed unsuccessfully {arg.CommandName} - {error.Reason}");
+                            $"{interaction.User.Username} executed unsuccessfully {interaction} - {error.Reason}");
                         return error;
                     })
                 .Map(
                     unit =>
                     {
-                        logger.LogInformation($"{arg.User.Username} executed successfully {arg.CommandName}");
+                        logger.LogInformation($"{interaction.User.Username} executed successfully {interaction}");
                         return unit;
                     });
         }
 
         private IInteractionResponse GenerateErrorResponse(
-            IError error,
-            SocketSlashCommand arg)
+            IError error)
         {
             string text =
                 error is HumanReadableError ? $"Error: {error.Reason}" : "Something went wrong :(";
@@ -190,7 +246,7 @@ namespace OpenttdDiscord.Infrastructure.Discord
             {
                 logger.LogError(
                     ee.Exception,
-                    $"Something went wrong while executing some command {arg.CommandName}.");
+                    $"Something went wrong while executing some interaction.");
             }
 
             if (error is ValidationError ve)

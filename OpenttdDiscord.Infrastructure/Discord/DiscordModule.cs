@@ -9,7 +9,6 @@ namespace OpenttdDiscord.Infrastructure.Discord
         {
             services
                 .AddSingleton<IDiscordInteractionService, DiscordInteractionService>()
-                .AddSingleton<IDiscordModalService, DiscordModalService>();
         }
     }
 }

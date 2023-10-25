@@ -10,7 +10,7 @@ namespace OpenttdDiscord.Infrastructure.Discord
         private readonly ILogger logger;
         private readonly DiscordSocketClient client;
         private readonly IServiceProvider serviceProvider;
-        private readonly Dictionary<string, IOttdModal> commands = new();
+        private readonly Dictionary<string, IOttdModal> modals = new();
 
         public DiscordModalService(
             IServiceProvider serviceProvider,
@@ -24,7 +24,7 @@ namespace OpenttdDiscord.Infrastructure.Discord
             this.client = client;
             foreach (var m in modals)
             {
-                this.commands.Add(
+                this.modals.Add(
                     m.Id,
                     m);
             }
@@ -42,6 +42,17 @@ namespace OpenttdDiscord.Infrastructure.Discord
                 "{0} responded to {1}",
                 arg.User.Username,
                 arg.Data.CustomId);
+
+            if (!modals.ContainsKey(arg.Data.CustomId))
+            {
+                arg.RespondAsync(
+                    "No response is defined for this modal",
+                    ephemeral: true);
+            }
+
+            var modal = modals[arg.Data.CustomId];
+            var runner = modal.CreateRunner(serviceProvider);
+            
 
             return Task.CompletedTask;
         }

@@ -23,7 +23,8 @@ namespace OpenttdDiscord.Infrastructure.Discord.Modals
             return builder.Build();
         }
 
-        public Type GetAssociatedRunnerType() => typeof(TModalRunner);
+        public IOttdModalRunner CreateRunner(IServiceProvider sp)
+            => sp.GetRequiredService<TModalRunner>();
 
         protected abstract void Configure(ModalBuilder builder);
     }

@@ -19,7 +19,7 @@ namespace OpenttdDiscord.Infrastructure.Testing.ModalRunners
             IModalInteraction modal,
             User user)
         {
-            return new TextResponse("Twoja stara XD");
+            return new TextResponse("Twoja stara XD", ephemeral: false);
         }
     }
 }

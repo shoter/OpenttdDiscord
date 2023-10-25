@@ -6,14 +6,14 @@ namespace OpenttdDiscord.Infrastructure.Testing.Commands
 {
     internal class TestCommand : OttdSlashCommandBase<TestCommandRunner>
     {
-        public TestCommand() 
+        public TestCommand()
             : base("ottd-test-command")
         {
         }
 
         protected override void Configure(SlashCommandBuilder builder)
         {
-            throw new NotImplementedException();
+            builder.WithDescription("Test command used by admin. DO not touch :)");
         }
     }
 }

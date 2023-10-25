@@ -18,7 +18,6 @@ namespace OpenttdDiscord.Infrastructure.Testing
         {
             services
                 .AddScoped<IStatusMonitorRepository, StatusMonitorRepository>()
-                .AddScoped<IDiscordModalService, DiscordModalService>()
                 .RegisterCommandRunners()
                 .RegisterCommands()
                 .RegisterModals()

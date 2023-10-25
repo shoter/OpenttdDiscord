@@ -7,7 +7,9 @@ namespace OpenttdDiscord.Infrastructure.Discord
     {
         public void RegisterDependencies(IServiceCollection services)
         {
-            services.AddSingleton<IDiscordCommandService, DiscordCommandService>();
+            services
+                .AddSingleton<IDiscordCommandService, DiscordCommandService>()
+                .AddSingleton<IDiscordModalService, DiscordModalService>();
         }
     }
 }

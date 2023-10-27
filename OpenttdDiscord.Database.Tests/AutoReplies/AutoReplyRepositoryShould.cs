@@ -30,7 +30,7 @@ namespace OpenttdDiscord.Database.Tests.AutoReplies
                         message)
                     from _2 in repo.UpdateWelcomeMessage(
                         server.GuildId,
-                        message)
+                        expectedMessage)
                     from msg in repo.GetWelcomeMessage(
                         server.GuildId,
                         server.Id)

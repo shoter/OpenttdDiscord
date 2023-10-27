@@ -131,26 +131,10 @@ namespace OpenttdDiscord.Infrastructure.Discord
             Task<IInteractionResponse> responseTask = GetSlashCommandResponse(
                 arg,
                 runner);
-            Task timeoutTask = Task.Delay(
-                2.Seconds()
-                    .ToTimeSpan());
 
-            await Task.WhenAny(
-                timeoutTask,
+            await HandleResponseTask(
+                arg,
                 responseTask);
-
-            if (responseTask.IsCompletedSuccessfully)
-            {
-                await ExecuteResponse(
-                    arg,
-                    responseTask.Result);
-            }
-            else
-            {
-                await ExecuteResponse(
-                    arg,
-                    new TextResponse("Command has time outed :("));
-            }
         }
 
         private async Task ModalSubmitted(SocketModal arg)
@@ -169,6 +153,16 @@ namespace OpenttdDiscord.Infrastructure.Discord
             Task<IInteractionResponse> responseTask = GetModalResponse(
                 arg,
                 runner);
+
+            await HandleResponseTask(
+                arg,
+                responseTask);
+        }
+
+        private async Task HandleResponseTask(
+            IDiscordInteraction interaction,
+            Task<IInteractionResponse> responseTask)
+        {
             Task timeoutTask = Task.Delay(
                 2.Seconds()
                     .ToTimeSpan());
@@ -180,13 +174,13 @@ namespace OpenttdDiscord.Infrastructure.Discord
             if (responseTask.IsCompletedSuccessfully)
             {
                 await ExecuteResponse(
-                    arg,
+                    interaction,
                     responseTask.Result);
             }
             else
             {
                 await ExecuteResponse(
-                    arg,
+                    interaction,
                     new TextResponse("Command has time outed :("));
             }
         }

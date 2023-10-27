@@ -1,7 +1,4 @@
-﻿using LanguageExt;
-using OpenttdDiscord.Base.Ext;
-
-namespace OpenttdDiscord.Domain.Chatting.Translating
+﻿namespace OpenttdDiscord.Domain.Chatting.Translating
 {
     public interface IChatTranslator
     {

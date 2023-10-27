@@ -1,7 +1,4 @@
-﻿using LanguageExt;
-using OpenttdDiscord.Base.Ext;
-
-namespace OpenttdDiscord.Domain.Statuses
+﻿namespace OpenttdDiscord.Domain.Statuses
 {
     public interface IStatusMonitorRepository
     {

@@ -1,6 +1,4 @@
 ﻿using System.Text;
-using LanguageExt;
-using OpenttdDiscord.Base.Ext;
 
 namespace OpenttdDiscord.Domain.Chatting.Translating
 {

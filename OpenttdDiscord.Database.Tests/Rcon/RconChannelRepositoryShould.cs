@@ -1,7 +1,4 @@
-﻿using System;
-using System.Runtime.CompilerServices;
-using System.Threading.Tasks;
-using AutoFixture;
+﻿using System.Runtime.CompilerServices;
 using OpenttdDiscord.Base.Ext;
 using OpenttdDiscord.Database.Rcon;
 using OpenttdDiscord.Database.Servers;

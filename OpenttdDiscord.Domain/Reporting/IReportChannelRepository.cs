@@ -1,7 +1,4 @@
-﻿using LanguageExt;
-using OpenttdDiscord.Base.Ext;
-
-namespace OpenttdDiscord.Domain.Reporting
+﻿namespace OpenttdDiscord.Domain.Reporting
 {
     public interface IReportChannelRepository
     {

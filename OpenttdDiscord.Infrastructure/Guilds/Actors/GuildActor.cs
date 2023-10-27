@@ -52,16 +52,7 @@ namespace OpenttdDiscord.Infrastructure.Guilds.Actors
             ReceiveRedirect<DeleteRole>(guildRoleActor);
             ReceiveRedirect<UpsertRole>(guildRoleActor);
 
-            ReceiveRedirectToServer<ExecuteServerAction>(msg => msg.ServerId);
-            ReceiveRedirectToServer<RegisterStatusMonitor>(msg => msg.StatusMonitor.ServerId);
-            ReceiveRedirectToServer<RemoveStatusMonitor>(msg => msg.ServerId);
-            ReceiveRedirectToServer<RegisterChatChannel>(msg => msg.chatChannel.ServerId);
-            ReceiveRedirectToServer<UnregisterChatChannel>(msg => msg.ServerId);
-            ReceiveRedirectToServer<RegisterNewRconChannel>(msg => msg.ServerId);
-            ReceiveRedirectToServer<UnregisterRconChannel>(msg => msg.ServerId);
-            ReceiveRedirectToServer<RetrieveEventLog>(msg => msg.ServerId);
-            ReceiveRedirectToServer<RegisterReportChannel>(msg => msg.ReportChannel.ServerId);
-            ReceiveRedirectToServer<UnregisterReportChannel>(msg => msg.ServerId);
+            ReceiveRedirectToServer<IOttdServerMessage>(msg => msg.ServerId);
         }
 
         public static Props Create(

@@ -1,4 +1,5 @@
 using System.Diagnostics.CodeAnalysis;
+using LanguageExt;
 using Microsoft.EntityFrameworkCore;
 using OpenttdDiscord.Database.Ottd.Servers;
 using OpenttdDiscord.Domain.AutoReplies;
@@ -25,6 +26,12 @@ namespace OpenttdDiscord.Database.AutoReplies
                 serverId)
         {
             this.Content = content;
+        }
+
+        internal EitherAsyncUnit Update(string content)
+        {
+            this.Content = content;
+            return Unit.Default;
         }
 
         [ExcludeFromCodeCoverage]

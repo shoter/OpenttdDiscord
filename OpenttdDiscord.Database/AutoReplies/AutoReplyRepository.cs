@@ -36,11 +36,7 @@ namespace OpenttdDiscord.Database.AutoReplies
                 x => x.ServerId == welcomeMessage.ServerId &&
                      x.GuildId == guildId)
             from entity in query.FirstExt()
-            from _1 in Try(() =>
-            {
-                entity.Content = welcomeMessage.Content;
-                return Unit.Default;
-            }).ToEitherAsyncError()
+            from _1 in entity.Update(welcomeMessage.Content)
             from _2 in db.SaveChangesAsyncExt()
             select Unit.Default;
     }

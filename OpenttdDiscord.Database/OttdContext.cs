@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
+using OpenttdDiscord.Database.AutoReplies;
 using OpenttdDiscord.Database.Chatting;
 using OpenttdDiscord.Database.Ottd.Servers;
 using OpenttdDiscord.Database.Rcon;
@@ -23,6 +24,8 @@ namespace OpenttdDiscord.Database
 
         public DbSet<GuildRoleEntity> GuildRoles { get; set; } = default!;
 
+        public DbSet<WelcomeMessageEntity> WelcomeMessages { get; set; } = default!;
+
         public OttdContext(DbContextOptions<OttdContext> options)
             : base(options)
         {
@@ -39,6 +42,7 @@ namespace OpenttdDiscord.Database
             RconChannelEntity.OnModelCreating(modelBuilder);
             ReportChannelEntity.OnModelCreating(modelBuilder);
             GuildRoleEntity.OnModelCreating(modelBuilder);
+            WelcomeMessageEntity.OnModelCreating(modelBuilder);
         }
     }
 }

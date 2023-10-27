@@ -1,9 +1,11 @@
+using System.Diagnostics.CodeAnalysis;
 using Discord;
 using Microsoft.Extensions.DependencyInjection;
 using OpenttdDiscord.Infrastructure.Discord.ModalRunners;
 
 namespace OpenttdDiscord.Infrastructure.Discord.Modals
 {
+    [ExcludeFromCodeCoverage]
     public abstract class OttdModalBase<TModalRunner> : IOttdModal
         where TModalRunner : IOttdModalRunner
     {

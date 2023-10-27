@@ -1,18 +1,13 @@
-﻿using Akka.Actor;
-using Discord;
-using Discord.WebSocket;
+﻿using Discord;
 using LanguageExt;
 using OpenttdDiscord.Base.Basics;
 using OpenttdDiscord.Base.Ext;
-using OpenttdDiscord.Database.Servers;
 using OpenttdDiscord.Domain.Roles.UseCases;
 using OpenttdDiscord.Domain.Security;
 using OpenttdDiscord.Domain.Servers;
 using OpenttdDiscord.Infrastructure.Akkas;
-using OpenttdDiscord.Infrastructure.Discord;
-using OpenttdDiscord.Infrastructure.Discord.Commands;
-using OpenttdDiscord.Infrastructure.Discord.Responses;
-using OpenttdDiscord.Infrastructure.Discord.Runners;
+using OpenttdDiscord.Infrastructure.Discord.CommandResponses;
+using OpenttdDiscord.Infrastructure.Discord.CommandRunners;
 using OpenttdDiscord.Infrastructure.Ottd.Messages;
 
 namespace OpenttdDiscord.Infrastructure.Ottd.Runners
@@ -32,7 +27,7 @@ namespace OpenttdDiscord.Infrastructure.Ottd.Runners
             this.ottdServerRepository = ottdServerRepository;
         }
 
-        protected override EitherAsync<IError, ISlashCommandResponse> RunInternal(
+        protected override EitherAsync<IError, IInteractionResponse> RunInternal(
             ISlashCommandInteraction command,
             User user,
             ExtDictionary<string, object> options)
@@ -57,7 +52,7 @@ namespace OpenttdDiscord.Infrastructure.Ottd.Runners
                             command.GuildId!.Value,
                             channelId))
                     .ToAsync()
-                select (ISlashCommandResponse) new TextCommandResponse("Executing command");
+                select (IInteractionResponse) new TextResponse("Executing command");
         }
     }
 }

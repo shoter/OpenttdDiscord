@@ -1,4 +1,3 @@
-using OpenttdDiscord.Domain.Chatting.UseCases;
 using OpenttdDiscord.Domain.Rcon.UseCases;
 using OpenttdDiscord.Domain.Roles.Errors;
 using OpenttdDiscord.Domain.Security;

@@ -1,6 +1,4 @@
-using System.Linq;
 using Discord;
-using Discord.WebSocket;
 using LanguageExt;
 using OpenttdDiscord.Base.Ext;
 using OpenttdDiscord.Domain.Roles.UseCases;

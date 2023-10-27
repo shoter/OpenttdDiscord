@@ -1,6 +1,5 @@
 ﻿using System.Text;
 using Discord;
-using Discord.WebSocket;
 using LanguageExt;
 using OpenttdDiscord.Base.Basics;
 using OpenttdDiscord.Base.Ext;
@@ -10,8 +9,8 @@ using OpenttdDiscord.Domain.Roles.UseCases;
 using OpenttdDiscord.Domain.Security;
 using OpenttdDiscord.Domain.Servers.UseCases;
 using OpenttdDiscord.Infrastructure.Akkas;
-using OpenttdDiscord.Infrastructure.Discord.Responses;
-using OpenttdDiscord.Infrastructure.Discord.Runners;
+using OpenttdDiscord.Infrastructure.Discord.CommandResponses;
+using OpenttdDiscord.Infrastructure.Discord.CommandRunners;
 
 namespace OpenttdDiscord.Infrastructure.Reporting.Runners
 {
@@ -32,7 +31,7 @@ namespace OpenttdDiscord.Infrastructure.Reporting.Runners
             this.listReportChannelsUseCase = listReportChannelsUseCase;
         }
 
-        protected override EitherAsync<IError, ISlashCommandResponse> RunInternal(
+        protected override EitherAsync<IError, IInteractionResponse> RunInternal(
             ISlashCommandInteraction command,
             User user,
             ExtDictionary<string, object> options)
@@ -45,7 +44,7 @@ namespace OpenttdDiscord.Infrastructure.Reporting.Runners
                     user,
                     guildId)
                 from response in GenerateResponse(reportServers)
-                select (ISlashCommandResponse) new TextCommandResponse(response);
+                select (IInteractionResponse) new TextResponse(response);
         }
 
         private EitherAsync<IError, string> GenerateResponse(List<ReportChannel> channels) => TryAsync(

@@ -1,6 +1,4 @@
-﻿using static OpenttdDiscord.Infrastructure.Akkas.MainActors;
-
-namespace OpenttdDiscord.Infrastructure.Akkas
+﻿namespace OpenttdDiscord.Infrastructure.Akkas
 {
     public static class MainActors
     {

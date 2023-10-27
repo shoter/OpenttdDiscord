@@ -1,17 +1,11 @@
-﻿using System.Collections.Generic;
-using Discord;
+﻿using Discord;
 using Discord.WebSocket;
-using LanguageExt;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using OpenttdDiscord.Base.Discord;
-using OpenttdDiscord.Base.Ext;
 using OpenttdDiscord.Discord.Options;
 using OpenttdDiscord.Infrastructure.Discord;
-using OpenttdDiscord.Validation;
-using Serilog.Core;
 
 namespace OpenttdDiscord.Discord.Services
 {
@@ -20,17 +14,17 @@ namespace OpenttdDiscord.Discord.Services
         private readonly DiscordSocketClient client;
         private readonly ILogger logger;
         private readonly DiscordOptions options;
-        private readonly IDiscordCommandService discordCommandService;
+        private readonly IDiscordInteractionService discordInteractionService;
 
         public DiscordService(
             DiscordSocketClient client,
             ILogger<DiscordService> logger,
-            IDiscordCommandService discordCommandService,
+            IDiscordInteractionService discordInteractionService,
             IOptions<DiscordOptions> options)
         {
             this.client = client;
             this.logger = logger;
-            this.discordCommandService = discordCommandService;
+            this.discordInteractionService = discordInteractionService;
             this.options = options.Value;
             client.Log += OnDiscordLog;
             client.Ready += Client_Ready;
@@ -38,7 +32,7 @@ namespace OpenttdDiscord.Discord.Services
 
         private async Task Client_Ready()
         {
-            await this.discordCommandService.Register();
+            await this.discordInteractionService.Register();
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)

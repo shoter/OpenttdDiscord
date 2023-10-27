@@ -1,5 +1,4 @@
 ﻿using Discord;
-using LanguageExt.Pipes;
 using OpenTTDAdminPort;
 using OpenTTDAdminPort.Game;
 

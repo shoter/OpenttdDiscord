@@ -1,14 +1,12 @@
 using Discord;
-using Discord.WebSocket;
 using LanguageExt;
 using OpenttdDiscord.Base.Basics;
 using OpenttdDiscord.Base.Ext;
 using OpenttdDiscord.Domain.Roles.UseCases;
 using OpenttdDiscord.Domain.Security;
 using OpenttdDiscord.Infrastructure.Akkas;
-using OpenttdDiscord.Infrastructure.Discord.Responses;
-using OpenttdDiscord.Infrastructure.Discord.Runners;
-using OpenttdDiscord.Infrastructure.Roles.Messages;
+using OpenttdDiscord.Infrastructure.Discord.CommandResponses;
+using OpenttdDiscord.Infrastructure.Discord.CommandRunners;
 
 namespace OpenttdDiscord.Infrastructure.Roles.Runners
 {
@@ -20,20 +18,20 @@ namespace OpenttdDiscord.Infrastructure.Roles.Runners
         {
         }
 
-        protected override EitherAsync<IError, ISlashCommandResponse> RunInternal(
+        protected override EitherAsync<IError, IInteractionResponse> RunInternal(
             ISlashCommandInteraction command,
             User user,
             ExtDictionary<string, object> options)
         {
             if (!(command.User is IGuildUser))
             {
-                return new TextCommandResponse("You filthy user!");
+                return new TextResponse("You filthy user!");
             }
 
             ulong guildId = command.GuildId!.Value;
 
             return
-                 new TextCommandResponse($"Your role level - {user.UserLevel}");
+                 new TextResponse($"Your role level - {user.UserLevel}");
         }
     }
 }

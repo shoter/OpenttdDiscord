@@ -1,8 +1,5 @@
-using LanguageExt.UnitsOfMeasure;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Logging.Abstractions;
-using NSubstitute.Core;
-using OpenttdDiscord.Base.Ext;
 using OpenttdDiscord.Domain.Servers;
 using OpenttdDiscord.Infrastructure.Maintenance.HealthChecks;
 

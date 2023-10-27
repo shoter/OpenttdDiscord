@@ -2,12 +2,10 @@
 using Discord;
 using Discord.Rest;
 using Discord.WebSocket;
-using LanguageExt;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using OpenTTDAdminPort;
 using OpenTTDAdminPort.Game;
-using OpenttdDiscord.Database.Statuses;
 using OpenttdDiscord.Domain.Servers;
 using OpenttdDiscord.Domain.Statuses;
 using OpenttdDiscord.Infrastructure.Statuses.Messages;

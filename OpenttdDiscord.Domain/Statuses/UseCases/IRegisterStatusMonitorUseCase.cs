@@ -2,7 +2,6 @@
 using OpenttdDiscord.Base.Ext;
 using OpenttdDiscord.Domain.Security;
 using OpenttdDiscord.Domain.Servers;
-using OpenttdDiscord.Domain.Statuses;
 
 namespace OpenttdDiscord.Domain.Statuses.UseCases
 {

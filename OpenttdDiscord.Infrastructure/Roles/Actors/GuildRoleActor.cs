@@ -1,10 +1,7 @@
 using Akka.Actor;
 using LanguageExt;
-using LanguageExt.SomeHelp;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using OpenttdDiscord.Base.Basics;
-using OpenttdDiscord.Base.Ext;
 using OpenttdDiscord.Domain.Roles;
 using OpenttdDiscord.Domain.Security;
 using OpenttdDiscord.Infrastructure.Roles.Messages;

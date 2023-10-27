@@ -1,9 +1,4 @@
-﻿using System.Security.Cryptography;
-using Akka.Actor;
-using LanguageExt;
-using Microsoft.Extensions.Logging;
-using OpenttdDiscord.Base.Ext;
-using OpenttdDiscord.Database.Servers;
+﻿using Microsoft.Extensions.Logging;
 using OpenttdDiscord.Domain.Security;
 using OpenttdDiscord.Domain.Servers;
 using OpenttdDiscord.Domain.Servers.UseCases;

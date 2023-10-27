@@ -1,7 +1,5 @@
 ﻿using Discord;
-using Discord.WebSocket;
 using LanguageExt;
-using LanguageExt.Common;
 using OpenttdDiscord.Base.Basics;
 using OpenttdDiscord.Base.Ext;
 using OpenttdDiscord.Domain.Roles.UseCases;
@@ -9,10 +7,8 @@ using OpenttdDiscord.Domain.Security;
 using OpenttdDiscord.Domain.Servers;
 using OpenttdDiscord.Domain.Servers.UseCases;
 using OpenttdDiscord.Infrastructure.Akkas;
-using OpenttdDiscord.Infrastructure.Discord;
-using OpenttdDiscord.Infrastructure.Discord.Commands;
-using OpenttdDiscord.Infrastructure.Discord.Responses;
-using OpenttdDiscord.Infrastructure.Discord.Runners;
+using OpenttdDiscord.Infrastructure.Discord.CommandResponses;
+using OpenttdDiscord.Infrastructure.Discord.CommandRunners;
 
 namespace OpenttdDiscord.Infrastructure.Servers.Runners
 {
@@ -31,7 +27,7 @@ namespace OpenttdDiscord.Infrastructure.Servers.Runners
             this.useCase = useCase;
         }
 
-        protected override EitherAsync<IError, ISlashCommandResponse> RunInternal(
+        protected override EitherAsync<IError, IInteractionResponse> RunInternal(
             ISlashCommandInteraction command,
             User user,
             ExtDictionary<string, object> options)
@@ -60,7 +56,7 @@ namespace OpenttdDiscord.Infrastructure.Servers.Runners
                 from _1 in useCase.Execute(
                     user,
                     server)
-                select (ISlashCommandResponse) new TextCommandResponse($"Created Server {name} - {ip}:{port}");
+                select (IInteractionResponse) new TextResponse($"Created Server {name} - {ip}:{port}");
         }
     }
 }

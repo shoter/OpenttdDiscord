@@ -1,5 +1,4 @@
 ﻿using Discord;
-using Discord.WebSocket;
 using LanguageExt;
 using OpenttdDiscord.Base.Basics;
 using OpenttdDiscord.Base.Ext;
@@ -8,8 +7,8 @@ using OpenttdDiscord.Domain.Security;
 using OpenttdDiscord.Domain.Servers;
 using OpenttdDiscord.Domain.Statuses.UseCases;
 using OpenttdDiscord.Infrastructure.Akkas;
-using OpenttdDiscord.Infrastructure.Discord.Responses;
-using OpenttdDiscord.Infrastructure.Discord.Runners;
+using OpenttdDiscord.Infrastructure.Discord.CommandResponses;
+using OpenttdDiscord.Infrastructure.Discord.CommandRunners;
 
 namespace OpenttdDiscord.Infrastructure.Statuses.Runners
 {
@@ -36,7 +35,7 @@ namespace OpenttdDiscord.Infrastructure.Statuses.Runners
             this.checkIfStatusMonitorExistsUseCase = checkIfStatusMonitorExistsUseCase;
         }
 
-        protected override EitherAsync<IError, ISlashCommandResponse> RunInternal(
+        protected override EitherAsync<IError, IInteractionResponse> RunInternal(
             ISlashCommandInteraction command,
             User user,
             ExtDictionary<string, object> options)
@@ -59,7 +58,7 @@ namespace OpenttdDiscord.Infrastructure.Statuses.Runners
                     server,
                     guildId,
                     channelId)
-                select (ISlashCommandResponse) new TextCommandResponse("Creating status message in progress");
+                select (IInteractionResponse) new TextResponse("Creating status message in progress");
         }
 
         private EitherAsyncUnit ReturnErrorIfMonitorExists(

@@ -11,7 +11,7 @@ namespace OpenttdDiscord.Infrastructure.Rcon.Commands
         {
         }
 
-        public override void Configure(SlashCommandBuilder builder)
+        protected override void Configure(SlashCommandBuilder builder)
         {
             builder
                 .WithDescription("Lists all rcon channels in this guild along with prefixes");

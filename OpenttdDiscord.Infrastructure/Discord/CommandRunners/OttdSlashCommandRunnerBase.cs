@@ -1,5 +1,4 @@
 ﻿using Discord;
-using Discord.WebSocket;
 using LanguageExt;
 using OpenttdDiscord.Base.Basics;
 using OpenttdDiscord.Base.Ext;
@@ -7,9 +6,9 @@ using OpenttdDiscord.Domain.Roles.Errors;
 using OpenttdDiscord.Domain.Roles.UseCases;
 using OpenttdDiscord.Domain.Security;
 using OpenttdDiscord.Infrastructure.Akkas;
-using OpenttdDiscord.Infrastructure.Discord.Responses;
+using OpenttdDiscord.Infrastructure.Discord.CommandResponses;
 
-namespace OpenttdDiscord.Infrastructure.Discord.Runners
+namespace OpenttdDiscord.Infrastructure.Discord.CommandRunners
 {
     internal abstract class OttdSlashCommandRunnerBase : IOttdSlashCommandRunner
     {
@@ -25,7 +24,7 @@ namespace OpenttdDiscord.Infrastructure.Discord.Runners
 
         protected IAkkaService AkkaService { get; }
 
-        public EitherAsync<IError, ISlashCommandResponse> Run(ISlashCommandInteraction command)
+        public EitherAsync<IError, IInteractionResponse> Run(ISlashCommandInteraction command)
         {
             var options = command.Data.Options.ToExtDictionary(
                 o => o.Name,
@@ -42,7 +41,7 @@ namespace OpenttdDiscord.Infrastructure.Discord.Runners
                 select result;
         }
 
-        protected abstract EitherAsync<IError, ISlashCommandResponse> RunInternal(
+        protected abstract EitherAsync<IError, IInteractionResponse> RunInternal(
             ISlashCommandInteraction command,
             User user,
             ExtDictionary<string, object> options);

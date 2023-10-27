@@ -1,30 +1,33 @@
-﻿using Discord.WebSocket;
-using LanguageExt;
+﻿using Discord;
+using Discord.WebSocket;
 using LanguageExt.UnitsOfMeasure;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using OpenttdDiscord.Base.Ext;
+using OpenttdDiscord.Infrastructure.Discord.CommandResponses;
+using OpenttdDiscord.Infrastructure.Discord.CommandRunners;
 using OpenttdDiscord.Infrastructure.Discord.Commands;
-using OpenttdDiscord.Infrastructure.Discord.Responses;
-using OpenttdDiscord.Infrastructure.Discord.Runners;
-using OpenttdDiscord.Infrastructure.Statuses.Commands;
+using OpenttdDiscord.Infrastructure.Discord.ModalRunners;
+using OpenttdDiscord.Infrastructure.Discord.Modals;
 using OpenttdDiscord.Validation;
 
 namespace OpenttdDiscord.Infrastructure.Discord
 {
-    internal class DiscordCommandService : IDiscordCommandService
+    internal class DiscordInteractionService : IDiscordInteractionService
     {
         private readonly ILogger logger;
         private readonly DiscordSocketClient client;
         private readonly IServiceProvider serviceProvider;
         private readonly ValidationErrorEmbedBuilder validationEmbedBuilder = new();
         private readonly Dictionary<string, IOttdSlashCommand> commands = new();
+        private readonly Dictionary<string, IOttdModal> modals = new();
 
-        public DiscordCommandService(
+        public DiscordInteractionService(
             IServiceProvider serviceProvider,
-            ILogger<DiscordCommandService> logger,
+            ILogger<DiscordInteractionService> logger,
             DiscordSocketClient client,
-            IEnumerable<IOttdSlashCommand> commands
+            IEnumerable<IOttdSlashCommand> commands,
+            IEnumerable<IOttdModal> modals
         )
         {
             this.logger = logger;
@@ -36,11 +39,19 @@ namespace OpenttdDiscord.Infrastructure.Discord
                     c.Name,
                     c);
             }
+
+            foreach (var m in modals)
+            {
+                this.modals.Add(
+                    m.Id,
+                    m);
+            }
         }
 
         public async Task Register()
         {
             client.SlashCommandExecuted += Client_SlashCommandExecuted;
+            client.ModalSubmitted += ModalSubmitted;
 
             await RegisterCommands();
             await PruneCommands();
@@ -114,12 +125,44 @@ namespace OpenttdDiscord.Infrastructure.Discord
                 arg.CommandName);
             var command = this.commands[arg.Data.Name];
             using var scope = serviceProvider.CreateScope();
-            var runner = command.CreateRunner(scope.ServiceProvider);
+            IOttdSlashCommandRunner runner = command.CreateRunner(scope.ServiceProvider);
             logger.LogDebug("Created runner");
 
-            Task<ISlashCommandResponse> responseTask = GetSlashCommandResponse(
+            Task<IInteractionResponse> responseTask = GetSlashCommandResponse(
                 arg,
                 runner);
+
+            await HandleResponseTask(
+                arg,
+                responseTask);
+        }
+
+        private async Task ModalSubmitted(SocketModal arg)
+        {
+            string name = arg.Data.CustomId;
+            logger.LogDebug(
+                "{0} executing {1}",
+                arg.User.Username,
+                name);
+
+            var modal = this.modals[name];
+            using var scope = serviceProvider.CreateScope();
+            IOttdModalRunner runner = modal.CreateRunner(scope.ServiceProvider);
+            logger.LogDebug($"Created runner {runner.GetType()} for {name}");
+
+            Task<IInteractionResponse> responseTask = GetModalResponse(
+                arg,
+                runner);
+
+            await HandleResponseTask(
+                arg,
+                responseTask);
+        }
+
+        private async Task HandleResponseTask(
+            IDiscordInteraction interaction,
+            Task<IInteractionResponse> responseTask)
+        {
             Task timeoutTask = Task.Delay(
                 2.Seconds()
                     .ToTimeSpan());
@@ -131,34 +174,40 @@ namespace OpenttdDiscord.Infrastructure.Discord
             if (responseTask.IsCompletedSuccessfully)
             {
                 await ExecuteResponse(
-                    arg,
+                    interaction,
                     responseTask.Result);
             }
             else
             {
                 await ExecuteResponse(
-                    arg,
-                    new TextCommandResponse("Command has time outed :("));
+                    interaction,
+                    new TextResponse("Command has time outed :("));
             }
         }
 
-        private async Task<ISlashCommandResponse> GetSlashCommandResponse(
+        private async Task<IInteractionResponse> GetSlashCommandResponse(
             SocketSlashCommand arg,
             IOttdSlashCommandRunner runner)
         {
             var response = (await runner.Run(arg))
-                .IfLeft(
-                    err => GenerateErrorResponse(
-                        err,
-                        arg));
+                .IfLeft(GenerateErrorResponse);
+            return response;
+        }
+
+        private async Task<IInteractionResponse> GetModalResponse(
+            SocketModal arg,
+            IOttdModalRunner runner)
+        {
+            var response = (await runner.Run(arg))
+                .IfLeft(GenerateErrorResponse);
             return response;
         }
 
         private async Task ExecuteResponse(
-            SocketSlashCommand arg,
-            ISlashCommandResponse response)
+            IDiscordInteraction interaction,
+            IInteractionResponse response)
         {
-            (await response.Execute(arg))
+            (await response.Execute(interaction))
                 .MapLeft(
                     (IError error) =>
                     {
@@ -166,24 +215,23 @@ namespace OpenttdDiscord.Infrastructure.Discord
                         {
                             logger.LogError(
                                 ee.Exception,
-                                $"Something went wrong while executing some command {arg.CommandName}.");
+                                $"Something went wrong while executing some command {interaction}.");
                         }
 
                         logger.LogWarning(
-                            $"{arg.User.Username} executed unsuccessfully {arg.CommandName} - {error.Reason}");
+                            $"{interaction.User.Username} executed unsuccessfully {interaction} - {error.Reason}");
                         return error;
                     })
                 .Map(
                     unit =>
                     {
-                        logger.LogInformation($"{arg.User.Username} executed successfully {arg.CommandName}");
+                        logger.LogInformation($"{interaction.User.Username} executed successfully {interaction}");
                         return unit;
                     });
         }
 
-        private ISlashCommandResponse GenerateErrorResponse(
-            IError error,
-            SocketSlashCommand arg)
+        private IInteractionResponse GenerateErrorResponse(
+            IError error)
         {
             string text =
                 error is HumanReadableError ? $"Error: {error.Reason}" : "Something went wrong :(";
@@ -192,15 +240,15 @@ namespace OpenttdDiscord.Infrastructure.Discord
             {
                 logger.LogError(
                     ee.Exception,
-                    $"Something went wrong while executing some command {arg.CommandName}.");
+                    $"Something went wrong while executing some interaction.");
             }
 
             if (error is ValidationError ve)
             {
-                return new EmbedCommandResponse(validationEmbedBuilder.BuildEmbed(ve));
+                return new EmbedResponse(validationEmbedBuilder.BuildEmbed(ve));
             }
 
-            return new TextCommandResponse(text);
+            return new TextResponse(text);
         }
     }
 }

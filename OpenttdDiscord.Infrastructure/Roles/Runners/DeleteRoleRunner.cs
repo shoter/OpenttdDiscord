@@ -5,8 +5,8 @@ using OpenttdDiscord.Base.Ext;
 using OpenttdDiscord.Domain.Roles.UseCases;
 using OpenttdDiscord.Domain.Security;
 using OpenttdDiscord.Infrastructure.Akkas;
-using OpenttdDiscord.Infrastructure.Discord.Responses;
-using OpenttdDiscord.Infrastructure.Discord.Runners;
+using OpenttdDiscord.Infrastructure.Discord.CommandResponses;
+using OpenttdDiscord.Infrastructure.Discord.CommandRunners;
 
 namespace OpenttdDiscord.Infrastructure.Roles.Runners
 {
@@ -25,7 +25,7 @@ namespace OpenttdDiscord.Infrastructure.Roles.Runners
             this.deleteRoleLevelUseCase = deleteRoleLevelUseCase;
         }
 
-        protected override EitherAsync<IError, ISlashCommandResponse> RunInternal(
+        protected override EitherAsync<IError, IInteractionResponse> RunInternal(
             ISlashCommandInteraction command,
             User user,
             ExtDictionary<string, object> options)
@@ -42,7 +42,7 @@ namespace OpenttdDiscord.Infrastructure.Roles.Runners
                 from _2 in deleteRoleLevelUseCase.Execute(
                     guildId,
                     role.Id)
-                select new TextCommandResponse("Role deleted!") as ISlashCommandResponse;
+                select new TextResponse("Role deleted!") as IInteractionResponse;
         }
     }
 }

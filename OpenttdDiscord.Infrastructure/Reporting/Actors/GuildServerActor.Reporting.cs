@@ -1,15 +1,10 @@
 ﻿using Akka.Actor;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using OpenttdDiscord.Base.Basics;
 using OpenttdDiscord.Base.Ext;
-using OpenttdDiscord.Domain.Rcon;
-using OpenttdDiscord.Domain.Rcon.UseCases;
 using OpenttdDiscord.Domain.Reporting;
 using OpenttdDiscord.Domain.Reporting.UseCases;
 using OpenttdDiscord.Domain.Security;
-using OpenttdDiscord.Infrastructure.Rcon.Actors;
-using OpenttdDiscord.Infrastructure.Rcon.Messages;
 using OpenttdDiscord.Infrastructure.Reporting.Actors;
 using OpenttdDiscord.Infrastructure.Reporting.Messages;
 

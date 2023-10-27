@@ -1,6 +1,4 @@
-﻿using LanguageExt;
-using LanguageExt.Common;
-using OpenttdDiscord.Domain.Security;
+﻿using OpenttdDiscord.Domain.Security;
 
 namespace OpenttdDiscord.Domain.Servers.UseCases
 {

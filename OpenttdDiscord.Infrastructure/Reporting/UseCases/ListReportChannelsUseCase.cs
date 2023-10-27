@@ -1,10 +1,8 @@
 ﻿using LanguageExt;
 using OpenttdDiscord.Base.Ext;
-using OpenttdDiscord.Database.Reporting;
 using OpenttdDiscord.Domain.Reporting;
 using OpenttdDiscord.Domain.Reporting.UseCases;
 using OpenttdDiscord.Domain.Security;
-using OpenttdDiscord.Infrastructure.Akkas;
 
 namespace OpenttdDiscord.Infrastructure.Reporting.UseCases
 {

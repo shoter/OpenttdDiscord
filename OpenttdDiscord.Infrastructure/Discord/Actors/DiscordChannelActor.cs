@@ -1,5 +1,4 @@
-﻿using System.Configuration;
-using Akka.Actor;
+﻿using Akka.Actor;
 using Discord;
 using Discord.WebSocket;
 using LanguageExt;
@@ -7,7 +6,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using OpenttdDiscord.Base.Ext;
 using OpenttdDiscord.Domain.Chatting.Translating;
-using OpenttdDiscord.Domain.Statuses;
 using OpenttdDiscord.Infrastructure.Chatting.Messages;
 using OpenttdDiscord.Infrastructure.Discord.Messages;
 

@@ -1,4 +1,3 @@
-using AutoFixture;
 using OpenttdDiscord.Domain.Roles;
 using OpenttdDiscord.Infrastructure.Akkas;
 using OpenttdDiscord.Infrastructure.Roles.Messages;

@@ -1,6 +1,6 @@
 ﻿namespace OpenttdDiscord.Infrastructure.Discord
 {
-    public interface IDiscordCommandService
+    public interface IDiscordInteractionService
     {
         Task Register();
     }

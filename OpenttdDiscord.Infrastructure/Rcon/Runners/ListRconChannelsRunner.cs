@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Text;
 using Discord;
-using Discord.WebSocket;
 using LanguageExt;
 using OpenttdDiscord.Base.Basics;
 using OpenttdDiscord.Base.Ext;
@@ -14,8 +9,8 @@ using OpenttdDiscord.Domain.Roles.UseCases;
 using OpenttdDiscord.Domain.Security;
 using OpenttdDiscord.Domain.Servers.UseCases;
 using OpenttdDiscord.Infrastructure.Akkas;
-using OpenttdDiscord.Infrastructure.Discord.Responses;
-using OpenttdDiscord.Infrastructure.Discord.Runners;
+using OpenttdDiscord.Infrastructure.Discord.CommandResponses;
+using OpenttdDiscord.Infrastructure.Discord.CommandRunners;
 
 namespace OpenttdDiscord.Infrastructure.Rcon.Runners
 {
@@ -36,7 +31,7 @@ namespace OpenttdDiscord.Infrastructure.Rcon.Runners
             this.listRconChannelsUseCase = listRconChannelsUseCase;
         }
 
-        protected override EitherAsync<IError, ISlashCommandResponse> RunInternal(ISlashCommandInteraction command, User user, ExtDictionary<string, object> options)
+        protected override EitherAsync<IError, IInteractionResponse> RunInternal(ISlashCommandInteraction command, User user, ExtDictionary<string, object> options)
         {
             ulong guildId = command.GuildId!.Value;
 
@@ -44,7 +39,7 @@ namespace OpenttdDiscord.Infrastructure.Rcon.Runners
                 from _0 in CheckIfHasCorrectUserLevel(user, UserLevel.Moderator).ToAsync()
                 from rconServers in listRconChannelsUseCase.Execute(user, guildId)
                 from response in GenerateResponse(rconServers)
-                select (ISlashCommandResponse)new TextCommandResponse(response);
+                select (IInteractionResponse)new TextResponse(response);
         }
 
         private EitherAsync<IError, string> GenerateResponse(List<RconChannel> channels)

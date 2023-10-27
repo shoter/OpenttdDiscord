@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using Discord;
 using Microsoft.Extensions.DependencyInjection;
-using OpenttdDiscord.Infrastructure.Discord.Runners;
+using OpenttdDiscord.Infrastructure.Discord.CommandRunners;
 
 namespace OpenttdDiscord.Infrastructure.Discord.Commands
 {
@@ -26,7 +26,7 @@ namespace OpenttdDiscord.Infrastructure.Discord.Commands
             return builder.Build();
         }
 
-        public abstract void Configure(SlashCommandBuilder builder);
+        protected abstract void Configure(SlashCommandBuilder builder);
 
         public IOttdSlashCommandRunner CreateRunner(IServiceProvider sp)
             => sp.GetRequiredService<TRunner>();

@@ -1,5 +1,4 @@
 ﻿using LanguageExt;
-using OpenttdDiscord.Database.Rcon;
 using OpenttdDiscord.Domain.Rcon;
 using OpenttdDiscord.Domain.Rcon.UseCases;
 using OpenttdDiscord.Domain.Security;

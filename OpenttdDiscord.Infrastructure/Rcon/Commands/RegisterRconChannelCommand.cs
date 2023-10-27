@@ -11,7 +11,7 @@ namespace OpenttdDiscord.Infrastructure.Rcon.Commands
         {
         }
 
-        public override void Configure(SlashCommandBuilder builder)
+        protected override void Configure(SlashCommandBuilder builder)
         {
             builder
                 .WithDescription("Registers channel as RCON interface. " +

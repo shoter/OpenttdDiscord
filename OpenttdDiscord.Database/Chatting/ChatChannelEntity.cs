@@ -1,6 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
-using OpenttdDiscord.Database.Statuses;
 using OpenttdDiscord.Domain.Chatting;
 
 namespace OpenttdDiscord.Database.Chatting

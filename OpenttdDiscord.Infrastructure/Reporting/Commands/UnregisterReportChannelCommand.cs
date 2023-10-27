@@ -11,7 +11,7 @@ namespace OpenttdDiscord.Infrastructure.Reporting.Commands
         {
         }
 
-        public override void Configure(SlashCommandBuilder builder)
+        protected override void Configure(SlashCommandBuilder builder)
         {
             builder
                 .WithDescription("Unregisters report channel for given discord channel and server")

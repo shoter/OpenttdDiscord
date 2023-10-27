@@ -1,16 +1,15 @@
 ﻿using System.Text;
 using Discord;
-using Discord.WebSocket;
 
-namespace OpenttdDiscord.Infrastructure.Discord.Responses
+namespace OpenttdDiscord.Infrastructure.Discord.CommandResponses
 {
-    public class TextCommandResponse : SlashCommandResponseBase
+    public class TextResponse : InteractionResponseBase
     {
         private readonly string response;
 
         private readonly bool ephemeral;
 
-        public TextCommandResponse(string response, bool ephemeral = true)
+        public TextResponse(string response, bool ephemeral = true)
         {
             this.response = response;
             this.ephemeral = ephemeral;
@@ -20,14 +19,14 @@ namespace OpenttdDiscord.Infrastructure.Discord.Responses
             }
         }
 
-        public TextCommandResponse(StringBuilder sb, bool ephemeral = true)
+        public TextResponse(StringBuilder sb, bool ephemeral = true)
             : this(sb.ToString(), ephemeral)
         {
         }
 
-        protected override async Task InternalExecute(ISlashCommandInteraction command)
+        protected override async Task InternalExecute(IDiscordInteraction interaction)
         {
-            await command.RespondAsync(response, ephemeral: ephemeral);
+            await interaction.RespondAsync(response, ephemeral: ephemeral);
         }
     }
 }

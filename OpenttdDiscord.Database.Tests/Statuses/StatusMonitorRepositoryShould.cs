@@ -98,15 +98,6 @@ namespace OpenttdDiscord.Database.Tests.Statuses
             return new StatusMonitorRepository(context);
         }
 
-        private async Task<OttdServer> CreateServer([CallerMemberName] string? databaseName = null)
-        {
-            var context = await CreateContext(databaseName);
-            var repository = new OttdServerRepository(context);
-            var server = Fix.Create<OttdServer>();
-            (await repository.InsertServer(server)).ThrowIfError();
-            return server;
-        }
-
         private void Equal(StatusMonitor lhm, StatusMonitor rhm)
         {
             Assert.Equal(lhm.ServerId, rhm.ServerId);

@@ -6,9 +6,9 @@ namespace OpenttdDiscord.Domain.AutoReplies
             ulong guildId,
             WelcomeMessage welcomeMessage);
 
-        EitherAsync<IError, WelcomeMessage> GetWelcomeMessage(
+        EitherAsync<IError, Option<WelcomeMessage>> GetWelcomeMessage(
             ulong guildId,
-            Guid serverId);
+            Guid serverId)
 
         EitherAsyncUnit UpdateWelcomeMessage(
             ulong guildId,

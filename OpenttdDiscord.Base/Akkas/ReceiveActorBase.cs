@@ -44,7 +44,10 @@ namespace OpenttdDiscord.Base.Akkas
             base.PostRestart(reason);
         }
 
-        protected void ReceiveRedirect<T>(IActorRef redirect) => Receive<T>(msg => redirect.Forward(msg));
+        protected void ReceiveRedirect<T>(Func<IActorRef> redirect) => Receive<T>(msg => redirect().Forward(msg));
+
+        protected void ReceiveRedirect<T>(Func<Option<IActorRef>> redirect) =>
+            Receive<T>(msg => redirect().IfSome(r => r.Forward(msg)));
 
         /// <summary>
         /// Ignores all messages of type <typeparamref name="T"/> and does nothing with them.

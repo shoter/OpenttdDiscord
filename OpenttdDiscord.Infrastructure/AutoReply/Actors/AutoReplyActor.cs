@@ -13,27 +13,48 @@ namespace OpenttdDiscord.Infrastructure.AutoReply.Actors
         private readonly IAdminPortClient client;
         private Option<IActorRef> welcomeActor = Option<IActorRef>.None;
 
-        protected AutoReplyActor(IServiceProvider serviceProvider,
-                                 IAdminPortClient client)
+        public AutoReplyActor(
+            IServiceProvider serviceProvider,
+            IAdminPortClient client)
             : base(serviceProvider)
         {
             this.client = client;
             Ready();
         }
 
+        public static Props Create(
+            IServiceProvider serviceProvider,
+            IAdminPortClient client) => Props.Create(
+            () => new AutoReplyActor(
+                serviceProvider,
+                client));
+
         private void Ready()
         {
             Receive<NewWelcomeMessage>(OnNewWelcomeMessage);
+            ReceiveRedirect<UpdateWelcomeMessage>(() => welcomeActor);
             Receive<IAdminEvent>(OnAdminEvent);
         }
 
         private void OnAdminEvent(IAdminEvent msg)
         {
-            welcomeActor.Some(a => a.Forward(msg));
+            welcomeActor.IfSome(a => a.Tell(msg));
+            Sender.Tell(Unit.Default);
         }
 
         private void OnNewWelcomeMessage(NewWelcomeMessage msg)
         {
+            if (welcomeActor.IsSome)
+            {
+                var upMsg = new UpdateWelcomeMessage(
+                    msg.GuildId,
+                    msg.ServerId,
+                    msg.Content);
+                welcomeActor.Some(s => s.Forward(upMsg));
+                Sender.Tell(Unit.Default);
+                return;
+            }
+
             IActorRef actor = Context.ActorOf(
                 WelcomeActor.Create(
                     SP,
@@ -41,6 +62,7 @@ namespace OpenttdDiscord.Infrastructure.AutoReply.Actors
                     msg.Content));
 
             welcomeActor = Some(actor);
+            Sender.Tell(Unit.Default);
         }
     }
 }

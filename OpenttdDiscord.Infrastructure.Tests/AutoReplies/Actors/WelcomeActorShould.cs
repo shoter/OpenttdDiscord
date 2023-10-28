@@ -12,11 +12,11 @@ namespace OpenttdDiscord.Infrastructure.Tests.AutoReplies.Actors
 {
     public class WelcomeActorShould : BaseActorTestKit
     {
-        private readonly IActorRef sut = default!;
+        private readonly IActorRef sut;
         private readonly string initialContent;
-        private IAdminPortClient adminPortClientSut = Substitute.For<IAdminPortClient>();
+        private readonly IAdminPortClient adminPortClientSut = Substitute.For<IAdminPortClient>();
 
-        public WelcomeActorShould(ITestOutputHelper outputHelper) 
+        public WelcomeActorShould(ITestOutputHelper outputHelper)
             : base(outputHelper)
         {
             initialContent = fix.Create<string>();
@@ -29,23 +29,18 @@ namespace OpenttdDiscord.Infrastructure.Tests.AutoReplies.Actors
                 ));
         }
 
-        [Fact]
-        public void ShouldRespondToNewPlayer_WithInitialMessage()
+        [Fact(Timeout = 1_000)]
+        public async Task ShouldRespondToNewPlayer_WithInitialMessage()
         {
             AdminClientJoinEvent ev = fix.Create<AdminClientJoinEvent>();
-            sut.Tell(ev);
-
-            Within(
-                1.Seconds(),
-                () =>
-                {
-                    adminPortClientSut.Received()
-                        .SendMessage(new AdminChatMessage(
-                                         NetworkAction.NETWORK_ACTION_CHAT,
-                                         ChatDestination.DESTTYPE_CLIENT,
-                                         ev.Player.ClientId,
-                                         initialContent));
-                });
+            await sut.Ask(ev);
+            adminPortClientSut.Received()
+                .SendMessage(
+                    new AdminChatMessage(
+                        NetworkAction.NETWORK_ACTION_CHAT,
+                        ChatDestination.DESTTYPE_CLIENT,
+                        ev.Player.ClientId,
+                        initialContent));
         }
     }
 }

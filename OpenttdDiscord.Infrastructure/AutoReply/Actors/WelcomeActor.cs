@@ -1,4 +1,5 @@
 using Akka.Actor;
+using LanguageExt;
 using OpenTTDAdminPort;
 using OpenTTDAdminPort.Events;
 using OpenTTDAdminPort.Game;
@@ -11,7 +12,7 @@ namespace OpenttdDiscord.Infrastructure.AutoReply.Actors
         private readonly IAdminPortClient client;
         private readonly string welcomeMessageContent;
 
-        protected WelcomeActor(
+        public WelcomeActor(
             IServiceProvider serviceProvider,
             IAdminPortClient client,
             string welcomeMessageContent)
@@ -31,7 +32,7 @@ namespace OpenttdDiscord.Infrastructure.AutoReply.Actors
                 client,
                 welcomeMessageContent));
 
-        public void Ready()
+        private void Ready()
         {
             Receive<AdminClientJoinEvent>(OnAdminClientJoinEvent);
             ReceiveIgnore<IAdminEvent>();
@@ -45,6 +46,8 @@ namespace OpenttdDiscord.Infrastructure.AutoReply.Actors
                     ChatDestination.DESTTYPE_CLIENT,
                     arg.Player.ClientId,
                     welcomeMessageContent));
+
+            Sender.Tell(Unit.Default);
         }
     }
 }

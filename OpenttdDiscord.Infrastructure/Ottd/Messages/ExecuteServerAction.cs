@@ -6,8 +6,7 @@ namespace OpenttdDiscord.Infrastructure.Ottd.Messages
 {
     public abstract record ExecuteServerAction(
         Guid ServerId,
-        ulong GuildId) : IOttdServerMessage;
-
+        ulong GuildId) : IOttdServerMessage
     {
     public virtual TimeSpan TimeOut { get; } = TimeSpan.FromSeconds(30);
 

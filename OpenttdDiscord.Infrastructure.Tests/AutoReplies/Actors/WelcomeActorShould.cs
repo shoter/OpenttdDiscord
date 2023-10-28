@@ -68,5 +68,37 @@ namespace OpenttdDiscord.Infrastructure.Tests.AutoReplies.Actors
                         ev.Player.ClientId,
                         updatedMessage));
         }
+
+        [Fact(Timeout = 1_000)]
+        public async Task SendMultipleMessages_IfThereAreLineBreaks()
+        {
+            // Arrange
+            string[] separateMessages = fix.Create<string[]>();
+            string updatedMessage = string.Join(
+                Environment.NewLine,
+                separateMessages);
+
+            AdminClientJoinEvent ev = fix.Create<AdminClientJoinEvent>();
+
+            // Act
+            await sut.Ask(
+                new UpdateWelcomeMessage(
+                    default,
+                    default,
+                    updatedMessage));
+            await sut.Ask(ev);
+
+            // Assert
+            foreach (var msg in separateMessages)
+            {
+                adminPortClientSut.Received()
+                    .SendMessage(
+                        new AdminChatMessage(
+                            NetworkAction.NETWORK_ACTION_CHAT,
+                            ChatDestination.DESTTYPE_CLIENT,
+                            ev.Player.ClientId,
+                            msg));
+            }
+        }
     }
 }

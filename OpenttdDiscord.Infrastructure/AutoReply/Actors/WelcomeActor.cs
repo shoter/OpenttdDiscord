@@ -11,7 +11,7 @@ namespace OpenttdDiscord.Infrastructure.AutoReply.Actors
     public class WelcomeActor : ReceiveActorBase
     {
         private readonly IAdminPortClient client;
-        private string welcomeMessageContent;
+        private string[] messagesToSend;
 
         public WelcomeActor(
             IServiceProvider serviceProvider,
@@ -20,9 +20,11 @@ namespace OpenttdDiscord.Infrastructure.AutoReply.Actors
             : base(serviceProvider)
         {
             this.client = client;
-            this.welcomeMessageContent = welcomeMessageContent;
+            this.messagesToSend = CreateMessageToSent(welcomeMessageContent);
             Ready();
         }
+
+        private string[] CreateMessageToSent(string arg) => arg.Split(Environment.NewLine);
 
         public static Props Create(
             IServiceProvider serviceProvider,
@@ -36,18 +38,21 @@ namespace OpenttdDiscord.Infrastructure.AutoReply.Actors
         private void Ready()
         {
             Receive<AdminClientJoinEvent>(OnAdminClientJoinEvent);
-            ReceiveRespondUnit<UpdateWelcomeMessage>(msg => this.welcomeMessageContent = msg.NewContent);
+            ReceiveRespondUnit<UpdateWelcomeMessage>(msg => this.messagesToSend = CreateMessageToSent(msg.NewContent));
             ReceiveIgnore<IAdminEvent>();
         }
 
         private void OnAdminClientJoinEvent(AdminClientJoinEvent arg)
         {
-            client.SendMessage(
-                new AdminChatMessage(
-                    NetworkAction.NETWORK_ACTION_CHAT,
-                    ChatDestination.DESTTYPE_CLIENT,
-                    arg.Player.ClientId,
-                    welcomeMessageContent));
+            foreach (var msg in messagesToSend)
+            {
+                client.SendMessage(
+                    new AdminChatMessage(
+                        NetworkAction.NETWORK_ACTION_CHAT,
+                        ChatDestination.DESTTYPE_CLIENT,
+                        arg.Player.ClientId,
+                        msg));
+            }
 
             Sender.Tell(Unit.Default);
         }

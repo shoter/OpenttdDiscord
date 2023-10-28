@@ -1,4 +1,5 @@
 ﻿using Akka.Actor;
+using LanguageExt;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using OpenttdDiscord.Base.Ext;
@@ -52,5 +53,12 @@ namespace OpenttdDiscord.Base.Akkas
 
         protected void ReceiveEitherAsync<T>(Func<T, EitherAsyncUnit> func) => ReceiveAsync<T>(
             async (t) => (await func(t)).ThrowIfError());
+
+        protected void ReceiveRespondUnit<T>(Action<T> action) => Receive<T>(
+            msg =>
+            {
+                action(msg);
+                Sender.Tell(Unit.Default);
+            });
     }
 }

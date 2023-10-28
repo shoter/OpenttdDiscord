@@ -4,13 +4,14 @@ using OpenTTDAdminPort;
 using OpenTTDAdminPort.Events;
 using OpenTTDAdminPort.Game;
 using OpenTTDAdminPort.Messages;
+using OpenttdDiscord.Infrastructure.AutoReply.Messages;
 
 namespace OpenttdDiscord.Infrastructure.AutoReply.Actors
 {
     public class WelcomeActor : ReceiveActorBase
     {
         private readonly IAdminPortClient client;
-        private readonly string welcomeMessageContent;
+        private string welcomeMessageContent;
 
         public WelcomeActor(
             IServiceProvider serviceProvider,
@@ -35,6 +36,7 @@ namespace OpenttdDiscord.Infrastructure.AutoReply.Actors
         private void Ready()
         {
             Receive<AdminClientJoinEvent>(OnAdminClientJoinEvent);
+            ReceiveRespondUnit<UpdateWelcomeMessage>(msg => this.welcomeMessageContent = msg.NewContent);
             ReceiveIgnore<IAdminEvent>();
         }
 

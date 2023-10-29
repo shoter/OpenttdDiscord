@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using OpenttdDiscord.Database;
 using OpenttdDiscord.Infrastructure.Akkas;
+using OpenttdDiscord.Infrastructure.AutoReply;
 using OpenttdDiscord.Infrastructure.Chatting;
 using OpenttdDiscord.Infrastructure.Discord;
 using OpenttdDiscord.Infrastructure.EventLogs;
@@ -48,7 +49,8 @@ namespace OpenttdDiscord.Infrastructure
                 .RegisterDependencies<ReportingModule>()
                 .RegisterDependencies<MaintenanceModule>()
                 .RegisterDependencies<RolesModule>()
-                .RegisterDependencies<TestingModule>();
+                .RegisterDependencies<TestingModule>()
+                .RegisterDependencies<AutoReplyModule>();
 
             return services;
         }

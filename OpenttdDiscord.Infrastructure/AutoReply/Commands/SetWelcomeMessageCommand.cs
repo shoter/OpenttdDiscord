@@ -4,10 +4,10 @@ using OpenttdDiscord.Infrastructure.Discord.Commands;
 
 namespace OpenttdDiscord.Infrastructure.AutoReply.Commands
 {
-    internal class SetWelcomeMessageCommand : OttdSlashCommandBase<SetWelcomeMessageRunner>
+    internal class SetWelcomeMessageCommand : OttdSlashCommandBase<SetWelcomeMessageCommandRunner>
     {
-        public SetWelcomeMessageCommand(string name)
-            : base(name)
+        public SetWelcomeMessageCommand()
+            : base("set-welcome-message")
         {
         }
 

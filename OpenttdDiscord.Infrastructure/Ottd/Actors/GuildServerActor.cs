@@ -63,10 +63,12 @@ namespace OpenttdDiscord.Infrastructure.Ottd.Actors
 
             RconConstructor();
             ReportConstructor();
+            AutoReplyConstructor(client);
 
             Ready();
             RconReady();
             ReportReady();
+            AutoReplyReady();
             Self.Tell(new InitGuildServerActorMessage());
         }
 

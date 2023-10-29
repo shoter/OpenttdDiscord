@@ -1,4 +1,9 @@
 using Microsoft.Extensions.DependencyInjection;
+using OpenttdDiscord.Domain.AutoReplies.UseCases;
+using OpenttdDiscord.Infrastructure.AutoReply.CommandRunners;
+using OpenttdDiscord.Infrastructure.AutoReply.Commands;
+using OpenttdDiscord.Infrastructure.AutoReply.UseCases;
+using OpenttdDiscord.Infrastructure.Discord.Commands;
 using OpenttdDiscord.Infrastructure.Modularity;
 
 namespace OpenttdDiscord.Infrastructure.AutoReply
@@ -20,17 +25,19 @@ namespace OpenttdDiscord.Infrastructure.AutoReply
     {
         public static IServiceCollection RegisterUseCases(this IServiceCollection services)
         {
-            return services;
+            return services
+                .AddScoped<IUpsertWelcomeMessageUseCase, UpsertWelcomeMessageUseCase>();
         }
 
         public static IServiceCollection RegisterRunners(this IServiceCollection services)
         {
-            return services;
+            return services.AddScoped<SetWelcomeMessageRunner>();
         }
 
         public static IServiceCollection RegisterCommands(this IServiceCollection services)
         {
-            return services;
+            return services
+                .AddSingleton<IOttdSlashCommand, SetWelcomeMessageCommand>();
         }
     }
 }

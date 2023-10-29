@@ -13,7 +13,7 @@ namespace OpenttdDiscord.Database.Extensions
         internal static EitherAsync<IError, Option<TSource>> FirstOptionalExt<TSource>(
             this IQueryable<TSource> queryable) => (from result in TryAsync(queryable.FirstOrDefault())
             select result == null ? Option<TSource>.None : Some(result)).ToEitherAsyncError();
-        
+
         internal static EitherAsync<IError, Option<TSource>> FirstOptionalExt<TSource>(
             this IQueryable<TSource> queryable,
             Expression<Func<TSource, bool>> predicate) => (from result in TryAsync(queryable.FirstOrDefault(predicate))

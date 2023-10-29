@@ -1,19 +1,25 @@
 using LanguageExt;
 using OpenttdDiscord.Domain.AutoReplies;
 using OpenttdDiscord.Domain.AutoReplies.UseCases;
+using OpenttdDiscord.Infrastructure.Akkas;
+using OpenttdDiscord.Infrastructure.AutoReply.Messages;
 
 namespace OpenttdDiscord.Infrastructure.AutoReply.UseCases
 {
     public class UpsertWelcomeMessageUseCase : IUpsertWelcomeMessageUseCase
     {
         private readonly IAutoReplyRepository autoReplyRepository;
+        private readonly IAkkaService akkaService;
 
-        public UpsertWelcomeMessageUseCase(IAutoReplyRepository autoReplyRepository)
+        public UpsertWelcomeMessageUseCase(
+            IAutoReplyRepository autoReplyRepository,
+            IAkkaService akkaService)
         {
             this.autoReplyRepository = autoReplyRepository;
+            this.akkaService = akkaService;
         }
 
-        public Task Execute(
+        public EitherAsyncUnit Execute(
             ulong guildId,
             Guid serverId,
             string content)
@@ -21,20 +27,18 @@ namespace OpenttdDiscord.Infrastructure.AutoReply.UseCases
             WelcomeMessage newWelcomMessage = new(
                 serverId,
                 content);
-            from server in autoReplyRepository.GetWelcomeMessage(guildId, serverId)
-                
+
+            UpdateWelcomeMessage msg = new(
+                guildId,
+                serverId,
+                content);
+
+            return from _1 in autoReplyRepository.UpsertWelcomeMessage(
+                    guildId,
+                    newWelcomMessage)
+                from selection in akkaService.SelectActor(MainActors.Paths.Guilds)
+                from _2 in selection.TryAsk(msg)
+                select Unit.Default;
         }
-
-        private EitherAsyncUnit xxx(
-            Option<WelcomeMessage> welcomeMessageOption,
-            ulong guildId,
-            WelcomeMessage newMessage) => welcomeMessageOption.BiMap(
-            some => autoReplyRepository.UpdateWelcomeMessage(
-                guildId,
-                newMessage),
-            none => autoReplyRepository.UpsertWelcomeMessage(
-                guildId,
-                newMessage));
-
     }
 }

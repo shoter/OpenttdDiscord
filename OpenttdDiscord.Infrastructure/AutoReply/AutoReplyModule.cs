@@ -1,12 +1,4 @@
 using Microsoft.Extensions.DependencyInjection;
-using OpenttdDiscord.Database.Chatting;
-using OpenttdDiscord.Domain.Chatting;
-using OpenttdDiscord.Domain.Chatting.Translating;
-using OpenttdDiscord.Domain.Chatting.UseCases;
-using OpenttdDiscord.Infrastructure.Chatting.Commands;
-using OpenttdDiscord.Infrastructure.Chatting.Runners;
-using OpenttdDiscord.Infrastructure.Chatting.UseCases;
-using OpenttdDiscord.Infrastructure.Discord.Commands;
 using OpenttdDiscord.Infrastructure.Modularity;
 
 namespace OpenttdDiscord.Infrastructure.AutoReply

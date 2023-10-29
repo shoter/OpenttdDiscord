@@ -40,7 +40,7 @@ namespace OpenttdDiscord.Infrastructure.Tests.AutoReplies.UseCases
                 content);
             Assert.True(result.IsRight);
 
-            autoReplyRepositorySubstitute
+            await autoReplyRepositorySubstitute
                 .Received()
                 .UpsertWelcomeMessage(
                     guildId,

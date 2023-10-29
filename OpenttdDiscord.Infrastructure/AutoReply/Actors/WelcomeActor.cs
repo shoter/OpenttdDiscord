@@ -38,7 +38,7 @@ namespace OpenttdDiscord.Infrastructure.AutoReply.Actors
         private void Ready()
         {
             Receive<AdminClientJoinEvent>(OnAdminClientJoinEvent);
-            ReceiveRespondUnit<UpdateWelcomeMessage>(msg => this.messagesToSend = CreateMessageToSent(msg.NewContent));
+            ReceiveRespondUnit<UpdateWelcomeMessage>(msg => this.messagesToSend = CreateMessageToSent(msg.Content));
             ReceiveIgnore<IAdminEvent>();
         }
 

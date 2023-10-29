@@ -31,8 +31,7 @@ namespace OpenttdDiscord.Infrastructure.AutoReply.Actors
 
         private void Ready()
         {
-            Receive<NewWelcomeMessage>(OnNewWelcomeMessage);
-            ReceiveRedirect<UpdateWelcomeMessage>(() => welcomeActor);
+            Receive<UpdateWelcomeMessage>(UpsertWelcomeMessage);
             Receive<IAdminEvent>(OnAdminEvent);
         }
 
@@ -42,7 +41,7 @@ namespace OpenttdDiscord.Infrastructure.AutoReply.Actors
             Sender.Tell(Unit.Default);
         }
 
-        private void OnNewWelcomeMessage(NewWelcomeMessage msg)
+        private void UpsertWelcomeMessage(UpdateWelcomeMessage msg)
         {
             if (welcomeActor.IsSome)
             {

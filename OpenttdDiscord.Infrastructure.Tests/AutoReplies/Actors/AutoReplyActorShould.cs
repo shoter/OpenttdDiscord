@@ -43,7 +43,7 @@ namespace OpenttdDiscord.Infrastructure.Tests.AutoReplies.Actors
         [Fact(Timeout = 1_000)]
         public async Task SendAMessageToJoiningPlayer_ifWelcomeMessageIsConfigured()
         {
-            var welcomeMessage = fix.Create<NewWelcomeMessage>();
+            var welcomeMessage = fix.Create<UpdateWelcomeMessage>();
             await sut.Ask(welcomeMessage);
 
             // Act
@@ -65,7 +65,7 @@ namespace OpenttdDiscord.Infrastructure.Tests.AutoReplies.Actors
         [Fact(Timeout = 1_000)]
         public async Task SendUpdatedMessageToJoiningPlayer_ifWelcomeMessageIsConfigured()
         {
-            var welcomeMessage = fix.Create<NewWelcomeMessage>();
+            var welcomeMessage = fix.Create<UpdateWelcomeMessage>();
             await sut.Ask(welcomeMessage);
 
             // Act
@@ -82,7 +82,7 @@ namespace OpenttdDiscord.Infrastructure.Tests.AutoReplies.Actors
                         NetworkAction.NETWORK_ACTION_CHAT,
                         ChatDestination.DESTTYPE_CLIENT,
                         ev.Player.ClientId,
-                        updatedMessage.NewContent));
+                        updatedMessage.Content));
         }
     }
 }

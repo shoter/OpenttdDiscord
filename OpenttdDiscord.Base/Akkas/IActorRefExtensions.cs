@@ -16,7 +16,7 @@ namespace OpenttdDiscord.Base.Akkas
             this Option<IActorRef> actor,
             object msg) => actor.IfSome(a => a.Tell(msg));
 
-        public static EitherUnit Forward(
+        public static EitherUnit ForwardExt(
             this Option<IActorRef> actor,
             object msg)
             => actor.IfSome(a => a.Forward(msg));

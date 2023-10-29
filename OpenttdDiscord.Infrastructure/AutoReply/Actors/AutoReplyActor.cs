@@ -45,7 +45,7 @@ namespace OpenttdDiscord.Infrastructure.AutoReply.Actors
         {
             if (welcomeActor.IsSome)
             {
-                welcomeActor.Forward(msg);
+                welcomeActor.ForwardExt(msg);
                 Sender.Tell(Unit.Default);
                 return;
             }

@@ -35,21 +35,5 @@
     <ItemGroup>
       <ProjectReference Include="..\OpenttdDiscord.Infrastructure\OpenttdDiscord.Infrastructure.csproj" />
       <ProjectReference Include="..\OpenttdDiscord.Tests.Common\OpenttdDiscord.Tests.Common.csproj" />
-
-
-
-    <ItemGroup>
-      <Folder Include="Discord\" />
     </ItemGroup>
-
-    </ItemGroup>
-
-
-
-
-
-
-
-
-
 </Project>

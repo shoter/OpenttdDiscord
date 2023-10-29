@@ -25,10 +25,10 @@ namespace OpenttdDiscord.Database.Tests.AutoReplies
             var expectedMessage = message with { Content = "2137" };
 
             var updatedMessage =
-                await (from _1 in repo.InsertWelcomeMessage(
+                await (from _1 in repo.UpsertWelcomeMessage(
                         server.GuildId,
                         message)
-                    from _2 in repo.UpdateWelcomeMessage(
+                    from _2 in repo.UpsertWelcomeMessage(
                         server.GuildId,
                         expectedMessage)
                     from msg in repo.GetWelcomeMessage(
@@ -52,7 +52,7 @@ namespace OpenttdDiscord.Database.Tests.AutoReplies
             };
 
             var updatedMessage =
-                await (from _1 in repo.InsertWelcomeMessage(
+                await (from _1 in repo.UpsertWelcomeMessage(
                         server.GuildId,
                         message)
                     from msg in repo.GetWelcomeMessage(

@@ -2,16 +2,12 @@ namespace OpenttdDiscord.Domain.AutoReplies
 {
     public interface IAutoReplyRepository
     {
-        EitherAsyncUnit InsertWelcomeMessage(
+        EitherAsyncUnit UpsertWelcomeMessage(
             ulong guildId,
             WelcomeMessage welcomeMessage);
 
         EitherAsync<IError, Option<WelcomeMessage>> GetWelcomeMessage(
             ulong guildId,
             Guid serverId);
-
-        EitherAsyncUnit UpdateWelcomeMessage(
-            ulong guildId,
-            WelcomeMessage welcomeMessage);
     }
 }

@@ -12,15 +12,27 @@ namespace OpenttdDiscord.Database.AutoReplies
             db = dB;
         }
 
-        public EitherAsyncUnit InsertWelcomeMessage(
+        public EitherAsyncUnit UpsertWelcomeMessage(
             ulong guildId,
-            WelcomeMessage welcomeMessage) => from _1 in db.WelcomeMessages.AddAsyncExt(
-                new WelcomeMessageEntity(
-                    guildId,
-                    welcomeMessage.ServerId,
-                    welcomeMessage.Content))
+            WelcomeMessage welcomeMessage) =>
+            from option in db.WelcomeMessages.FirstOptionalExt(w =>
+                                                                   w.GuildId == guildId &&
+                                                                   w.ServerId == welcomeMessage.ServerId)
+            from _1 in Upsert(option, guildId, welcomeMessage)
             from _2 in db.SaveChangesAsyncExt()
             select Unit.Default;
+
+        private EitherAsyncUnit Upsert(Option<WelcomeMessageEntity> welcomeMessageEntity, ulong guildId, WelcomeMessage newMessage)
+             => welcomeMessageEntity.Match(
+                some =>
+                {
+                    some.Content = newMessage.Content;
+                    return Unit.Default;
+                },
+                () => db.WelcomeMessages.AddAsyncExt(new WelcomeMessageEntity(
+                                                           guildId,
+                                                           newMessage.ServerId,
+                                                           newMessage.Content)));
 
         public EitherAsync<IError, Option<WelcomeMessage>> GetWelcomeMessage(
             ulong guildId,
@@ -29,15 +41,5 @@ namespace OpenttdDiscord.Database.AutoReplies
                      x.GuildId == guildId)
             from result in query.FirstOptionalExt()
             select result.Map(x => x.ToDomain());
-
-        public EitherAsyncUnit UpdateWelcomeMessage(
-            ulong guildId,
-            WelcomeMessage welcomeMessage) => from query in db.WelcomeMessages.WhereExt(
-                x => x.ServerId == welcomeMessage.ServerId &&
-                     x.GuildId == guildId)
-            from entity in query.FirstExt()
-            from _1 in entity.Update(welcomeMessage.Content)
-            from _2 in db.SaveChangesAsyncExt()
-            select Unit.Default;
     }
 }

@@ -37,7 +37,7 @@ namespace OpenttdDiscord.Infrastructure.AutoReply.Actors
 
         private void OnAdminEvent(IAdminEvent msg)
         {
-            welcomeActor.IfSome(a => a.Tell(msg));
+            welcomeActor.TellExt(msg);
             Sender.Tell(Unit.Default);
         }
 
@@ -45,11 +45,7 @@ namespace OpenttdDiscord.Infrastructure.AutoReply.Actors
         {
             if (welcomeActor.IsSome)
             {
-                var upMsg = new UpdateWelcomeMessage(
-                    msg.GuildId,
-                    msg.ServerId,
-                    msg.Content);
-                welcomeActor.Some(s => s.Forward(upMsg));
+                welcomeActor.Forward(msg);
                 Sender.Tell(Unit.Default);
                 return;
             }

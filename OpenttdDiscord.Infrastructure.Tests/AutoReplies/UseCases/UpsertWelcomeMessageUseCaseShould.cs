@@ -2,6 +2,7 @@ using OpenttdDiscord.Domain.AutoReplies;
 using OpenttdDiscord.Infrastructure.Akkas;
 using OpenttdDiscord.Infrastructure.AutoReply.Messages;
 using OpenttdDiscord.Infrastructure.AutoReply.UseCases;
+using OpenttdDiscord.Tests.Common.Akkas;
 using Xunit.Abstractions;
 
 namespace OpenttdDiscord.Infrastructure.Tests.AutoReplies.UseCases
@@ -21,13 +22,21 @@ namespace OpenttdDiscord.Infrastructure.Tests.AutoReplies.UseCases
                 autoReplyRepositorySubstitute,
                 akkaService);
 
+            autoReplyRepositorySubstitute
+                .UpsertWelcomeMessage(
+                    default,
+                    default!)
+                .ReturnsForAnyArgs(Unit.Default);
+
+            probe.SetAutoPilot(new UnitAutoPilot());
+
             akkaService
                 .ReturnsActorOnSelect(
                     MainActors.Paths.Guilds,
                     probe);
         }
 
-        [Fact]
+        [Fact(Timeout = 1_000)]
         public async Task UpsertDataIntoDatabase()
         {
             ulong guildId = fix.Create<ulong>();
@@ -49,7 +58,7 @@ namespace OpenttdDiscord.Infrastructure.Tests.AutoReplies.UseCases
                         content));
         }
 
-        [Fact]
+        [Fact(Timeout = 10_000)]
         public async Task InformActorAboutUpdate()
         {
             ulong guildId = fix.Create<ulong>();

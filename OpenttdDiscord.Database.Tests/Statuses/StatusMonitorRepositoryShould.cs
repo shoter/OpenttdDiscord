@@ -1,4 +1,4 @@
-﻿using System.Runtime.CompilerServices;
+using System.Runtime.CompilerServices;
 using OpenttdDiscord.Base.Ext;
 using OpenttdDiscord.Database.Servers;
 using OpenttdDiscord.Database.Statuses;

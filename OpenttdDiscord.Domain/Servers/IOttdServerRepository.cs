@@ -1,4 +1,4 @@
-﻿namespace OpenttdDiscord.Domain.Servers
+namespace OpenttdDiscord.Domain.Servers
 {
     public interface IOttdServerRepository
     {

@@ -1,4 +1,4 @@
-﻿using OpenttdDiscord.Domain.Security;
+using OpenttdDiscord.Domain.Security;
 
 namespace OpenttdDiscord.Domain.Statuses.UseCases
 {

@@ -16,15 +16,10 @@ namespace OpenttdDiscord.Infrastructure.Servers.UseCases
         }
 
         public EitherAsync<IError, OttdServer> Execute(
-            User user,
             string serverName,
             ulong guildId)
         {
             return
-                from _1 in CheckIfHasCorrectUserLevel(
-                        user,
-                        UserLevel.Moderator)
-                    .ToAsync()
                 from server in ottdServerRepository.GetServerByName(
                     guildId,
                     serverName)
@@ -32,14 +27,9 @@ namespace OpenttdDiscord.Infrastructure.Servers.UseCases
         }
 
         public EitherAsync<IError, OttdServer> Execute(
-            User user,
             Guid serverId)
         {
             return
-                from _1 in CheckIfHasCorrectUserLevel(
-                        user,
-                        UserLevel.Moderator)
-                    .ToAsync()
                 from server in ottdServerRepository.GetServer(serverId)
                 select server;
         }

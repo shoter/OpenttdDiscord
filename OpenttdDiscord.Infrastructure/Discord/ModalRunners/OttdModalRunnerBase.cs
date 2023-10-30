@@ -29,8 +29,18 @@ namespace OpenttdDiscord.Infrastructure.Discord.ModalRunners
                 select result;
         }
 
-        private Dictionary<string, IComponentInteractionData> GetInteractionComponentDictionary(IModalInteraction interaction) =>
-            interaction.Data.Components.ToDictionary(x => x.CustomId);
+        protected Either<IError, ulong> EnsureItIsGuildModal(IModalInteraction modal)
+        {
+            if (modal.GuildId.HasValue)
+            {
+                return modal.GuildId!.Value;
+            }
+
+            return new HumanReadableError("This command needs to be executed within guild!");
+        }
+
+        private Dictionary<string, IComponentInteractionData> GetInteractionComponentDictionary(
+            IModalInteraction interaction) => interaction.Data.Components.ToDictionary(x => x.CustomId);
 
         protected abstract EitherAsync<IError, IInteractionResponse> RunInternal(
             IModalInteraction modal,

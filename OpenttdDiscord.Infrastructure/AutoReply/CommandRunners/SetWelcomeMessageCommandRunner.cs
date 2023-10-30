@@ -53,7 +53,10 @@ namespace OpenttdDiscord.Infrastructure.AutoReply.CommandRunners
                         user,
                         UserLevel.Admin)
                     .ToAsync()
-                select new ModalResponse(new SetWelcomeMessageModal(welcomeMessage.Map(x => x.Content))) as
+                select new ModalResponse(
+                        new SetWelcomeMessageModal(
+                            welcomeMessage.Map(x => x.Content),
+                            serverName)) as
                     IInteractionResponse;
         }
     }

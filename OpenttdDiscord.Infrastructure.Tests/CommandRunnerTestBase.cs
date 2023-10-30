@@ -1,6 +1,7 @@
 using Discord;
 using OpenttdDiscord.Domain.Roles.Errors;
 using OpenttdDiscord.Domain.Security;
+using OpenttdDiscord.Infrastructure.Discord.CommandResponses;
 using OpenttdDiscord.Infrastructure.Discord.CommandRunners;
 
 namespace OpenttdDiscord.Infrastructure.Tests
@@ -15,12 +16,11 @@ namespace OpenttdDiscord.Infrastructure.Tests
             return InteractionStub;
         }
 
-        public EitherAsync<IError, ISlashCommandInteraction> RunExt(IOttdSlashCommandRunner commandRunner) =>
+        public EitherAsync<IError, IInteractionResponse> RunExt(IOttdSlashCommandRunner commandRunner) =>
             from response in commandRunner.Run(InteractionStub)
-            from result in response.Execute(InteractionStub)
-            select InteractionStub;
+            select response;
 
-        public EitherAsync<IError, ISlashCommandInteraction> NotExecuteFor(
+        public EitherAsync<IError, IInteractionResponse> NotExecuteFor(
             IOttdSlashCommandRunner runner,
             UserLevel userLevel)
         {

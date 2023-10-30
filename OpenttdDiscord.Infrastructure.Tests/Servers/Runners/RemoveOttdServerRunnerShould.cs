@@ -25,13 +25,12 @@ namespace OpenttdDiscord.Infrastructure.Tests.Servers.Runners
         [InlineData(UserLevel.Moderator)]
         public async Task NotExecuteForNonAdmin(UserLevel userLevel)
         {
-            var result = await WithGuildUser()
+            await WithGuildUser()
                 .WithOption("server-name", "whatever")
                 .WithUserLevel(userLevel)
-                .RunExt(sut);
-
-            Assert.True(result.IsLeft);
-            Assert.True(result.Left() is IncorrectUserLevelError);
+                .NotExecuteFor(
+                    sut,
+                    userLevel);
         }
     }
 }

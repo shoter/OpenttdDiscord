@@ -36,4 +36,8 @@
       <ProjectReference Include="..\OpenttdDiscord.Infrastructure\OpenttdDiscord.Infrastructure.csproj" />
       <ProjectReference Include="..\OpenttdDiscord.Tests.Common\OpenttdDiscord.Tests.Common.csproj" />
     </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="AutoReplies\ModalRunners\" />
+    </ItemGroup>
 </Project>

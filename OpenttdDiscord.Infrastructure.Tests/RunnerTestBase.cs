@@ -24,7 +24,7 @@ namespace OpenttdDiscord.Infrastructure.Tests
 
         protected ulong ChannelId { get; private set; }
 
-        protected TUserInteraction CommandInteractionSub { get; } = Substitute.For<TUserInteraction>();
+        protected TUserInteraction InteractionStub { get; } = Substitute.For<TUserInteraction>();
 
         private readonly IApplicationCommandInteractionData dataSub =
             Substitute.For<IApplicationCommandInteractionData>();
@@ -33,7 +33,7 @@ namespace OpenttdDiscord.Infrastructure.Tests
 
         public RunnerTestBase()
         {
-            CommandInteractionSub.Data.Returns(dataSub);
+            InteractionStub.Data.Returns(dataSub);
             dataSub.Options.Returns(options);
 
             WithUserLevel(UserLevel.Admin)
@@ -44,14 +44,14 @@ namespace OpenttdDiscord.Infrastructure.Tests
 
         public TSelf WithGuildId(ulong guildId)
         {
-            CommandInteractionSub.GuildId.Returns(guildId);
+            InteractionStub.GuildId.Returns(guildId);
             GuildId = guildId;
             return (TSelf) this;
         }
 
         public TSelf WithChannelId(ulong channelId)
         {
-            CommandInteractionSub.ChannelId.Returns(channelId);
+            InteractionStub.ChannelId.Returns(channelId);
             ChannelId = channelId;
             return (TSelf) this;
         }
@@ -59,7 +59,7 @@ namespace OpenttdDiscord.Infrastructure.Tests
         public TSelf WithUser(IUser newUser)
         {
             UserSub = newUser;
-            CommandInteractionSub.User.Returns(newUser);
+            InteractionStub.User.Returns(newUser);
             return (TSelf) this;
         }
 

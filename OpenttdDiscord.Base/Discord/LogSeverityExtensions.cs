@@ -1,10 +1,12 @@
-﻿using Discord;
+﻿using System.Diagnostics.CodeAnalysis;
+using Discord;
 using Microsoft.Extensions.Logging;
 
 namespace OpenttdDiscord.Base.Discord
 {
     public static class LogSeverityExtensions
     {
+        [ExcludeFromCodeCoverage]
         public static LogLevel ToLogLevel(this LogSeverity s)
         {
             return s switch

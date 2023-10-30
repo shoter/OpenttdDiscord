@@ -7,7 +7,7 @@ using OpenttdDiscord.Infrastructure.Rcon.Runners;
 
 namespace OpenttdDiscord.Infrastructure.Tests.Rcon.Runners
 {
-    public class RegisterRconChannelRunnerShould : RunnerTestBase
+    public class RegisterRconChannelRunnerShould : CommandRunnerTestBase
     {
         private readonly IGetServerUseCase getServerUseCaseSubsitute = Substitute.For<IGetServerUseCase>();
 

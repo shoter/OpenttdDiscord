@@ -6,7 +6,7 @@ using OpenttdDiscord.Infrastructure.Statuses.Runners;
 
 namespace OpenttdDiscord.Infrastructure.Tests.Statuses.Runners
 {
-    public class RemoveStatusMonitorRunnerShould : RunnerTestBase
+    public class RemoveStatusMonitorRunnerShould : CommandRunnerTestBase
     {
         private readonly IRemoveStatusMonitorUseCase removeStatusMonitorUseCaseSub =
             Substitute.For<IRemoveStatusMonitorUseCase>();

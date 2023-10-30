@@ -6,7 +6,7 @@ using OpenttdDiscord.Infrastructure.Roles.Runners;
 
 namespace OpenttdDiscord.Infrastructure.Tests.Roles.Runners
 {
-    public class GetGuildRolesRunnerShould : RunnerTestBase
+    public class GetGuildRolesRunnerShould : CommandRunnerTestBase
     {
         private readonly IRolesRepository rolesRepositorySub = Substitute.For<IRolesRepository>();
 

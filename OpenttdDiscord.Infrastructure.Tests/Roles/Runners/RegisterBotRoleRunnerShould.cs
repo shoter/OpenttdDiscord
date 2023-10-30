@@ -5,7 +5,7 @@ using OpenttdDiscord.Infrastructure.Roles.Runners;
 
 namespace OpenttdDiscord.Infrastructure.Tests.Roles.Runners
 {
-    public class RegisterBotRoleRunnerShould : RunnerTestBase
+    public class RegisterBotRoleRunnerShould : CommandRunnerTestBase
     {
         private readonly RegisterRoleRunner sut;
 

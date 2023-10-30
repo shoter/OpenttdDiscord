@@ -6,7 +6,7 @@ using OpenttdDiscord.Infrastructure.Reporting.Runners;
 
 namespace OpenttdDiscord.Infrastructure.Tests.Reporting.Runners
 {
-    public class RegisterReportChannelRunnerShould : RunnerTestBase
+    public class RegisterReportChannelRunnerShould : CommandRunnerTestBase
     {
         private readonly IGetServerUseCase getServerUseCaseSubsitute = Substitute.For<IGetServerUseCase>();
 

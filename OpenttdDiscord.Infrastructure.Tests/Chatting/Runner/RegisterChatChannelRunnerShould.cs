@@ -6,7 +6,7 @@ using OpenttdDiscord.Infrastructure.Chatting.Runners;
 
 namespace OpenttdDiscord.Infrastructure.Tests.Chatting.Runner
 {
-    public class RegisterChatChannelRunnerShould : RunnerTestBase
+    public class RegisterChatChannelRunnerShould : CommandRunnerTestBase
     {
         private readonly IGetServerUseCase getServerUseCaseSubsitute = Substitute.For<IGetServerUseCase>();
 

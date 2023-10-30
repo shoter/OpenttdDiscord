@@ -5,7 +5,7 @@ using OpenttdDiscord.Infrastructure.Roles.Runners;
 
 namespace OpenttdDiscord.Infrastructure.Tests.Roles.Runners
 {
-    public class DeleteRoleRunnerShould : RunnerTestBase
+    public class DeleteRoleRunnerShould : CommandRunnerTestBase
     {
         private readonly DeleteRoleRunner sut;
 

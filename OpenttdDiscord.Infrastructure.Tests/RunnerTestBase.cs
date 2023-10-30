@@ -8,7 +8,9 @@ using Array = System.Array;
 
 namespace OpenttdDiscord.Infrastructure.Tests
 {
-    public class RunnerTestBase
+    public class RunnerTestBase<TUserInteraction, TSelf>
+        where TUserInteraction : class, IDiscordInteraction
+        where TSelf : RunnerTestBase<TUserInteraction, TSelf>
     {
         protected readonly IAkkaService AkkaServiceSub = Substitute.For<IAkkaService>();
 
@@ -22,7 +24,7 @@ namespace OpenttdDiscord.Infrastructure.Tests
 
         protected ulong ChannelId { get; private set; }
 
-        protected ISlashCommandInteraction CommandInteractionSub { get; } = Substitute.For<ISlashCommandInteraction>();
+        protected TUserInteraction CommandInteractionSub { get; } = Substitute.For<TUserInteraction>();
 
         private readonly IApplicationCommandInteractionData dataSub =
             Substitute.For<IApplicationCommandInteractionData>();
@@ -40,28 +42,28 @@ namespace OpenttdDiscord.Infrastructure.Tests
                 .WithChannelId(fix.Create<ulong>());
         }
 
-        public RunnerTestBase WithGuildId(ulong guildId)
+        public TSelf WithGuildId(ulong guildId)
         {
             CommandInteractionSub.GuildId.Returns(guildId);
             GuildId = guildId;
-            return this;
+            return (TSelf) this;
         }
 
-        public RunnerTestBase WithChannelId(ulong channelId)
+        public TSelf WithChannelId(ulong channelId)
         {
             CommandInteractionSub.ChannelId.Returns(channelId);
             ChannelId = channelId;
-            return this;
+            return (TSelf) this;
         }
 
-        public RunnerTestBase WithUser(IUser newUser)
+        public TSelf WithUser(IUser newUser)
         {
             UserSub = newUser;
             CommandInteractionSub.User.Returns(newUser);
-            return this;
+            return (TSelf) this;
         }
 
-        public RunnerTestBase WithGuildUser() => WithUser(Substitute.For<IGuildUser>());
+        public TSelf WithGuildUser() => WithUser(Substitute.For<IGuildUser>());
 
         public IGuildUser WithGuildUserReturn()
         {
@@ -71,16 +73,16 @@ namespace OpenttdDiscord.Infrastructure.Tests
             return guildUserSub;
         }
 
-        public RunnerTestBase WithNonGuildUser() => WithUser(Substitute.For<IUser>());
+        public TSelf WithNonGuildUser() => WithUser(Substitute.For<IUser>());
 
-        public RunnerTestBase WithUserLevel(UserLevel userLevel)
+        public TSelf WithUserLevel(UserLevel userLevel)
         {
             GetRoleLevelUseCaseSub.Execute(default!)
                 .ReturnsForAnyArgs(userLevel);
-            return this;
+            return (TSelf) this;
         }
 
-        public RunnerTestBase WithOption(
+        public TSelf WithOption(
             string name,
             object value,
             ApplicationCommandOptionType type = ApplicationCommandOptionType.String)
@@ -91,47 +93,21 @@ namespace OpenttdDiscord.Infrastructure.Tests
             option.Type.Returns(type);
             option.Options.Returns(Array.Empty<IApplicationCommandInteractionDataOption>());
             options.Add(option);
-            return this;
+            return (TSelf) this;
         }
 
-        public RunnerTestBase WithOption(
+        public TSelf WithOption(
             string name,
             int value) => WithOption(
             name,
             value,
             ApplicationCommandOptionType.Integer);
 
-        public RunnerTestBase WithOption(
+        public TSelf WithOption(
             string name,
             long value) => WithOption(
             name,
             value,
             ApplicationCommandOptionType.Integer);
-
-        public async Task<ISlashCommandInteraction> Run(IOttdSlashCommandRunner commandRunner)
-        {
-            var response = (await commandRunner.Run(CommandInteractionSub)).Right();
-            await response.Execute(CommandInteractionSub);
-
-            return CommandInteractionSub;
-        }
-
-        public EitherAsync<IError, ISlashCommandInteraction> RunExt(IOttdSlashCommandRunner commandRunner) =>
-            from response in commandRunner.Run(CommandInteractionSub)
-            from result in response.Execute(CommandInteractionSub)
-            select CommandInteractionSub;
-
-        public EitherAsync<IError, ISlashCommandInteraction> NotExecuteFor(
-            IOttdSlashCommandRunner runner,
-            UserLevel userLevel)
-        {
-            var either =
-                WithGuildUser()
-                .WithUserLevel(userLevel)
-                .RunExt(runner);
-            either.IfRight(_ => Assert.Fail("Wrong user level"));
-            either.IfLeft(err => Assert.True(err is IncorrectUserLevelError));
-            return either;
-        }
     }
 }

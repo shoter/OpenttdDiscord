@@ -5,7 +5,7 @@ using OpenttdDiscord.Infrastructure.Ottd.Runners;
 
 namespace OpenttdDiscord.Infrastructure.Tests.Ottd.Runners
 {
-    public class QueryDebugInfoRunnerShould : RunnerTestBase
+    public class QueryDebugInfoRunnerShould : CommandRunnerTestBase
     {
         private readonly IGetServerUseCase getServerUseCaseSubsitute = Substitute.For<IGetServerUseCase>();
 

@@ -6,7 +6,7 @@ using OpenttdDiscord.Infrastructure.EventLogs.Runners;
 
 namespace OpenttdDiscord.Infrastructure.Tests.EventLogs.Runners
 {
-    public class QueryEventLogRunnerShould : RunnerTestBase
+    public class QueryEventLogRunnerShould : CommandRunnerTestBase
     {
         private readonly IGetServerUseCase getServerUseCaseSubsitute = Substitute.For<IGetServerUseCase>();
 

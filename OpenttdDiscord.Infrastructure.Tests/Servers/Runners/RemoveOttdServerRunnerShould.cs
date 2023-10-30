@@ -5,7 +5,7 @@ using OpenttdDiscord.Infrastructure.Servers.Runners;
 
 namespace OpenttdDiscord.Infrastructure.Tests.Servers.Runners
 {
-    public class RemoveOttdServerRunnerShould : RunnerTestBase
+    public class RemoveOttdServerRunnerShould : CommandRunnerTestBase
     {
         private readonly IRemoveOttdServerUseCase removeOttdServerUseCaseSub =
             Substitute.For<IRemoveOttdServerUseCase>();

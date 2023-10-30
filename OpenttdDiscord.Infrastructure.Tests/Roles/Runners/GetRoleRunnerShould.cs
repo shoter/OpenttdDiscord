@@ -3,7 +3,7 @@ using OpenttdDiscord.Infrastructure.Roles.Runners;
 
 namespace OpenttdDiscord.Infrastructure.Tests.Roles.Runners
 {
-    public class GetRoleRunnerShould : RunnerTestBase
+    public class GetRoleRunnerShould : CommandRunnerTestBase
     {
         private readonly GetRoleRunner sut;
 

@@ -10,6 +10,7 @@ using OpenttdDiscord.Database.Statuses;
 
 namespace OpenttdDiscord.Database
 {
+    [ExcludeFromCodeCoverage]
     internal class OttdContext : DbContext
     {
         public DbSet<OttdServerEntity> Servers { get; set; } = default!;

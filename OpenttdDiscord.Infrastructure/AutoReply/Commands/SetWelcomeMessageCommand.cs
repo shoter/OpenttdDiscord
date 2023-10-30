@@ -14,7 +14,13 @@ namespace OpenttdDiscord.Infrastructure.AutoReply.Commands
         protected override void Configure(SlashCommandBuilder builder)
         {
             builder
-                .WithDescription("Used to set welcome message for players joining Ottd server");
+                .WithDescription("Used to set welcome message for players joining Ottd server")
+                .AddOption(
+                    new SlashCommandOptionBuilder()
+                        .WithName("server-name")
+                        .WithRequired(true)
+                        .WithDescription("Name of the server")
+                        .WithType(ApplicationCommandOptionType.String));
         }
     }
 }

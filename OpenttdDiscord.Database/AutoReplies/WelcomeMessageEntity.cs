@@ -6,6 +6,7 @@ using OpenttdDiscord.Domain.AutoReplies;
 
 namespace OpenttdDiscord.Database.AutoReplies
 {
+    [ExcludeFromCodeCoverage]
     public record WelcomeMessageEntity(
         ulong GuildId,
         Guid ServerId

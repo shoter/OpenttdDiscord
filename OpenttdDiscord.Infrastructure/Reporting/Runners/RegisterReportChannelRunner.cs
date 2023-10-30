@@ -42,7 +42,6 @@ namespace OpenttdDiscord.Infrastructure.Reporting.Runners
             return
                 from _0 in CheckIfHasCorrectUserLevel(user, UserLevel.Admin).ToAsync()
                 from server in getServerUseCase.Execute(
-                    user,
                     serverName,
                     guildId)
                 from _1 in registerReportChannelUseCase.Execute(

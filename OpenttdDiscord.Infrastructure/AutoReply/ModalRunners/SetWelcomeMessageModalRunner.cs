@@ -36,7 +36,7 @@ namespace OpenttdDiscord.Infrastructure.AutoReply.ModalRunners
             string content = components["content"].Value;
             bool isDeletion = string.IsNullOrWhiteSpace(content);
 
-            var x =
+            return
                 from guildId in EnsureItIsGuildModal(modal)
                     .ToAsync()
                 from server in getServerUseCase.Execute(

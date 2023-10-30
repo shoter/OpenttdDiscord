@@ -40,7 +40,6 @@ namespace OpenttdDiscord.Infrastructure.Ottd.Runners
                         UserLevel.Moderator)
                     .ToAsync()
                 from server in getServerUseCase.Execute(
-                    user,
                     serverName,
                     guildId)
                 from _2 in AkkaService.ExecuteServerAction(

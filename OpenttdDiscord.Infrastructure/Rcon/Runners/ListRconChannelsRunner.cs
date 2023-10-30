@@ -25,36 +25,49 @@ namespace OpenttdDiscord.Infrastructure.Rcon.Runners
             IListRconChannelsUseCase listRconChannelsUseCase,
             IAkkaService akkaService,
             IGetRoleLevelUseCase getRoleLevelUseCase)
-        : base(akkaService, getRoleLevelUseCase)
+            : base(
+                akkaService,
+                getRoleLevelUseCase)
         {
             this.getServerUseCase = getServerUseCase;
             this.listRconChannelsUseCase = listRconChannelsUseCase;
         }
 
-        protected override EitherAsync<IError, IInteractionResponse> RunInternal(ISlashCommandInteraction command, User user, ExtDictionary<string, object> options)
+        protected override EitherAsync<IError, IInteractionResponse> RunInternal(
+            ISlashCommandInteraction command,
+            User user,
+            ExtDictionary<string, object> options)
         {
             ulong guildId = command.GuildId!.Value;
 
             return
-                from _0 in CheckIfHasCorrectUserLevel(user, UserLevel.Moderator).ToAsync()
-                from rconServers in listRconChannelsUseCase.Execute(user, guildId)
+                from _0 in CheckIfHasCorrectUserLevel(
+                        user,
+                        UserLevel.Moderator)
+                    .ToAsync()
+                from rconServers in listRconChannelsUseCase.Execute(
+                    user,
+                    guildId)
                 from response in GenerateResponse(rconServers)
-                select (IInteractionResponse)new TextResponse(response);
+                select (IInteractionResponse) new TextResponse(response);
         }
 
-        private EitherAsync<IError, string> GenerateResponse(List<RconChannel> channels)
-            => TryAsync(async () =>
-            {
-                StringBuilder sb = new();
-
-                foreach (var rcon in channels)
+        private EitherAsync<IError, string> GenerateResponse(List<RconChannel> channels) => TryAsync(
+                async () =>
                 {
-                    var server = (await getServerUseCase.Execute(User.Master, rcon.ServerId))
-                    .ThrowIfError().Right();
-                    sb.AppendLine($"{server.Name} - {MentionUtils.MentionChannel(rcon.ChannelId)} - prefix: `{rcon.Prefix}`");
-                }
+                    StringBuilder sb = new();
 
-                return sb.ToString();
-            }).ToEitherAsyncError();
+                    foreach (var rcon in channels)
+                    {
+                        var server = (await getServerUseCase.Execute(rcon.ServerId))
+                            .ThrowIfError()
+                            .Right();
+                        sb.AppendLine(
+                            $"{server.Name} - {MentionUtils.MentionChannel(rcon.ChannelId)} - prefix: `{rcon.Prefix}`");
+                    }
+
+                    return sb.ToString();
+                })
+            .ToEitherAsyncError();
     }
 }

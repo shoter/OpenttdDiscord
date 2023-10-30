@@ -40,7 +40,6 @@ namespace OpenttdDiscord.Infrastructure.EventLogs.Runners
             return
                 from _0 in CheckIfHasCorrectUserLevel(user, UserLevel.Moderator).ToAsync()
                 from server in getServerUseCase.Execute(
-                    user,
                     serverName,
                     guildId)
                 from messages in queryServerChatUseCase.Execute(

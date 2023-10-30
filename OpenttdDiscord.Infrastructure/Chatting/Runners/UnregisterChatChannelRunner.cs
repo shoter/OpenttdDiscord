@@ -46,7 +46,6 @@ namespace OpenttdDiscord.Infrastructure.Chatting.Runners
                         UserLevel.Admin)
                     .ToAsync()
                 from server in getServerByNameUseCase.Execute(
-                    user,
                     serverName,
                     guildId)
                 from _1 in unregisterChatChannelUseCase.Execute(

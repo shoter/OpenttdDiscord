@@ -1,9 +1,11 @@
+using System.Diagnostics.CodeAnalysis;
 using Discord;
 using OpenttdDiscord.Infrastructure.Discord.Modals;
 using OpenttdDiscord.Infrastructure.Testing.ModalRunners;
 
 namespace OpenttdDiscord.Infrastructure.Testing.Modals
 {
+    [ExcludeFromCodeCoverage]
     public class TestModal : OttdModalBase<TestModalRunner>
     {
         public TestModal()

@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using Discord;
 using LanguageExt;
 using OpenttdDiscord.Base.Ext;
@@ -8,6 +9,7 @@ using OpenttdDiscord.Infrastructure.Discord.ModalRunners;
 
 namespace OpenttdDiscord.Infrastructure.Testing.ModalRunners
 {
+    [ExcludeFromCodeCoverage]
     public class TestModalRunner : OttdModalRunnerBase
     {
         public TestModalRunner(IGetRoleLevelUseCase getRoleLevelUseCase)

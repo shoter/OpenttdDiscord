@@ -1,7 +1,9 @@
 using OpenttdDiscord.Domain.AutoReplies.UseCases;
 using OpenttdDiscord.Domain.Security;
+using OpenttdDiscord.Domain.Servers;
 using OpenttdDiscord.Domain.Servers.UseCases;
 using OpenttdDiscord.Infrastructure.AutoReply.ModalRunners;
+using OpenttdDiscord.Infrastructure.Discord.CommandResponses;
 
 namespace OpenttdDiscord.Infrastructure.Tests.AutoReplies.ModalRunners
 {
@@ -16,11 +18,30 @@ namespace OpenttdDiscord.Infrastructure.Tests.AutoReplies.ModalRunners
 
         private readonly string defaultServerName;
         private readonly string defaultContent;
+        private readonly OttdServer defaultServer;
 
         public SetWelcomeMessageModalRunnerShould()
         {
             defaultServerName = fix.Create<string>();
             defaultContent = fix.Create<string>();
+            defaultServer = fix.Create<OttdServer>() with
+            {
+                GuildId = GuildId,
+                Name = defaultServerName
+            };
+
+            getServerUseCaseSub
+                .Execute(
+                    defaultServerName,
+                    GuildId)
+                .Returns(defaultServer);
+
+            upsertWelcomeMessageUseCaseSub
+                .Execute(
+                    default,
+                    default,
+                    default!)
+                .ReturnsForAnyArgs(Unit.Default);
 
             sut = new SetWelcomeMessageModalRunner(
                 GetRoleLevelUseCaseSub,
@@ -45,6 +66,22 @@ namespace OpenttdDiscord.Infrastructure.Tests.AutoReplies.ModalRunners
                 .NotExecuteFor(
                     sut,
                     userLevel);
+        }
+
+        [Fact]
+        public async Task UpdateContent_WhenContentIsSet()
+        {
+            var result = await WithGuildUser()
+                .WithUserLevel(UserLevel.Admin)
+                .RunExt(sut);
+
+            Assert.True(result.IsRight);
+            await upsertWelcomeMessageUseCaseSub
+                .Received()
+                .Execute(
+                    GuildId,
+                    defaultServer.Id,
+                    defaultContent);
         }
     }
 }

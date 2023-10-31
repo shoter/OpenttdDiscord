@@ -9,13 +9,12 @@ namespace OpenttdDiscord.Infrastructure.Tests
     public class ModalRunnerTestBase : RunnerTestBase<IModalInteraction, ModalRunnerTestBase>
     {
         private readonly IModalInteractionData interactionDataSub = Substitute.For<IModalInteractionData>();
-        private readonly List<IComponentInteractionData> components = new();
+        private readonly Dictionary<string, IComponentInteractionData> components = new();
 
         public ModalRunnerTestBase()
         {
             this.InteractionStub.Data.Returns(interactionDataSub);
-
-            interactionDataSub.Components.Returns(components);
+            interactionDataSub.Components.Returns(_ => components.Values);
         }
 
         public async Task<IModalInteraction> Run(IOttdModalRunner runner)
@@ -34,7 +33,7 @@ namespace OpenttdDiscord.Infrastructure.Tests
             component.CustomId.Returns(id);
             component.Value.Returns(value);
             component.Type.Returns(ComponentType.TextInput);
-            components.Add(component);
+            components[id] = component;
             return this;
         }
 

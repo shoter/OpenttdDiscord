@@ -5,8 +5,11 @@ using OpenttdDiscord.Domain.AutoReplies.UseCases;
 using OpenttdDiscord.Infrastructure.AutoReply.CommandRunners;
 using OpenttdDiscord.Infrastructure.AutoReply.Commands;
 using OpenttdDiscord.Infrastructure.AutoReply.ModalRunners;
+using OpenttdDiscord.Infrastructure.AutoReply.Modals;
 using OpenttdDiscord.Infrastructure.AutoReply.UseCases;
 using OpenttdDiscord.Infrastructure.Discord.Commands;
+using OpenttdDiscord.Infrastructure.Discord.ModalRunners;
+using OpenttdDiscord.Infrastructure.Discord.Modals;
 using OpenttdDiscord.Infrastructure.Modularity;
 
 namespace OpenttdDiscord.Infrastructure.AutoReply
@@ -17,6 +20,7 @@ namespace OpenttdDiscord.Infrastructure.AutoReply
         {
             services
                 .AddScoped<IAutoReplyRepository, AutoReplyRepository>()
+                .AddSingleton<IAssociatedModalRunners, AutoReplyAssociatedModalRunners>()
                 .RegisterUseCases()
                 .RegisterCommands()
                 .RegisterRunners();

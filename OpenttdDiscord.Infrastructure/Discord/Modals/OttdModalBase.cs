@@ -6,8 +6,7 @@ using OpenttdDiscord.Infrastructure.Discord.ModalRunners;
 namespace OpenttdDiscord.Infrastructure.Discord.Modals
 {
     [ExcludeFromCodeCoverage]
-    public abstract class OttdModalBase<TModalRunner> : IOttdModal
-        where TModalRunner : IOttdModalRunner
+    public abstract class OttdModalBase : IOttdModal
     {
         public string Id { get; }
 
@@ -23,9 +22,6 @@ namespace OpenttdDiscord.Infrastructure.Discord.Modals
             Configure(builder);
             return builder.Build();
         }
-
-        public IOttdModalRunner CreateRunner(IServiceProvider sp)
-            => sp.GetRequiredService<TModalRunner>();
 
         protected abstract void Configure(ModalBuilder builder);
     }

@@ -5,14 +5,14 @@ using OpenttdDiscord.Infrastructure.Discord.Modals;
 
 namespace OpenttdDiscord.Infrastructure.AutoReply.Modals
 {
-    internal class SetWelcomeMessageModal : OttdModalBase<SetWelcomeMessageModalRunner>
+    internal class SetWelcomeMessageModal : OttdModalBase
     {
         public string InitialWelcomeMessage { get; }
         public string ServerName { get; }
 
         public SetWelcomeMessageModal(Option<string> initialWelcomeMessage,
                                       string serverName)
-            : base("set-welcome-message-modal")
+            : base(AutoReplyModals.SetWelcomeMessageModals)
         {
             this.ServerName = serverName;
             this.InitialWelcomeMessage = initialWelcomeMessage
@@ -29,9 +29,9 @@ namespace OpenttdDiscord.Infrastructure.AutoReply.Modals
                     value: ServerName)
                 .AddTextInput(
                     "Welcome message",
-                    InitialWelcomeMessage,
+                    "content",
                     TextInputStyle.Paragraph,
-                    value: "Twoja stara to kopara i twój stary ją wpierdala");
+                    value: InitialWelcomeMessage);
         }
     }
 }

@@ -7,6 +7,5 @@ namespace OpenttdDiscord.Infrastructure.Discord.Modals
     {
         string Id { get; }
         Modal Build();
-        IOttdModalRunner CreateRunner(IServiceProvider sp);
     }
 }

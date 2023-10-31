@@ -8,12 +8,34 @@ namespace OpenttdDiscord.Infrastructure.Tests
 {
     public class ModalRunnerTestBase : RunnerTestBase<IModalInteraction, ModalRunnerTestBase>
     {
+        private readonly IModalInteractionData interactionDataSub = Substitute.For<IModalInteractionData>();
+        private readonly List<IComponentInteractionData> components = new();
+
+        public ModalRunnerTestBase()
+        {
+            this.InteractionStub.Data.Returns(interactionDataSub);
+
+            interactionDataSub.Components.Returns(components);
+        }
+
         public async Task<IModalInteraction> Run(IOttdModalRunner runner)
         {
             var response = (await runner.Run(InteractionStub)).Right();
             await response.Execute(InteractionStub);
 
             return InteractionStub;
+        }
+
+        public ModalRunnerTestBase WithTextInput(
+            string id,
+            object value)
+        {
+            var component = Substitute.For<IComponentInteractionData>();
+            component.CustomId.Returns(id);
+            component.Value.Returns(value);
+            component.Type.Returns(ComponentType.TextInput);
+            components.Add(component);
+            return this;
         }
 
         public EitherAsync<IError, IModalInteraction> RunExt(IOttdModalRunner runner) =>

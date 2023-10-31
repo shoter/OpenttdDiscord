@@ -45,19 +45,18 @@ namespace OpenttdDiscord.Infrastructure.Tests.AutoReplies.CommandRunners
         [Fact]
         public async Task OpenAModal_WithNoneWelcomeMessage_IfItWasNotYetCreated()
         {
-            var guildId = fix.Create<ulong>();
             var serverName = fix.Create<string>();
             var server = fix.Create<OttdServer>();
 
             getServerUseCaseSub
                 .Execute(
                     serverName,
-                    guildId)
+                    GuildId)
                 .Returns(server);
 
             autoReplyRepositorySub
                 .GetWelcomeMessage(
-                    guildId,
+                    GuildId,
                     server.Id)
                 .Returns(Option<WelcomeMessage>.None);
 
@@ -82,7 +81,6 @@ namespace OpenttdDiscord.Infrastructure.Tests.AutoReplies.CommandRunners
         [Fact]
         public async Task OpenAModal_WithWelcomeMessage_IfWelcomeMessageIsPresent()
         {
-            var guildId = fix.Create<ulong>();
             var serverName = fix.Create<string>();
             var server = fix.Create<OttdServer>();
             var welcomeMessage = fix.Create<WelcomeMessage>() with { ServerId = server.Id };
@@ -90,12 +88,12 @@ namespace OpenttdDiscord.Infrastructure.Tests.AutoReplies.CommandRunners
             getServerUseCaseSub
                 .Execute(
                     serverName,
-                    guildId)
+                    GuildId)
                 .Returns(server);
 
             autoReplyRepositorySub
                 .GetWelcomeMessage(
-                    guildId,
+                    GuildId,
                     server.Id)
                 .Returns(Some(welcomeMessage));
 

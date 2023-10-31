@@ -54,10 +54,6 @@ namespace OpenttdDiscord.Infrastructure.AutoReply.CommandRunners
                 from welcomeMessage in autoReplyRepository.GetWelcomeMessage(
                     guildId,
                     server.Id)
-                from _1 in CheckIfHasCorrectUserLevel(
-                        user,
-                        UserLevel.Admin)
-                    .ToAsync()
                 select new ModalResponse(
                         new SetWelcomeMessageModal(
                             welcomeMessage.Map(x => x.Content),

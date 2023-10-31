@@ -1,10 +1,8 @@
 using Discord;
-using OpenttdDiscord.Domain.Roles.Errors;
+using NSubstitute.Extensions;
 using OpenttdDiscord.Domain.Roles.UseCases;
 using OpenttdDiscord.Domain.Security;
 using OpenttdDiscord.Infrastructure.Akkas;
-using OpenttdDiscord.Infrastructure.Discord.CommandRunners;
-using Array = System.Array;
 
 namespace OpenttdDiscord.Infrastructure.Tests
 {
@@ -26,16 +24,8 @@ namespace OpenttdDiscord.Infrastructure.Tests
 
         protected TUserInteraction InteractionStub { get; } = Substitute.For<TUserInteraction>();
 
-        private readonly IApplicationCommandInteractionData dataSub =
-            Substitute.For<IApplicationCommandInteractionData>();
-
-        private List<IApplicationCommandInteractionDataOption> options = new();
-
         public RunnerTestBase()
         {
-            InteractionStub.Data.Returns(dataSub);
-            dataSub.Options.Returns(options);
-
             WithUserLevel(UserLevel.Admin)
                 .WithGuildUser()
                 .WithGuildId(fix.Create<ulong>())
@@ -81,33 +71,5 @@ namespace OpenttdDiscord.Infrastructure.Tests
                 .ReturnsForAnyArgs(userLevel);
             return (TSelf) this;
         }
-
-        public TSelf WithOption(
-            string name,
-            object value,
-            ApplicationCommandOptionType type = ApplicationCommandOptionType.String)
-        {
-            var option = Substitute.For<IApplicationCommandInteractionDataOption>();
-            option.Name.Returns(name);
-            option.Value.Returns(value);
-            option.Type.Returns(type);
-            option.Options.Returns(Array.Empty<IApplicationCommandInteractionDataOption>());
-            options.Add(option);
-            return (TSelf) this;
-        }
-
-        public TSelf WithOption(
-            string name,
-            int value) => WithOption(
-            name,
-            value,
-            ApplicationCommandOptionType.Integer);
-
-        public TSelf WithOption(
-            string name,
-            long value) => WithOption(
-            name,
-            value,
-            ApplicationCommandOptionType.Integer);
     }
 }

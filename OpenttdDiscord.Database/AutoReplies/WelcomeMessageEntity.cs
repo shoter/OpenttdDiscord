@@ -12,7 +12,7 @@ namespace OpenttdDiscord.Database.AutoReplies
         Guid ServerId
     )
     {
-        internal string Content { get; set; } = string.Empty;
+        public string Content { get; set; } = string.Empty;
 
         public WelcomeMessage ToDomain() => new(
             ServerId,

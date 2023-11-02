@@ -65,6 +65,47 @@ namespace OpenttdDiscord.Database.Tests.AutoReplies
                 updatedMessage.Right());
         }
 
+        /// <remarks>
+        /// There was a bug where GuildId was a PK for welcome message. This prevented people from adding more than 1 welcome message per guid.
+        /// </remarks>
+        [Fact]
+        public async Task InsertMoreThanOneWelcomeMessagePerGuid()
+        {
+            var server = await CreateServer();
+            var server2 = await CreateServer();
+            var repo = await CreateRepository();
+            var message = Fix.Create<WelcomeMessage>() with
+            {
+                ServerId = server.Id,
+            };
+            var message2 = Fix.Create<WelcomeMessage>() with { ServerId = server2.Id };
+
+            var updatedMessage =
+                await (from _1 in repo.UpsertWelcomeMessage(
+                        server.GuildId,
+                        message)
+                    from _2 in repo.UpsertWelcomeMessage(
+                        server.GuildId,
+                        message2)
+                    from msg in repo.GetWelcomeMessage(
+                        server.GuildId,
+                        server.Id)
+                    select msg);
+
+            var updatedMessage2 =
+                from msg in repo.GetWelcomeMessage(
+                    server.GuildId,
+                    server.Id)
+                select msg;
+
+            Assert.Equal(
+                message2,
+                updatedMessage.Right());
+            Assert.Equal(
+                message,
+                updatedMessage2.Right());
+        }
+
         private async Task<AutoReplyRepository> CreateRepository([CallerMemberName] string? databaseName = null)
         {
             var context = await CreateContext(databaseName);

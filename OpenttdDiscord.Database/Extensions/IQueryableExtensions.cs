@@ -22,5 +22,9 @@ namespace OpenttdDiscord.Database.Extensions
         internal static EitherAsync<IError, TSource> FirstExt<TSource>(
             this IQueryable<TSource> queryable) => (from result in TryAsync(queryable.FirstOrDefault())
             select result).ToEitherAsyncError();
+
+        internal static EitherAsync<IError, List<TSource>> ToListExt<TSource>(
+            this IQueryable<TSource> queryable) => (from result in TryAsync(queryable.ToList())
+            select result).ToEitherAsyncError();
     }
 }

@@ -22,7 +22,6 @@ namespace OpenttdDiscord.Database
         public DbSet<WelcomeMessageEntity> WelcomeMessages { get; set; } = default!;
         public DbSet<AutoReplyEntity> AutoReplies { get; set; } = default!;
 
-
         public OttdContext(DbContextOptions<OttdContext> options)
             : base(options)
         {

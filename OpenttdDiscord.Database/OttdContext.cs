@@ -14,18 +14,14 @@ namespace OpenttdDiscord.Database
     internal class OttdContext : DbContext
     {
         public DbSet<OttdServerEntity> Servers { get; set; } = default!;
-
         public DbSet<StatusMonitorEntity> Monitors { get; set; } = default!;
-
         public DbSet<ChatChannelEntity> ChatChannels { get; set; } = default!;
-
         public DbSet<RconChannelEntity> RconChannels { get; set; } = default!;
-
         public DbSet<ReportChannelEntity> ReportChannels { get; set; } = default!;
-
         public DbSet<GuildRoleEntity> GuildRoles { get; set; } = default!;
-
         public DbSet<WelcomeMessageEntity> WelcomeMessages { get; set; } = default!;
+        public DbSet<AutoReplyEntity> AutoReplies { get; set; } = default!;
+
 
         public OttdContext(DbContextOptions<OttdContext> options)
             : base(options)
@@ -44,6 +40,7 @@ namespace OpenttdDiscord.Database
             ReportChannelEntity.OnModelCreating(modelBuilder);
             GuildRoleEntity.OnModelCreating(modelBuilder);
             WelcomeMessageEntity.OnModelCreating(modelBuilder);
+            AutoReplyEntity.OnModelCreating(modelBuilder);
         }
     }
 }

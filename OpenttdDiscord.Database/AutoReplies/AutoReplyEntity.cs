@@ -4,7 +4,7 @@ using OpenttdDiscord.Database.Ottd.Servers;
 
 namespace OpenttdDiscord.Database.AutoReplies
 {
-    public record AutoReplyEntitity(
+    public record AutoReplyEntity(
         Guid GuildId,
         ulong ServerId,
         string TriggerMessage,
@@ -18,7 +18,7 @@ namespace OpenttdDiscord.Database.AutoReplies
         [ExcludeFromCodeCoverage]
         public static void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<AutoReplyEntitity>()
+            modelBuilder.Entity<AutoReplyEntity>()
                 .HasKey(
                     x => new
                     {
@@ -26,7 +26,7 @@ namespace OpenttdDiscord.Database.AutoReplies
                         x.TriggerMessage,
                     });
 
-            modelBuilder.Entity<AutoReplyEntitity>()
+            modelBuilder.Entity<AutoReplyEntity>()
                 .HasOne<OttdServerEntity>()
                 .WithMany()
                 .HasForeignKey(x => x.ServerId);

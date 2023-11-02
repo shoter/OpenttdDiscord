@@ -1,6 +1,4 @@
 using Discord;
-using LanguageExt;
-using OpenttdDiscord.Base.Ext;
 using OpenttdDiscord.Domain.Security;
 
 namespace OpenttdDiscord.Domain.Roles.UseCases

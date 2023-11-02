@@ -6,7 +6,7 @@ using OpenttdDiscord.Infrastructure.Rcon.Runners;
 
 namespace OpenttdDiscord.Infrastructure.Tests.Rcon.Runners
 {
-    public class ListRconChannelsRunnerShould : RunnerTestBase
+    public class ListRconChannelsRunnerShould : CommandRunnerTestBase
     {
         private readonly IGetServerUseCase getServerUseCaseSubsitute = Substitute.For<IGetServerUseCase>();
 
@@ -28,15 +28,14 @@ namespace OpenttdDiscord.Infrastructure.Tests.Rcon.Runners
         [InlineData(UserLevel.User)]
         public async Task NotExecuteForNonModerator(UserLevel userLevel)
         {
-            var result = await WithGuildUser()
+            await WithGuildUser()
                 .WithOption(
                     "server-name",
                     "whatever")
                 .WithUserLevel(userLevel)
-                .RunExt(sut);
-
-            Assert.True(result.IsLeft);
-            Assert.True(result.Left() is IncorrectUserLevelError);
+                .NotExecuteFor(
+                    sut,
+                    userLevel);
         }
     }
 }

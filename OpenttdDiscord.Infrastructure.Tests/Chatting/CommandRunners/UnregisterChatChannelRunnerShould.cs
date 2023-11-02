@@ -4,9 +4,9 @@ using OpenttdDiscord.Domain.Security;
 using OpenttdDiscord.Domain.Servers.UseCases;
 using OpenttdDiscord.Infrastructure.Chatting.Runners;
 
-namespace OpenttdDiscord.Infrastructure.Tests.Chatting.Runner
+namespace OpenttdDiscord.Infrastructure.Tests.Chatting.CommandRunners
 {
-    public class UnregisterChatChannelRunnerShould : RunnerTestBase
+    public class UnregisterChatChannelRunnerShould : CommandRunnerTestBase
     {
         private readonly IGetServerUseCase getServerUseCaseSubsitute = Substitute.For<IGetServerUseCase>();
 
@@ -29,15 +29,14 @@ namespace OpenttdDiscord.Infrastructure.Tests.Chatting.Runner
         [InlineData(UserLevel.Moderator)]
         public async Task NotExecuteForNonAdmin(UserLevel userLevel)
         {
-            var result = await WithGuildUser()
+            await WithGuildUser()
                 .WithOption(
                     "server-name",
                     "whatever")
                 .WithUserLevel(userLevel)
-                .RunExt(sut);
-
-            Assert.True(result.IsLeft);
-            Assert.True(result.Left() is IncorrectUserLevelError);
+                .NotExecuteFor(
+                    sut,
+                    userLevel);
         }
     }
 }

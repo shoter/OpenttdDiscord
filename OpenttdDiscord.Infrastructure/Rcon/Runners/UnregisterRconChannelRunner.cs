@@ -22,23 +22,37 @@ namespace OpenttdDiscord.Infrastructure.Rcon.Runners
             IUnregisterRconChannelUseCase unregisterRconChannelUseCase,
             IAkkaService akkaService,
             IGetRoleLevelUseCase getRoleLevelUseCase)
-        : base(akkaService, getRoleLevelUseCase)
+            : base(
+                akkaService,
+                getRoleLevelUseCase)
         {
             this.getServerByNameUseCase = getServerByNameUseCase;
             this.unregisterRconChannelUseCase = unregisterRconChannelUseCase;
         }
 
-        protected override EitherAsync<IError, IInteractionResponse> RunInternal(ISlashCommandInteraction command, User user, ExtDictionary<string, object> options)
+        protected override EitherAsync<IError, IInteractionResponse> RunInternal(
+            ISlashCommandInteraction command,
+            User user,
+            ExtDictionary<string, object> options)
         {
             string serverName = options.GetValueAs<string>("server-name");
             ulong guildId = command.GuildId!.Value;
             ulong channelId = command.ChannelId!.Value;
 
             return
-                from _0 in CheckIfHasCorrectUserLevel(user, UserLevel.Admin).ToAsync()
-                from server in getServerByNameUseCase.Execute(user, serverName, guildId)
-                from _1 in unregisterRconChannelUseCase.Execute(user, server.Id, guildId, channelId)
-                select (IInteractionResponse)new TextResponse($"Unregistered RCON channel for {serverName}");
+                from _0 in CheckIfHasCorrectUserLevel(
+                        user,
+                        UserLevel.Admin)
+                    .ToAsync()
+                from server in getServerByNameUseCase.Execute(
+                    serverName,
+                    guildId)
+                from _1 in unregisterRconChannelUseCase.Execute(
+                    user,
+                    server.Id,
+                    guildId,
+                    channelId)
+                select (IInteractionResponse) new TextResponse($"Unregistered RCON channel for {serverName}");
         }
     }
 }

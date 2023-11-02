@@ -1,9 +1,11 @@
+using System.Diagnostics.CodeAnalysis;
 using Discord;
 using OpenttdDiscord.Infrastructure.Discord.Commands;
 using OpenttdDiscord.Infrastructure.Testing.CommandRunners;
 
 namespace OpenttdDiscord.Infrastructure.Testing.Commands
 {
+    [ExcludeFromCodeCoverage]
     internal class TestCommand : OttdSlashCommandBase<TestCommandRunner>
     {
         public TestCommand()

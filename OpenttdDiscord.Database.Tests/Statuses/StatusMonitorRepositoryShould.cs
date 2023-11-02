@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Threading.Tasks;
-using AutoFixture;
 using OpenttdDiscord.Base.Ext;
 using OpenttdDiscord.Database.Servers;
 using OpenttdDiscord.Database.Statuses;
@@ -101,15 +96,6 @@ namespace OpenttdDiscord.Database.Tests.Statuses
         {
             var context = await CreateContext(databaseName);
             return new StatusMonitorRepository(context);
-        }
-
-        private async Task<OttdServer> CreateServer([CallerMemberName] string? databaseName = null)
-        {
-            var context = await CreateContext(databaseName);
-            var repository = new OttdServerRepository(context);
-            var server = Fix.Create<OttdServer>();
-            (await repository.InsertServer(server)).ThrowIfError();
-            return server;
         }
 
         private void Equal(StatusMonitor lhm, StatusMonitor rhm)

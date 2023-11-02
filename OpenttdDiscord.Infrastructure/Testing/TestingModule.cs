@@ -1,7 +1,9 @@
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.Extensions.DependencyInjection;
 using OpenttdDiscord.Database.Statuses;
 using OpenttdDiscord.Domain.Statuses;
 using OpenttdDiscord.Infrastructure.Discord.Commands;
+using OpenttdDiscord.Infrastructure.Discord.ModalRunners;
 using OpenttdDiscord.Infrastructure.Discord.Modals;
 using OpenttdDiscord.Infrastructure.Modularity;
 using OpenttdDiscord.Infrastructure.Testing.CommandRunners;
@@ -11,12 +13,14 @@ using OpenttdDiscord.Infrastructure.Testing.Modals;
 
 namespace OpenttdDiscord.Infrastructure.Testing
 {
+    [ExcludeFromCodeCoverage]
     internal class TestingModule : IModule
     {
         public void RegisterDependencies(IServiceCollection services)
         {
             services
                 .AddScoped<IStatusMonitorRepository, StatusMonitorRepository>()
+                .AddSingleton<IAssociatedModalRunners, TestingAssociatedModalRunnerRunners>()
                 .RegisterCommandRunners()
                 .RegisterCommands()
                 .RegisterModals()

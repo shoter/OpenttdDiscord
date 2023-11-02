@@ -17,8 +17,8 @@
           <PrivateAssets>all</PrivateAssets>
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="xunit" Version="2.5.1" />
-        <PackageReference Include="xunit.runner.visualstudio" Version="2.5.1">
+        <PackageReference Include="xunit" Version="2.5.3" />
+        <PackageReference Include="xunit.runner.visualstudio" Version="2.5.3">
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
             <PrivateAssets>all</PrivateAssets>
         </PackageReference>
@@ -26,7 +26,7 @@
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
             <PrivateAssets>all</PrivateAssets>
         </PackageReference>
-        <PackageReference Update="Roslynator.Analyzers" Version="4.5.0">
+        <PackageReference Update="Roslynator.Analyzers" Version="4.6.1">
           <PrivateAssets>all</PrivateAssets>
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
@@ -35,21 +35,5 @@
     <ItemGroup>
       <ProjectReference Include="..\OpenttdDiscord.Infrastructure\OpenttdDiscord.Infrastructure.csproj" />
       <ProjectReference Include="..\OpenttdDiscord.Tests.Common\OpenttdDiscord.Tests.Common.csproj" />
-
-
-
-    <ItemGroup>
-      <Folder Include="Discord\" />
     </ItemGroup>
-
-    </ItemGroup>
-
-
-
-
-
-
-
-
-
 </Project>

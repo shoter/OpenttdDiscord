@@ -1,7 +1,4 @@
-﻿using LanguageExt;
-using OpenttdDiscord.Base.Ext;
-
-namespace OpenttdDiscord.Domain.Guilds.UseCases
+﻿namespace OpenttdDiscord.Domain.Guilds.UseCases
 {
     public interface IGetAllGuildsUseCase
     {

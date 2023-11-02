@@ -4,7 +4,7 @@ using OpenttdDiscord.Infrastructure.Maintenance.Runners;
 
 namespace OpenttdDiscord.Infrastructure.Tests.Maintenance.Runners
 {
-    public class HealthCheckRunnerShould : RunnerTestBase
+    public class HealthCheckRunnerShould : CommandRunnerTestBase
     {
         private readonly HealthCheckRunner sut;
 

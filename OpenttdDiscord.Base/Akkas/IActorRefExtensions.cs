@@ -12,6 +12,15 @@ namespace OpenttdDiscord.Base.Akkas
             return Unit.Default;
         }
 
+        public static EitherUnit TellExt(
+            this Option<IActorRef> actor,
+            object msg) => actor.IfSome(a => a.Tell(msg));
+
+        public static EitherUnit ForwardExt(
+            this Option<IActorRef> actor,
+            object msg)
+            => actor.IfSome(a => a.Forward(msg));
+
         public static Unit TellMany<T>(this IActorRef actor, IEnumerable<T> msgs)
         {
             foreach (var m in msgs)

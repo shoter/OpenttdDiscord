@@ -5,16 +5,16 @@ namespace OpenttdDiscord.Infrastructure.Discord.CommandResponses
 {
     public class ModalResponse : InteractionResponseBase
     {
-        private readonly IOttdModal modal;
+        public IOttdModal Modal { get; }
 
         public ModalResponse(IOttdModal modal)
         {
-            this.modal = modal;
+            this.Modal = modal;
         }
 
         protected override Task InternalExecute(IDiscordInteraction interaction)
         {
-            return interaction.RespondWithModalAsync(modal.Build());
+            return interaction.RespondWithModalAsync(Modal.Build());
         }
     }
 }

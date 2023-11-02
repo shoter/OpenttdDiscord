@@ -55,7 +55,6 @@ namespace OpenttdDiscord.Infrastructure.Reporting.Runners
                     foreach (var reportChannel in channels)
                     {
                         var server = (await getServerUseCase.Execute(
-                                User.Master,
                                 reportChannel.ServerId))
                             .ThrowIfError()
                             .Right();

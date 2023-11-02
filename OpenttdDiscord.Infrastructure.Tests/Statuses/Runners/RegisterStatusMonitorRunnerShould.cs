@@ -6,7 +6,7 @@ using OpenttdDiscord.Infrastructure.Statuses.Runners;
 
 namespace OpenttdDiscord.Infrastructure.Tests.Statuses.Runners
 {
-    public class RegisterStatusMonitorRunnerShould : RunnerTestBase
+    public class RegisterStatusMonitorRunnerShould : CommandRunnerTestBase
     {
         private readonly IRegisterStatusMonitorUseCase registerStatusMonitorUseCaseSub =
             Substitute.For<IRegisterStatusMonitorUseCase>();

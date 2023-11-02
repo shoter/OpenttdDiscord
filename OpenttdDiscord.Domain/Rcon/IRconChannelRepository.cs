@@ -1,7 +1,4 @@
-﻿using LanguageExt;
-using OpenttdDiscord.Base.Ext;
-
-namespace OpenttdDiscord.Domain.Rcon
+﻿namespace OpenttdDiscord.Domain.Rcon
 {
     public interface IRconChannelRepository
     {

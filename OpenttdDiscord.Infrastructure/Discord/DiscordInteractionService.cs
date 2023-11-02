@@ -20,14 +20,14 @@ namespace OpenttdDiscord.Infrastructure.Discord
         private readonly IServiceProvider serviceProvider;
         private readonly ValidationErrorEmbedBuilder validationEmbedBuilder = new();
         private readonly Dictionary<string, IOttdSlashCommand> commands = new();
-        private readonly Dictionary<string, IOttdModal> modals = new();
+        private readonly Dictionary<string, Type> associatedModalRunners = new();
 
         public DiscordInteractionService(
             IServiceProvider serviceProvider,
             ILogger<DiscordInteractionService> logger,
             DiscordSocketClient client,
             IEnumerable<IOttdSlashCommand> commands,
-            IEnumerable<IOttdModal> modals
+            IEnumerable<IAssociatedModalRunners> associatedModalRunners
         )
         {
             this.logger = logger;
@@ -40,11 +40,14 @@ namespace OpenttdDiscord.Infrastructure.Discord
                     c);
             }
 
-            foreach (var m in modals)
+            foreach (var amr in associatedModalRunners)
             {
-                this.modals.Add(
-                    m.Id,
-                    m);
+                foreach (var modalRunner in amr.AssociatedModalRunners)
+                {
+                    this.associatedModalRunners.Add(
+                        modalRunner.Key,
+                        modalRunner.Value);
+                }
             }
         }
 
@@ -145,9 +148,9 @@ namespace OpenttdDiscord.Infrastructure.Discord
                 arg.User.Username,
                 name);
 
-            var modal = this.modals[name];
+            var modalRunnerType = this.associatedModalRunners[name];
             using var scope = serviceProvider.CreateScope();
-            IOttdModalRunner runner = modal.CreateRunner(scope.ServiceProvider);
+            IOttdModalRunner runner = (IOttdModalRunner) scope.ServiceProvider.GetRequiredService(modalRunnerType);
             logger.LogDebug($"Created runner {runner.GetType()} for {name}");
 
             Task<IInteractionResponse> responseTask = GetModalResponse(

@@ -5,7 +5,7 @@ using OpenttdDiscord.Infrastructure.Servers.Runners;
 
 namespace OpenttdDiscord.Infrastructure.Tests.Servers.Runners
 {
-    public class ListServerRunnerShould : RunnerTestBase
+    public class ListServerRunnerShould : CommandRunnerTestBase
     {
         private IOttdServerRepository OttdServerRepositorySub { get; } = Substitute.For<IOttdServerRepository>();
 

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Runtime.CompilerServices;
-using System.Threading.Tasks;
-using AutoFixture;
+﻿using System.Runtime.CompilerServices;
 using OpenttdDiscord.Base.Ext;
 using OpenttdDiscord.Database.Rcon;
 using OpenttdDiscord.Database.Servers;
@@ -100,15 +97,6 @@ namespace OpenttdDiscord.Database.Tests.Rcon
         {
             var context = await CreateContext(databaseName);
             return new RconChannelRepository(context);
-        }
-
-        private async Task<OttdServer> CreateServer([CallerMemberName] string? databaseName = null)
-        {
-            var context = await CreateContext(databaseName);
-            var repository = new OttdServerRepository(context);
-            var server = Fix.Create<OttdServer>();
-            (await repository.InsertServer(server)).ThrowIfError();
-            return server;
         }
     }
 }

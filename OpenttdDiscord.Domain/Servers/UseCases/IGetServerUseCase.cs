@@ -1,13 +1,11 @@
-﻿using LanguageExt;
-using OpenttdDiscord.Base.Ext;
-using OpenttdDiscord.Domain.Security;
+﻿using OpenttdDiscord.Domain.Security;
 
 namespace OpenttdDiscord.Domain.Servers.UseCases
 {
     public interface IGetServerUseCase
     {
-        EitherAsync<IError, OttdServer> Execute(User user, string serverName, ulong guildId);
+        EitherAsync<IError, OttdServer> Execute(string serverName, ulong guildId);
 
-        EitherAsync<IError, OttdServer> Execute(User user, Guid serverId);
+        EitherAsync<IError, OttdServer> Execute(Guid serverId);
     }
 }

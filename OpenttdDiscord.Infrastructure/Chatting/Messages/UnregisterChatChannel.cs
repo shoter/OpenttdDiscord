@@ -1,3 +1,8 @@
-﻿namespace OpenttdDiscord.Infrastructure.Chatting.Messages;
+﻿using OpenttdDiscord.Infrastructure.Ottd.Messages;
 
-internal record UnregisterChatChannel(Guid ServerId, ulong GuildId, ulong ChannelId);
+namespace OpenttdDiscord.Infrastructure.Chatting.Messages;
+
+internal record UnregisterChatChannel(
+    Guid ServerId,
+    ulong GuildId,
+    ulong ChannelId) : IOttdServerMessage;

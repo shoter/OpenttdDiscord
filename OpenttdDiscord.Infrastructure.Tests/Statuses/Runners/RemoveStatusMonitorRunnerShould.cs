@@ -6,7 +6,7 @@ using OpenttdDiscord.Infrastructure.Statuses.Runners;
 
 namespace OpenttdDiscord.Infrastructure.Tests.Statuses.Runners
 {
-    public class RemoveStatusMonitorRunnerShould : RunnerTestBase
+    public class RemoveStatusMonitorRunnerShould : CommandRunnerTestBase
     {
         private readonly IRemoveStatusMonitorUseCase removeStatusMonitorUseCaseSub =
             Substitute.For<IRemoveStatusMonitorUseCase>();
@@ -29,13 +29,14 @@ namespace OpenttdDiscord.Infrastructure.Tests.Statuses.Runners
         [InlineData(UserLevel.Moderator)]
         public async Task NotExecuteForNonAdmin(UserLevel userLevel)
         {
-            var result = await WithGuildUser()
-                .WithOption("server-name", "whatever")
+            await WithGuildUser()
+                .WithOption(
+                    "server-name",
+                    "whatever")
                 .WithUserLevel(userLevel)
-                .RunExt(sut);
-
-            Assert.True(result.IsLeft);
-            Assert.True(result.Left() is IncorrectUserLevelError);
+                .NotExecuteFor(
+                    sut,
+                    userLevel);
         }
     }
 }

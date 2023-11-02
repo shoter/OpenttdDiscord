@@ -1,3 +1,8 @@
-﻿namespace OpenttdDiscord.Infrastructure.Reporting.Messages;
+﻿using OpenttdDiscord.Infrastructure.Ottd.Messages;
 
-internal record UnregisterReportChannel(Guid ServerId, ulong GuildId, ulong channelId);
+namespace OpenttdDiscord.Infrastructure.Reporting.Messages;
+
+internal record UnregisterReportChannel(
+    Guid ServerId,
+    ulong GuildId,
+    ulong channelId) : IOttdServerMessage;

@@ -6,7 +6,7 @@ using OpenttdDiscord.Infrastructure.Reporting.Runners;
 
 namespace OpenttdDiscord.Infrastructure.Tests.Reporting.Runners
 {
-    public class ListReportChannelsRunnerShould : RunnerTestBase
+    public class ListReportChannelsRunnerShould : CommandRunnerTestBase
     {
         private readonly IGetServerUseCase getServerUseCaseSubsitute = Substitute.For<IGetServerUseCase>();
 
@@ -28,13 +28,12 @@ namespace OpenttdDiscord.Infrastructure.Tests.Reporting.Runners
         [InlineData(UserLevel.User)]
         public async Task NotExecuteForNonModerator(UserLevel userLevel)
         {
-            var result = await WithGuildUser()
+            await WithGuildUser()
                 .WithOption("server-name", "whatever")
                 .WithUserLevel(userLevel)
-                .RunExt(sut);
-
-            Assert.True(result.IsLeft);
-            Assert.True(result.Left() is IncorrectUserLevelError);
+                .NotExecuteFor(
+                    sut,
+                    userLevel);
         }
     }
 }

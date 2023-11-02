@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using Discord;
 using LanguageExt;
 using OpenttdDiscord.Base.Basics;
@@ -11,6 +12,7 @@ using OpenttdDiscord.Infrastructure.Testing.Modals;
 
 namespace OpenttdDiscord.Infrastructure.Testing.CommandRunners
 {
+    [ExcludeFromCodeCoverage]
     internal class TestCommandRunner : OttdSlashCommandRunnerBase
     {
         private readonly TestModal testModal;

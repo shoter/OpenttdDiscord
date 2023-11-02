@@ -13,25 +13,13 @@ namespace OpenttdDiscord.Database.Roles
 
         private OttdContext Db { get; }
 
-        public EitherAsyncUnit InsertRole(GuildRole role) => TryAsync<EitherUnit>(
-                async () =>
-                {
-                    await Db
-                        .GuildRoles
-                        .AddAsync(
-                            new GuildRoleEntity(
-                                role.GuildId,
-                                role.RoleId)
-                            {
-                                UserLevel = (int) role.RoleLevel,
-                            }
-                        );
-
-                    await Db.SaveChangesAsync();
-
-                    return Unit.Default;
-                })
-            .ToEitherAsyncErrorFlat();
+        public EitherAsyncUnit InsertRole(GuildRole role) =>
+            from _1 in Db.GuildRoles.AddAsyncExt(
+                new GuildRoleEntity(
+                    role.GuildId,
+                    role.RoleId) { UserLevel = (int) role.RoleLevel })
+            from _2 in Db.SaveChangesAsyncExt()
+            select Unit.Default;
 
         public EitherAsyncUnit UpdateRole(GuildRole updatedRole) => TryAsync<EitherUnit>(
                 async () =>

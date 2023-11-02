@@ -10,6 +10,7 @@ using OpenttdDiscord.Domain.AutoReplies;
 using OpenttdDiscord.Domain.AutoReplies.UseCases;
 using OpenttdDiscord.Infrastructure.Akkas.Message;
 using OpenttdDiscord.Infrastructure.AutoReply.Messages;
+using OpenttdDiscord.Infrastructure.Ottd.Messages;
 
 namespace OpenttdDiscord.Infrastructure.AutoReply.Actors
 {
@@ -36,6 +37,13 @@ namespace OpenttdDiscord.Infrastructure.AutoReply.Actors
 
             Ready();
             Self.Tell(new InitializeActor());
+            parent.Tell(new SubscribeToAdminEvents(Self));
+        }
+
+        protected override void PostStop()
+        {
+            parent.Tell(new UnsubscribeFromAdminEvents(Self));
+            base.PostStop();
         }
 
         public static Props Create(

@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.Extensions.DependencyInjection;
 using OpenttdDiscord.Database.AutoReplies;
 using OpenttdDiscord.Domain.AutoReplies;
@@ -14,6 +15,7 @@ using OpenttdDiscord.Infrastructure.Modularity;
 
 namespace OpenttdDiscord.Infrastructure.AutoReply
 {
+    [ExcludeFromCodeCoverage]
     public class AutoReplyModule : IModule
     {
         public void RegisterDependencies(IServiceCollection services)
@@ -28,6 +30,7 @@ namespace OpenttdDiscord.Infrastructure.AutoReply
     }
 
 #pragma warning disable SA1402 // File may only contain a single type
+    [ExcludeFromCodeCoverage]
     internal static class AutoReplyModuleExtensions
 #pragma warning restore SA1402 // File may only contain a single type
     {

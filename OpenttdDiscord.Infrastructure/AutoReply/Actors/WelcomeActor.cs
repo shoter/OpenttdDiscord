@@ -24,7 +24,12 @@ namespace OpenttdDiscord.Infrastructure.AutoReply.Actors
             Ready();
         }
 
-        private string[] CreateMessageToSent(string arg) => arg.Split(Environment.NewLine);
+        private string[] CreateMessageToSent(string arg)
+        {
+            return arg
+                .Replace("\r", string.Empty)
+                .Split('\n');
+        }
 
         public static Props Create(
             IServiceProvider serviceProvider,

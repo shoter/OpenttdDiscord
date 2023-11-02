@@ -1,9 +1,12 @@
 using Akka.Actor;
 using LanguageExt.UnitsOfMeasure;
+using Microsoft.Extensions.DependencyInjection;
 using OpenTTDAdminPort;
 using OpenTTDAdminPort.Events;
 using OpenTTDAdminPort.Game;
 using OpenTTDAdminPort.Messages;
+using OpenttdDiscord.Domain.AutoReplies;
+using OpenttdDiscord.Domain.AutoReplies.UseCases;
 using OpenttdDiscord.Infrastructure.AutoReply.Actors;
 using OpenttdDiscord.Infrastructure.AutoReply.Messages;
 using OpenttdDiscord.Tests.Common;
@@ -15,15 +18,35 @@ namespace OpenttdDiscord.Infrastructure.Tests.AutoReplies.Actors
     {
         private readonly IActorRef sut;
         private readonly IAdminPortClient adminPortClientSut = Substitute.For<IAdminPortClient>();
+        private readonly ulong guildId;
+        private readonly Guid serverId;
+
+        private readonly IGetWelcomeMessageUseCase getWelcomeMessageUseCaseSub =
+            Substitute.For<IGetWelcomeMessageUseCase>();
 
         public AutoReplyActorShould(ITestOutputHelper outputHelper)
             : base(outputHelper)
         {
+            this.guildId = fix.Create<ulong>();
+            this.serverId = fix.Create<Guid>();
             sut = ActorOf(
                 AutoReplyActor.Create(
                     Sp,
+                    guildId,
+                    serverId,
                     adminPortClientSut
                 ));
+
+            getWelcomeMessageUseCaseSub
+                .Execute(
+                    guildId,
+                    serverId)
+                .Returns(Option<WelcomeMessage>.None);
+        }
+
+        protected override void InitializeServiceProvider(IServiceCollection services)
+        {
+            services.AddSingleton(getWelcomeMessageUseCaseSub);
         }
 
         [Fact(Timeout = 2_000)]
@@ -38,6 +61,40 @@ namespace OpenttdDiscord.Infrastructure.Tests.AutoReplies.Actors
                     Arg.Is<AdminChatMessage>(
                         msg =>
                             msg.Destination == ev.Player.ClientId));
+        }
+
+        [Fact(Timeout = 2_000)]
+        public async Task SendMessage_IfWelcomeMessage_IsConfiguredInDatabase()
+        {
+            var welcomeMessage = fix.Create<WelcomeMessage>();
+            getWelcomeMessageUseCaseSub
+                .Execute(
+                    guildId,
+                    serverId)
+                .Returns(Some(welcomeMessage));
+
+            // Sut needs to be recreated, because it should get data from repo at startup
+            var specificSut = ActorOf(
+                AutoReplyActor.Create(
+                    Sp,
+                    guildId,
+                    serverId,
+                    adminPortClientSut
+                ));
+            await Task.Delay(.5.Seconds());
+
+            // Act
+            var ev = fix.Create<AdminClientJoinEvent>();
+            await specificSut.Ask(ev);
+
+            // Assert
+            adminPortClientSut.Received()
+                .SendMessage(
+                    new AdminChatMessage(
+                        NetworkAction.NETWORK_ACTION_CHAT,
+                        ChatDestination.DESTTYPE_CLIENT,
+                        ev.Player.ClientId,
+                        welcomeMessage.Content));
         }
 
         [Fact(Timeout = 1_000)]

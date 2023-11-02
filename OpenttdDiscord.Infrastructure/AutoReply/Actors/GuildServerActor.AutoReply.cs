@@ -14,6 +14,8 @@ namespace OpenttdDiscord.Infrastructure.Ottd.Actors
             autoReplyActor = Context.ActorOf(
                 AutoReplyActor.Create(
                     SP,
+                    server.GuildId,
+                    server.Id,
                     client));
         }
 

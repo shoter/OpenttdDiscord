@@ -8,6 +8,7 @@ using OpenTTDAdminPort.Messages;
 using OpenttdDiscord.Base.Ext;
 using OpenttdDiscord.Domain.AutoReplies;
 using OpenttdDiscord.Domain.AutoReplies.UseCases;
+using OpenttdDiscord.Infrastructure.Akkas.Message;
 using OpenttdDiscord.Infrastructure.AutoReply.Messages;
 
 namespace OpenttdDiscord.Infrastructure.AutoReply.Actors
@@ -16,6 +17,9 @@ namespace OpenttdDiscord.Infrastructure.AutoReply.Actors
     {
         private readonly IAdminPortClient client;
         private readonly IGetWelcomeMessageUseCase getWelcomeMessageUseCase;
+        private readonly ulong guildId;
+        private readonly Guid serverId;
+
         private Option<IActorRef> welcomeActor = Option<IActorRef>.None;
 
         public AutoReplyActor(
@@ -27,27 +31,13 @@ namespace OpenttdDiscord.Infrastructure.AutoReply.Actors
         {
             this.client = client;
             this.getWelcomeMessageUseCase = SP.GetRequiredService<IGetWelcomeMessageUseCase>();
-
-            var welcomeMessage = getWelcomeMessageUseCase.Execute(
-                    guildId,
-                    serverId)
-                .AsTask()
-                .Result
-                .Right();
-            
-            welcomeMessage.IfSome(
-                message =>
-                
-                )
-            
-            
-            
-            
-            
+            this.guildId = guildId;
+            this.serverId = serverId;
 
             Ready();
+            Self.Tell(new InitializeActor());
         }
-        
+
         public static Props Create(
             IServiceProvider serviceProvider,
             ulong guildId,
@@ -63,6 +53,27 @@ namespace OpenttdDiscord.Infrastructure.AutoReply.Actors
         {
             Receive<UpdateWelcomeMessage>(UpsertWelcomeMessage);
             Receive<IAdminEvent>(OnAdminEvent);
+            ReceiveEitherAsync<InitializeActor>(InitializeActor);
+        }
+
+        private EitherAsyncUnit InitializeActor(InitializeActor _)
+        {
+            return
+                from message in getWelcomeMessageUseCase.Execute(
+                    guildId,
+                    serverId)
+                select message.IfSome(TryToInitializeActor);
+        }
+
+        private Unit TryToInitializeActor(WelcomeMessage welcomeMessage)
+        {
+            if (welcomeActor.IsSome)
+            {
+                return Unit.Default;
+            }
+
+            welcomeActor = CreateWelcomeActor(welcomeMessage.Content);
+            return Unit.Default;
         }
 
         private void OnAdminEvent(IAdminEvent msg)
@@ -80,14 +91,19 @@ namespace OpenttdDiscord.Infrastructure.AutoReply.Actors
                 return;
             }
 
+            welcomeActor = CreateWelcomeActor(msg.Content);
+            Sender.Tell(Unit.Default);
+        }
+
+        private Option<IActorRef> CreateWelcomeActor(string content)
+        {
             IActorRef actor = Context.ActorOf(
                 WelcomeActor.Create(
                     SP,
                     client,
-                    msg.Content));
+                    content));
 
-            welcomeActor = Some(actor);
-            Sender.Tell(Unit.Default);
+            return Some(actor);
         }
     }
 }

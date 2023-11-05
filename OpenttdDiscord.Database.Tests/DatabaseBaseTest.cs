@@ -28,11 +28,12 @@ namespace OpenttdDiscord.Database.Tests
             return databaseFixture.CreateContext(databaseName);
         }
 
-        protected async Task<OttdServer> CreateServer([CallerMemberName] string? databaseName = null)
+        protected async Task<OttdServer> CreateServer([CallerMemberName] string? databaseName = null, Func<OttdServer, OttdServer>? customize = null)
         {
             var context = await CreateContext(databaseName);
             var repository = new OttdServerRepository(context);
             var server = Fix.Create<OttdServer>();
+            customize?.Invoke(server);
             (await repository.InsertServer(server)).ThrowIfError();
             return server;
         }

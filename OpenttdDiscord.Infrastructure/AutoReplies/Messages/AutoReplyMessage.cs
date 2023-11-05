@@ -1,7 +1,7 @@
 using OpenttdDiscord.Infrastructure.Guilds.Messages;
 using OpenttdDiscord.Infrastructure.Ottd.Messages;
 
-namespace OpenttdDiscord.Infrastructure.AutoReply.Messages
+namespace OpenttdDiscord.Infrastructure.AutoReplies.Messages
 {
     public record AutoReplyMessage(
         ulong GuildId,

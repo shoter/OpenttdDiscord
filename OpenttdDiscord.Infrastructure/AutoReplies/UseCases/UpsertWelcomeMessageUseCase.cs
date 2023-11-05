@@ -2,9 +2,9 @@ using LanguageExt;
 using OpenttdDiscord.Domain.AutoReplies;
 using OpenttdDiscord.Domain.AutoReplies.UseCases;
 using OpenttdDiscord.Infrastructure.Akkas;
-using OpenttdDiscord.Infrastructure.AutoReply.Messages;
+using OpenttdDiscord.Infrastructure.AutoReplies.Messages;
 
-namespace OpenttdDiscord.Infrastructure.AutoReply.UseCases
+namespace OpenttdDiscord.Infrastructure.AutoReplies.UseCases
 {
     public class UpsertWelcomeMessageUseCase : IUpsertWelcomeMessageUseCase
     {

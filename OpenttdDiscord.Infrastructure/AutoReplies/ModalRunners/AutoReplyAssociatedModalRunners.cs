@@ -1,7 +1,7 @@
-using OpenttdDiscord.Infrastructure.AutoReply.Modals;
+using OpenttdDiscord.Infrastructure.AutoReplies.Modals;
 using OpenttdDiscord.Infrastructure.Discord.ModalRunners;
 
-namespace OpenttdDiscord.Infrastructure.AutoReply.ModalRunners
+namespace OpenttdDiscord.Infrastructure.AutoReplies.ModalRunners
 {
     public class AutoReplyAssociatedModalRunners : IAssociatedModalRunners
     {

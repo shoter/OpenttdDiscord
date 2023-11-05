@@ -5,8 +5,8 @@ using OpenTTDAdminPort;
 using OpenTTDAdminPort.Events;
 using OpenTTDAdminPort.Game;
 using OpenTTDAdminPort.Messages;
-using OpenttdDiscord.Infrastructure.AutoReply.Actors;
-using OpenttdDiscord.Infrastructure.AutoReply.Messages;
+using OpenttdDiscord.Infrastructure.AutoReplies.Actors;
+using OpenttdDiscord.Infrastructure.AutoReplies.Messages;
 using Xunit.Abstractions;
 
 namespace OpenttdDiscord.Infrastructure.Tests.AutoReplies.Actors

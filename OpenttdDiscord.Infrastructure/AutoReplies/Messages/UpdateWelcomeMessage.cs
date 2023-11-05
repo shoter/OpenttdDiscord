@@ -1,4 +1,4 @@
-namespace OpenttdDiscord.Infrastructure.AutoReply.Messages
+namespace OpenttdDiscord.Infrastructure.AutoReplies.Messages
 {
     public record UpdateWelcomeMessage(
         ulong GuildId,

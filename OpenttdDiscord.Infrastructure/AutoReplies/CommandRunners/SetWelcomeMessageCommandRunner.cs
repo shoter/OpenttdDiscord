@@ -5,15 +5,13 @@ using OpenttdDiscord.Base.Ext;
 using OpenttdDiscord.Domain.AutoReplies;
 using OpenttdDiscord.Domain.Roles.UseCases;
 using OpenttdDiscord.Domain.Security;
-using OpenttdDiscord.Domain.Servers;
 using OpenttdDiscord.Domain.Servers.UseCases;
 using OpenttdDiscord.Infrastructure.Akkas;
-using OpenttdDiscord.Infrastructure.AutoReply.Modals;
+using OpenttdDiscord.Infrastructure.AutoReplies.Modals;
 using OpenttdDiscord.Infrastructure.Discord.CommandResponses;
 using OpenttdDiscord.Infrastructure.Discord.CommandRunners;
-using OpenttdDiscord.Infrastructure.Testing.Modals;
 
-namespace OpenttdDiscord.Infrastructure.AutoReply.CommandRunners
+namespace OpenttdDiscord.Infrastructure.AutoReplies.CommandRunners
 {
     internal class SetWelcomeMessageCommandRunner : OttdSlashCommandRunnerBase
     {

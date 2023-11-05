@@ -3,17 +3,15 @@ using Microsoft.Extensions.DependencyInjection;
 using OpenttdDiscord.Database.AutoReplies;
 using OpenttdDiscord.Domain.AutoReplies;
 using OpenttdDiscord.Domain.AutoReplies.UseCases;
-using OpenttdDiscord.Infrastructure.AutoReply.CommandRunners;
-using OpenttdDiscord.Infrastructure.AutoReply.Commands;
-using OpenttdDiscord.Infrastructure.AutoReply.ModalRunners;
-using OpenttdDiscord.Infrastructure.AutoReply.Modals;
-using OpenttdDiscord.Infrastructure.AutoReply.UseCases;
+using OpenttdDiscord.Infrastructure.AutoReplies.CommandRunners;
+using OpenttdDiscord.Infrastructure.AutoReplies.Commands;
+using OpenttdDiscord.Infrastructure.AutoReplies.ModalRunners;
+using OpenttdDiscord.Infrastructure.AutoReplies.UseCases;
 using OpenttdDiscord.Infrastructure.Discord.Commands;
 using OpenttdDiscord.Infrastructure.Discord.ModalRunners;
-using OpenttdDiscord.Infrastructure.Discord.Modals;
 using OpenttdDiscord.Infrastructure.Modularity;
 
-namespace OpenttdDiscord.Infrastructure.AutoReply
+namespace OpenttdDiscord.Infrastructure.AutoReplies
 {
     [ExcludeFromCodeCoverage]
     public class AutoReplyModule : IModule

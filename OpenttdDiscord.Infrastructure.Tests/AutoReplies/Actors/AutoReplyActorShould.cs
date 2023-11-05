@@ -7,8 +7,8 @@ using OpenTTDAdminPort.Game;
 using OpenTTDAdminPort.Messages;
 using OpenttdDiscord.Domain.AutoReplies;
 using OpenttdDiscord.Domain.AutoReplies.UseCases;
-using OpenttdDiscord.Infrastructure.AutoReply.Actors;
-using OpenttdDiscord.Infrastructure.AutoReply.Messages;
+using OpenttdDiscord.Infrastructure.AutoReplies.Actors;
+using OpenttdDiscord.Infrastructure.AutoReplies.Messages;
 using OpenttdDiscord.Tests.Common;
 using Xunit.Abstractions;
 

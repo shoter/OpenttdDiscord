@@ -3,16 +3,13 @@ using LanguageExt;
 using Microsoft.Extensions.DependencyInjection;
 using OpenTTDAdminPort;
 using OpenTTDAdminPort.Events;
-using OpenTTDAdminPort.Game;
-using OpenTTDAdminPort.Messages;
-using OpenttdDiscord.Base.Ext;
 using OpenttdDiscord.Domain.AutoReplies;
 using OpenttdDiscord.Domain.AutoReplies.UseCases;
 using OpenttdDiscord.Infrastructure.Akkas.Message;
-using OpenttdDiscord.Infrastructure.AutoReply.Messages;
+using OpenttdDiscord.Infrastructure.AutoReplies.Messages;
 using OpenttdDiscord.Infrastructure.Ottd.Messages;
 
-namespace OpenttdDiscord.Infrastructure.AutoReply.Actors
+namespace OpenttdDiscord.Infrastructure.AutoReplies.Actors
 {
     public class AutoReplyActor : ReceiveActorBase
     {
@@ -60,8 +57,10 @@ namespace OpenttdDiscord.Infrastructure.AutoReply.Actors
         private void Ready()
         {
             Receive<UpdateWelcomeMessage>(UpsertWelcomeMessage);
-            Receive<IAdminEvent>(OnAdminEvent);
+            ReceiveRedirect<AdminClientJoinEvent>(() => welcomeActor);
+            Receive<AdminChatMessageEvent>(OnAdminChatMessageEvent);
             ReceiveEitherAsync<InitializeActor>(InitializeActor);
+            ReceiveIgnore<IAdminEvent>();
         }
 
         private EitherAsyncUnit InitializeActor(InitializeActor _)
@@ -84,7 +83,7 @@ namespace OpenttdDiscord.Infrastructure.AutoReply.Actors
             return Unit.Default;
         }
 
-        private void OnAdminEvent(IAdminEvent msg)
+        private void OnAdminChatMessageEvent(AdminChatMessageEvent msg)
         {
             welcomeActor.TellExt(msg);
             Sender.Tell(Unit.Default);

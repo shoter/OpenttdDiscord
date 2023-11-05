@@ -1,8 +1,8 @@
 using Discord;
-using OpenttdDiscord.Infrastructure.AutoReply.CommandRunners;
+using OpenttdDiscord.Infrastructure.AutoReplies.CommandRunners;
 using OpenttdDiscord.Infrastructure.Discord.Commands;
 
-namespace OpenttdDiscord.Infrastructure.AutoReply.Commands
+namespace OpenttdDiscord.Infrastructure.AutoReplies.Commands
 {
     internal class SetWelcomeMessageCommand : OttdSlashCommandBase<SetWelcomeMessageCommandRunner>
     {

@@ -14,6 +14,7 @@ using OpenttdDiscord.Infrastructure.Roles.Actors;
 using OpenttdDiscord.Infrastructure.Roles.Messages;
 using OpenttdDiscord.Infrastructure.Servers.Messages;
 using OpenttdDiscord.Infrastructure.Statuses.Messages;
+using GuildServerActor = OpenttdDiscord.Infrastructure.AutoReplies.Actors.GuildServerActor;
 
 namespace OpenttdDiscord.Infrastructure.Guilds.Actors
 {

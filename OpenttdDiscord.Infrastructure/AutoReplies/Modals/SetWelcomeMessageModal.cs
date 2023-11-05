@@ -1,9 +1,8 @@
 using Discord;
 using LanguageExt;
-using OpenttdDiscord.Infrastructure.AutoReply.ModalRunners;
 using OpenttdDiscord.Infrastructure.Discord.Modals;
 
-namespace OpenttdDiscord.Infrastructure.AutoReply.Modals
+namespace OpenttdDiscord.Infrastructure.AutoReplies.Modals
 {
     internal class SetWelcomeMessageModal : OttdModalBase
     {

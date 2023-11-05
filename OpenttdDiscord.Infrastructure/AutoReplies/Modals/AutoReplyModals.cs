@@ -1,4 +1,4 @@
-namespace OpenttdDiscord.Infrastructure.AutoReply.Modals
+namespace OpenttdDiscord.Infrastructure.AutoReplies.Modals
 {
     public static class AutoReplyModals
     {

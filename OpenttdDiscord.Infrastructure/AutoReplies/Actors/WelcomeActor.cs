@@ -4,9 +4,9 @@ using OpenTTDAdminPort;
 using OpenTTDAdminPort.Events;
 using OpenTTDAdminPort.Game;
 using OpenTTDAdminPort.Messages;
-using OpenttdDiscord.Infrastructure.AutoReply.Messages;
+using OpenttdDiscord.Infrastructure.AutoReplies.Messages;
 
-namespace OpenttdDiscord.Infrastructure.AutoReply.Actors
+namespace OpenttdDiscord.Infrastructure.AutoReplies.Actors
 {
     public class WelcomeActor : ReceiveActorBase
     {

@@ -3,7 +3,7 @@ using OpenttdDiscord.Base.Ext;
 using OpenttdDiscord.Domain.AutoReplies;
 using OpenttdDiscord.Domain.AutoReplies.UseCases;
 
-namespace OpenttdDiscord.Infrastructure.AutoReply.UseCases
+namespace OpenttdDiscord.Infrastructure.AutoReplies.UseCases
 {
     public class GetWelcomeMessageUseCase : IGetWelcomeMessageUseCase
     {

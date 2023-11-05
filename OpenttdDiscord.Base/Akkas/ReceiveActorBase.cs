@@ -44,10 +44,13 @@ namespace OpenttdDiscord.Base.Akkas
             base.PostRestart(reason);
         }
 
-        protected void ReceiveRedirect<T>(Func<IActorRef> redirect) => Receive<T>(msg => redirect().Forward(msg));
+        protected void ReceiveRedirect<T>(Func<IActorRef> redirect) => Receive<T>(
+            msg => redirect()
+                .Forward(msg));
 
-        protected void ReceiveRedirect<T>(Func<Option<IActorRef>> redirect) =>
-            Receive<T>(msg => redirect().IfSome(r => r.Forward(msg)));
+        protected void ReceiveRedirect<T>(Func<Option<IActorRef>> redirect) => Receive<T>(
+            msg => redirect()
+                .IfSome(r => r.Forward(msg)));
 
         /// <summary>
         /// Ignores all messages of type <typeparamref name="T"/> and does nothing with them.
@@ -56,6 +59,10 @@ namespace OpenttdDiscord.Base.Akkas
 
         protected void ReceiveEitherAsync<T>(Func<T, EitherAsyncUnit> func) => ReceiveAsync<T>(
             async (t) => (await func(t)).ThrowIfError());
+
+        protected void ReceiveEither<T>(Func<T, EitherUnit> func) => Receive<T>(
+            (t) => func(t)
+                .ThrowIfError());
 
         protected void ReceiveRespondUnit<T>(Action<T> action) => Receive<T>(
             msg =>

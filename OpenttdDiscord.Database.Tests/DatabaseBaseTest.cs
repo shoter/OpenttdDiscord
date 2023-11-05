@@ -33,7 +33,7 @@ namespace OpenttdDiscord.Database.Tests
             var context = await CreateContext(databaseName);
             var repository = new OttdServerRepository(context);
             var server = Fix.Create<OttdServer>();
-            server = customize?.Invoke(server);
+            server = customize?.Invoke(server) ?? server;
             (await repository.InsertServer(server)).ThrowIfError();
             return server;
         }

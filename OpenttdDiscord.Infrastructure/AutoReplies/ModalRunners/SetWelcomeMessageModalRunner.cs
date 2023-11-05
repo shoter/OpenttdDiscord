@@ -9,7 +9,7 @@ using OpenttdDiscord.Domain.Servers.UseCases;
 using OpenttdDiscord.Infrastructure.Discord.CommandResponses;
 using OpenttdDiscord.Infrastructure.Discord.ModalRunners;
 
-namespace OpenttdDiscord.Infrastructure.AutoReply.ModalRunners
+namespace OpenttdDiscord.Infrastructure.AutoReplies.ModalRunners
 {
     internal class SetWelcomeMessageModalRunner : OttdModalRunnerBase
     {

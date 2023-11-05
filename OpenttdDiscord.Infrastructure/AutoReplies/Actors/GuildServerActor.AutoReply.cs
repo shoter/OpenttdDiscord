@@ -1,7 +1,6 @@
 using Akka.Actor;
 using OpenTTDAdminPort;
-using OpenttdDiscord.Infrastructure.AutoReply.Actors;
-using OpenttdDiscord.Infrastructure.AutoReply.Messages;
+using OpenttdDiscord.Infrastructure.AutoReplies.Messages;
 
 namespace OpenttdDiscord.Infrastructure.Ottd.Actors
 {
@@ -11,7 +10,7 @@ namespace OpenttdDiscord.Infrastructure.Ottd.Actors
 
         private void AutoReplyConstructor(IAdminPortClient client)
         {
-            autoReplyActor = Context.ActorOf(
+            autoReplyActor = UntypedActor.Context.ActorOf(
                 AutoReplyActor.Create(
                     SP,
                     server.GuildId,

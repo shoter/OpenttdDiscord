@@ -2,7 +2,7 @@ using OpenttdDiscord.Domain.AutoReplies.UseCases;
 using OpenttdDiscord.Domain.Security;
 using OpenttdDiscord.Domain.Servers;
 using OpenttdDiscord.Domain.Servers.UseCases;
-using OpenttdDiscord.Infrastructure.AutoReply.ModalRunners;
+using OpenttdDiscord.Infrastructure.AutoReplies.ModalRunners;
 using OpenttdDiscord.Infrastructure.Discord.CommandResponses;
 
 namespace OpenttdDiscord.Infrastructure.Tests.AutoReplies.ModalRunners

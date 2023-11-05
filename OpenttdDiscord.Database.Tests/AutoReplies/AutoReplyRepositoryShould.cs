@@ -83,16 +83,15 @@ namespace OpenttdDiscord.Database.Tests.AutoReplies
 
             var updatedMessage =
                 await (from _1 in repo.UpsertWelcomeMessage(
-                        guildId,
+                        server.GuildId,
                         message)
                     from _2 in repo.UpsertWelcomeMessage(
-                        guildId,
+                        server2.GuildId,
                         message2)
                     from msg in repo.GetWelcomeMessage(
-                        guildId,
+                        server.GuildId,
                         server.Id)
                     select msg);
-
             var updatedMessage2 =
                 await (from msg in repo.GetWelcomeMessage(
                     server2.GuildId,

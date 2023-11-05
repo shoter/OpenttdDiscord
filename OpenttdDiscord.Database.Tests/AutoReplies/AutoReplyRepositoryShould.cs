@@ -71,8 +71,9 @@ namespace OpenttdDiscord.Database.Tests.AutoReplies
         [Fact]
         public async Task InsertMoreThanOneWelcomeMessagePerGuid()
         {
-            var server = await CreateServer();
-            var server2 = await CreateServer();
+            var guildId = Fix.Create<ulong>();
+            var server = await CreateServer(customize: s => s with { GuildId = guildId });
+            var server2 = await CreateServer(customize: s => s with { GuildId = guildId });
             var repo = await CreateRepository();
             var message = Fix.Create<WelcomeMessage>() with
             {
@@ -82,28 +83,28 @@ namespace OpenttdDiscord.Database.Tests.AutoReplies
 
             var updatedMessage =
                 await (from _1 in repo.UpsertWelcomeMessage(
-                        server.GuildId,
+                        guildId,
                         message)
                     from _2 in repo.UpsertWelcomeMessage(
-                        server.GuildId,
+                        guildId,
                         message2)
                     from msg in repo.GetWelcomeMessage(
-                        server.GuildId,
+                        guildId,
                         server.Id)
                     select msg);
 
             var updatedMessage2 =
-                from msg in repo.GetWelcomeMessage(
-                    server.GuildId,
-                    server.Id)
-                select msg;
+                await (from msg in repo.GetWelcomeMessage(
+                    server2.GuildId,
+                    server2.Id)
+                select msg);
 
             Assert.Equal(
-                message2,
-                updatedMessage.Right());
-            Assert.Equal(
                 message,
-                updatedMessage2.Right());
+                updatedMessage.Right().Case);
+            Assert.Equal(
+                message2,
+                updatedMessage2.Right().Case);
         }
 
         private async Task<AutoReplyRepository> CreateRepository([CallerMemberName] string? databaseName = null)

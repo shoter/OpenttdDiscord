@@ -9,7 +9,7 @@ namespace OpenttdDiscord.Database.Extensions
         internal static EitherAsyncUnit AddAsyncExt<TEntity>(
             this DbSet<TEntity> dbSet,
             TEntity entity)
-            where TEntity : class => (from _1 in TryAsync(dbSet.AddAsync(entity))
+            where TEntity : class => (from _1 in TryAsync(dbSet.AddAsync(entity).AsTask())
             select Unit.Default).ToEitherAsyncError();
     }
 }

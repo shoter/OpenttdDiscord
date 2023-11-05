@@ -92,7 +92,7 @@ namespace OpenttdDiscord.Infrastructure.Ottd.Actors
         }
 
         public static Props Create(IServiceProvider sp, OttdServer server)
-            => Props.Create(() => new AutoReplies.Actors.GuildServerActor(sp, server));
+            => Props.Create(() => new GuildServerActor(sp, server));
 
         protected override void PostStop()
         {

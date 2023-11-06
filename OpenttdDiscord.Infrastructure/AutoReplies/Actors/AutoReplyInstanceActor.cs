@@ -25,7 +25,10 @@ namespace OpenttdDiscord.Infrastructure.AutoReplies.Actors
                 .Replace(
                     "\r",
                     string.Empty)
-                .Split('\n');
+                .Split('\n')
+                .SelectMany(x => x.Chunk(500))
+                .Select(x => new string(x))
+                .ToArray();
             Ready();
         }
 

@@ -48,6 +48,15 @@ namespace OpenttdDiscord.Base.Akkas
             msg => redirect()
                 .Forward(msg));
 
+        protected void ReceiveRedirect<T>(Func<IEnumerable<IActorRef>> redirects) => Receive<T>(
+            msg =>
+            {
+                foreach (var r in redirects())
+                {
+                    r.Forward(msg);
+                }
+            });
+
         protected void ReceiveRedirect<T>(Func<Option<IActorRef>> redirect) => Receive<T>(
             msg => redirect()
                 .IfSome(r => r.Forward(msg)));

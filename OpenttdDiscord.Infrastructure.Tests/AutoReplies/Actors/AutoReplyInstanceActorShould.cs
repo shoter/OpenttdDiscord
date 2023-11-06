@@ -52,6 +52,59 @@ namespace OpenttdDiscord.Infrastructure.Tests.AutoReplies.Actors
         }
 
         [Fact]
+        public async Task ShouldChunkLongTriggerMessages()
+        {
+            string longMsg = fix.Create<string>();
+            while (longMsg.Length < 1000)
+            {
+                longMsg += fix.Create<string>();
+            }
+
+            var newSut = ActorOf(
+                AutoReplyInstanceActor.Create(
+                    Sp,
+                    defaultAutoReply with { ResponseMessage = longMsg },
+                    adminPortClientSut));
+
+            var msg = new AdminChatMessageEvent(
+                defaultPlayer,
+                ChatDestination.DESTTYPE_BROADCAST,
+                NetworkAction.NETWORK_ACTION_CHAT,
+                defaultAutoReply.TriggerMessage
+            );
+            newSut.Tell(msg);
+            await Task.Delay(.5.Seconds());
+
+            var calls = adminPortClientSut
+                .ReceivedCalls();
+            int i = 0;
+            foreach (var call in calls)
+            {
+                var message = (call.GetArguments()
+                    .Single() as AdminChatMessage)!.Message;
+
+                foreach (var character in message)
+                {
+                    if (longMsg[i] == '\r' || longMsg[i] == '\n')
+                    {
+                        ++i;
+                        continue;
+                    }
+
+                    Assert.Equal(
+                        character,
+                        longMsg[i]);
+
+                    ++i;
+                }
+            }
+
+            Assert.Equal(
+                longMsg.Length,
+                i);
+        }
+
+        [Fact]
         public async Task ShouldResetCompany_WhenAdditionalAction_SetToResetCompany()
         {
             var autoReply = defaultAutoReply with { AdditionalAction = AutoReplyAction.ResetCompany };

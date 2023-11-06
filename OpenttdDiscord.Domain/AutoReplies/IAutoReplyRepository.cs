@@ -15,7 +15,7 @@ namespace OpenttdDiscord.Domain.AutoReplies
             Guid serverId,
             AutoReply autoReply);
 
-        EitherAsync<IError, List<AutoReply>> GetAutoReplies(
+        EitherAsync<IError, IReadOnlyCollection<AutoReply>> GetAutoReplies(
             ulong guildId,
             Guid serverId);
     }

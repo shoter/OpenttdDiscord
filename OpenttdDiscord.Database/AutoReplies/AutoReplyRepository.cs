@@ -84,7 +84,7 @@ namespace OpenttdDiscord.Database.AutoReplies
                     newAutoReply.ResponseMessage,
                     newAutoReply.AdditionalAction.ToString())));
 
-        public EitherAsync<IError, List<AutoReply>> GetAutoReplies(
+        public EitherAsync<IError, IReadOnlyCollection<AutoReply>> GetAutoReplies(
             ulong guildId,
             Guid serverId) => from servers in db.AutoReplies.WhereExt(
                 ar =>
@@ -93,6 +93,6 @@ namespace OpenttdDiscord.Database.AutoReplies
             from serverList in servers.ToListExt()
             select serverList
                 .Select(x => x.ToDomain())
-                .ToList();
+                .ToList() as IReadOnlyCollection<AutoReply>;
     }
 }

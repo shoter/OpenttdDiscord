@@ -12,7 +12,7 @@
     <PackageReference Include="LanguageExt.Core" Version="4.4.7" />
     <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="7.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="7.0.1" />
-	<PackageReference Include="Shoter.OpenTTD.AdminPort" Version="1.0.0-run-91" />
+	<PackageReference Include="Shoter.OpenTTD.AdminPort" Version="1.0.0-run-92" />
 	<PackageReference Update="Roslynator.Analyzers" Version="4.6.1">
 	  <PrivateAssets>all</PrivateAssets>
 	  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

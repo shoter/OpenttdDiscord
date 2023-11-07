@@ -7,7 +7,7 @@ namespace OpenttdDiscord.Infrastructure.AutoReplies.ModalRunners
     {
         public Dictionary<string, Type> AssociatedModalRunners { get; } = new()
         {
-            { AutoReplyModals.SetWelcomeMessageModals, typeof(SetWelcomeMessageModalRunner) },
+            { AutoReplyModals.SetWelcomeMessage, typeof(SetWelcomeMessageModalRunner) },
         };
     }
 }

@@ -24,7 +24,13 @@ namespace OpenttdDiscord.Infrastructure.AutoReplies.Commands
                         .WithRequired(true))
                 .AddOption(
                     new SlashCommandOptionBuilder()
-                        .WithName("additional-action")
+                        .WithName("trigger")
+                        .WithDescription("Message which is used to trigger a response from auto reply.")
+                        .WithType(ApplicationCommandOptionType.String)
+                        .WithRequired(true))
+                .AddOption(
+                    new SlashCommandOptionBuilder()
+                        .WithName("action")
                         .WithDescription("Additional action which is going to be executed upon sending response to the player.")
                         .WithRequired(true)
                         .WithType(ApplicationCommandOptionType.Integer)

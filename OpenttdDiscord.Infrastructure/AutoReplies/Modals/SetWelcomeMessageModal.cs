@@ -11,7 +11,7 @@ namespace OpenttdDiscord.Infrastructure.AutoReplies.Modals
 
         public SetWelcomeMessageModal(Option<string> initialWelcomeMessage,
                                       string serverName)
-            : base(AutoReplyModals.SetWelcomeMessageModals)
+            : base(AutoReplyModals.SetWelcomeMessage)
         {
             this.ServerName = serverName;
             this.InitialWelcomeMessage = initialWelcomeMessage

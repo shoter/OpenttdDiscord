@@ -10,6 +10,11 @@ namespace OpenttdDiscord.Domain.AutoReplies
             ulong guildId,
             Guid serverId);
 
+        EitherAsync<IError, Option<AutoReply>> GetAutoReply(
+            ulong guildId,
+            Guid serverId,
+            string triggerMessage);
+
         EitherAsyncUnit UpsertAutoReply(
             ulong guildId,
             Guid serverId,

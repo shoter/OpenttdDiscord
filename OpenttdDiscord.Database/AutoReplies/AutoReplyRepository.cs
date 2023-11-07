@@ -48,6 +48,16 @@ namespace OpenttdDiscord.Database.AutoReplies
             from result in query.FirstOptionalExt()
             select result.Map(x => x.ToDomain());
 
+        public EitherAsync<IError, Option<AutoReply>> GetAutoReply(
+            ulong guildId,
+            Guid serverId,
+            string triggerMessage) => from result in db.AutoReplies.FirstOptionalExt(
+                ar =>
+                    ar.GuildId == guildId &&
+                    ar.ServerId == serverId &&
+                    ar.TriggerMessage == triggerMessage)
+            select result.Map(x => x.ToDomain());
+
         public EitherAsyncUnit UpsertAutoReply(
             ulong guildId,
             Guid serverId,

@@ -8,6 +8,7 @@ using OpenTTDAdminPort.Messages;
 using OpenttdDiscord.Domain.AutoReplies;
 using OpenttdDiscord.Domain.AutoReplies.UseCases;
 using OpenttdDiscord.Infrastructure.AutoReplies.Actors;
+using OpenttdDiscord.Infrastructure.AutoReplies.Messages;
 using Xunit.Abstractions;
 
 namespace OpenttdDiscord.Infrastructure.Tests.AutoReplies.Actors
@@ -49,6 +50,38 @@ namespace OpenttdDiscord.Infrastructure.Tests.AutoReplies.Actors
             await Task.Delay(.5.Seconds());
 
             AssertSutSendResponse();
+        }
+
+        [Fact]
+        public async Task ShouldWriteUpdatedResponse_WhenUpdated()
+        {
+            var msg = new AdminChatMessageEvent(
+                defaultPlayer,
+                ChatDestination.DESTTYPE_BROADCAST,
+                NetworkAction.NETWORK_ACTION_CHAT,
+                defaultAutoReply.TriggerMessage
+            );
+
+            var udpatedAutoReply = fix.Create<AutoReply>() with { TriggerMessage = defaultAutoReply.TriggerMessage };
+
+            // IDs are not important inside this actor. They are used only for routing
+            var updateMsg = new UpdateAutoReply(
+                0u,
+                Guid.Empty,
+                udpatedAutoReply);
+
+            sut.Tell(updateMsg);
+            sut.Tell(msg);
+            await Task.Delay(.5.Seconds());
+
+            adminPortClientSut
+                .Received()
+                .SendMessage(
+                    new AdminChatMessage(
+                        NetworkAction.NETWORK_ACTION_CHAT,
+                        ChatDestination.DESTTYPE_CLIENT,
+                        defaultPlayer.ClientId,
+                        udpatedAutoReply.ResponseMessage));
         }
 
         [Fact]

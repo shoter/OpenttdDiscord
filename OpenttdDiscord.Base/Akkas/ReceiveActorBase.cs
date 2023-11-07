@@ -73,6 +73,14 @@ namespace OpenttdDiscord.Base.Akkas
             (t) => func(t)
                 .ThrowIfError());
 
+        protected void ReceiveEitherRespondUnit<T>(Func<T, EitherUnit> func) => Receive<T>(
+            (t) =>
+            {
+                func(t)
+                    .ThrowIfError();
+                Sender.Tell(Unit.Default);
+            });
+
         protected void ReceiveRespondUnit<T>(Action<T> action) => Receive<T>(
             msg =>
             {

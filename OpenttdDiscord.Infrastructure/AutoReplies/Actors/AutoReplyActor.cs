@@ -60,10 +60,32 @@ namespace OpenttdDiscord.Infrastructure.AutoReplies.Actors
         private void Ready()
         {
             Receive<UpdateWelcomeMessage>(UpsertWelcomeMessage);
+            Receive<UpdateAutoReply>(UpdateAutoReply);
             ReceiveRedirect<AdminClientJoinEvent>(() => welcomeActor);
             ReceiveRedirect<AdminChatMessageEvent>(() => instanceActors.Values);
             ReceiveEitherAsync<InitializeActor>(InitializeActor);
             ReceiveIgnore<IAdminEvent>();
+        }
+
+        private void UpdateAutoReply(UpdateAutoReply msg)
+        {
+            var ar = msg.AutoReply;
+            if (instanceActors.TryGetValue(
+                    ar.TriggerMessage,
+                    out var actor))
+            {
+                actor.Forward(msg);
+                return;
+            }
+
+            var newActor = Context.ActorOf(
+                AutoReplyInstanceActor.Create(
+                    SP,
+                    ar,
+                    client));
+            instanceActors.Add(
+                ar.TriggerMessage,
+                newActor);
         }
 
         private EitherAsyncUnit InitializeActor(InitializeActor _)

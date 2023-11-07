@@ -16,7 +16,6 @@ namespace OpenttdDiscord.Infrastructure.Tests.AutoReplies.Actors
 {
     public class AutoReplyActorShould : BaseActorTestKit
     {
-        private readonly IActorRef sut;
         private readonly IAdminPortClient adminPortClientSut = Substitute.For<IAdminPortClient>();
         private readonly ulong guildId;
         private readonly Guid serverId;
@@ -24,18 +23,14 @@ namespace OpenttdDiscord.Infrastructure.Tests.AutoReplies.Actors
         private readonly IGetWelcomeMessageUseCase getWelcomeMessageUseCaseSub =
             Substitute.For<IGetWelcomeMessageUseCase>();
 
+        private readonly IGetAutoRepliesUseCase getAutoRepliesUseCaseSub =
+            Substitute.For<IGetAutoRepliesUseCase>();
+
         public AutoReplyActorShould(ITestOutputHelper outputHelper)
             : base(outputHelper)
         {
             this.guildId = fix.Create<ulong>();
             this.serverId = fix.Create<Guid>();
-            sut = ActorOf(
-                AutoReplyActor.Create(
-                    Sp,
-                    guildId,
-                    serverId,
-                    adminPortClientSut
-                ));
 
             getWelcomeMessageUseCaseSub
                 .Execute(
@@ -47,11 +42,13 @@ namespace OpenttdDiscord.Infrastructure.Tests.AutoReplies.Actors
         protected override void InitializeServiceProvider(IServiceCollection services)
         {
             services.AddSingleton(getWelcomeMessageUseCaseSub);
+            services.AddSingleton(getAutoRepliesUseCaseSub);
         }
 
         [Fact(Timeout = 2_000)]
         public async Task NotSendAnything_IfPlayerJoins_AndWelcomeMessageIsNotConfigured()
         {
+            IActorRef sut = CreateSut();
             var ev = fix.Create<AdminClientJoinEvent>();
             sut.Tell(ev);
 
@@ -61,6 +58,18 @@ namespace OpenttdDiscord.Infrastructure.Tests.AutoReplies.Actors
                     Arg.Is<AdminChatMessage>(
                         msg =>
                             msg.Destination == ev.Player.ClientId));
+        }
+
+        private IActorRef CreateSut()
+        {
+            var sut = ActorOf(
+                AutoReplyActor.Create(
+                    Sp,
+                    guildId,
+                    serverId,
+                    adminPortClientSut
+                ));
+            return sut;
         }
 
         [Fact(Timeout = 2_000)]
@@ -74,18 +83,13 @@ namespace OpenttdDiscord.Infrastructure.Tests.AutoReplies.Actors
                 .Returns(Some(welcomeMessage));
 
             // Sut needs to be recreated, because it should get data from repo at startup
-            var specificSut = ActorOf(
-                AutoReplyActor.Create(
-                    Sp,
-                    guildId,
-                    serverId,
-                    adminPortClientSut
-                ));
+            IActorRef sut = CreateSut();
+
             await Task.Delay(.5.Seconds());
 
             // Act
             var ev = fix.Create<AdminClientJoinEvent>();
-            await specificSut.Ask(ev);
+            await sut.Ask(ev);
 
             // Assert
             adminPortClientSut.Received()
@@ -97,9 +101,40 @@ namespace OpenttdDiscord.Infrastructure.Tests.AutoReplies.Actors
                         welcomeMessage.Content));
         }
 
+        [Fact(Timeout = 2_000)]
+        public async Task SendAutoReply_IfAutoReply_IsConfiguredInDatabase()
+        {
+            var autoReply = fix.Create<AutoReply>();
+            getAutoRepliesUseCaseSub
+                .Execute(
+                    guildId,
+                    serverId)
+                .Returns(new List<AutoReply> { autoReply });
+
+            IActorRef sut = CreateSut();
+
+            // Act
+            var ev = fix.Create<AdminChatMessageEvent>() with
+            {
+                Message = autoReply.TriggerMessage,
+                NetworkAction = NetworkAction.NETWORK_ACTION_CHAT,
+            };
+            await sut.Ask(ev);
+
+            // Assert
+            adminPortClientSut.Received()
+                .SendMessage(
+                    new AdminChatMessage(
+                        NetworkAction.NETWORK_ACTION_CHAT,
+                        ChatDestination.DESTTYPE_CLIENT,
+                        ev.Player.ClientId,
+                        autoReply.ResponseMessage));
+        }
+
         [Fact(Timeout = 1_000)]
         public async Task SendAMessageToJoiningPlayer_ifWelcomeMessageIsConfigured()
         {
+            IActorRef sut = CreateSut();
             var welcomeMessage = fix.Create<UpdateWelcomeMessage>();
             await sut.Ask(welcomeMessage);
 
@@ -122,6 +157,7 @@ namespace OpenttdDiscord.Infrastructure.Tests.AutoReplies.Actors
         [Fact(Timeout = 1_000)]
         public async Task SendUpdatedMessageToJoiningPlayer_ifWelcomeMessageIsConfigured()
         {
+            IActorRef sut = CreateSut();
             var welcomeMessage = fix.Create<UpdateWelcomeMessage>();
             await sut.Ask(welcomeMessage);
 

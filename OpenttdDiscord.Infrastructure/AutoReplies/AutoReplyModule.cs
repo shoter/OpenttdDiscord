@@ -49,7 +49,8 @@ namespace OpenttdDiscord.Infrastructure.AutoReplies
         public static IServiceCollection RegisterCommands(this IServiceCollection services)
         {
             return services
-                .AddSingleton<IOttdSlashCommand, SetWelcomeMessageCommand>();
+                .AddSingleton<IOttdSlashCommand, SetWelcomeMessageCommand>()
+                .AddSingleton<IOttdSlashCommand, SetAutoReplyCommand>();
         }
     }
 }

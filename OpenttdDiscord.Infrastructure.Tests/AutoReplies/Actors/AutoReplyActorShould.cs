@@ -37,6 +37,12 @@ namespace OpenttdDiscord.Infrastructure.Tests.AutoReplies.Actors
                     guildId,
                     serverId)
                 .Returns(Option<WelcomeMessage>.None);
+
+            getAutoRepliesUseCaseSub
+                .Execute(
+                    guildId,
+                    serverId)
+                .Returns(new List<AutoReply>());
         }
 
         protected override void InitializeServiceProvider(IServiceCollection services)
@@ -105,13 +111,34 @@ namespace OpenttdDiscord.Infrastructure.Tests.AutoReplies.Actors
         public async Task SendAutoReply_IfAutoReply_IsConfiguredInDatabase()
         {
             var autoReply = fix.Create<AutoReply>();
-            getAutoRepliesUseCaseSub
-                .Execute(
-                    guildId,
-                    serverId)
-                .Returns(new List<AutoReply> { autoReply });
 
             IActorRef sut = CreateSut();
+
+            // Act
+            var ev = fix.Create<AdminChatMessageEvent>() with
+            {
+                Message = autoReply.TriggerMessage,
+                NetworkAction = NetworkAction.NETWORK_ACTION_CHAT,
+            };
+            await sut.Ask(ev);
+
+            // Assert
+            adminPortClientSut.Received()
+                .SendMessage(
+                    new AdminChatMessage(
+                        NetworkAction.NETWORK_ACTION_CHAT,
+                        ChatDestination.DESTTYPE_CLIENT,
+                        ev.Player.ClientId,
+                        autoReply.ResponseMessage));
+        }
+
+        [Fact(Timeout = 2_000)]
+        public async Task SendAutoReply_AfterReceiving_UpdateAutoReplyMessage_WhichCreatesAutoReplyActor()
+        {
+            var autoReply = fix.Create<AutoReply>();
+            IActorRef sut = CreateSut();
+
+            sut.Tell(new UpdateAutoReply(0, Guid.Empty, autoReply));
 
             // Act
             var ev = fix.Create<AdminChatMessageEvent>() with

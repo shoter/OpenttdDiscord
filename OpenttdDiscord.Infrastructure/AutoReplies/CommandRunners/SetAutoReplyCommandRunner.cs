@@ -60,3 +60,4 @@ namespace OpenttdDiscord.Infrastructure.AutoReplies.CommandRunners
                         autoReply.Map(x => x.ResponseMessage))) as IInteractionResponse;
         }
     }
+}

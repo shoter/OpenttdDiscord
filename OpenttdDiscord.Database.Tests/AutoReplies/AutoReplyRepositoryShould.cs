@@ -138,6 +138,47 @@ namespace OpenttdDiscord.Database.Tests.AutoReplies
         }
 
         [Fact]
+        public async Task InsertAutoReplyMessage_AndRetrieveIt_AsOptionAutoReply()
+        {
+            var server = await CreateServer();
+            var repo = await CreateRepository();
+            var autoReply = Fix.Create<AutoReply>();
+
+            var autoReplyFromDb =
+                await (from _1 in repo.UpsertAutoReply(
+                        server.GuildId,
+                        server.Id,
+                        autoReply)
+                    from msg in repo.GetAutoReply(
+                        server.GuildId,
+                        server.Id,
+                        autoReply.TriggerMessage)
+                    select msg);
+
+            Assert.Equal(
+                autoReply,
+                autoReplyFromDb.Right());
+        }
+
+        [Fact]
+        public async Task ReturnOptionNone_WhileRetrievingSingleAutoReplyFromDatabase_WhenItDoesNotExist()
+        {
+            var server = await CreateServer();
+            var repo = await CreateRepository();
+
+            var autoReply =
+                from msg in repo.GetAutoReply(
+                    server.GuildId,
+                    server.Id,
+                    "test")
+                select msg;
+
+            Assert.True(
+                autoReply.Right()
+                    .IsNone);
+        }
+
+        [Fact]
         public async Task Insert_TwoDifferentAutoReplies_ToTheSameServer()
         {
             var server = await CreateServer();

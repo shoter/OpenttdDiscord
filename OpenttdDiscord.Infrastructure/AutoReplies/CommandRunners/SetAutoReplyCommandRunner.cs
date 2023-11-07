@@ -43,13 +43,13 @@ namespace OpenttdDiscord.Infrastructure.AutoReplies.CommandRunners
                         user,
                         UserLevel.Admin)
                     .ToAsync()
-                from guild in EnsureItIsGuildCommand(command)
+                from guildId in EnsureItIsGuildCommand(command)
                     .ToAsync()
                 from server in getServerUseCase.Execute(
                     serverName,
-                    guildId:)
+                    guildId)
                 from autoReply in getAutoReplyUseCase.Execute(
-                    guild,
+                    guildId,
                     server.Id,
                     trigger)
                 select new ModalResponse(

@@ -15,7 +15,7 @@ namespace OpenttdDiscord.Infrastructure.AutoReplies.Actors
     {
         private readonly IAdminPortClient client;
         private readonly IGetWelcomeMessageUseCase getWelcomeMessageUseCase;
-        private readonly IGetAutoRepliesUseCase getAutoRepliesUseCase;
+        private readonly IGetAutoReplyUseCase getAutoReplyUseCase;
         private readonly ulong guildId;
         private readonly Guid serverId;
 
@@ -30,7 +30,7 @@ namespace OpenttdDiscord.Infrastructure.AutoReplies.Actors
             : base(serviceProvider)
         {
             this.client = client;
-            this.getAutoRepliesUseCase = SP.GetRequiredService<IGetAutoRepliesUseCase>();
+            this.getAutoReplyUseCase = SP.GetRequiredService<IGetAutoReplyUseCase>();
             this.getWelcomeMessageUseCase = SP.GetRequiredService<IGetWelcomeMessageUseCase>();
             this.guildId = guildId;
             this.serverId = serverId;
@@ -98,7 +98,7 @@ namespace OpenttdDiscord.Infrastructure.AutoReplies.Actors
                 from _1 in TryToInitializeWelcomeActor(
                     message,
                     context)
-                from autoReplies in getAutoRepliesUseCase.Execute(
+                from autoReplies in getAutoReplyUseCase.Execute(
                     guildId,
                     serverId)
                 from _2 in InitializeAutoReplyActors(autoReplies, context)

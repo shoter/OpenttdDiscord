@@ -23,8 +23,8 @@ namespace OpenttdDiscord.Infrastructure.Tests.AutoReplies.Actors
         private readonly IGetWelcomeMessageUseCase getWelcomeMessageUseCaseSub =
             Substitute.For<IGetWelcomeMessageUseCase>();
 
-        private readonly IGetAutoRepliesUseCase getAutoRepliesUseCaseSub =
-            Substitute.For<IGetAutoRepliesUseCase>();
+        private readonly IGetAutoReplyUseCase getAutoReplyUseCaseSub =
+            Substitute.For<IGetAutoReplyUseCase>();
 
         public AutoReplyActorShould(ITestOutputHelper outputHelper)
             : base(outputHelper)
@@ -38,7 +38,7 @@ namespace OpenttdDiscord.Infrastructure.Tests.AutoReplies.Actors
                     serverId)
                 .Returns(Option<WelcomeMessage>.None);
 
-            getAutoRepliesUseCaseSub
+            getAutoReplyUseCaseSub
                 .Execute(
                     guildId,
                     serverId)
@@ -48,7 +48,7 @@ namespace OpenttdDiscord.Infrastructure.Tests.AutoReplies.Actors
         protected override void InitializeServiceProvider(IServiceCollection services)
         {
             services.AddSingleton(getWelcomeMessageUseCaseSub);
-            services.AddSingleton(getAutoRepliesUseCaseSub);
+            services.AddSingleton(getAutoReplyUseCaseSub);
         }
 
         [Fact(Timeout = 2_000)]

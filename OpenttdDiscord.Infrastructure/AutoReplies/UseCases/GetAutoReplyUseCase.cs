@@ -4,7 +4,7 @@ using OpenttdDiscord.Domain.AutoReplies.UseCases;
 
 namespace OpenttdDiscord.Infrastructure.AutoReplies.UseCases
 {
-    public class GetAutoReplyUseCase : IGetAutoRepliesUseCase
+    public class GetAutoReplyUseCase : IGetAutoReplyUseCase
     {
         private readonly IAutoReplyRepository autoReplyRepository;
 

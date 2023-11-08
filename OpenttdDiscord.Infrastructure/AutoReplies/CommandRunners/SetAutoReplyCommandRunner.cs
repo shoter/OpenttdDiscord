@@ -1,6 +1,7 @@
 using Discord;
 using OpenttdDiscord.Base.Basics;
 using OpenttdDiscord.Base.Ext;
+using OpenttdDiscord.Domain.AutoReplies;
 using OpenttdDiscord.Domain.AutoReplies.UseCases;
 using OpenttdDiscord.Domain.Roles.UseCases;
 using OpenttdDiscord.Domain.Security;
@@ -36,7 +37,7 @@ namespace OpenttdDiscord.Infrastructure.AutoReplies.CommandRunners
             ExtDictionary<string, object> options)
         {
             string serverName = options.GetValueAs<string>("server-name");
-            string action = options.GetValueAs<string>("action");
+            var action = (AutoReplyAction)options.GetValueAs<long>("action");
             string trigger = options.GetValueAs<string>("trigger");
 
             return from _1 in CheckIfHasCorrectUserLevel(
@@ -55,7 +56,7 @@ namespace OpenttdDiscord.Infrastructure.AutoReplies.CommandRunners
                 select new ModalResponse(
                     new SetAutoReplyModal(
                         serverName,
-                        action,
+                        action.ToString(),
                         trigger,
                         autoReply.Map(x => x.ResponseMessage))) as IInteractionResponse;
         }

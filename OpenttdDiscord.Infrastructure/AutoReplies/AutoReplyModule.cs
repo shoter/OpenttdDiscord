@@ -43,7 +43,9 @@ namespace OpenttdDiscord.Infrastructure.AutoReplies
         public static IServiceCollection RegisterRunners(this IServiceCollection services)
         {
             return services.AddScoped<SetWelcomeMessageCommandRunner>()
-                .AddScoped<SetWelcomeMessageModalRunner>();
+                .AddScoped<SetWelcomeMessageModalRunner>()
+                .AddScoped<SetAutoReplyCommandRunner>()
+                .AddScoped<SetAutoReplyModalRunner>();
         }
 
         public static IServiceCollection RegisterCommands(this IServiceCollection services)

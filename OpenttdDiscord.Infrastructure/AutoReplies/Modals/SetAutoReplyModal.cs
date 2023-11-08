@@ -46,7 +46,7 @@ namespace OpenttdDiscord.Infrastructure.AutoReplies.Modals
                     value: TriggerMessage,
                     required: true)
                 .AddTextInput(
-                    "Welcome message",
+                    "Auto reply message",
                     "content",
                     TextInputStyle.Paragraph,
                     value: ResponseMessage,

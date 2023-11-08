@@ -37,7 +37,8 @@ namespace OpenttdDiscord.Infrastructure.AutoReplies
             return services
                 .AddScoped<IUpsertWelcomeMessageUseCase, UpsertWelcomeMessageUseCase>()
                 .AddScoped<IGetWelcomeMessageUseCase, GetWelcomeMessageUseCase>()
-                .AddScoped<IGetAutoReplyUseCase, GetAutoReplyUseCase>();
+                .AddScoped<IGetAutoReplyUseCase, GetAutoReplyUseCase>()
+                .AddScoped<IUpsertAutoReplyUseCase, UpsertAutoReplyUseCase>();
         }
 
         public static IServiceCollection RegisterRunners(this IServiceCollection services)

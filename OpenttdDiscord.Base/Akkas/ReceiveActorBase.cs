@@ -81,6 +81,18 @@ namespace OpenttdDiscord.Base.Akkas
                 Sender.Tell(Unit.Default);
             });
 
+        protected void ReceiveEitherAsyncRespondUnit<T>(Func<T, EitherAsyncUnit> func)
+        {
+            var sender = Sender;
+            ReceiveAsync<T>(
+                async t =>
+                {
+                    (await func(t)).ThrowIfError();
+                    sender.Tell(Unit.Default);
+                }
+            );
+        }
+
         protected void ReceiveRespondUnit<T>(Action<T> action) => Receive<T>(
             msg =>
             {

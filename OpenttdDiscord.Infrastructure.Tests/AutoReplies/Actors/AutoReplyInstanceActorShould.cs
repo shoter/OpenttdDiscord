@@ -155,6 +155,10 @@ namespace OpenttdDiscord.Infrastructure.Tests.AutoReplies.Actors
             newSut.Tell(msg);
             await Task.Delay(.5.Seconds());
 
+            // players needs to be moved to spectactors.
+            adminPortClientSut.Received()
+                .SendMessage(new AdminRconMessage($"move {defaultPlayer.ClientId} 255"));
+
             adminPortClientSut.Received()
                 .SendMessage(new AdminRconMessage($"reset_company {defaultPlayer.PlayingAs}"));
         }

@@ -5,5 +5,7 @@ namespace OpenttdDiscord.Infrastructure.AutoReplies.Messages
     public record UpdateAutoReply(
         ulong GuildId,
         Guid ServerId,
-        AutoReply AutoReply);
+        AutoReply AutoReply) : AutoReplyMessage(
+        GuildId,
+        ServerId);
 }

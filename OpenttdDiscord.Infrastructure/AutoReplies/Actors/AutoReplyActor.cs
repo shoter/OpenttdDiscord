@@ -1,6 +1,7 @@
 using Akka.Actor;
 using LanguageExt;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using OpenTTDAdminPort;
 using OpenTTDAdminPort.Events;
 using OpenttdDiscord.Domain.AutoReplies;
@@ -69,15 +70,18 @@ namespace OpenttdDiscord.Infrastructure.AutoReplies.Actors
 
         private void UpdateAutoReply(UpdateAutoReply msg)
         {
+            logger.LogInformation($"Updating auto reply - {msg.AutoReply}");
             var ar = msg.AutoReply;
             if (instanceActors.TryGetValue(
                     ar.TriggerMessage,
                     out var actor))
             {
+                logger.LogInformation($"Actor already exists for {msg.AutoReply.TriggerMessage}. Forwarding message");
                 actor.Forward(msg);
                 return;
             }
 
+            logger.LogInformation($"Actor does not exist for {msg.AutoReply.TriggerMessage}. Creating new actor");
             var newActor = Context.ActorOf(
                 AutoReplyInstanceActor.Create(
                     SP,
@@ -86,6 +90,7 @@ namespace OpenttdDiscord.Infrastructure.AutoReplies.Actors
             instanceActors.Add(
                 ar.TriggerMessage,
                 newActor);
+            logger.LogInformation($"Created actor for {msg.AutoReply.TriggerMessage}");
         }
 
         private EitherAsyncUnit InitializeActor(InitializeActor _)

@@ -1,8 +1,10 @@
+using System.Diagnostics.CodeAnalysis;
 using Discord;
 using OpenttdDiscord.Infrastructure.Discord.Modals;
 
 namespace OpenttdDiscord.Infrastructure.AutoReplies.Modals
 {
+    [ExcludeFromCodeCoverage]
     public class SetAutoReplyModal : OttdModalBase
     {
         public string ServerName { get; }

@@ -1,9 +1,11 @@
+using System.Diagnostics.CodeAnalysis;
 using Discord;
 using LanguageExt;
 using OpenttdDiscord.Infrastructure.Discord.Modals;
 
 namespace OpenttdDiscord.Infrastructure.AutoReplies.Modals
 {
+    [ExcludeFromCodeCoverage]
     internal class SetWelcomeMessageModal : OttdModalBase
     {
         public string InitialWelcomeMessage { get; }

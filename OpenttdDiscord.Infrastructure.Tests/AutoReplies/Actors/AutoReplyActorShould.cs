@@ -1,4 +1,5 @@
 using Akka.Actor;
+using LanguageExt.Pipes;
 using LanguageExt.UnitsOfMeasure;
 using Microsoft.Extensions.DependencyInjection;
 using OpenTTDAdminPort;
@@ -31,6 +32,12 @@ namespace OpenttdDiscord.Infrastructure.Tests.AutoReplies.Actors
         {
             this.guildId = fix.Create<ulong>();
             this.serverId = fix.Create<Guid>();
+
+            var serverStatus = new ServerStatus(
+                fix.Create<AdminServerInfo>(),
+                new Dictionary<uint, Player>());
+            adminPortClientSut.QueryServerStatus()
+                .Returns(Task.FromResult(serverStatus));
 
             getWelcomeMessageUseCaseSub
                 .Execute(
@@ -111,6 +118,12 @@ namespace OpenttdDiscord.Infrastructure.Tests.AutoReplies.Actors
         public async Task SendAutoReply_IfAutoReply_IsConfiguredInDatabase()
         {
             var autoReply = fix.Create<AutoReply>();
+            getAutoReplyUseCaseSub.Execute(
+                    guildId,
+                    serverId)
+                .Returns(
+                    EitherAsync<IError, IReadOnlyCollection<AutoReply>>.Right(
+                        new List<AutoReply>() { autoReply }));
 
             IActorRef sut = CreateSut();
 
@@ -138,7 +151,11 @@ namespace OpenttdDiscord.Infrastructure.Tests.AutoReplies.Actors
             var autoReply = fix.Create<AutoReply>();
             IActorRef sut = CreateSut();
 
-            sut.Tell(new UpdateAutoReply(0, Guid.Empty, autoReply));
+            sut.Tell(
+                new UpdateAutoReply(
+                    0,
+                    Guid.Empty,
+                    autoReply));
 
             // Act
             var ev = fix.Create<AdminChatMessageEvent>() with

@@ -19,9 +19,9 @@ namespace OpenttdDiscord.Infrastructure.AutoReplies.Actors
         private readonly IGetAutoReplyUseCase getAutoReplyUseCase;
         private readonly ulong guildId;
         private readonly Guid serverId;
+        private readonly Dictionary<string, IActorRef> instanceActors = new();
 
         private Option<IActorRef> welcomeActor = Option<IActorRef>.None;
-        private Dictionary<string, IActorRef> instanceActors = new();
 
         public AutoReplyActor(
             IServiceProvider serviceProvider,
@@ -37,7 +37,9 @@ namespace OpenttdDiscord.Infrastructure.AutoReplies.Actors
             this.serverId = serverId;
 
             Ready();
-            Self.Tell(new InitializeActor());
+            InitializeActor()
+                .AsTask()
+                .Wait();
             parent.Tell(new SubscribeToAdminEvents(Self));
         }
 
@@ -64,7 +66,6 @@ namespace OpenttdDiscord.Infrastructure.AutoReplies.Actors
             Receive<UpdateAutoReply>(UpdateAutoReply);
             ReceiveRedirect<AdminClientJoinEvent>(() => welcomeActor);
             ReceiveRedirect<AdminChatMessageEvent>(() => instanceActors.Values);
-            ReceiveEitherAsync<InitializeActor>(InitializeActor);
             ReceiveIgnore<IAdminEvent>();
         }
 
@@ -93,7 +94,7 @@ namespace OpenttdDiscord.Infrastructure.AutoReplies.Actors
             logger.LogInformation($"Created actor for {msg.AutoReply.TriggerMessage}");
         }
 
-        private EitherAsyncUnit InitializeActor(InitializeActor _)
+        private EitherAsyncUnit InitializeActor()
         {
             var context = Context;
             return

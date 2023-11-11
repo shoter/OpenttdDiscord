@@ -4,6 +4,7 @@ using NSubstitute.ReceivedExtensions;
 using OpenTTDAdminPort;
 using OpenTTDAdminPort.Events;
 using OpenTTDAdminPort.Game;
+using OpenTTDAdminPort.MainActor.Messages;
 using OpenTTDAdminPort.Messages;
 using OpenttdDiscord.Domain.AutoReplies;
 using OpenttdDiscord.Domain.AutoReplies.UseCases;
@@ -19,16 +20,22 @@ namespace OpenttdDiscord.Infrastructure.Tests.AutoReplies.Actors
         private readonly IAdminPortClient adminPortClientSut = Substitute.For<IAdminPortClient>();
         private readonly AutoReply defaultAutoReply;
         private readonly Player defaultPlayer;
+        private readonly ServerStatus defaultStatus;
 
         public AutoReplyInstanceActorShould(ITestOutputHelper outputHelper)
             : base(outputHelper)
         {
+            defaultStatus = new(
+                fix.Create<AdminServerInfo>(),
+                new Dictionary<uint, Player>());
             defaultAutoReply = new(
                 "!2137",
                 "papaj",
                 AutoReplyAction.None);
 
             defaultPlayer = fix.Create<Player>() with { ClientId = 2137 };
+            adminPortClientSut.QueryServerStatus()
+                .Returns(Task.FromResult(defaultStatus));
 
             sut = ActorOf(
                 AutoReplyInstanceActor.Create(
@@ -160,7 +167,44 @@ namespace OpenttdDiscord.Infrastructure.Tests.AutoReplies.Actors
                 .SendMessage(new AdminRconMessage($"move {defaultPlayer.ClientId} 255"));
 
             adminPortClientSut.Received()
-                .SendMessage(new AdminRconMessage($"reset_company {defaultPlayer.PlayingAs}"));
+                .SendMessage(new AdminRconMessage($"reset_company {defaultPlayer.PlayingAs + 1}"));
+        }
+
+        [Fact]
+        public async Task ShouldNotResetCompany_WhenThereAre2OrMorePlayersInCompany()
+        {
+            var autoReply = defaultAutoReply with { AdditionalAction = AutoReplyAction.ResetCompany };
+            var otherPlayer = fix.Create<Player>() with { PlayingAs = defaultPlayer.PlayingAs };
+            var status = new ServerStatus(
+                fix.Create<AdminServerInfo>(),
+                new Dictionary<uint, Player>()
+                {
+                    { defaultPlayer.ClientId, defaultPlayer },
+                    { otherPlayer.ClientId, otherPlayer },
+                });
+            adminPortClientSut.QueryServerStatus()
+                .Returns(Task.FromResult(status));
+
+            var newSut = ActorOf(
+                AutoReplyInstanceActor.Create(
+                    Sp,
+                    autoReply,
+                    adminPortClientSut));
+            var msg = new AdminChatMessageEvent(
+                defaultPlayer,
+                ChatDestination.DESTTYPE_BROADCAST,
+                NetworkAction.NETWORK_ACTION_CHAT,
+                defaultAutoReply.TriggerMessage
+            );
+            newSut.Tell(msg);
+            await Task.Delay(.5.Seconds());
+
+            // players needs to be moved to spectactors.
+            adminPortClientSut.DidNotReceive()
+                .SendMessage(new AdminRconMessage($"move {defaultPlayer.ClientId} 255"));
+
+            adminPortClientSut.DidNotReceive()
+                .SendMessage(new AdminRconMessage($"reset_company {defaultPlayer.PlayingAs + 1}"));
         }
 
         [Fact]

@@ -83,10 +83,10 @@ namespace OpenttdDiscord.Base.Akkas
 
         protected void ReceiveEitherAsyncRespondUnit<T>(Func<T, EitherAsyncUnit> func)
         {
-            var sender = Sender;
             ReceiveAsync<T>(
                 async t =>
                 {
+                    var sender = Sender;
                     (await func(t)).ThrowIfError();
                     sender.Tell(Unit.Default);
                 }

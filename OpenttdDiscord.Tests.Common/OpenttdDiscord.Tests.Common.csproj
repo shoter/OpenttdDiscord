@@ -8,10 +8,6 @@
 
     <ItemGroup>
       <PackageReference Include="Akka.TestKit.Xunit2" Version="1.5.13" />
-      <PackageReference Include="GitHubActionsTestLogger" Version="2.3.3">
-        <PrivateAssets>all</PrivateAssets>
-        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-      </PackageReference>
       <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="7.0.1" />
       <PackageReference Update="Roslynator.Analyzers" Version="4.6.1">
         <PrivateAssets>all</PrivateAssets>

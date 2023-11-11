@@ -23,15 +23,9 @@ jobs:
       - name: Build docker database
         run: docker build -t ottd_discord_test_database ./OpenttdDiscord.Database
       - name: Test
-        run: dotnet test --no-restore --verbosity normal --collect "XPlat Code Coverage" -c Release
+        run: dotnet test --no-restore --verbosity normal --collect "XPlat Code Coverage" --logger GitHubActions -c Release
         env:
           CI: true
-      - name: Test Reporter
-        if: success() || failure()
-        uses: dorny/test-reporter@v1.7.0
-        with:
-          name: Test report
-          path: /home/runner/work/OpenttdDiscord/OpenttdDiscord/**/coverage.cobertura.xml  
       - name: Upload unit Test result
         uses: codecov/codecov-action@v3
         with:

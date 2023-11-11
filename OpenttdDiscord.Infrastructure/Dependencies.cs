@@ -4,7 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using OpenttdDiscord.Database;
 using OpenttdDiscord.Infrastructure.Akkas;
-using OpenttdDiscord.Infrastructure.AutoReply;
+using OpenttdDiscord.Infrastructure.AutoReplies;
 using OpenttdDiscord.Infrastructure.Chatting;
 using OpenttdDiscord.Infrastructure.Discord;
 using OpenttdDiscord.Infrastructure.EventLogs;

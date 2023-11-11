@@ -3,8 +3,8 @@ using OpenttdDiscord.Domain.Roles.Errors;
 using OpenttdDiscord.Domain.Security;
 using OpenttdDiscord.Domain.Servers;
 using OpenttdDiscord.Domain.Servers.UseCases;
-using OpenttdDiscord.Infrastructure.AutoReply.CommandRunners;
-using OpenttdDiscord.Infrastructure.AutoReply.Modals;
+using OpenttdDiscord.Infrastructure.AutoReplies.CommandRunners;
+using OpenttdDiscord.Infrastructure.AutoReplies.Modals;
 using OpenttdDiscord.Infrastructure.Chatting.Runners;
 using OpenttdDiscord.Infrastructure.Discord.CommandResponses;
 

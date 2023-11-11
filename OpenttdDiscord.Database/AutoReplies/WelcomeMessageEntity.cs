@@ -39,7 +39,7 @@ namespace OpenttdDiscord.Database.AutoReplies
         public static void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<WelcomeMessageEntity>()
-                .HasKey(x => x.GuildId);
+                .HasKey(x => x.ServerId);
 
             modelBuilder.Entity<WelcomeMessageEntity>()
                 .HasOne<OttdServerEntity>()

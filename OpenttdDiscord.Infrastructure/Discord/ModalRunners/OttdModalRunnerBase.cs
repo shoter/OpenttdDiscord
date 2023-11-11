@@ -1,6 +1,7 @@
 using Discord;
 using LanguageExt;
 using OpenttdDiscord.Base.Ext;
+using OpenttdDiscord.Domain.Roles.Errors;
 using OpenttdDiscord.Domain.Roles.UseCases;
 using OpenttdDiscord.Domain.Security;
 using OpenttdDiscord.Infrastructure.Discord.CommandResponses;
@@ -46,5 +47,19 @@ namespace OpenttdDiscord.Infrastructure.Discord.ModalRunners
             IModalInteraction modal,
             Dictionary<string, IComponentInteractionData> components,
             User user);
+
+        protected EitherUnit CheckIfHasCorrectUserLevel(
+            User user,
+            UserLevel level)
+        {
+            var hasLevel = user.CheckIfHasCorrectUserLevel(level);
+
+            if (!hasLevel)
+            {
+                return new IncorrectUserLevelError("You do not have sufficient privileges to run this use case!");
+            }
+
+            return Unit.Default;
+        }
     }
 }

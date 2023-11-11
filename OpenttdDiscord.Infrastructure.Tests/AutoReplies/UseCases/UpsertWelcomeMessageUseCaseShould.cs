@@ -1,7 +1,7 @@
 using OpenttdDiscord.Domain.AutoReplies;
 using OpenttdDiscord.Infrastructure.Akkas;
-using OpenttdDiscord.Infrastructure.AutoReply.Messages;
-using OpenttdDiscord.Infrastructure.AutoReply.UseCases;
+using OpenttdDiscord.Infrastructure.AutoReplies.Messages;
+using OpenttdDiscord.Infrastructure.AutoReplies.UseCases;
 using OpenttdDiscord.Tests.Common.Akkas;
 using Xunit.Abstractions;
 

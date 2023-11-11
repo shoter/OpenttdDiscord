@@ -19,27 +19,48 @@ namespace OpenttdDiscord.Database.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.12")
+                .HasAnnotation("ProductVersion", "7.0.13")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("OpenttdDiscord.Database.AutoReplies.AutoReplyEntity", b =>
+                {
+                    b.Property<Guid>("ServerId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("TriggerMessage")
+                        .HasColumnType("text");
+
+                    b.Property<string>("AdditionalAction")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<decimal>("GuildId")
+                        .HasColumnType("numeric(20,0)");
+
+                    b.Property<string>("ResponseMessage")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("ServerId", "TriggerMessage");
+
+                    b.ToTable("AutoReplies");
+                });
+
             modelBuilder.Entity("OpenttdDiscord.Database.AutoReplies.WelcomeMessageEntity", b =>
                 {
-                    b.Property<decimal>("GuildId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("numeric(20,0)");
+                    b.Property<Guid>("ServerId")
+                        .HasColumnType("uuid");
 
                     b.Property<string>("Content")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<Guid>("ServerId")
-                        .HasColumnType("uuid");
+                    b.Property<decimal>("GuildId")
+                        .HasColumnType("numeric(20,0)");
 
-                    b.HasKey("GuildId");
-
-                    b.HasIndex("ServerId");
+                    b.HasKey("ServerId");
 
                     b.ToTable("WelcomeMessages");
                 });
@@ -164,6 +185,15 @@ namespace OpenttdDiscord.Database.Migrations
                     b.HasKey("ServerId", "ChannelId");
 
                     b.ToTable("Monitors");
+                });
+
+            modelBuilder.Entity("OpenttdDiscord.Database.AutoReplies.AutoReplyEntity", b =>
+                {
+                    b.HasOne("OpenttdDiscord.Database.Ottd.Servers.OttdServerEntity", null)
+                        .WithMany()
+                        .HasForeignKey("ServerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("OpenttdDiscord.Database.AutoReplies.WelcomeMessageEntity", b =>

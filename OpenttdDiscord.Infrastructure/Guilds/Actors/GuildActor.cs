@@ -1,19 +1,13 @@
 ﻿using Akka.Actor;
-using LanguageExt;
 using Microsoft.Extensions.DependencyInjection;
 using OpenttdDiscord.Base.Ext;
 using OpenttdDiscord.Domain.Servers;
-using OpenttdDiscord.Infrastructure.Chatting.Messages;
-using OpenttdDiscord.Infrastructure.EventLogs.Messages;
 using OpenttdDiscord.Infrastructure.Guilds.Messages;
 using OpenttdDiscord.Infrastructure.Ottd.Actors;
 using OpenttdDiscord.Infrastructure.Ottd.Messages;
-using OpenttdDiscord.Infrastructure.Rcon.Messages;
-using OpenttdDiscord.Infrastructure.Reporting.Messages;
 using OpenttdDiscord.Infrastructure.Roles.Actors;
 using OpenttdDiscord.Infrastructure.Roles.Messages;
 using OpenttdDiscord.Infrastructure.Servers.Messages;
-using OpenttdDiscord.Infrastructure.Statuses.Messages;
 
 namespace OpenttdDiscord.Infrastructure.Guilds.Actors
 {

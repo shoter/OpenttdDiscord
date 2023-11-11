@@ -146,7 +146,7 @@ namespace OpenttdDiscord.Infrastructure.AutoReplies.Actors
                     .Count(x => x.PlayingAs == playingAs) > 1)
             {
                 return new HumanReadableError(
-                    "There is more than 1 player in company. It is impossible to reset company");
+                    "There is more than 1 player in the company. It is impossible to reset the company");
             }
 
             return Unit.Default;

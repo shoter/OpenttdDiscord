@@ -31,8 +31,6 @@ jobs:
         uses: dorny/test-reporter@v1.7.0
         with:
           name: Test report
-          path: /home/runner/work/OpenttdDiscord/OpenttdDiscord/**/coverage.cobertura.xml  
-          reporter: 'dotnet-trx'
       - name: Upload unit Test result
         uses: codecov/codecov-action@v3
         with:

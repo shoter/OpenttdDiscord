@@ -26,6 +26,9 @@ jobs:
         run: dotnet test --no-restore --verbosity normal --collect "XPlat Code Coverage" -c Release
         env:
           CI: true
+      - name: Test Reporter
+        if: success() || failure()
+        uses: dorny/test-reporter@v1.7.0
       - name: Upload unit Test result
         uses: codecov/codecov-action@v3
         with:

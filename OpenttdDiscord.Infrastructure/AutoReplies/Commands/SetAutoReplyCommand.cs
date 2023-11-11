@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using Discord;
 using OpenttdDiscord.Domain.AutoReplies;
 using OpenttdDiscord.Infrastructure.AutoReplies.CommandRunners;
@@ -5,6 +6,7 @@ using OpenttdDiscord.Infrastructure.Discord.Commands;
 
 namespace OpenttdDiscord.Infrastructure.AutoReplies.Commands
 {
+    [ExcludeFromCodeCoverage]
     internal class SetAutoReplyCommand : OttdSlashCommandBase<SetAutoReplyCommandRunner>
     {
         public SetAutoReplyCommand()

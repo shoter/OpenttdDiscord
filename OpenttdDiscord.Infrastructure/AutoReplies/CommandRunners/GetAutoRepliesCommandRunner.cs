@@ -11,9 +11,13 @@ namespace OpenttdDiscord.Infrastructure.AutoReplies.CommandRunners
 {
     internal class GetAutoRepliesCommandRunner : OttdSlashCommandRunnerBase
     {
-        public GetAutoRepliesCommandRunner(IAkkaService akkaService,
-                 IGetRoleLevelUseCase getRoleLevelUseCase) : base(akkaService,
-                                                                  getRoleLevelUseCase)
+        public const string NoRepliesResponse = "";
+        public GetAutoRepliesCommandRunner(
+            IAkkaService akkaService,
+            IGetRoleLevelUseCase getRoleLevelUseCase)
+            : base(
+                akkaService,
+                getRoleLevelUseCase)
         {
         }
 

@@ -66,7 +66,7 @@ namespace OpenttdDiscord.Infrastructure.AutoReplies.CommandRunners
                 sb.AppendLine();
                 sb.Append(ar.TriggerMessage);
                 sb.Append(" - ");
-                sb.AppendLine(ar.AdditionalAction.ToString());
+                sb.Append(ar.AdditionalAction.ToString());
             }
 
             return new TextResponse(sb);

@@ -21,6 +21,7 @@ namespace OpenttdDiscord.Infrastructure.AutoReplies.Commands
                     new SlashCommandOptionBuilder()
                         .WithName("server-name")
                         .WithDescription("Name of the server")
+                        .WithType(ApplicationCommandOptionType.String)
                         .WithRequired(true));
         }
     }

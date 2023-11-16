@@ -58,7 +58,9 @@ namespace OpenttdDiscord.Infrastructure.AutoReplies.CommandRunners
                 return new TextResponse(NoRepliesResponse);
             }
 
-            StringBuilder sb = new("Auto replies defined for this server:");
+            StringBuilder sb = new();
+            sb.AppendLine("Auto replies defined for this server:");
+
             foreach (var ar in autoReplies)
             {
                 sb.Append(ar.TriggerMessage);

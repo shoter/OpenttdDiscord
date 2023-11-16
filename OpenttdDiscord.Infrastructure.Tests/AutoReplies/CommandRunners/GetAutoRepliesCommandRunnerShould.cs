@@ -107,7 +107,9 @@ namespace OpenttdDiscord.Infrastructure.Tests.AutoReplies.CommandRunners
         {
             return new(
                 AkkaServiceSub,
-                GetRoleLevelUseCaseSub);
+                GetRoleLevelUseCaseSub,
+                getAutoReplyUseCaseSub,
+                getServerUseCaseSub);
         }
     }
 }

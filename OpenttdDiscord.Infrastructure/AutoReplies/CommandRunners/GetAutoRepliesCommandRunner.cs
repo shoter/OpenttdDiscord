@@ -59,10 +59,11 @@ namespace OpenttdDiscord.Infrastructure.AutoReplies.CommandRunners
             }
 
             StringBuilder sb = new();
-            sb.AppendLine("Auto replies defined for this server:");
+            sb.Append("Auto replies defined for this server:");
 
             foreach (var ar in autoReplies)
             {
+                sb.AppendLine();
                 sb.Append(ar.TriggerMessage);
                 sb.Append(" - ");
                 sb.AppendLine(ar.AdditionalAction.ToString());

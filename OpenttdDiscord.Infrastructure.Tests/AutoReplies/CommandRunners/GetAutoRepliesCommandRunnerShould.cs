@@ -61,13 +61,11 @@ namespace OpenttdDiscord.Infrastructure.Tests.AutoReplies.CommandRunners
                 var value = textResponse!.Response;
                 foreach (var autoReply in defaultAutoReplies)
                 {
-                    Assert.Contains(
-                        autoReply.TriggerMessage,
-                        value);
-
+                    var lines = value.Split('\n');
+                    var line = lines.Single(x => x.Equals(autoReply.TriggerMessage));
                     Assert.Contains(
                         autoReply.AdditionalAction.ToString(),
-                        value,
+                        line,
                         StringComparison.InvariantCultureIgnoreCase);
                 }
 

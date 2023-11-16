@@ -18,7 +18,7 @@ namespace OpenttdDiscord.Infrastructure.AutoReplies.CommandRunners
         private readonly IGetAutoReplyUseCase getAutoReplyUseCase;
         private readonly IGetServerUseCase getServerUseCase;
 
-        public const string NoRepliesResponse = "";
+        public const string NoRepliesResponse = "No auto-replies defined for this server";
 
         public GetAutoRepliesCommandRunner(
             IAkkaService akkaService,
@@ -55,7 +55,7 @@ namespace OpenttdDiscord.Infrastructure.AutoReplies.CommandRunners
         {
             if (autoReplies.Count == 0)
             {
-                return new TextResponse("No auto-replies defined for this server");
+                return new TextResponse(NoRepliesResponse);
             }
 
             StringBuilder sb = new("Auto replies defined for this server:");
@@ -63,7 +63,7 @@ namespace OpenttdDiscord.Infrastructure.AutoReplies.CommandRunners
             {
                 sb.Append(ar.TriggerMessage);
                 sb.Append(" - ");
-                sb.Append(ar.AdditionalAction.ToString());
+                sb.AppendLine(ar.AdditionalAction.ToString());
             }
 
             return new TextResponse(sb);

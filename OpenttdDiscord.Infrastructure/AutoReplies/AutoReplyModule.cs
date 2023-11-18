@@ -46,14 +46,16 @@ namespace OpenttdDiscord.Infrastructure.AutoReplies
             return services.AddScoped<SetWelcomeMessageCommandRunner>()
                 .AddScoped<SetWelcomeMessageModalRunner>()
                 .AddScoped<SetAutoReplyCommandRunner>()
-                .AddScoped<SetAutoReplyModalRunner>();
+                .AddScoped<SetAutoReplyModalRunner>()
+                .AddScoped<GetAutoRepliesCommandRunner>();
         }
 
         public static IServiceCollection RegisterCommands(this IServiceCollection services)
         {
             return services
                 .AddSingleton<IOttdSlashCommand, SetWelcomeMessageCommand>()
-                .AddSingleton<IOttdSlashCommand, SetAutoReplyCommand>();
+                .AddSingleton<IOttdSlashCommand, SetAutoReplyCommand>()
+                .AddSingleton<IOttdSlashCommand, GetAutoRepliesCommand>();
         }
     }
 }

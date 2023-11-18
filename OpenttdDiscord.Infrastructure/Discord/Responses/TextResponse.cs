@@ -5,17 +5,17 @@ namespace OpenttdDiscord.Infrastructure.Discord.CommandResponses
 {
     public class TextResponse : InteractionResponseBase
     {
-        private readonly string response;
+        public string Response { get; }
 
         private readonly bool ephemeral;
 
         public TextResponse(string response, bool ephemeral = true)
         {
-            this.response = response;
+            this.Response = response;
             this.ephemeral = ephemeral;
-            if (string.IsNullOrWhiteSpace(this.response))
+            if (string.IsNullOrWhiteSpace(this.Response))
             {
-                this.response = "Empty response";
+                this.Response = "Empty response";
             }
         }
 
@@ -26,7 +26,7 @@ namespace OpenttdDiscord.Infrastructure.Discord.CommandResponses
 
         protected override async Task InternalExecute(IDiscordInteraction interaction)
         {
-            await interaction.RespondAsync(response, ephemeral: ephemeral);
+            await interaction.RespondAsync(Response, ephemeral: ephemeral);
         }
     }
 }

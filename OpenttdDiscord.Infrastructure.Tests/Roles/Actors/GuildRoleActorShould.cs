@@ -148,22 +148,17 @@ namespace OpenttdDiscord.Infrastructure.Tests.Roles.Actors
                 deleteRole.GuildId,
                 deleteRole.RoleId);
 
-            await WithinAsync(
-                TimeSpan.FromSeconds(1),
-                async () =>
-                {
-                    GetRoleLevelResponse? response = await guildRoleActor.Ask<GetRoleLevelResponse>(getRole);
+            GetRoleLevelResponse? response = await guildRoleActor.Ask<GetRoleLevelResponse>(getRole);
 
-                    Assert.Equal(
-                        UserLevel.User,
-                        response.RoleLevel);
+            Assert.Equal(
+                UserLevel.User,
+                response.RoleLevel);
 
-                    await rolesRepositorySub
-                        .Received(1)
-                        .DeleteRole(
-                            upsertRole.GuildId,
-                            upsertRole.RoleId);
-                });
+            await rolesRepositorySub
+                .Received(1)
+                .DeleteRole(
+                    upsertRole.GuildId,
+                    upsertRole.RoleId);
         }
     }
 }

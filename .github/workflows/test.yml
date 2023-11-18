@@ -23,7 +23,7 @@ jobs:
       - name: Build docker database
         run: docker build -t ottd_discord_test_database ./OpenttdDiscord.Database
       - name: Test
-        run: dotnet test --no-restore --verbosity normal --collect "XPlat Code Coverage" -c Release
+        run: dotnet test /p:NoTestParallel=true --no-restore --verbosity minimal --collect "XPlat Code Coverage" -c Release
         env:
           CI: true
       - name: Test Report

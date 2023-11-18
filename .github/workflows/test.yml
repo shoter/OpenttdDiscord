@@ -23,27 +23,21 @@ jobs:
       - name: Build docker database
         run: docker build -t ottd_discord_test_database ./OpenttdDiscord.Database
       - name: Test
-        run: |
-          dotnet test /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:CoverletOutput='${{ github.workspace }}/TestReports/database' --no-restore --verbosity normal -c Release ./OpenttdDiscord.Database.Tests/OpenttdDiscord.Database.Tests.csproj
-          dotnet test /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:CoverletOutput='${{ github.workspace }}/TestReports/infrastructure' --no-restore --verbosity normal -c Release ./OpenttdDiscord.Infrastructure.Tests/OpenttdDiscord.Infrastructure.Tests.csproj
-          dotnet test /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:CoverletOutput='${{ github.workspace }}/TestReports/validation' --no-restore --verbosity normal -c Release ./OpenttdDiscord.Validation.Tests/OpenttdDiscord.Validation.Tests.csproj
+        run: dotnet test --no-restore --verbosity normal --collect "XPlat Code Coverage" -c Release
         env:
           CI: true
-      - name: XUnit Viewer
-        if: success() || failure()
-        id: xunit-viewer
-        uses: AutoModality/action-xunit-viewer@v1  
-      - name: Attach the report
-        if: success() || failure()
-        uses: actions/upload-artifact@v1
+      - name: Test Report
+        uses: dorny/test-reporter@v1
+        if: success() || failure()    # run this step even if previous step failed
         with:
-          name: MySupaDupaReport
-          path: ${{ github.workspace }}/TestReports/
+          name: XUnit Tests            # Name of the check run which will be created
+          path: /home/runner/work/OpenttdDiscord/OpenttdDiscord/TestResults/**/*.trx    # Path to test results
+          reporter: dotnet-trx        # Format of test results
       - name: Upload unit Test result
         uses: codecov/codecov-action@v3
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-          root_dir: ${{ github.workspace }}/TestReports/
+          root_dir: /home/runner/work/OpenttdDiscord/OpenttdDiscord
           flags: unittests
           name: ${{ github.repository }}
           fail_ci_if_error: true

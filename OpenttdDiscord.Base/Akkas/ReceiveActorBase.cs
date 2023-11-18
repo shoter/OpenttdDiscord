@@ -42,8 +42,11 @@ namespace OpenttdDiscord.Base.Akkas
             Receive receive,
             object message)
         {
-            logger.LogTrace("{Path} received {Message}({Name}",
+            string selfName = GetType()
+                .Name;
+            logger.LogTrace("({Path}|{SelfName} received {Message}({Name}",
                 Self.Path,
+                selfName,
                 message,
                 message.GetType().Name);
             return base.AroundReceive(

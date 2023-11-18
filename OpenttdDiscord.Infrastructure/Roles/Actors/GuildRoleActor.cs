@@ -24,7 +24,9 @@ namespace OpenttdDiscord.Infrastructure.Roles.Actors
             rolesRepository = SP.GetRequiredService<IRolesRepository>();
             this.guildId = guildId;
             Ready();
-            Self.Tell(new InitGuildRoleActor());
+            InitGuildRoleActor()
+                .AsTask()
+                .Wait();
         }
 
         public static Props Create(
@@ -38,11 +40,10 @@ namespace OpenttdDiscord.Infrastructure.Roles.Actors
         {
             ReceiveEitherAsync<UpsertRole>(UpsertRole);
             ReceiveEitherAsync<DeleteRole>(DeleteRole);
-            ReceiveEitherAsync<InitGuildRoleActor>(InitGuildRoleActor);
             Receive<GetRoleLevel>(GetRoleLevel);
         }
 
-        private EitherAsyncUnit InitGuildRoleActor(InitGuildRoleActor _)
+        private EitherAsyncUnit InitGuildRoleActor()
         {
             return
                 from roles in rolesRepository.GetRoles(guildId)

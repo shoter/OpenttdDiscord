@@ -47,7 +47,8 @@ namespace OpenttdDiscord.Infrastructure.AutoReplies
                 .AddScoped<SetWelcomeMessageModalRunner>()
                 .AddScoped<SetAutoReplyCommandRunner>()
                 .AddScoped<SetAutoReplyModalRunner>()
-                .AddScoped<GetAutoRepliesCommandRunner>();
+                .AddScoped<GetAutoRepliesCommandRunner>()
+                .AddScoped<GetAutoReplyContentCommandRunner>();
         }
 
         public static IServiceCollection RegisterCommands(this IServiceCollection services)
@@ -55,7 +56,8 @@ namespace OpenttdDiscord.Infrastructure.AutoReplies
             return services
                 .AddSingleton<IOttdSlashCommand, SetWelcomeMessageCommand>()
                 .AddSingleton<IOttdSlashCommand, SetAutoReplyCommand>()
-                .AddSingleton<IOttdSlashCommand, GetAutoRepliesCommand>();
+                .AddSingleton<IOttdSlashCommand, GetAutoRepliesCommand>()
+                .AddSingleton<IOttdSlashCommand, GetAutoReplyContentCommand>();
         }
     }
 }

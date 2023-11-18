@@ -38,6 +38,19 @@ namespace OpenttdDiscord.Base.Akkas
             serviceScope.Dispose();
         }
 
+        protected override bool AroundReceive(
+            Receive receive,
+            object message)
+        {
+            logger.LogTrace("{Path} received {Message}({Name}",
+                Self.Path,
+                message,
+                message.GetType().Name);
+            return base.AroundReceive(
+                receive,
+                message);
+        }
+
         protected override void PostRestart(Exception reason)
         {
             this.logger.LogError($"Restarted due to {reason}");

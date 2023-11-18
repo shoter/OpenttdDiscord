@@ -19,12 +19,13 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="Servers\Actors\" />
-	</ItemGroup>
-
-	<ItemGroup>
 	  <ProjectReference Include="..\OpenttdDiscord.Database\OpenttdDiscord.Database.csproj" />
 	  <ProjectReference Include="..\OpenttdDiscord.Validation\OpenttdDiscord.Validation.csproj" />
+	</ItemGroup>
+
+
+	<ItemGroup>
+	  <Folder Include="AutoReplies\Errors\" />
 	</ItemGroup>
 
 </Project>

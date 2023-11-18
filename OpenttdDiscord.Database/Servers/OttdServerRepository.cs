@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using OpenttdDiscord.Database.Ottd.Servers;
 using OpenttdDiscord.Domain.Servers;
+using OpenttdDiscord.Domain.Servers.Errors;
 
 namespace OpenttdDiscord.Database.Servers
 {
@@ -53,7 +54,7 @@ namespace OpenttdDiscord.Database.Servers
                     var foundServer = await Db.Servers.FindAsync(server.Id);
                     if (foundServer == null)
                     {
-                        return Left<IError>(new HumanReadableError("Server not found"));
+                        return Left<IError>(new ServerNotFoundError());
                     }
 
                     Db.Entry(foundServer)
@@ -84,7 +85,7 @@ namespace OpenttdDiscord.Database.Servers
 
                     if (entity == null)
                     {
-                        return new HumanReadableError("Server was not found");
+                        return new ServerNotFoundError();
                     }
 
                     return entity.ToDomain();
@@ -102,7 +103,7 @@ namespace OpenttdDiscord.Database.Servers
 
                         if (server == null)
                         {
-                            return new HumanReadableError("Server not found");
+                            return new ServerNotFoundError();
                         }
 
                         return server.ToDomain();

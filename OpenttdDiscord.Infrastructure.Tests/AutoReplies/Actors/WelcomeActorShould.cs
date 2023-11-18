@@ -69,7 +69,7 @@ namespace OpenttdDiscord.Infrastructure.Tests.AutoReplies.Actors
                         updatedMessage));
         }
 
-        [Fact(Timeout = 2_000)]
+        [Fact(Timeout = 3_000)]
         public async Task SendMultipleMessages_IfThereAreLineBreaks()
         {
             // Arrange

@@ -7,7 +7,7 @@
     <IsPackable>false</IsPackable>
     <VSTestLogger>trx%3bLogFileName=$(MSBuildProjectName).trx</VSTestLogger>
     <VSTestResultsDirectory>$(MSBuildThisFileDirectory)/../TestResults/$(MSBuildProjectName)/</VSTestResultsDirectory>
-
+    <DefineConstants Condition=" '$(NoTestParallel)' == 'true' ">$(DefineConstants);NO_PARALLEL</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>

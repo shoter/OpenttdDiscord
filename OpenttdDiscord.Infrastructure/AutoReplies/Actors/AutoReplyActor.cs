@@ -1,12 +1,10 @@
 using Akka.Actor;
-using LanguageExt;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using OpenTTDAdminPort;
 using OpenTTDAdminPort.Events;
 using OpenttdDiscord.Domain.AutoReplies;
 using OpenttdDiscord.Domain.AutoReplies.UseCases;
-using OpenttdDiscord.Infrastructure.Akkas.Message;
 using OpenttdDiscord.Infrastructure.AutoReplies.Messages;
 using OpenttdDiscord.Infrastructure.Ottd.Messages;
 

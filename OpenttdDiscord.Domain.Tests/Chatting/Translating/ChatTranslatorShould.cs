@@ -57,7 +57,7 @@ namespace OpenttdDiscord.Domain.Tests.Chatting.Translating
         {
             Assert.Equal(
                 expectedOutput,
-                sut.FromDiscordToOttd(expectedOutput).Right());
+                sut.FromDiscordToOttd(input).Right());
         }
     }
 }

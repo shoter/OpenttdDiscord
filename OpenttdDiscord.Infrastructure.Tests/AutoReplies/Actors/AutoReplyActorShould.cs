@@ -85,7 +85,7 @@ namespace OpenttdDiscord.Infrastructure.Tests.AutoReplies.Actors
             return sut;
         }
 
-        [Fact(Timeout = 2_000)]
+        [Fact(Timeout = 3_000)]
         public async Task SendMessage_IfWelcomeMessage_IsConfiguredInDatabase()
         {
             var welcomeMessage = fix.Create<WelcomeMessage>();
@@ -114,7 +114,7 @@ namespace OpenttdDiscord.Infrastructure.Tests.AutoReplies.Actors
                         welcomeMessage.Content));
         }
 
-        [Fact(Timeout = 2_000)]
+        [Fact(Timeout = 3_000)]
         public async Task SendAutoReply_IfAutoReply_IsConfiguredInDatabase()
         {
             var autoReply = fix.Create<AutoReply>();

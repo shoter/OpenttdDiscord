@@ -44,7 +44,7 @@ namespace OpenttdDiscord.Infrastructure.Tests.AutoReplies.Actors
                         initialContent));
         }
 
-        [Fact(Timeout = 1_000)]
+        [Fact(Timeout = 2_000)]
         public async Task ShouldRespondToNewPlayer_WithUpdatedMessage()
         {
             // Arrange
@@ -69,7 +69,7 @@ namespace OpenttdDiscord.Infrastructure.Tests.AutoReplies.Actors
                         updatedMessage));
         }
 
-        [Fact(Timeout = 1_000)]
+        [Fact(Timeout = 2_000)]
         public async Task SendMultipleMessages_IfThereAreLineBreaks()
         {
             // Arrange

@@ -26,6 +26,13 @@ jobs:
         run: dotnet test --no-restore --verbosity normal --collect "XPlat Code Coverage" -c Release
         env:
           CI: true
+      - name: Test Report
+        uses: dorny/test-reporter@v1
+        if: success() || failure()    # run this step even if previous step failed
+        with:
+          name: XUnit Tests            # Name of the check run which will be created
+          path: /home/runner/work/OpenttdDiscord/OpenttdDiscord/TestResults/**/*.trx    # Path to test results
+          reporter: dotnet-trx        # Format of test results
       - name: Upload unit Test result
         uses: codecov/codecov-action@v3
         with:
@@ -34,3 +41,4 @@ jobs:
           flags: unittests
           name: ${{ github.repository }}
           fail_ci_if_error: true
+      

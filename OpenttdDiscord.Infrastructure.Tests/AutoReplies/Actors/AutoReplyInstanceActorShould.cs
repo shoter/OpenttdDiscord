@@ -33,7 +33,13 @@ namespace OpenttdDiscord.Infrastructure.Tests.AutoReplies.Actors
                 "papaj",
                 AutoReplyAction.None);
 
-            defaultPlayer = fix.Create<Player>() with { ClientId = 2137 };
+            defaultPlayer = fix.Create<Player>() with
+            {
+                ClientId = 2137,
+
+                // To not be a spectator
+                PlayingAs = 12,
+            };
             adminPortClientSut.QueryServerStatus()
                 .Returns(Task.FromResult(defaultStatus));
 

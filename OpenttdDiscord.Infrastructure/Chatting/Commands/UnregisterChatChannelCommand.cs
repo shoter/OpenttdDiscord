@@ -1,9 +1,11 @@
-﻿using Discord;
+﻿using System.Diagnostics.CodeAnalysis;
+using Discord;
 using OpenttdDiscord.Infrastructure.Chatting.Runners;
 using OpenttdDiscord.Infrastructure.Discord.Commands;
 
 namespace OpenttdDiscord.Infrastructure.Chatting.Commands
 {
+    [ExcludeFromCodeCoverage]
     internal class UnregisterChatChannelCommand : OttdSlashCommandBase<UnregisterChatChannelRunner>
     {
         public UnregisterChatChannelCommand()

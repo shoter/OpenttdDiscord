@@ -6,7 +6,9 @@ using OpenttdDiscord.Domain.Servers;
 using OpenttdDiscord.Domain.Servers.Errors;
 using OpenttdDiscord.Domain.Servers.UseCases;
 using OpenttdDiscord.Infrastructure.AutoReplies.CommandRunners;
+using OpenttdDiscord.Infrastructure.AutoReplies.Options;
 using OpenttdDiscord.Infrastructure.Discord.CommandResponses;
+using OpenttdDiscord.Infrastructure.Servers.Options;
 
 namespace OpenttdDiscord.Infrastructure.Tests.AutoReplies.CommandRunners
 {
@@ -33,6 +35,13 @@ namespace OpenttdDiscord.Infrastructure.Tests.AutoReplies.CommandRunners
                     defaultOttdServer.Id,
                     defaultAutoReply.TriggerMessage)
                 .Returns(Some(defaultAutoReply));
+
+            WithOption(
+                ServerNameOption.OptionName,
+                defaultOttdServer.Name);
+            WithOption(
+                AutoReplyTriggerOption.OptionName,
+                defaultAutoReply.TriggerMessage);
         }
 
         [Theory]

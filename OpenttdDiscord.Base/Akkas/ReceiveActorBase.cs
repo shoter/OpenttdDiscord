@@ -44,11 +44,13 @@ namespace OpenttdDiscord.Base.Akkas
         {
             string selfName = GetType()
                 .Name;
-            logger.LogTrace("({Path}|{SelfName}) received {Message}({Name})",
+            logger.LogTrace(
+                "({Path}|{SelfName}) received {Message}({Name}) ",
                 Self.Path,
                 selfName,
                 message,
-                message.GetType().Name);
+                message.GetType()
+                    .Name);
             return base.AroundReceive(
                 receive,
                 message);

@@ -48,7 +48,6 @@ namespace OpenttdDiscord.Infrastructure.AutoReplies
                 .AddScoped<SetAutoReplyCommandRunner>()
                 .AddScoped<SetAutoReplyModalRunner>()
                 .AddScoped<GetAutoRepliesCommandRunner>()
-                .AddScoped<SetAutoReplyModalRunner>()
                 .AddScoped<GetAutoReplyContentCommandRunner>();
         }
 
@@ -58,7 +57,6 @@ namespace OpenttdDiscord.Infrastructure.AutoReplies
                 .AddSingleton<IOttdSlashCommand, SetWelcomeMessageCommand>()
                 .AddSingleton<IOttdSlashCommand, SetAutoReplyCommand>()
                 .AddSingleton<IOttdSlashCommand, GetAutoRepliesCommand>()
-                .AddSingleton<IOttdSlashCommand, SetAutoReplyCommand>()
                 .AddSingleton<IOttdSlashCommand, GetAutoReplyContentCommand>();
         }
     }

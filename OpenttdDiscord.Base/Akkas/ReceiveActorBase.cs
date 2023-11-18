@@ -51,7 +51,6 @@ namespace OpenttdDiscord.Base.Akkas
                 message);
         }
 
-
         protected override void PostRestart(Exception reason)
         {
             this.logger.LogError($"Restarted due to {reason}");

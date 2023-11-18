@@ -44,7 +44,7 @@ namespace OpenttdDiscord.Base.Akkas
         {
             string selfName = GetType()
                 .Name;
-            logger.LogTrace("({Path}|{SelfName} received {Message}({Name}",
+            logger.LogTrace("({Path}|{SelfName}) received {Message}({Name})",
                 Self.Path,
                 selfName,
                 message,

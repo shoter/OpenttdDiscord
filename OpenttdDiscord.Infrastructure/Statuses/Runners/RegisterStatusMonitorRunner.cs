@@ -54,7 +54,6 @@ namespace OpenttdDiscord.Infrastructure.Statuses.Runners
                     server.Id,
                     channelId)
                 from monitor in registerStatusMonitorUseCase.Execute(
-                    user,
                     server,
                     guildId,
                     channelId)

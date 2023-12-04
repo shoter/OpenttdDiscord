@@ -5,6 +5,6 @@ namespace OpenttdDiscord.Domain.Statuses.UseCases
 {
     public interface IRegisterStatusMonitorUseCase
     {
-        EitherAsync<IError, StatusMonitor> Execute(User user, OttdServer server, ulong guildId, ulong channelId);
+        EitherAsync<IError, StatusMonitor> Execute(OttdServer server, ulong guildId, ulong channelId);
     }
 }

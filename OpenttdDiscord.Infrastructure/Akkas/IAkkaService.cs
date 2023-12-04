@@ -12,7 +12,7 @@ namespace OpenttdDiscord.Infrastructure.Akkas
         /// <summary>
         /// Uses <see cref="SelectActor"/> to select and actor and then asks it with a given message
         /// </summary>
-        EitherAsync<IError, TExpectedMessage> SelectAndAsk<TExpectedMessage>(string path, object message);
+        EitherAsync<IError, TExpectedMessage> SelectAndAsk<TExpectedMessage>(string path, object message, TimeSpan? timeout = null);
 
         void NotifyAboutAkkaStart();
 

@@ -15,13 +15,13 @@ namespace OpenttdDiscord.Infrastructure.Statuses.UseCases
     {
         private readonly IStatusMonitorRepository statusMonitorRepository;
 
-        private readonly DiscordSocketClient discord;
+        private readonly IDiscordClient discord;
 
         private readonly IAkkaService akkaService;
 
         public RegisterStatusMonitorUseCase(
             IStatusMonitorRepository statusMonitorRepository,
-            DiscordSocketClient discord,
+            IDiscordClient discord,
             IAkkaService akkaService)
         {
             this.statusMonitorRepository = statusMonitorRepository;
@@ -29,14 +29,12 @@ namespace OpenttdDiscord.Infrastructure.Statuses.UseCases
             this.akkaService = akkaService;
         }
 
-        public EitherAsync<IError, StatusMonitor> Execute(User user, OttdServer server, ulong guildId, ulong channelId)
+        public EitherAsync<IError, StatusMonitor> Execute(OttdServer server, ulong guildId, ulong channelId)
         {
-            var embedMessageIdResult = CreateEmbedMessage(channelId, server);
             var transactionLog = new TransactionLog();
             return
             (
-             from _1 in CheckIfHasCorrectUserLevel(user, UserLevel.Admin).ToAsync()
-             from messageId in embedMessageIdResult
+             from messageId in CreateEmbedMessage(channelId, server)
              from _2 in transactionLog.AddTransactionRollback(() => DeleteEmbedMessage(channelId, messageId)).ToAsync()
              from statusMonitor in statusMonitorRepository.Insert(new StatusMonitor(
                  server.Id,
@@ -44,8 +42,7 @@ namespace OpenttdDiscord.Infrastructure.Statuses.UseCases
                  channelId,
                  messageId,
                  DateTime.MinValue.ToUniversalTime()))
-             from guilds in akkaService.SelectActor(MainActors.Paths.Guilds)
-             from _3 in guilds.TryAsk(new RegisterStatusMonitor(statusMonitor), TimeSpan.FromSeconds(1))
+             from _3 in akkaService.SelectAndAsk<object>(MainActors.Paths.Guilds, new RegisterStatusMonitor(statusMonitor), TimeSpan.FromSeconds(1))
              select statusMonitor)
              .LeftRollback(transactionLog);
         }

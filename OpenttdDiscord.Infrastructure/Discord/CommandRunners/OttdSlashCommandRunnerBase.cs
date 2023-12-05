@@ -44,7 +44,7 @@ namespace OpenttdDiscord.Infrastructure.Discord.CommandRunners
         protected abstract EitherAsync<IError, IInteractionResponse> RunInternal(
             ISlashCommandInteraction command,
             User user,
-            ExtDictionary<string, object> options);
+            OptionsDictionary options);
 
         protected Either<IError, ulong> EnsureItIsGuildCommand(ISlashCommandInteraction command)
         {

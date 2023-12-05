@@ -18,8 +18,8 @@ namespace OpenttdDiscord.Infrastructure.Tests.AutoReplies.Actors
     public class AutoReplyActorShould : BaseActorTestKit
     {
         private readonly IAdminPortClient adminPortClientSut = Substitute.For<IAdminPortClient>();
-        private readonly ulong guildId;
-        private readonly Guid serverId;
+        private readonly ulong defaultGuildId;
+        private readonly Guid defaultServerId;
 
         private readonly IGetWelcomeMessageUseCase getWelcomeMessageUseCaseSub =
             Substitute.For<IGetWelcomeMessageUseCase>();
@@ -30,8 +30,8 @@ namespace OpenttdDiscord.Infrastructure.Tests.AutoReplies.Actors
         public AutoReplyActorShould(ITestOutputHelper outputHelper)
             : base(outputHelper)
         {
-            this.guildId = fix.Create<ulong>();
-            this.serverId = fix.Create<Guid>();
+            this.defaultGuildId = fix.Create<ulong>();
+            this.defaultServerId = fix.Create<Guid>();
 
             var serverStatus = new ServerStatus(
                 fix.Create<AdminServerInfo>(),
@@ -41,14 +41,14 @@ namespace OpenttdDiscord.Infrastructure.Tests.AutoReplies.Actors
 
             getWelcomeMessageUseCaseSub
                 .Execute(
-                    guildId,
-                    serverId)
+                    defaultGuildId,
+                    defaultServerId)
                 .Returns(Option<WelcomeMessage>.None);
 
             getAutoReplyUseCaseSub
                 .Execute(
-                    guildId,
-                    serverId)
+                    defaultGuildId,
+                    defaultServerId)
                 .Returns(new List<AutoReply>());
         }
 
@@ -78,8 +78,8 @@ namespace OpenttdDiscord.Infrastructure.Tests.AutoReplies.Actors
             var sut = ActorOf(
                 AutoReplyActor.Create(
                     Sp,
-                    guildId,
-                    serverId,
+                    defaultGuildId,
+                    defaultServerId,
                     adminPortClientSut
                 ));
             return sut;
@@ -91,8 +91,8 @@ namespace OpenttdDiscord.Infrastructure.Tests.AutoReplies.Actors
             var welcomeMessage = fix.Create<WelcomeMessage>();
             getWelcomeMessageUseCaseSub
                 .Execute(
-                    guildId,
-                    serverId)
+                    defaultGuildId,
+                    defaultServerId)
                 .Returns(Some(welcomeMessage));
 
             // Sut needs to be recreated, because it should get data from repo at startup
@@ -119,8 +119,8 @@ namespace OpenttdDiscord.Infrastructure.Tests.AutoReplies.Actors
         {
             var autoReply = fix.Create<AutoReply>();
             getAutoReplyUseCaseSub.Execute(
-                    guildId,
-                    serverId)
+                    defaultGuildId,
+                    defaultServerId)
                 .Returns(
                     EitherAsync<IError, IReadOnlyCollection<AutoReply>>.Right(
                         new List<AutoReply>() { autoReply }));
@@ -137,6 +137,44 @@ namespace OpenttdDiscord.Infrastructure.Tests.AutoReplies.Actors
 
             // Assert
             adminPortClientSut.Received()
+                .SendMessage(
+                    new AdminChatMessage(
+                        NetworkAction.NETWORK_ACTION_CHAT,
+                        ChatDestination.DESTTYPE_CLIENT,
+                        ev.Player.ClientId,
+                        autoReply.ResponseMessage));
+        }
+
+        [Fact(Timeout = 3_000)]
+        public async Task NotSendAutoReply_IfAutoReply_IsRemovedAfterBeingConfiguredInDatabase()
+        {
+            var autoReply = fix.Create<AutoReply>();
+            getAutoReplyUseCaseSub.Execute(
+                    defaultGuildId,
+                    defaultServerId)
+                .Returns(
+                    EitherAsync<IError, IReadOnlyCollection<AutoReply>>.Right(
+                        new List<AutoReply>() { autoReply }));
+
+            IActorRef sut = CreateSut();
+            sut.Tell(
+                new RemoveAutoReply(
+                    defaultGuildId,
+                    defaultServerId,
+                    autoReply.TriggerMessage));
+
+            // Act
+            var ev = fix.Create<AdminChatMessageEvent>() with
+            {
+                Message = autoReply.TriggerMessage,
+                NetworkAction = NetworkAction.NETWORK_ACTION_CHAT,
+            };
+
+            var response = await sut.Ask(ev);
+
+            // Assert
+            Assert.True(response is NoResponseForMessage);
+            adminPortClientSut.DidNotReceive()
                 .SendMessage(
                     new AdminChatMessage(
                         NetworkAction.NETWORK_ACTION_CHAT,

@@ -6,5 +6,7 @@ namespace OpenttdDiscord.Domain.AutoReplies.Errors
         : base("Auto reply not found")
         {
         }
+
+        public static AutoReplyNotFound Instance { get; } = new AutoReplyNotFound();
     }
 }

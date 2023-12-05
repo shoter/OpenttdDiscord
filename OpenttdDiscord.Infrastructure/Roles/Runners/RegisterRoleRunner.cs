@@ -28,7 +28,7 @@ namespace OpenttdDiscord.Infrastructure.Roles.Runners
         protected override EitherAsync<IError, IInteractionResponse> RunInternal(
             ISlashCommandInteraction command,
             User user,
-            ExtDictionary<string, object> options)
+            OptionsDictionary options)
         {
             IRole? role = options["role"] as IRole;
             long roleLevel = (long) options["role-level"];

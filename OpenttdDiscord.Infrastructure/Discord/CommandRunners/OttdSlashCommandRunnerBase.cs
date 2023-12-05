@@ -26,9 +26,10 @@ namespace OpenttdDiscord.Infrastructure.Discord.CommandRunners
 
         public EitherAsync<IError, IInteractionResponse> Run(ISlashCommandInteraction command)
         {
-            var options = command.Data.Options.ToExtDictionary(
-                o => o.Name,
-                o => o.Value);
+            var options = new OptionsDictionary(
+                command.Data.Options.ToExtDictionary(
+                    o => o.Name,
+                    o => o.Value));
 
             return
                 from userLevel in GetRoleLevelUseCase.Execute(command.User)

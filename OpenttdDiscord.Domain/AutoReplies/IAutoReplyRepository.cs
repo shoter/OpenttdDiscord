@@ -23,5 +23,10 @@ namespace OpenttdDiscord.Domain.AutoReplies
         EitherAsync<IError, IReadOnlyCollection<AutoReply>> GetAutoReplies(
             ulong guildId,
             Guid serverId);
+
+        EitherAsyncUnit RemoveAutoReply(
+            ulong guildId,
+            Guid serverId,
+            string triggerMessage);
     }
 }

@@ -53,7 +53,7 @@ namespace OpenttdDiscord.Infrastructure.Tests.Roles.UseCases
             guildUser.RoleIds.Returns(roleIds);
             guildUser.GuildId.Returns(fix.Create<ulong>());
 
-            akkaServiceSubstitute.SelectAndAsk<GetRoleLevelResponse>(
+            akkaServiceSubstitute.SelectAndAsk(
                     MainActors.Paths.Guilds,
                     new GetRoleLevel(
                         guildUser.GuildId,

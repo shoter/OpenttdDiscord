@@ -8,8 +8,13 @@ namespace OpenttdDiscord.Database.Extensions
     {
         internal static EitherAsync<IError, IQueryable<TSource>> WhereExt<TSource>(
             this IQueryable<TSource> queryable,
-            Expression<Func<TSource, bool>> predicate) => (from result in TryAsync(queryable.Where(predicate))
+            Expression<Func<TSource, bool>> predicate) => (from result in Try(queryable.Where(predicate))
             select result).ToEitherAsyncError();
+
+        internal static EitherAsync<IError, int> DeleteFromQueryExt<TSource>(
+            this IQueryable<TSource> queryable)
+            where TSource : class => TryAsync(queryable.DeleteFromQueryAsync())
+            .ToEitherAsyncError();
 
         internal static EitherAsync<IError, Option<TSource>> FirstOptionalExt<TSource>(
             this IQueryable<TSource> queryable) => (from result in TryAsync(queryable.FirstOrDefaultAsync())
@@ -17,8 +22,9 @@ namespace OpenttdDiscord.Database.Extensions
 
         internal static EitherAsync<IError, Option<TSource>> FirstOptionalExt<TSource>(
             this IQueryable<TSource> queryable,
-            Expression<Func<TSource, bool>> predicate) => (from result in TryAsync(queryable.FirstOrDefaultAsync(predicate))
-            select result == null ? Option<TSource>.None : Some(result)).ToEitherAsyncError();
+            Expression<Func<TSource, bool>> predicate) =>
+            (from result in TryAsync(queryable.FirstOrDefaultAsync(predicate))
+                select result == null ? Option<TSource>.None : Some(result)).ToEitherAsyncError();
 
         internal static EitherAsync<IError, TSource> FirstExt<TSource>(
             this IQueryable<TSource> queryable) => (from result in TryAsync(queryable.FirstOrDefaultAsync())

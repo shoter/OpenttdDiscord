@@ -34,7 +34,7 @@ namespace OpenttdDiscord.Infrastructure.Reporting.Runners
         protected override EitherAsync<IError, IInteractionResponse> RunInternal(
             ISlashCommandInteraction command,
             User user,
-            ExtDictionary<string, object> options)
+            OptionsDictionary options)
         {
             ulong guildId = command.GuildId!.Value;
 

@@ -24,8 +24,5 @@
 	</ItemGroup>
 
 
-	<ItemGroup>
-	  <Folder Include="AutoReplies\Errors\" />
-	</ItemGroup>
 
 </Project>

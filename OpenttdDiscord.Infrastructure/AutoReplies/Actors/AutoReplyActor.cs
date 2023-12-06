@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using OpenTTDAdminPort;
 using OpenTTDAdminPort.Events;
+using OpenttdDiscord.Base.Fundamentals;
 using OpenttdDiscord.Domain.AutoReplies;
 using OpenttdDiscord.Domain.AutoReplies.UseCases;
 using OpenttdDiscord.Infrastructure.AutoReplies.Messages;
@@ -62,9 +63,27 @@ namespace OpenttdDiscord.Infrastructure.AutoReplies.Actors
         {
             Receive<UpdateWelcomeMessage>(UpsertWelcomeMessage);
             Receive<UpdateAutoReply>(UpdateAutoReply);
+            ReceiveRespondUnit<RemoveAutoReply>(RemoveAutoReply);
             ReceiveRedirect<AdminClientJoinEvent>(() => welcomeActor);
-            ReceiveRedirect<AdminChatMessageEvent>(() => instanceActors.Values);
+            ReceiveAsync<AdminChatMessageEvent>(OnAdminChatMessageEvent);
             ReceiveIgnore<IAdminEvent>();
+        }
+
+        private async Task OnAdminChatMessageEvent(AdminChatMessageEvent msg)
+        {
+            var sender = Sender;
+            var tasks = instanceActors
+                .Values
+                .Select(x => x.Ask(msg))
+                .ToList();
+            await tasks;
+
+            if (tasks.Any(x => x.Result is MessageHasBeenProcessed))
+            {
+                sender.Tell(MessageHasBeenProcessed.Instance);
+            }
+
+            sender.Tell(NoResponseForMessage.Instance);
         }
 
         private void UpdateAutoReply(UpdateAutoReply msg)
@@ -92,6 +111,19 @@ namespace OpenttdDiscord.Infrastructure.AutoReplies.Actors
             logger.LogInformation($"Created actor for {msg.AutoReply.TriggerMessage}");
         }
 
+        private void RemoveAutoReply(RemoveAutoReply msg)
+        {
+            if (!instanceActors.TryGetValue(
+                    msg.TriggerMessage,
+                    out var actor))
+            {
+                return;
+            }
+
+            actor.Tell(PoisonPill.Instance);
+            instanceActors.Remove(msg.TriggerMessage);
+        }
+
         private EitherAsyncUnit InitializeActor()
         {
             var context = Context;
@@ -105,7 +137,9 @@ namespace OpenttdDiscord.Infrastructure.AutoReplies.Actors
                 from autoReplies in getAutoReplyUseCase.Execute(
                     guildId,
                     serverId)
-                from _2 in InitializeAutoReplyActors(autoReplies, context)
+                from _2 in InitializeAutoReplyActors(
+                    autoReplies,
+                    context)
                 select Unit.Default;
         }
 

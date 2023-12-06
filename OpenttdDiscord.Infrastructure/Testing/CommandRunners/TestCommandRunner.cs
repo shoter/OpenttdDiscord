@@ -31,7 +31,7 @@ namespace OpenttdDiscord.Infrastructure.Testing.CommandRunners
         protected override EitherAsync<IError, IInteractionResponse> RunInternal(
             ISlashCommandInteraction command,
             User user,
-            ExtDictionary<string, object> options)
+            OptionsDictionary options)
         {
             return from _ in CheckIfHasCorrectUserLevel(
                         user,

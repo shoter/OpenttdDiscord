@@ -1,6 +1,7 @@
 ﻿using Akka.Actor;
 using LanguageExt;
 using OpenttdDiscord.Base.Ext;
+using OpenttdDiscord.Base.Fundamentals;
 
 namespace OpenttdDiscord.Base.Akkas
 {
@@ -12,33 +13,35 @@ namespace OpenttdDiscord.Base.Akkas
             return Unit.Default;
         }
 
-        public static EitherAsync<IError, T> TryAsk<T>(this ICanTell canTell, object msg, TimeSpan? timeout = null)
-            => TryAsync<Either<IError, T>>(async () =>
+        public static EitherAsync<IError, T> TryAsk<T>(
+            this ICanTell canTell,
+            object msg,
+            TimeSpan? timeout = null) => from result in TryAsync(
+                async () => await canTell.Ask(
+                    msg,
+                    timeout)).ToEitherAsyncError()
+            from convertedResult in TryAsyncConvert<T>(result)
+            select convertedResult;
+
+        private static EitherAsync<IError, T> TryAsyncConvert<T>(object t)
+        {
+            if (t is Exception ex)
             {
-                var t = await canTell.Ask(msg, timeout);
+                return new ExceptionError(ex);
+            }
 
-                if (t is Exception ex)
-                {
-                    return new ExceptionError(ex);
-                }
+            if (t is ExceptionError exe)
+            {
+                return exe;
+            }
 
-                if (t is ExceptionError exe)
-                {
-                    return exe;
-                }
+            if (t is IError error)
+            {
+                return EitherAsync<IError, T>.Left(error);
+            }
 
-                if (t is IError error)
-                {
-                    return Either<IError, T>.Left(error);
-                }
-
-                if (t is T final)
-                {
-                    return final;
-                }
-
-                return new ExceptionError(new Exception("Could not convert an object"));
-            }).ToEitherAsyncErrorFlat();
+            return t.ConvertExt<T>();
+        }
 
         public static EitherAsync<IError, object> TryAsk(this ICanTell actor, object msg, TimeSpan? timeout = null)
             => TryAsk<object>(actor, msg, timeout);

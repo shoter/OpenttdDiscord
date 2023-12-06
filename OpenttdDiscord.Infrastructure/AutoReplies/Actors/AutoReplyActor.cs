@@ -74,7 +74,8 @@ namespace OpenttdDiscord.Infrastructure.AutoReplies.Actors
             var sender = Sender;
             var tasks = instanceActors
                 .Values
-                .Select(x => x.Ask(msg));
+                .Select(x => x.Ask(msg))
+                .ToList();
             await tasks;
 
             if (tasks.Any(x => x.Result is MessageHasBeenProcessed))

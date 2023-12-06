@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using Discord;
 using OpenttdDiscord.Infrastructure.AutoReplies.CommandRunners;
 using OpenttdDiscord.Infrastructure.AutoReplies.Options;
@@ -6,6 +7,7 @@ using OpenttdDiscord.Infrastructure.Servers.Options;
 
 namespace OpenttdDiscord.Infrastructure.AutoReplies.Commands
 {
+    [ExcludeFromCodeCoverage]
     internal class RemoveAutoReplyCommand : OttdSlashCommandBase<RemoveAutoReplyCommandRunner>
     {
         public RemoveAutoReplyCommand()

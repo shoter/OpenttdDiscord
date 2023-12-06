@@ -136,7 +136,7 @@ namespace OpenttdDiscord.Infrastructure.Tests.AutoReplies.Actors
             await sut.Ask(ev);
 
             // Assert
-            adminPortClientSut.Received()
+            adminPortClientSut.Received(requiredNumberOfCalls: 1)
                 .SendMessage(
                     new AdminChatMessage(
                         NetworkAction.NETWORK_ACTION_CHAT,

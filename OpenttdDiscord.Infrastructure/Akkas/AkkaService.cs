@@ -16,12 +16,12 @@ namespace OpenttdDiscord.Infrastructure.Akkas
             this.actorSystem = actorSystem;
         }
 
-        public EitherAsync<IError, TExpectedMessage> SelectAndAsk<TExpectedMessage>(
+        public EitherAsync<IError, object> SelectAndAsk(
             string path,
             object message,
             TimeSpan? timeout = null) =>
                 from actor in SelectActor(path)
-                from response in actor.TryAsk<TExpectedMessage>(message, timeout)
+                from response in actor.TryAsk<object>(message, timeout)
                 select response;
 
         public void NotifyAboutAkkaStart()

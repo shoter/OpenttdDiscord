@@ -53,7 +53,7 @@ namespace OpenttdDiscord.Infrastructure.AutoReplies.Actors
 
         private void Ready()
         {
-            ReceiveEitherAsyncRespondUnit<AdminChatMessageEvent>(OnAdminChatMessageEvent);
+            ReceiveEitherAsync<AdminChatMessageEvent>(OnAdminChatMessageEvent);
             Receive<UpdateAutoReply>(UpdateAutoReply);
         }
 
@@ -67,17 +67,21 @@ namespace OpenttdDiscord.Infrastructure.AutoReplies.Actors
         {
             if (msg.Player.ClientId == 1)
             {
+                Sender.Tell(NoResponseForMessage.Instance);
                 return Unit.Default;
             }
 
             if (msg.Message != autoReply.TriggerMessage)
             {
+                Sender.Tell(NoResponseForMessage.Instance);
                 return Unit.Default;
             }
 
+            var sender = Sender;
             return
                 (from _0 in ExecuteAdditionalAction(msg)
                     from _1 in SendMessageToClient(msg.Player.ClientId)
+                    from _2 in sender.TellExt(MessageHasBeenProcessed.Instance).ToAsync()
                     select Unit.Default).IfLeft(
                     left =>
                     {
@@ -95,6 +99,7 @@ namespace OpenttdDiscord.Infrastructure.AutoReplies.Actors
                             left.LogError(logger);
                         }
 
+                        sender.Tell(NoResponseForMessage.Instance);
                         return Unit.Default;
                     });
         }

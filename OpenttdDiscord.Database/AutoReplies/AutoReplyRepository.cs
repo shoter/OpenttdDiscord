@@ -104,5 +104,16 @@ namespace OpenttdDiscord.Database.AutoReplies
             select serverList
                 .Select(x => x.ToDomain())
                 .ToList() as IReadOnlyCollection<AutoReply>;
+
+        public EitherAsyncUnit RemoveAutoReply(
+            ulong guildId,
+            Guid serverId,
+            string triggerMessage) => from query in db.AutoReplies.WhereExt(
+                ar =>
+                    ar.GuildId == guildId &&
+                    ar.ServerId == serverId &&
+                    ar.TriggerMessage == triggerMessage)
+            from deletedRows in query.DeleteFromQueryExt()
+            select Unit.Default;
     }
 }

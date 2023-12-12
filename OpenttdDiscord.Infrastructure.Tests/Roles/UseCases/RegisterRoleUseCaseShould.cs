@@ -27,7 +27,7 @@ namespace OpenttdDiscord.Infrastructure.Tests.Roles.UseCases
             role.Id.Returns(fix.Create<ulong>());
             UserLevel userLevel = UserLevel.Moderator;
 
-            akkaServiceSubstitute.SelectAndAsk<object>(
+            akkaServiceSubstitute.SelectAndAsk(
                     MainActors.Paths.Guilds,
                     Arg.Is<UpsertRole>(_ => true))
                 .Returns(Unit.Default);
@@ -39,7 +39,7 @@ namespace OpenttdDiscord.Infrastructure.Tests.Roles.UseCases
 
             await akkaServiceSubstitute
                 .Received(1)
-                .SelectAndAsk<object>(
+                .SelectAndAsk(
                     MainActors.Paths.Guilds,
                     Arg.Is<UpsertRole>(
                         msg =>

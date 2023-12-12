@@ -67,7 +67,7 @@ namespace OpenttdDiscord.Infrastructure.Tests.Statuses.UseCases
         [Fact]
         public async Task DeleteEmbeddedMessage_WhenActorRegistrationInSystemGoesWrong()
         {
-            akkaServiceSub.SelectAndAsk<object>(
+            akkaServiceSub.SelectAndAsk(
                     default!,
                     default!)
                 .ReturnsForAnyArgs(EitherAsync<IError, object>.Left(Substitute.For<IError>()));
@@ -94,7 +94,7 @@ namespace OpenttdDiscord.Infrastructure.Tests.Statuses.UseCases
                     defaultChannelId);
 
             await akkaServiceSub.Received()
-                .SelectAndAsk<object>(
+                .SelectAndAsk(
                     MainActors.Paths.Guilds,
                     Arg.Is<RegisterStatusMonitor>(
                         msg =>

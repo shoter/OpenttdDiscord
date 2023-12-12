@@ -138,6 +138,30 @@ namespace OpenttdDiscord.Database.Tests.AutoReplies
         }
 
         [Fact]
+        public async Task RemoveAutoReplyMessage()
+        {
+            var server = await CreateServer();
+            var repo = await CreateRepository();
+            var autoReply = Fix.Create<AutoReply>();
+
+            var autoReplyFromDb =
+                await (from _1 in repo.UpsertAutoReply(
+                        server.GuildId,
+                        server.Id,
+                        autoReply)
+                    from _2 in repo.RemoveAutoReply(
+                        server.GuildId,
+                        server.Id,
+                        autoReply.TriggerMessage)
+                    from msg in repo.GetAutoReplies(
+                        server.GuildId,
+                        server.Id)
+                    select msg);
+
+            Assert.Empty(autoReplyFromDb.Right());
+        }
+
+        [Fact]
         public async Task InsertAutoReplyMessage_AndRetrieveIt_AsOptionAutoReply()
         {
             var server = await CreateServer();

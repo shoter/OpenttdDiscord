@@ -23,7 +23,7 @@ namespace OpenttdDiscord.Infrastructure.Maintenance.Runners
         protected override EitherAsync<IError, IInteractionResponse> RunInternal(
             ISlashCommandInteraction command,
             User user,
-            ExtDictionary<string, object> options)
+            OptionsDictionary options)
         {
             return
                 from _1 in CheckIfHasCorrectUserLevel(

@@ -37,7 +37,7 @@ namespace OpenttdDiscord.Infrastructure.AutoReplies.CommandRunners
         protected override EitherAsync<IError, IInteractionResponse> RunInternal(
             ISlashCommandInteraction command,
             User user,
-            ExtDictionary<string, object> options)
+            OptionsDictionary options)
         {
             var serverName = options.GetValueAs<string>(ServerNameOption.OptionName);
             var trigger = options.GetValueAs<string>(AutoReplyTriggerOption.OptionName);

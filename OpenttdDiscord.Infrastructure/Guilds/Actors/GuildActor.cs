@@ -42,9 +42,9 @@ namespace OpenttdDiscord.Infrastructure.Guilds.Actors
             Receive<InformAboutServerRegistration>(InformAboutServerRegistration);
             ReceiveAsync<InformAboutServerDeletion>(InformAboutServerDeletion);
 
-            ReceiveRedirect<GetRoleLevel>(() => guildRoleActor);
-            ReceiveRedirect<DeleteRole>(() => guildRoleActor);
-            ReceiveRedirect<UpsertRole>(() => guildRoleActor);
+            ReceiveForward<GetRoleLevel>(() => guildRoleActor);
+            ReceiveForward<DeleteRole>(() => guildRoleActor);
+            ReceiveForward<UpsertRole>(() => guildRoleActor);
 
             ReceiveRedirectToServer<IOttdServerMessage>(msg => msg.ServerId);
         }

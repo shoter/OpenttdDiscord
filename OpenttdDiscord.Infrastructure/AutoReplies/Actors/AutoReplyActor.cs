@@ -62,8 +62,8 @@ namespace OpenttdDiscord.Infrastructure.AutoReplies.Actors
         {
             Receive<UpdateWelcomeMessage>(UpsertWelcomeMessage);
             Receive<UpdateAutoReply>(UpdateAutoReply);
-            ReceiveRedirect<AdminClientJoinEvent>(() => welcomeActor);
-            ReceiveRedirect<AdminChatMessageEvent>(() => instanceActors.Values);
+            ReceiveForward<AdminClientJoinEvent>(() => welcomeActor);
+            ReceiveForward<AdminChatMessageEvent>(() => instanceActors.Values);
             ReceiveIgnore<IAdminEvent>();
         }
 

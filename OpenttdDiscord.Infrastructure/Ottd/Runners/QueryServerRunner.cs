@@ -32,7 +32,7 @@ namespace OpenttdDiscord.Infrastructure.Ottd.Runners
             User user,
             ExtDictionary<string, object> options)
         {
-            if (!command.ChannelId.HasValue)
+            if (command.ChannelId == null)
             {
                 return new HumanReadableError("This command can be only run on channel!");
             }

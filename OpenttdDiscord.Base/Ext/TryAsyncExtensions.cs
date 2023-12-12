@@ -11,8 +11,8 @@ namespace OpenttdDiscord.Base.Ext
             => tryAsync
                 .ToEither(error => (IError)new ExceptionError(error))
                 .BiBind(
-                Right: right => right.ToAsync(),
-                Left: left => EitherAsync<IError, T>.Left(left)
+                right => right.ToAsync(),
+                left => EitherAsync<IError, T>.Left(left)
                 );
     }
 }

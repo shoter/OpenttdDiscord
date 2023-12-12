@@ -7,9 +7,9 @@ namespace OpenttdDiscord.Tests.Common
         public static Task Within(
             Action assertAction,
             int numberOfTries = 10) => Within(
-            1.Seconds(),
-            assertAction);
-        public static async Task Within(TimeSpan withinTime, Action assertAction,
+            assertAction,
+            1.Seconds());
+        public static async Task Within(Action assertAction, TimeSpan withinTime,
                                   int numberOfTries = 10)
         {
             TimeSpan interval = withinTime / numberOfTries;

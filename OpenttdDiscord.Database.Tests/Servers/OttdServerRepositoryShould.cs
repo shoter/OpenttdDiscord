@@ -68,7 +68,7 @@ namespace OpenttdDiscord.Database.Tests.Servers
            );
         }
 
-        private async Task<OttdServerRepository> CreateRpeository([CallerMemberName] string? databaseName = null)
+        private async Task<OttdServerRepository> CreateRpeository([CallerMemberName] string databaseName = "default")
         {
             var context = await CreateContext(databaseName);
             return new OttdServerRepository(context);

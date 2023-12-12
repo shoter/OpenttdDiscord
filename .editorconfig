@@ -153,6 +153,53 @@ dotnet_diagnostic.SA1601.severity = none
 # SA1611: Element parameters should be documented
 dotnet_diagnostic.SA1611.severity = none
 
+# AV1130 - https://github.com/dennisdoomen/CSharpGuidelines/blob/5.6.0/_rules/1130.md
+# We are using LanguageExt where a lot of types acts as collections and we need to return them directly instead of some interface.
+# This code violates this rule a lot :P
+dotnet_diagnostic.AV1130.severity = none
+
+# https://github.com/dennisdoomen/CSharpGuidelines/blob/5.6.0/_rules/1580.md
+dotnet_diagnostic.AV1580.severity = suggestion
+
+# https://github.com/dennisdoomen/CSharpGuidelines/blob/5.6.0/_rules/1561.md
+# i want to have more than 3 params and do not have an error.
+dotnet_diagnostic.AV1561.severity = none
+
+# This rule is triggered when variable name is `i`
+dotnet_diagnostic.AV1706.severity = none
+
+# I do not want to end async methods name with `async`
+dotnet_diagnostic.AV1755.severity = none
+
+# If I want to catch non-generic exception then I will do so
+dotnet_diagnostic.AV1210.severity = suggestion
+
+# This project does not care if overload calls another one
+dotnet_diagnostic.AV1551.severity = none
+
+# If my method contains more than 7 statements then I want a suggestion
+dotnet_diagnostic.AV1500.severity = suggestion 
+
+# I want to use named params
+dotnet_diagnostic.AV1555.severity = none
+
+# I want to use optional params in interfaces and concrete classes
+dotnet_diagnostic.AV1554.severity = none
+
+# https://github.com/dennisdoomen/CSharpGuidelines/blob/5.6.0/_rules/1564.md
+# Avoid signatures that take a `bool` parameter
+dotnet_diagnostic.AV1564.severity = suggestion
+
+# https://github.com/dennisdoomen/CSharpGuidelines/blob/5.6.0/_rules/1710.md
+# Don't repeat the name of a class or enumeration in its members
+dotnet_diagnostic.AV1710.severity = suggestion
+
+# https://github.com/dennisdoomen/CSharpGuidelines/blob/5.6.0/_rules/2202.md
+# Prefer language syntax over explicit calls to underlying implementations
+dotnet_diagnostic.AV2202.severity = none
+
+dotnet_diagnostic.AV1532.severity = suggestion
+
 [*.{cs,vb}]
 dotnet_style_operator_placement_when_wrapping = beginning_of_line
 tab_width = 4
@@ -237,3 +284,6 @@ dotnet_style_parentheses_in_arithmetic_binary_operators = always_for_clarity:sil
 dotnet_style_parentheses_in_other_binary_operators = always_for_clarity:silent
 
 
+[OpenttdDiscord.Database/Migrations/*.cs]
+# We have auto generated migrations we do not want to care about: https://github.com/dennisdoomen/CSharpGuidelines/blob/5.6.0/_rules/1555.md
+dotnet_diagnostic.AV1555.severity = none

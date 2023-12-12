@@ -9,26 +9,26 @@ namespace OpenttdDiscord.Base.Ext
 
         public Exception Exception { get; }
 
-        public ExceptionError(Exception ex)
+        public ExceptionError(Exception exception)
         {
-            this.Reason = ex.Message;
-            this.Exception = ex;
+            this.Reason = exception.Message;
+            this.Exception = exception;
         }
 
         public ExceptionError(Error error)
         {
-            Exception ex = default!;
+            Exception exception = default!;
             if (error.IsExceptional)
             {
-                ex = (Exception)error.Exception;
+                exception = (Exception)error.Exception;
             }
             else
             {
-                ex = new Exception(error.Message);
+                exception = new Exception(error.Message);
             }
 
-            this.Reason = ex.Message;
-            this.Exception = ex;
+            this.Reason = exception.Message;
+            this.Exception = exception;
         }
 
         public void LogError(ILogger logger)

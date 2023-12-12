@@ -21,7 +21,7 @@ namespace OpenttdDiscord.Infrastructure.Ottd.Actors
 
         private void AutoReplyReady()
         {
-            ReceiveRedirect<AutoReplyMessage>(() => autoReplyActor);
+            ReceiveForward<AutoReplyMessage>(() => autoReplyActor);
         }
     }
 }

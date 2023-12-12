@@ -138,9 +138,12 @@ namespace OpenttdDiscord.Infrastructure.AutoReplies.Actors
                         from _1 in ResetCompany(msg)
                         select Unit.Default;
                 }
-            }
 
-            return Unit.Default;
+                default:
+                {
+                    return Unit.Default;
+                }
+            }
         }
 
         private EitherAsyncUnit ErrorWhenMorePlayersInCompany(

@@ -93,7 +93,7 @@ namespace OpenttdDiscord.Database.Tests.Rcon
             Assert.True(result.IsLeft);
         }
 
-        private async Task<RconChannelRepository> CreateRpeository([CallerMemberName] string? databaseName = null)
+        private async Task<RconChannelRepository> CreateRpeository([CallerMemberName] string databaseName = "default")
         {
             var context = await CreateContext(databaseName);
             return new RconChannelRepository(context);

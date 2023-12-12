@@ -108,7 +108,7 @@ namespace OpenttdDiscord.Database.Tests.AutoReplies
                     .Case);
         }
 
-        private async Task<AutoReplyRepository> CreateRepository([CallerMemberName] string? databaseName = null)
+        private async Task<AutoReplyRepository> CreateRepository([CallerMemberName] string databaseName = "default")
         {
             var context = await CreateContext(databaseName);
             return new AutoReplyRepository(context);

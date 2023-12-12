@@ -63,7 +63,7 @@ namespace OpenttdDiscord.Database.Tests.Roles
             Assert.Equal(updateRole, role);
         }
 
-        private async Task<IRolesRepository> CreateRpeository([CallerMemberName] string? databaseName = null)
+        private async Task<IRolesRepository> CreateRpeository([CallerMemberName] string databaseName = "default")
         {
             var context = await CreateContext(databaseName);
             return new RolesRepository(context);

@@ -18,7 +18,7 @@ namespace OpenttdDiscord.Database.Tests
             this.databaseFixture = databaseFixture;
         }
 
-        internal Task<OttdContext> CreateContext([CallerMemberName] string? databaseName = null)
+        internal Task<OttdContext> CreateContext([CallerMemberName] string databaseName = "default")
         {
             if (databaseName == null)
             {
@@ -28,7 +28,7 @@ namespace OpenttdDiscord.Database.Tests
             return databaseFixture.CreateContext(databaseName);
         }
 
-        protected async Task<OttdServer> CreateServer([CallerMemberName] string? databaseName = null, Func<OttdServer, OttdServer>? customize = null)
+        protected async Task<OttdServer> CreateServer([CallerMemberName] string databaseName = "default", Func<OttdServer, OttdServer>? customize = null)
         {
             var context = await CreateContext(databaseName);
             var repository = new OttdServerRepository(context);

@@ -30,7 +30,12 @@ namespace OpenttdDiscord.Tests.Common.Xunits
             where TState : notnull
             => scopeProvider.Push(state);
 
-        public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception, Func<TState, Exception?, string> formatter)
+        public void Log<TState>(
+            LogLevel logLevel,
+            EventId eventId,
+            TState state,
+            Exception? exception,
+            Func<TState, Exception?, string> formatter)
         {
             try
             {
@@ -39,12 +44,7 @@ namespace OpenttdDiscord.Tests.Common.Xunits
                   .Append("[").Append(DateTime.Now.ToTime()).Append("]")
                   .Append("[").Append(GetLogLevelString(logLevel).ToUpperInvariant()).Append("]")
                   .Append(" <").Append(className).Append("> ");
-                if (loggerName != string.Empty)
-                {
-                    sb.Append(" {");
-                    sb.Append(loggerName);
-                    sb.Append("} ");
-                }
+                AppendLoggerName<TState>(sb);
 
                 sb.Append(formatter(state, exception));
 
@@ -53,16 +53,8 @@ namespace OpenttdDiscord.Tests.Common.Xunits
                     sb.Append('\n').Append(exception);
                 }
 
-                // Append scopes
-                scopeProvider.ForEachScope((scope, state) =>
-                {
-                    state.Append("\n => ");
-                    state.Append(scope);
-                }, sb);
-
-                string log = sb.ToString();
-                testOutputHelper.WriteLine(log);
-                Console.WriteLine(log);
+                AppendScopes<TState>(sb);
+                Output<TState>(sb);
             }
             catch (Exception ex)
             {
@@ -73,6 +65,35 @@ namespace OpenttdDiscord.Tests.Common.Xunits
                 catch
                 {
                 }
+            }
+        }
+
+        private void Output<TState>(StringBuilder sb)
+        {
+            string log = sb.ToString();
+            testOutputHelper.WriteLine(log);
+            Console.WriteLine(log);
+        }
+
+        private void AppendScopes<TState>(StringBuilder sb)
+        {
+            scopeProvider.ForEachScope(
+                (
+                    scope,
+                    state) =>
+                {
+                    state.Append("\n => ");
+                    state.Append(scope);
+                }, sb);
+        }
+
+        private void AppendLoggerName<TState>(StringBuilder sb)
+        {
+            if (loggerName != string.Empty)
+            {
+                sb.Append(" {");
+                sb.Append(loggerName);
+                sb.Append("} ");
             }
         }
 

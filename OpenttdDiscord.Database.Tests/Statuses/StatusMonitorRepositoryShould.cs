@@ -92,7 +92,7 @@ namespace OpenttdDiscord.Database.Tests.Statuses
             Equal(updatedMonitor, retrievedMonitors.First());
         }
 
-        private async Task<StatusMonitorRepository> CreateRpeository([CallerMemberName] string? databaseName = null)
+        private async Task<StatusMonitorRepository> CreateRpeository([CallerMemberName] string databaseName = "default")
         {
             var context = await CreateContext(databaseName);
             return new StatusMonitorRepository(context);

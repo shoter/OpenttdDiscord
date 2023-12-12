@@ -83,7 +83,7 @@ namespace OpenttdDiscord.Database.Tests.Chatting
             Assert.True(chatChannels.IsLeft);
         }
 
-        private async Task<ChatChannelRepository> CreateRepository([CallerMemberName] string? databaseName = null)
+        private async Task<ChatChannelRepository> CreateRepository([CallerMemberName] string databaseName = "default")
         {
             var context = await CreateContext(databaseName);
             return new ChatChannelRepository(context);

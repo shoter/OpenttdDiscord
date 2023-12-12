@@ -40,14 +40,14 @@ namespace OpenttdDiscord.Infrastructure.Discord
                     c);
             }
 
-            foreach (var amr in associatedModalRunners)
+            IEnumerable<KeyValuePair<string, Type>> modalRunners = associatedModalRunners
+                .SelectMany(x => x.AssociatedModalRunners);
+
+            foreach (var modalRunner in modalRunners)
             {
-                foreach (var modalRunner in amr.AssociatedModalRunners)
-                {
-                    this.associatedModalRunners.Add(
-                        modalRunner.Key,
-                        modalRunner.Value);
-                }
+                this.associatedModalRunners.Add(
+                    modalRunner.Key,
+                    modalRunner.Value);
             }
         }
 

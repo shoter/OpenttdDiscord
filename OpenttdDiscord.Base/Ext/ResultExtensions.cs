@@ -11,7 +11,7 @@ namespace OpenttdDiscord.Base.Ext
         public static Either<L, R> Match<A, L, R>(this Result<A> result, Func<A, EitherRight<R>> Succ, Func<Exception, EitherLeft<L>> Fail)
         {
             return result.Match(
-                a => Either<L, R>.Right(Succ(a)),
+                success => Either<L, R>.Right(Succ(success)),
                 fail => Either<L, R>.Left(Fail(fail))
            );
         }

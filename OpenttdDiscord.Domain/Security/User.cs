@@ -1,7 +1,11 @@
-﻿using Discord;
+﻿using System.Diagnostics.CodeAnalysis;
+using Discord;
 
 namespace OpenttdDiscord.Domain.Security;
 
+[SuppressMessage("Naming",
+                 "AV1710:Member name includes the name of its containing type",
+                 Justification = "UserLevel should not violate this naming issue here.")]
 public record User(
     string Name,
     UserLevel UserLevel)

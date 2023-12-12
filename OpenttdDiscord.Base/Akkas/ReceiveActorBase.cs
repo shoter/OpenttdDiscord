@@ -1,4 +1,5 @@
-﻿using Akka.Actor;
+﻿using System.Diagnostics.CodeAnalysis;
+using Akka.Actor;
 using LanguageExt;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -18,6 +19,10 @@ namespace OpenttdDiscord.Base.Akkas
 
         protected readonly IActorRef parent;
 
+        [SuppressMessage(
+            "Maintainability",
+            "AV1500:Member or local function contains too many statements",
+            Justification = "This method mostly has simple assignments")]
         protected ReceiveActorBase(IServiceProvider serviceProvider)
         {
             this.serviceScope = serviceProvider.CreateScope();
@@ -62,22 +67,22 @@ namespace OpenttdDiscord.Base.Akkas
             base.PostRestart(reason);
         }
 
-        protected void ReceiveRedirect<T>(Func<IActorRef> redirect) => Receive<T>(
-            msg => redirect()
+        protected void ReceiveForward<T>(Func<IActorRef> actorToForward) => Receive<T>(
+            msg => actorToForward()
                 .Forward(msg));
 
-        protected void ReceiveRedirect<T>(Func<IEnumerable<IActorRef>> redirects) => Receive<T>(
+        protected void ReceiveForward<T>(Func<IEnumerable<IActorRef>> actorsToForward) => Receive<T>(
             msg =>
             {
-                foreach (var r in redirects())
+                foreach (var redirectActor in actorsToForward())
                 {
-                    r.Forward(msg);
+                    redirectActor.Forward(msg);
                 }
             });
 
-        protected void ReceiveRedirect<T>(Func<Option<IActorRef>> redirect) => Receive<T>(
-            msg => redirect()
-                .IfSome(r => r.Forward(msg)));
+        protected void ReceiveForward<T>(Func<Option<IActorRef>> actorToForward) => Receive<T>(
+            msg => actorToForward()
+                .IfSome(actor => actor.Forward(msg)));
 
         /// <summary>
         /// Ignores all messages of type <typeparamref name="T"/> and does nothing with them.
@@ -85,16 +90,16 @@ namespace OpenttdDiscord.Base.Akkas
         protected void ReceiveIgnore<T>() => Receive<T>(_ => { });
 
         protected void ReceiveEitherAsync<T>(Func<T, EitherAsyncUnit> func) => ReceiveAsync<T>(
-            async (t) => (await func(t)).ThrowIfError());
+            async (msg) => (await func(msg)).ThrowIfError());
 
         protected void ReceiveEither<T>(Func<T, EitherUnit> func) => Receive<T>(
-            (t) => func(t)
+            (msg) => func(msg)
                 .ThrowIfError());
 
         protected void ReceiveEitherRespondUnit<T>(Func<T, EitherUnit> func) => Receive<T>(
-            (t) =>
+            (msg) =>
             {
-                func(t)
+                func(msg)
                     .ThrowIfError();
                 Sender.Tell(Unit.Default);
             });
@@ -102,10 +107,10 @@ namespace OpenttdDiscord.Base.Akkas
         protected void ReceiveEitherAsyncRespondUnit<T>(Func<T, EitherAsyncUnit> func)
         {
             ReceiveAsync<T>(
-                async t =>
+                async msg =>
                 {
                     var sender = Sender;
-                    (await func(t)).ThrowIfError();
+                    (await func(msg)).ThrowIfError();
                     sender.Tell(Unit.Default);
                 }
             );

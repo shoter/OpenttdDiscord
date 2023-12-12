@@ -85,7 +85,7 @@ namespace OpenttdDiscord.Database.Tests.Reporting
             Assert.True(chatChannels.IsLeft);
         }
 
-        private async Task<ReportChannelRepository> CreateRpeository([CallerMemberName] string? databaseName = null)
+        private async Task<ReportChannelRepository> CreateRpeository([CallerMemberName] string databaseName = "default")
         {
             var context = await CreateContext(databaseName);
             return new ReportChannelRepository(context);

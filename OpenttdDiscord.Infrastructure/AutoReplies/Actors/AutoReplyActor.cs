@@ -64,7 +64,7 @@ namespace OpenttdDiscord.Infrastructure.AutoReplies.Actors
             Receive<UpdateWelcomeMessage>(UpsertWelcomeMessage);
             Receive<UpdateAutoReply>(UpdateAutoReply);
             ReceiveRespondUnit<RemoveAutoReply>(RemoveAutoReply);
-            ReceiveRedirect<AdminClientJoinEvent>(() => welcomeActor);
+            ReceiveForward<AdminClientJoinEvent>(() => welcomeActor);
             ReceiveAsync<AdminChatMessageEvent>(OnAdminChatMessageEvent);
             ReceiveIgnore<IAdminEvent>();
         }

@@ -7,9 +7,9 @@ namespace OpenttdDiscord.Base.Discord
     public static class LogSeverityExtensions
     {
         [ExcludeFromCodeCoverage]
-        public static LogLevel ToLogLevel(this LogSeverity s)
+        public static LogLevel ToLogLevel(this LogSeverity logSeverity)
         {
-            return s switch
+            return logSeverity switch
             {
                 LogSeverity.Warning => LogLevel.Warning,
                 LogSeverity.Info => LogLevel.Information,

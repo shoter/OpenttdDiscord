@@ -1,4 +1,4 @@
-site_name: obsidian-mkdocs template
+site_name: Openttd Discord Bot Documentation
 
 theme:
     name: 'material'

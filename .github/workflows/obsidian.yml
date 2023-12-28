@@ -19,10 +19,10 @@ jobs:
           key: ${{ github.ref }}
           path: .cache
       - run: |
-        cd docs
-        pip install mkdocs-material
-        pip install mkdocs-roamlinks-plugin
-        pip install mkdocs-rss-plugin
-        mkdocs gh-deploy --force
+          cd docs
+          pip install mkdocs-material
+          pip install mkdocs-roamlinks-plugin
+          pip install mkdocs-rss-plugin
+          mkdocs gh-deploy --force
       # - run: pip install mkdocs-mermaid2-plugin
 

@@ -160,8 +160,10 @@
       "command-palette:Open command palette": false
     }
   },
-  "active": "1337c496f21e2799",
+  "active": "82202788be2335c6",
   "lastOpenFiles": [
+    "mathjax.js",
+    "mkdocs.yml",
     "diagrams/database.drawio.png",
     "diagrams/akka.drawio.png",
     "diagrams/readme.md",

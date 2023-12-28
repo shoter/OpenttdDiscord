@@ -18,8 +18,21 @@
                 "source": false
               }
             }
+          },
+          {
+            "id": "4090cdcfa9dc8202",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "asdsad/xcxzc.md",
+                "mode": "source",
+                "source": false
+              }
+            }
           }
-        ]
+        ],
+        "currentTab": 1
       },
       {
         "id": "4ff65423545a639b",
@@ -99,7 +112,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "diagrams/readme.md",
+                "file": "asdsad/xcxzc.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -116,7 +129,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "diagrams/readme.md",
+                "file": "asdsad/xcxzc.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -139,7 +152,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "diagrams/readme.md"
+                "file": "asdsad/xcxzc.md"
               }
             }
           }
@@ -160,13 +173,20 @@
       "command-palette:Open command palette": false
     }
   },
-  "active": "82202788be2335c6",
+  "active": "4090cdcfa9dc8202",
   "lastOpenFiles": [
+    "asdsad/asd.md",
+    "asdsad/xcxzc.md",
+    "Tes.md",
+    "asdsad",
+    "readme.md.md",
+    "diagrams/readme.md",
+    "docs",
+    "New folder",
     "mathjax.js",
     "mkdocs.yml",
     "diagrams/database.drawio.png",
     "diagrams/akka.drawio.png",
-    "diagrams/readme.md",
     "Readme.md",
     "Welcome.md"
   ]

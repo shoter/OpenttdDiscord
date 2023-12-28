@@ -21,6 +21,7 @@ jobs:
           key: ${{ github.ref }}
           path: .cache
       - run: |
+          cd docs
           pip install mkdocs-material
           pip install mkdocs-roamlinks-plugin
           pip install mkdocs-rss-plugin

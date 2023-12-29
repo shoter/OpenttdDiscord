@@ -1,4 +1,4 @@
-#command #server
+# Register Server
 
 ## Syntax
 

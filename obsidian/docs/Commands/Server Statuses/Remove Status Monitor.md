@@ -1,4 +1,4 @@
-#command #serverStatus
+# Remove Status Monitor 
 
 ## Syntax
 

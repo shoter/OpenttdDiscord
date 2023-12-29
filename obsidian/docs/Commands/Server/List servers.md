@@ -1,4 +1,4 @@
-#command #server 
+# List Severs
 
 ## Syntax
 

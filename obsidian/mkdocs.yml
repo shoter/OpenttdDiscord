@@ -1,7 +1,9 @@
 site_name: Openttd Discord Bot Documentation
+repo_url: https://github.com/shoter/OpenttdDiscord
+repo_name: OpenttdDiscord
 
 theme:
-    name: 'material'
+    name: 'mkdocs'
     palette:
 
     # Light mode
@@ -39,6 +41,9 @@ markdown_extensions:
   - pymdownx.keys
   - pymdownx.mark
   - pymdownx.tilde
+  - pymdownx.snippets:
+      check_paths: true
+      base_path: ..
   - pymdownx.superfences:
       custom_fences:
         - name: mermaid
@@ -51,14 +56,6 @@ markdown_extensions:
 plugins:
   - search
   - roamlinks
-  - blog
-  - rss:
-      match_path: blog/posts/.* 
-      date_from_meta:
-        as_creation: date
-      categories:
-        - categories
-        - tags
 
 extra_javascript:
   - mathjax.js

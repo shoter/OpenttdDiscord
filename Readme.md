@@ -1,10 +1,15 @@
-﻿# Openttd Discord
+﻿
+# Openttd Discord
 
 ![GitHub](https://img.shields.io/github/license/shoter/OpenttdDiscord?style=plastic)
 ![Test badge](https://github.com/shoter/OpenttdDiscord/actions/workflows/test.yml/badge.svg)
 [![codecov](https://codecov.io/gh/shoter/OpenttdDiscord/branch/master/graph/badge.svg?token=1EC4AKIMD3)](https://codecov.io/gh/shoter/OpenttdDiscord)
 
 Provides ability to integrate Discord with your OpenTTD servers.
+
+## Documentation
+
+https://shoter.github.io/OpenttdDiscord/
 
 ## Functionalities
 
@@ -62,11 +67,11 @@ Used types:
 
 ### Actors hierarchy
 
-![Actors hierarchy](./docs/diagrams/akka.drawio.png)
+![Actors hierarchy](https://raw.githubusercontent.com/shoter/OpenttdDiscord/master/obsidian/docs/diagrams/akka.drawio.png)
 
 ### Database diagram
 
-![Database diagram](./docs/diagrams/database.drawio.png)
+![Database diagram](https://raw.githubusercontent.com/shoter/OpenttdDiscord/master/obsidian/docs/diagrams/database.drawio.png)
 
 ## Test coverage
 

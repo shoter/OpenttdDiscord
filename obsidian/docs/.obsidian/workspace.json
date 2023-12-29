@@ -13,7 +13,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Commands/Server/Remove server.md",
+                "file": "index.md",
                 "mode": "source",
                 "source": false
               }
@@ -29,21 +29,6 @@
                 "mode": "source",
                 "source": false
               }
-            }
-          }
-        ],
-        "currentTab": 1
-      },
-      {
-        "id": "4ff65423545a639b",
-        "type": "tabs",
-        "children": [
-          {
-            "id": "04f68ae85ec88369",
-            "type": "leaf",
-            "state": {
-              "type": "graph",
-              "state": {}
             }
           }
         ]
@@ -75,7 +60,7 @@
             "state": {
               "type": "search",
               "state": {
-                "query": "",
+                "query": " ",
                 "matchingCase": false,
                 "explainSearch": false,
                 "collapseAll": false,
@@ -112,7 +97,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "Commands/Server Statuses/Remove Status Monitor.md",
+                "file": "index.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -129,7 +114,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "Commands/Server Statuses/Remove Status Monitor.md",
+                "file": "index.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -152,7 +137,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "Commands/Server Statuses/Remove Status Monitor.md"
+                "file": "index.md"
               }
             }
           }
@@ -173,14 +158,18 @@
       "command-palette:Open command palette": false
     }
   },
-  "active": "1bd29a07891fc1b9",
+  "active": "1337c496f21e2799",
   "lastOpenFiles": [
-    "Commands/Server Statuses/Register Status Monitor.md",
-    "Commands/Server Statuses/Remove Status Monitor.md",
+    "readme.md.md",
     "Commands/Server/Remove server.md",
-    "Commands/Server Statuses",
-    "Commands/Server/List servers.md",
+    "Commands/Server Statuses/Untitled.md",
+    "Commands/Server Statuses/Remove Status Monitor.md",
+    "index.md",
     "Commands/Server/Register Server.md",
+    "Commands/Server/List servers.md",
+    "Start.md",
+    "Commands/Server Statuses/Register Status Monitor.md",
+    "Commands/Server Statuses",
     "diagrams/readme.md",
     "Commands/Server",
     "asdsad/asd.md",
@@ -188,7 +177,6 @@
     "Commands",
     "Tes.md",
     "asdsad",
-    "readme.md.md",
     "docs",
     "New folder",
     "mathjax.js",

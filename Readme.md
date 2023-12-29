@@ -62,11 +62,11 @@ Used types:
 
 ### Actors hierarchy
 
-![Actors hierarchy](./docs/diagrams/akka.drawio.png)
+![Actors hierarchy](./obsidian/docs/diagrams/akka.drawio.png)
 
 ### Database diagram
 
-![Database diagram](./docs/diagrams/database.drawio.png)
+![Database diagram](./obsidian/docs/diagrams/database.drawio.png)
 
 ## Test coverage
 

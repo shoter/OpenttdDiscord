@@ -66,11 +66,11 @@ Used types:
 
 ### Actors hierarchy
 
-![Actors hierarchy](https://github.com/shoter/OpenttdDiscord/obsidian/docs/diagrams/akka.drawio.png)
+![Actors hierarchy](https://raw.githubusercontent.com/shoter/OpenttdDiscord/master/obsidian/docs/diagrams/akka.drawio.png)
 
 ### Database diagram
 
-![Database diagram](https://github.com/shoter/OpenttdDiscord/obsidian/docs/diagrams/database.drawio.png)
+![Database diagram](https://raw.githubusercontent.com/shoter/OpenttdDiscord/master/obsidian/docs/diagrams/database.drawio.png)
 
 ## Test coverage
 

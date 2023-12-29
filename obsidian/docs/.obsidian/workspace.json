@@ -33,20 +33,6 @@
           }
         ],
         "currentTab": 1
-      },
-      {
-        "id": "4ff65423545a639b",
-        "type": "tabs",
-        "children": [
-          {
-            "id": "04f68ae85ec88369",
-            "type": "leaf",
-            "state": {
-              "type": "graph",
-              "state": {}
-            }
-          }
-        ]
       }
     ],
     "direction": "vertical"
@@ -175,12 +161,12 @@
   },
   "active": "1bd29a07891fc1b9",
   "lastOpenFiles": [
-    "Commands/Server Statuses/Register Status Monitor.md",
+    "Commands/Server/Register Server.md",
     "Commands/Server Statuses/Remove Status Monitor.md",
+    "Commands/Server Statuses/Register Status Monitor.md",
     "Commands/Server/Remove server.md",
     "Commands/Server Statuses",
     "Commands/Server/List servers.md",
-    "Commands/Server/Register Server.md",
     "diagrams/readme.md",
     "Commands/Server",
     "asdsad/asd.md",

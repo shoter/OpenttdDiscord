@@ -1,7 +1,5 @@
 # List Severs
 
-#command #server 
-
 ## Syntax
 
 `/list-ottd-servers`

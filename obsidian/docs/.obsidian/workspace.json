@@ -25,7 +25,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Commands/Server Statuses/Remove Status Monitor.md",
+                "file": "Start.md",
                 "mode": "source",
                 "source": false
               }
@@ -98,7 +98,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "Commands/Server Statuses/Remove Status Monitor.md",
+                "file": "Start.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -115,7 +115,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "Commands/Server Statuses/Remove Status Monitor.md",
+                "file": "Start.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -138,7 +138,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "Commands/Server Statuses/Remove Status Monitor.md"
+                "file": "Start.md"
               }
             }
           }
@@ -161,8 +161,8 @@
   },
   "active": "1bd29a07891fc1b9",
   "lastOpenFiles": [
-    "Commands/Server/Register Server.md",
     "Commands/Server Statuses/Remove Status Monitor.md",
+    "Commands/Server/Register Server.md",
     "Commands/Server Statuses/Register Status Monitor.md",
     "Commands/Server/Remove server.md",
     "Commands/Server Statuses",
@@ -174,7 +174,7 @@
     "Commands",
     "Tes.md",
     "asdsad",
-    "readme.md.md",
+    "Start.md",
     "docs",
     "New folder",
     "mathjax.js",

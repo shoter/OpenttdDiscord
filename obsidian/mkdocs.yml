@@ -1,7 +1,7 @@
 site_name: Openttd Discord Bot Documentation
 
 theme:
-    name: 'material'
+    name: 'mkdocs'
     palette:
 
     # Light mode

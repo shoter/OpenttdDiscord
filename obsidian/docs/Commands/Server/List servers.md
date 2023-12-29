@@ -1,3 +1,5 @@
+# List Severs
+
 #command #server 
 
 ## Syntax

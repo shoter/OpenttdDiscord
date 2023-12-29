@@ -13,7 +13,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Commands/Server/Remove server.md",
+                "file": "Commands/Server/List servers.md",
                 "mode": "source",
                 "source": false
               }
@@ -31,8 +31,7 @@
               }
             }
           }
-        ],
-        "currentTab": 1
+        ]
       }
     ],
     "direction": "vertical"
@@ -61,7 +60,7 @@
             "state": {
               "type": "search",
               "state": {
-                "query": "",
+                "query": " ",
                 "matchingCase": false,
                 "explainSearch": false,
                 "collapseAll": false,
@@ -98,7 +97,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "Commands/Server Statuses/Remove Status Monitor.md",
+                "file": "Commands/Server/List servers.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -115,7 +114,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "Commands/Server Statuses/Remove Status Monitor.md",
+                "file": "Commands/Server/List servers.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -138,7 +137,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "Commands/Server Statuses/Remove Status Monitor.md"
+                "file": "Commands/Server/List servers.md"
               }
             }
           }
@@ -159,16 +158,16 @@
       "command-palette:Open command palette": false
     }
   },
-  "active": "1bd29a07891fc1b9",
+  "active": "82202788be2335c6",
   "lastOpenFiles": [
+    "Commands/Server Statuses/Remove Status Monitor.md",
+    "Commands/Server/Remove server.md",
+    "Commands/Server/Register Server.md",
+    "Commands/Server/List servers.md",
     "Start.md",
     "index.md",
-    "Commands/Server Statuses/Remove Status Monitor.md",
-    "Commands/Server/Register Server.md",
     "Commands/Server Statuses/Register Status Monitor.md",
-    "Commands/Server/Remove server.md",
     "Commands/Server Statuses",
-    "Commands/Server/List servers.md",
     "diagrams/readme.md",
     "Commands/Server",
     "asdsad/asd.md",

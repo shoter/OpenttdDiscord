@@ -6,6 +6,10 @@
 
 Provides ability to integrate Discord with your OpenTTD servers.
 
+## Documentation
+
+https://shoter.github.io/OpenttdDiscord/
+
 ## Functionalities
 
 * Connects Discord channel to the Openttd Servers enabling communication between multiple servers and Discord.

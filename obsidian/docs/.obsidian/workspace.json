@@ -13,7 +13,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Commands/Server Statuses/Untitled.md",
+                "file": "index.md",
                 "mode": "source",
                 "source": false
               }
@@ -97,7 +97,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "Commands/Server Statuses/Untitled.md",
+                "file": "index.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -114,7 +114,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "Commands/Server Statuses/Untitled.md",
+                "file": "index.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -137,7 +137,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "Commands/Server Statuses/Untitled.md"
+                "file": "index.md"
               }
             }
           }
@@ -160,13 +160,13 @@
   },
   "active": "1337c496f21e2799",
   "lastOpenFiles": [
-    "Commands/Server Statuses/Remove Status Monitor.md",
     "Commands/Server Statuses/Untitled.md",
+    "Commands/Server Statuses/Remove Status Monitor.md",
+    "index.md",
     "Commands/Server/Register Server.md",
     "Commands/Server/List servers.md",
     "Commands/Server/Remove server.md",
     "Start.md",
-    "index.md",
     "Commands/Server Statuses/Register Status Monitor.md",
     "Commands/Server Statuses",
     "diagrams/readme.md",

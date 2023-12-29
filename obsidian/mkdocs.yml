@@ -41,7 +41,9 @@ markdown_extensions:
   - pymdownx.keys
   - pymdownx.mark
   - pymdownx.tilde
-  - pymdownx.snippets
+  - pymdownx.snippets:
+      check_paths: true
+      base_path: ..
   - pymdownx.superfences:
       custom_fences:
         - name: mermaid

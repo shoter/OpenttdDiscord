@@ -1,0 +1,201 @@
+{
+  "main": {
+    "id": "95ff66027bc5c5de",
+    "type": "split",
+    "children": [
+      {
+        "id": "8ba2c6fd62a30eb0",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "1337c496f21e2799",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Commands/Server/Remove server.md",
+                "mode": "source",
+                "source": false
+              }
+            }
+          },
+          {
+            "id": "1bd29a07891fc1b9",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Commands/Server Statuses/Remove Status Monitor.md",
+                "mode": "source",
+                "source": false
+              }
+            }
+          }
+        ],
+        "currentTab": 1
+      },
+      {
+        "id": "4ff65423545a639b",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "04f68ae85ec88369",
+            "type": "leaf",
+            "state": {
+              "type": "graph",
+              "state": {}
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "2e4afd0965d0bdec",
+    "type": "split",
+    "children": [
+      {
+        "id": "c663686fd93605a5",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "82202788be2335c6",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical"
+              }
+            }
+          },
+          {
+            "id": "79c33fd233db480b",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              }
+            }
+          },
+          {
+            "id": "e285542a85f8f011",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {}
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "22630357607563df",
+    "type": "split",
+    "children": [
+      {
+        "id": "088d8175123932de",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "c30c193b2946e07a",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "Commands/Server Statuses/Remove Status Monitor.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              }
+            }
+          },
+          {
+            "id": "962fdeae102fe75f",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "Commands/Server Statuses/Remove Status Monitor.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              }
+            }
+          },
+          {
+            "id": "cde94394122db381",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true
+              }
+            }
+          },
+          {
+            "id": "02e43917d2e01e37",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "Commands/Server Statuses/Remove Status Monitor.md"
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Open quick switcher": false,
+      "graph:Open graph view": false,
+      "canvas:Create new canvas": false,
+      "daily-notes:Open today's daily note": false,
+      "templates:Insert template": false,
+      "command-palette:Open command palette": false
+    }
+  },
+  "active": "1bd29a07891fc1b9",
+  "lastOpenFiles": [
+    "Commands/Server Statuses/Register Status Monitor.md",
+    "Commands/Server Statuses/Remove Status Monitor.md",
+    "Commands/Server/Remove server.md",
+    "Commands/Server Statuses",
+    "Commands/Server/List servers.md",
+    "Commands/Server/Register Server.md",
+    "diagrams/readme.md",
+    "Commands/Server",
+    "asdsad/asd.md",
+    "asdsad/xcxzc.md",
+    "Commands",
+    "Tes.md",
+    "asdsad",
+    "readme.md.md",
+    "docs",
+    "New folder",
+    "mathjax.js",
+    "mkdocs.yml",
+    "diagrams/database.drawio.png",
+    "diagrams/akka.drawio.png",
+    "Readme.md",
+    "Welcome.md"
+  ]
+}

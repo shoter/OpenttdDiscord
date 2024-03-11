@@ -30,7 +30,7 @@ RUN dotnet publish "/build/OpenttdDiscord.Database.Migrator/OpenttdDiscord.Datab
 
 FROM build as dbMigrations
 
-RUN dotnet tool install --global dotnet-ef
+RUN dotnet tool install --global dotnet-ef --version 7.0.16
 ENV PATH="$PATH:/root/.dotnet/tools"
 WORKDIR /build/OpenttdDiscord.Database
 RUN dotnet ef migrations script -v -i -o /script.sql 

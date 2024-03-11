@@ -10,6 +10,7 @@ COPY ./OpenttdDiscord.Database.Tests/OpenttdDiscord.Database.Tests.csproj ./Open
 COPY ./OpenttdDiscord.Discord/OpenttdDiscord.Discord.csproj ./OpenttdDiscord.Discord/OpenttdDiscord.Discord.csproj
 COPY ./OpenttdDiscord.DockerizedTesting/OpenttdDiscord.DockerizedTesting.csproj ./OpenttdDiscord.DockerizedTesting/OpenttdDiscord.DockerizedTesting.csproj
 COPY ./OpenttdDiscord.Domain/OpenttdDiscord.Domain.csproj ./OpenttdDiscord.Domain/OpenttdDiscord.Domain.csproj
+COPY ./OpenttdDiscord.Domain.Tests/OpenttdDiscord.Domain.Tests.csproj ./OpenttdDiscord.Domain.Tests/OpenttdDiscord.Domain.Tests.csproj
 COPY ./OpenttdDiscord.Infrastructure/OpenttdDiscord.Infrastructure.csproj ./OpenttdDiscord.Infrastructure/OpenttdDiscord.Infrastructure.csproj
 COPY ./OpenttdDiscord.Infrastructure.Tests/OpenttdDiscord.Infrastructure.Tests.csproj ./OpenttdDiscord.Infrastructure.Tests/OpenttdDiscord.Infrastructure.Tests.csproj
 COPY ./OpenttdDiscord.Tests.Common/OpenttdDiscord.Tests.Common.csproj ./OpenttdDiscord.Tests.Common/OpenttdDiscord.Tests.Common.csproj
@@ -46,6 +47,7 @@ COPY ./startup.sh .
 RUN chmod a+x /app/startup.sh
 RUN mkdir -p /var/app/ottd/
 ENTRYPOINT ["bash", "-c", "./startup.sh"]
+
 
 
 

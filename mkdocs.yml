@@ -1,6 +1,7 @@
 site_name: OTTD Discord Bot
 repo_url: https://github.com/shoter/OpenttdDiscord
 repo_name: OpenttdDiscord
+docs_dir: docs/mkdocs
 
 
 theme:

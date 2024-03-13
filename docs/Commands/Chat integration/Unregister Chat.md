@@ -4,6 +4,10 @@
 
 `/unregister-chat-channel server-name:{name}`
 
+## Privilege required
+
+- Admin
+
 ## Requirements
 
 - [[Register Server]]

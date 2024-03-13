@@ -9,6 +9,11 @@
 
 - Admin
 
+## Requirements
+
+- [[Register Server]]
+- [[Set Auto Reply]]
+
 ## Description
 
 Removes auto reply from given server.

@@ -9,6 +9,10 @@
 
 - Admin
 
+## Requirements
+
+- [[Register Server]]
+
 ## Description
 
 Sets welcome message that is going to be displayed when player enters the server.  

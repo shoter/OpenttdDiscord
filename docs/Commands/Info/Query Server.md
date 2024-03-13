@@ -4,6 +4,10 @@
 
 `/query-server server-name:{name}`
 
+## Privilege required
+
+- Moderator
+
 ## Requirements
 
 - [[Register Server]]

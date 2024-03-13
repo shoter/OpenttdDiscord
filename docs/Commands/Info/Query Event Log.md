@@ -4,6 +4,10 @@
 
 `/query-event-log server-name:{name}`
 
+## Privilege required
+
+- Moderator
+
 ## Requirements
 
 - [[Register Server]]

@@ -4,6 +4,10 @@
 
 `/health-check`
 
+## Privilege required
+
+- Moderator
+
 
 ## Description
 

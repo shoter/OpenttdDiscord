@@ -9,6 +9,10 @@
 
 - Admin
 
+## Requirements
+
+- [[Register Server]]
+
 ## Description
 
 Sets auto reply content for given server.

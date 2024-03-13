@@ -4,10 +4,14 @@
 
 `/get-auto-reply-content server-name:{name} trigger-message:{trigger}`
 
-
 ## Privilege required
 
 - Moderator
+
+## Requirements
+
+- [[Register Server]]
+- [[Set Auto Reply]]
 
 ## Description
 

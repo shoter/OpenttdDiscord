@@ -1,4 +1,4 @@
-# Register Chat Channel
+# Unregister Chat Channel
 
 ## Syntax
 

@@ -61,8 +61,8 @@ plugins:
   - search
   - roamlinks
   - exclude:
-    glob:
-    - diagrams/*
+      glob:
+        - diagrams/*
 
 extra_javascript:
   - mathjax.js

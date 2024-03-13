@@ -61,9 +61,6 @@ markdown_extensions:
 plugins:
   - search
   - roamlinks
-  - exclude:
-      glob:
-        - diagrams/*
 
 extra_javascript:
   - mathjax.js

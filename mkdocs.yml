@@ -2,6 +2,7 @@ site_name: OTTD Discord Bot
 repo_url: https://github.com/shoter/OpenttdDiscord
 repo_name: OpenttdDiscord
 
+
 theme:
     name: 'mkdocs'
     palette:
@@ -53,9 +54,15 @@ markdown_extensions:
   - toc:
       permalink: true
 
+
+
+
 plugins:
   - search
   - roamlinks
+  - exclude:
+    glob:
+    - diagrams/*
 
 extra_javascript:
   - mathjax.js

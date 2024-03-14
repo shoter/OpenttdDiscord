@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="None">
+        
+        
+        <link rel="shortcut icon" href="img/favicon.ico">
+        <title>OTTD Discord Bot</title>
+        <link href="css/bootstrap.min.css" rel="stylesheet">
+        <link href="css/font-awesome.min.css" rel="stylesheet">
+        <link href="css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+        <script>hljs.highlightAll();</script> 
+    </head>
+
+    <body class="homepage">
+        <div class="navbar fixed-top navbar-expand-lg navbar-dark bg-primary">
+            <div class="container">
+                <a class="navbar-brand" href=".">OTTD Discord Bot</a>
+                <!-- Expander button -->
+                <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbar-collapse">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <!-- Expanded navigation -->
+                <div id="navbar-collapse" class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li class="navitem active">
+                                <a href="." class="nav-link">Home</a>
+                            </li>
+                            <li class="navitem">
+                                <a href="Quickstart/" class="nav-link">Quick start</a>
+                            </li>
+                            <li class="dropdown">
+                                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Commands <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    
+  <li class="dropdown-submenu">
+    <a href="#" class="dropdown-item">Auto Replies</a>
+    <ul class="dropdown-menu">
+            
+<li>
+    <a href="Commands/Auto%20Replies/Get%20Auto%20Replies/" class="dropdown-item">Get Auto Replies</a>
+</li>
+            
+<li>
+    <a href="Commands/Auto%20Replies/Get%20Content/" class="dropdown-item">Get Auto Reply Content</a>
+</li>
+            
+<li>
+    <a href="Commands/Auto%20Replies/Remove%20Auto%20Reply/" class="dropdown-item">Remove Auto Reply Command</a>
+</li>
+            
+<li>
+    <a href="Commands/Auto%20Replies/Set%20Auto%20Reply/" class="dropdown-item">Set Auto Reply Command</a>
+</li>
+            
+<li>
+    <a href="Commands/Auto%20Replies/Set%20Welcome%20Message/" class="dropdown-item">Set Welcome Message</a>
+</li>
+    </ul>
+  </li>
+                                    
+  <li class="dropdown-submenu">
+    <a href="#" class="dropdown-item">Chat integration</a>
+    <ul class="dropdown-menu">
+            
+<li>
+    <a href="Commands/Chat%20integration/Register%20Chat/" class="dropdown-item">Register Chat Channel</a>
+</li>
+            
+<li>
+    <a href="Commands/Chat%20integration/Unregister%20Chat/" class="dropdown-item">Unregister Chat Channel</a>
+</li>
+    </ul>
+  </li>
+                                    
+  <li class="dropdown-submenu">
+    <a href="#" class="dropdown-item">Info</a>
+    <ul class="dropdown-menu">
+            
+<li>
+    <a href="Commands/Info/Query%20Debug%20Info/" class="dropdown-item">Query debug info</a>
+</li>
+            
+<li>
+    <a href="Commands/Info/Query%20Event%20Log/" class="dropdown-item">Query debug info</a>
+</li>
+            
+<li>
+    <a href="Commands/Info/Query%20Server/" class="dropdown-item">Query Server</a>
+</li>
+    </ul>
+  </li>
+                                    
+  <li class="dropdown-submenu">
+    <a href="#" class="dropdown-item">Maintenance</a>
+    <ul class="dropdown-menu">
+            
+<li>
+    <a href="Commands/Maintenance/Health%20Check/" class="dropdown-item">Health Check</a>
+</li>
+    </ul>
+  </li>
+                                    
+  <li class="dropdown-submenu">
+    <a href="#" class="dropdown-item">Rcon</a>
+    <ul class="dropdown-menu">
+            
+<li>
+    <a href="Commands/Rcon/List%20Rcon%20Channels/" class="dropdown-item">List Rcon Channels</a>
+</li>
+            
+<li>
+    <a href="Commands/Rcon/Register%20Rcon%20Channel/" class="dropdown-item">Register Rcon Channel</a>
+</li>
+            
+<li>
+    <a href="Commands/Rcon/Unregister%20Rcon%20Channel/" class="dropdown-item">Unregister Rcon Channel</a>
+</li>
+    </ul>
+  </li>
+                                    
+  <li class="dropdown-submenu">
+    <a href="#" class="dropdown-item">Reporting</a>
+    <ul class="dropdown-menu">
+            
+<li>
+    <a href="Commands/Reporting/List%20Report%20Channels/" class="dropdown-item">List Report Channels</a>
+</li>
+            
+<li>
+    <a href="Commands/Reporting/Register%20Report%20Channel/" class="dropdown-item">Register Report Channel</a>
+</li>
+            
+<li>
+    <a href="Commands/Reporting/Unregister%20Report%20Channel/" class="dropdown-item">Unregister Report Channel</a>
+</li>
+    </ul>
+  </li>
+                                    
+  <li class="dropdown-submenu">
+    <a href="#" class="dropdown-item">Roles</a>
+    <ul class="dropdown-menu">
+            
+<li>
+    <a href="Commands/Roles/Delete%20Role/" class="dropdown-item">Delete Role</a>
+</li>
+            
+<li>
+    <a href="Commands/Roles/Get%20My%20Role/" class="dropdown-item">Get My Role</a>
+</li>
+            
+<li>
+    <a href="Commands/Roles/Get%20Roles/" class="dropdown-item">Get Roles</a>
+</li>
+            
+<li>
+    <a href="Commands/Roles/Register%20Role/" class="dropdown-item">Register Server</a>
+</li>
+    </ul>
+  </li>
+                                    
+  <li class="dropdown-submenu">
+    <a href="#" class="dropdown-item">Server</a>
+    <ul class="dropdown-menu">
+            
+<li>
+    <a href="Commands/Server/List%20servers/" class="dropdown-item">List Severs</a>
+</li>
+            
+<li>
+    <a href="Commands/Server/Register%20Server/" class="dropdown-item">Register Server</a>
+</li>
+            
+<li>
+    <a href="Commands/Server/Remove%20server/" class="dropdown-item">command #server</a>
+</li>
+    </ul>
+  </li>
+                                    
+  <li class="dropdown-submenu">
+    <a href="#" class="dropdown-item">Server Statuses</a>
+    <ul class="dropdown-menu">
+            
+<li>
+    <a href="Commands/Server%20Statuses/Register%20Status%20Monitor/" class="dropdown-item">Register Status Monitor</a>
+</li>
+            
+<li>
+    <a href="Commands/Server%20Statuses/Remove%20Status%20Monitor/" class="dropdown-item">Remove Status Monitor</a>
+</li>
+    </ul>
+  </li>
+                                </ul>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav ml-auto">
+                        <li class="nav-item">
+                            <a href="#" class="nav-link" data-toggle="modal" data-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                            <li class="nav-item">
+                                <a rel="prev" class="nav-link disabled">
+                                    <i class="fa fa-arrow-left"></i> Previous
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a rel="next" href="Quickstart/" class="nav-link">
+                                    Next <i class="fa fa-arrow-right"></i>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="https://github.com/shoter/OpenttdDiscord/edit/master/docs/index.md" class="nav-link">Edit on OpenttdDiscord
+                                    </a>
+                            </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="row">
+                    <div class="col-md-3"><div class="navbar-light navbar-expand-md bs-sidebar hidden-print affix" role="complementary">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggler collapsed" data-toggle="collapse" data-target="#toc-collapse" title="Table of Contents">
+            <span class="fa fa-angle-down"></span>
+        </button>
+    </div>
+
+    
+    <div id="toc-collapse" class="navbar-collapse collapse card bg-secondary">
+        <ul class="nav flex-column">
+            
+            <li class="nav-item" data-level="1"><a href="#openttd-discord" class="nav-link">Openttd Discord</a>
+              <ul class="nav flex-column">
+            <li class="nav-item" data-level="2"><a href="#documentation" class="nav-link">Documentation</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#functionalities" class="nav-link">Functionalities</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#compilationinstallation" class="nav-link">Compilation/Installation</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#bots-required-permissions" class="nav-link">Bots required permissions</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#development" class="nav-link">Development</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#architecture" class="nav-link">Architecture</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#test-coverage" class="nav-link">Test coverage</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+              </ul>
+            </li>
+        </ul>
+    </div>
+</div></div>
+                    <div class="col-md-9" role="main">
+
+<p>﻿</p>
+<h1 id="openttd-discord">Openttd Discord<a class="headerlink" href="#openttd-discord" title="Permanent link">&para;</a></h1>
+<p><img alt="GitHub" src="https://img.shields.io/github/license/shoter/OpenttdDiscord?style=plastic" />
+<img alt="Test badge" src="https://github.com/shoter/OpenttdDiscord/actions/workflows/test.yml/badge.svg" />
+<a href="https://codecov.io/gh/shoter/OpenttdDiscord"><img alt="codecov" src="https://codecov.io/gh/shoter/OpenttdDiscord/branch/master/graph/badge.svg?token=1EC4AKIMD3" /></a></p>
+<p>Provides ability to integrate Discord with your OpenTTD servers.</p>
+<h2 id="documentation">Documentation<a class="headerlink" href="#documentation" title="Permanent link">&para;</a></h2>
+<p><a href="https://shoter.github.io/OpenttdDiscord/">Documentation link</a></p>
+<h2 id="functionalities">Functionalities<a class="headerlink" href="#functionalities" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Connects Discord channel to the Openttd Servers enabling communication between multiple servers and Discord.<ul>
+<li>Automatically translates ASCII emojis into Discord emojis and vice-versa.</li>
+</ul>
+</li>
+<li>Ability to execute rcon commands on server from Discord.</li>
+<li>Ability to gather short reports from players about malicious behavior of other players<ul>
+<li>Contains information about connected clients</li>
+<li>Contains last chat messages</li>
+<li>Contains reason for the report</li>
+<li>Some additional information</li>
+</ul>
+</li>
+<li>Creating auto-updated messages which can show status of current server.<ul>
+<li>It contains the same information as OpenTTD client on server browser screen.</li>
+</ul>
+</li>
+<li>Auto reply system<ul>
+<li>Players joining server are going to be welcomed with pre-defined message</li>
+</ul>
+</li>
+</ul>
+<h2 id="compilationinstallation">Compilation/Installation<a class="headerlink" href="#compilationinstallation" title="Permanent link">&para;</a></h2>
+<ul>
+<li>load discord bot token into environment variable <code>ottd_discord_token</code></li>
+<li>
+<p>Use <code>run.sh</code> in order to run bot. (Use <code>run.pi.sh</code> if you are using raspberry pi.)</p>
+<ul>
+<li>Bot automatically creates persistent SQL database on the computer where bot is being run.</li>
+</ul>
+</li>
+<li>
+<p>Debugging process is the same excluding the fact that you need to launch your project instead of docker instance. 
+It should work out of the box with environment variables set. Remember to load MySql connection string into <code>ottd_discord_connectionstring</code> before debugging.</p>
+</li>
+<li>Database creation process is described inside <a href="https://github.com/shoter/OpenttdDiscord/tree/master/OpenttdDiscord.Database">OpenttdDiscord.Database</a></li>
+<li>example: <code>Server=1.2.3.256;User ID=openttd;Password=yoursupersecretpassword;Database=openttd</code></li>
+</ul>
+<h2 id="bots-required-permissions">Bots required permissions<a class="headerlink" href="#bots-required-permissions" title="Permanent link">&para;</a></h2>
+<ul>
+<li>View channels</li>
+<li>Send Messages</li>
+<li>Embed files</li>
+</ul>
+<p>Read more about permissions in <a href="https://discord.com/developers/docs/topics/permissions">official Discord documentation</a></p>
+<h2 id="development">Development<a class="headerlink" href="#development" title="Permanent link">&para;</a></h2>
+<h3 id="conventional-commits">Conventional commits<a class="headerlink" href="#conventional-commits" title="Permanent link">&para;</a></h3>
+<p>This repository uses <a href="https://www.conventionalcommits.org/en/v1.0.0/">Conventional commits</a> to specify type of commits commited to the repository.</p>
+<p>Used types:
+- feat - feature
+- fix
+- ref - refactor
+- docs - documentation
+- nuget - commits connected with nuget upgrade/downgrade
+- chore</p>
+<h2 id="architecture">Architecture<a class="headerlink" href="#architecture" title="Permanent link">&para;</a></h2>
+<h3 id="actors-hierarchy">Actors hierarchy<a class="headerlink" href="#actors-hierarchy" title="Permanent link">&para;</a></h3>
+<p><img alt="Actors hierarchy" src="https://raw.githubusercontent.com/shoter/OpenttdDiscord/master/obsidian/docs/diagrams/akka.drawio.png" /></p>
+<h3 id="database-diagram">Database diagram<a class="headerlink" href="#database-diagram" title="Permanent link">&para;</a></h3>
+<p><img alt="Database diagram" src="https://raw.githubusercontent.com/shoter/OpenttdDiscord/master/obsidian/docs/diagrams/database.drawio.png" /></p>
+<h2 id="test-coverage">Test coverage<a class="headerlink" href="#test-coverage" title="Permanent link">&para;</a></h2>
+<p><a href="https://app.codecov.io/gh/shoter/OpenttdDiscord"><img alt="Test coverage graph" src="https://codecov.io/gh/shoter/OpenttdDiscord/branch/master/graphs/tree.svg?token=1EC4AKIMD3" /></a></p></div>
+            </div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script src="js/jquery-3.6.0.min.js"></script>
+        <script src="js/bootstrap.min.js"></script>
+        <script>
+            var base_url = ".",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="js/base.js"></script>
+        <script src="mathjax.js"></script>
+        <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+        <script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+        <script src="search/main.js"></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="searchModalLabel">Search</h4>
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+            </div>
+            <div class="modal-body">
+                <p>From here you can search these documents. Enter your search terms below.</p>
+                <form>
+                    <div class="form-group">
+                        <input type="search" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results" data-no-results-text="No results found"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="keyboardModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="keyboardModalLabel">Keyboard Shortcuts</h4>
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>
+
+<!--
+MkDocs version : 1.5.3
+Build Date UTC : 2024-03-14 00:28:25.868612+00:00
+-->

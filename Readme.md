@@ -9,7 +9,7 @@ Provides ability to integrate Discord with your OpenTTD servers.
 
 ## Documentation
 
-https://shoter.github.io/OpenttdDiscord/
+[Documentation link](https://shoter.github.io/OpenttdDiscord/)
 
 ## Functionalities
 

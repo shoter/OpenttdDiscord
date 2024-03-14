@@ -3,9 +3,14 @@
 
 `/remove-ottd-server server-name:{name}`
 
+## Privilege required
+
+- Admin
+
 ## Description
 
 Removes given ottd server and all stored settings along with it
+
 
 ## Remarks
 

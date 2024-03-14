@@ -1,6 +1,8 @@
-site_name: Openttd Discord Bot Documentation
+site_name: OTTD Discord Bot
 repo_url: https://github.com/shoter/OpenttdDiscord
 repo_name: OpenttdDiscord
+docs_dir: docs/mkdocs
+
 
 theme:
     name: 'mkdocs'
@@ -43,7 +45,7 @@ markdown_extensions:
   - pymdownx.tilde
   - pymdownx.snippets:
       check_paths: true
-      base_path: ..
+      base_path: .
   - pymdownx.superfences:
       custom_fences:
         - name: mermaid
@@ -52,6 +54,9 @@ markdown_extensions:
 
   - toc:
       permalink: true
+
+
+
 
 plugins:
   - search

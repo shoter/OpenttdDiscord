@@ -1,9 +1,8 @@
-name: ci
+name: mkdocs
 on:
   push:
     branches:
       - master
-      - docs/obsidian
   workflow_dispatch:
 
 permissions:
@@ -21,7 +20,6 @@ jobs:
           key: ${{ github.ref }}
           path: .cache
       - run: |
-          cd obsidian
           pip install mkdocs-material
           pip install mkdocs-roamlinks-plugin
           pip install mkdocs-rss-plugin

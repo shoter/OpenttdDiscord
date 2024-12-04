@@ -12,7 +12,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Akka.TestKit.Xunit2" Version="1.5.13" />
+        <PackageReference Include="Akka.TestKit.Xunit2" Version="1.5.15" />
         <PackageReference Include="AutoFixture" Version="4.18.0" />
         <PackageReference Include="coverlet.msbuild" Version="6.0.0">
             <PrivateAssets>all</PrivateAssets>

@@ -1,5 +1,6 @@
 ﻿using DotNet.Testcontainers.Builders;
 using DotNet.Testcontainers.Containers;
+using DotNet.Testcontainers.Images;
 using Microsoft.EntityFrameworkCore;
 
 namespace OpenttdDiscord.Database.Tests
@@ -10,8 +11,7 @@ namespace OpenttdDiscord.Database.Tests
 
         public PostgressDatabaseFixture()
         {
-            container = new ContainerBuilder()
-            .WithImage("ottd_discord_test_database")
+            container = new ContainerBuilder(new DockerImage("ottd_discord_test_database"))
             .WithPortBinding(5432, true)
             .WithCommand("-c", "fsync=off")
             .WithCommand("-c", "full_page_writes=off")

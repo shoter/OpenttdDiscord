@@ -1,4 +1,4 @@
-﻿ARG BUILD_IMG=mcr.microsoft.com/dotnet/sdk:7.0
+﻿ARG BUILD_IMG=mcr.microsoft.com/dotnet/sdk:10.0
 FROM ${BUILD_IMG} AS build
 ARG CONFIGURATION=Release
 
@@ -30,7 +30,7 @@ RUN dotnet publish "/build/OpenttdDiscord.Database.Migrator/OpenttdDiscord.Datab
 
 FROM build as dbMigrations
 
-RUN dotnet tool install --global dotnet-ef --version 7.0.16
+RUN dotnet tool install --global dotnet-ef --version 10.0.2
 ENV PATH="$PATH:/root/.dotnet/tools"
 WORKDIR /build/OpenttdDiscord.Database
 RUN dotnet ef migrations script -v -i -o /script.sql 

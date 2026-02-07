@@ -31,7 +31,7 @@
     <PackageVersion Include="Serilog.Extensions.Hosting" Version="10.0.0" />
     <PackageVersion Include="Serilog.Settings.Configuration" Version="10.0.0" />
     <PackageVersion Include="Serilog.Sinks.Console" Version="6.1.1" />
-    <PackageVersion Include="Shoter.OpenTTD.AdminPort" Version="1.0.0-run-98" />
+    <PackageVersion Include="Shoter.OpenTTD.AdminPort" Version="1.0.0" />
     <PackageVersion Include="StyleCop.Analyzers" Version="1.1.118" />
     <PackageVersion Include="Testcontainers" Version="4.10.0" />
     <PackageVersion Include="xunit" Version="2.9.3" />

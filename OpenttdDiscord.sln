@@ -14,6 +14,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{A2C51779-426B-46E0-AF4B-7B2F05C3A80F}"
 	ProjectSection(SolutionItems) = preProject
 		docker-compose.yml = docker-compose.yml
+		Directory.Packages.props = Directory.Packages.props
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenttdDiscord.Validation", "OpenttdDiscord.Validation\OpenttdDiscord.Validation.csproj", "{390F24BA-93A0-4105-B72F-C5334919FD20}"

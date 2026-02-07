@@ -1,8 +1,10 @@
-﻿ARG BUILD_IMG=mcr.microsoft.com/dotnet/sdk:10.0
+ARG BUILD_IMG=mcr.microsoft.com/dotnet/sdk:10.0
 FROM ${BUILD_IMG} AS build
 ARG CONFIGURATION=Release
 
 #PUT_PROJECTS_BELOW_THIS_LINE
+COPY ./Directory.Build.props ./Directory.Build.props
+COPY ./Directory.Packages.props ./Directory.Packages.props
 COPY ./OpenttdDiscord.Base/OpenttdDiscord.Base.csproj ./OpenttdDiscord.Base/OpenttdDiscord.Base.csproj
 COPY ./OpenttdDiscord.Database/OpenttdDiscord.Database.csproj ./OpenttdDiscord.Database/OpenttdDiscord.Database.csproj
 COPY ./OpenttdDiscord.Database.Migrator/OpenttdDiscord.Database.Migrator.csproj ./OpenttdDiscord.Database.Migrator/OpenttdDiscord.Database.Migrator.csproj
@@ -47,6 +49,7 @@ COPY ./startup.sh .
 RUN chmod a+x /app/startup.sh
 RUN mkdir -p /var/app/ottd/
 ENTRYPOINT ["bash", "-c", "./startup.sh"]
+
 
 
 

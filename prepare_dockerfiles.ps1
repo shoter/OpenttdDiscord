@@ -18,6 +18,14 @@ function Prepare-Dockerfile($dockerfile)
         if($line -match "#PUT_PROJECTS_BELOW_THIS_LINE"){ 
             $output += "#PUT_PROJECTS_BELOW_THIS_LINE`n"
             $fetching_projects = $true;
+            $propsFiles = @("Directory.Build.props", "Directory.Packages.props")
+            foreach($propsFile in $propsFiles)
+            {
+                if(Test-Path "./$propsFile")
+                {
+                    $output += "COPY ./${propsFile} ./${propsFile}`n"
+                }
+            }
             foreach($proj in $projects)
             {
                 $output += "COPY "

@@ -18,7 +18,7 @@ namespace OpenttdDiscord.Infrastructure.EventLogs.Actors
     internal class EventStorageActor : ReceiveActorBase, IWithTimers
     {
         // TODO: Make it configurable through appsettings or something or whatever
-        private const int ChatMessageMaxCount = 600;
+        public const int ChatMessageMaxCount = 600;
 
         private readonly OttdServer ottdServer;
 

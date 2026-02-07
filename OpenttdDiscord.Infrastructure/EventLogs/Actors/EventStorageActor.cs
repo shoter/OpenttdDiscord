@@ -143,7 +143,6 @@ namespace OpenttdDiscord.Infrastructure.EventLogs.Actors
             if (!Directory.Exists(directoryPath))
             {
                 Directory.CreateDirectory(directoryPath);
-                Console.WriteLine("Directories created.");
             }
 
             await File.WriteAllTextAsync(filePath, sb.ToString());

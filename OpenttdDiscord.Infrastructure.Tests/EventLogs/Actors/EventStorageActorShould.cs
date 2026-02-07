@@ -13,7 +13,6 @@ namespace OpenttdDiscord.Infrastructure.Tests.EventLogs.Actors
 {
     public class EventStorageActorShould : BaseActorTestKit
     {
-        private readonly IFixture fix = new Fixture();
         private readonly IAdminPortClient adminPortClientSut = Substitute.For<IAdminPortClient>();
         private readonly OttdServer server;
 
@@ -23,6 +22,7 @@ namespace OpenttdDiscord.Infrastructure.Tests.EventLogs.Actors
             server = fix.Create<OttdServer>();
         }
 
+        [Fact]
         public async Task NotHaveMoreMessagesThanLimit()
         {
             var actor = CreateSut();

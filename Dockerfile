@@ -35,6 +35,7 @@ FROM build as dbMigrations
 RUN dotnet tool install --global dotnet-ef --version 10.0.2
 ENV PATH="$PATH:/root/.dotnet/tools"
 WORKDIR /build/OpenttdDiscord.Database
+RUN dotnet restore --disable-parallel
 RUN dotnet ef migrations script -v -i -o /script.sql 
 
 ARG RUN_IMG=mcr.microsoft.com/dotnet/aspnet:6.0
@@ -49,6 +50,7 @@ COPY ./startup.sh .
 RUN chmod a+x /app/startup.sh
 RUN mkdir -p /var/app/ottd/
 ENTRYPOINT ["bash", "-c", "./startup.sh"]
+
 
 
 

@@ -22,19 +22,19 @@ COPY ./OpenttdDiscord.Validation.Tests/OpenttdDiscord.Validation.Tests.csproj ./
 
 COPY ./OpenttdDiscord.sln .
 RUN dotnet restore --disable-parallel
-COPY . /build
+COPY . /b
 
-FROM build AS publish
+FROM b AS publish
 ARG CONFIGURATION=Release
 
-RUN dotnet publish "/build/OpenttdDiscord.Discord/OpenttdDiscord.Discord.csproj" -c $CONFIGURATION -o /app/publish
-RUN dotnet publish "/build/OpenttdDiscord.Database.Migrator/OpenttdDiscord.Database.Migrator.csproj" -c $CONFIGURATION -o /app/migrator
+RUN dotnet publish "/b/OpenttdDiscord.Discord/OpenttdDiscord.Discord.csproj" -c $CONFIGURATION -o /app/publish
+RUN dotnet publish "/b/OpenttdDiscord.Database.Migrator/OpenttdDiscord.Database.Migrator.csproj" -c $CONFIGURATION -o /app/migrator
 
 FROM build as dbMigrations
 
 RUN dotnet tool install --global dotnet-ef --version 10.0.2
 ENV PATH="$PATH:/root/.dotnet/tools"
-WORKDIR /build/OpenttdDiscord.Database
+WORKDIR /b/OpenttdDiscord.Database
 RUN dotnet restore --disable-parallel
 RUN dotnet ef migrations script -v -i -o /script.sql 
 

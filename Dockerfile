@@ -24,7 +24,7 @@ COPY ./OpenttdDiscord.sln .
 RUN dotnet restore --disable-parallel
 COPY . /b
 
-FROM b AS publish
+FROM build AS publish
 ARG CONFIGURATION=Release
 
 RUN dotnet publish "/b/OpenttdDiscord.Discord/OpenttdDiscord.Discord.csproj" -c $CONFIGURATION -o /app/publish

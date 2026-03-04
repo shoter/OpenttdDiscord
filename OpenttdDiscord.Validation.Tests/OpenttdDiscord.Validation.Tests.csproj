@@ -32,6 +32,6 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\OpenttdDiscord.Validation\OpenttdDiscord.Validation.csproj" />
+    <ProjectReference Include="../OpenttdDiscord.Validation/OpenttdDiscord.Validation.csproj" />
   </ItemGroup>
 </Project>

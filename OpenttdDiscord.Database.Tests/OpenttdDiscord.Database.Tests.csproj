@@ -33,7 +33,7 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\OpenttdDiscord.Database\OpenttdDiscord.Database.csproj" />
-    <ProjectReference Include="..\OpenttdDiscord.DockerizedTesting\OpenttdDiscord.DockerizedTesting.csproj" />
+    <ProjectReference Include="../OpenttdDiscord.Database/OpenttdDiscord.Database.csproj" />
+    <ProjectReference Include="../OpenttdDiscord.DockerizedTesting/OpenttdDiscord.DockerizedTesting.csproj" />
   </ItemGroup>
 </Project>

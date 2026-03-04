@@ -20,7 +20,7 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\OpenttdDiscord.Database\OpenttdDiscord.Database.csproj" />
-    <ProjectReference Include="..\OpenttdDiscord.Validation\OpenttdDiscord.Validation.csproj" />
+    <ProjectReference Include="../OpenttdDiscord.Database/OpenttdDiscord.Database.csproj" />
+    <ProjectReference Include="../OpenttdDiscord.Validation/OpenttdDiscord.Validation.csproj" />
   </ItemGroup>
 </Project>

@@ -36,7 +36,11 @@ RUN dotnet tool install --global dotnet-ef --version 10.0.2
 ENV PATH="$PATH:/root/.dotnet/tools"
 WORKDIR /OpenttdDiscord.Database
 RUN dotnet restore --disable-parallel
-RUN dotnet ef migrations script -v -i -o /script.sql 
+WORKDIR /
+RUN dotnet ef migrations script \
+    --project OpenttdDiscord.Database/OpenttdDiscord.Database.csproj \
+    --startup-project OpenttdDiscord.Database/OpenttdDiscord.Database.csproj \
+    -v -i -o /script.sql
 
 ARG RUN_IMG=mcr.microsoft.com/dotnet/aspnet:6.0
 FROM ${BUILD_IMG} AS run

@@ -26,6 +26,6 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\OpenttdDiscord.Domain\OpenttdDiscord.Domain.csproj" />
+    <ProjectReference Include="../OpenttdDiscord.Domain/OpenttdDiscord.Domain.csproj" />
   </ItemGroup>
 </Project>

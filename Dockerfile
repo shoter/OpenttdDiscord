@@ -22,20 +22,25 @@ COPY ./OpenttdDiscord.Validation.Tests/OpenttdDiscord.Validation.Tests.csproj ./
 
 COPY ./OpenttdDiscord.sln .
 RUN dotnet restore --disable-parallel
-COPY . /build
+COPY . .
 
 FROM build AS publish
 ARG CONFIGURATION=Release
 
-RUN dotnet publish "/build/OpenttdDiscord.Discord/OpenttdDiscord.Discord.csproj" -c $CONFIGURATION -o /app/publish
-RUN dotnet publish "/build/OpenttdDiscord.Database.Migrator/OpenttdDiscord.Database.Migrator.csproj" -c $CONFIGURATION -o /app/migrator
+RUN dotnet publish "/OpenttdDiscord.Discord/OpenttdDiscord.Discord.csproj" -c $CONFIGURATION -o /app/publish
+RUN dotnet publish "/OpenttdDiscord.Database.Migrator/OpenttdDiscord.Database.Migrator.csproj" -c $CONFIGURATION -o /app/migrator
 
 FROM build as dbMigrations
 
 RUN dotnet tool install --global dotnet-ef --version 10.0.2
 ENV PATH="$PATH:/root/.dotnet/tools"
-WORKDIR /build/OpenttdDiscord.Database
-RUN dotnet ef migrations script -v -i -o /script.sql 
+WORKDIR /OpenttdDiscord.Database
+RUN dotnet restore --disable-parallel
+WORKDIR /
+RUN dotnet ef migrations script \
+    --project OpenttdDiscord.Database/OpenttdDiscord.Database.csproj \
+    --startup-project OpenttdDiscord.Database/OpenttdDiscord.Database.csproj \
+    -v -i -o /script.sql
 
 ARG RUN_IMG=mcr.microsoft.com/dotnet/aspnet:6.0
 FROM ${BUILD_IMG} AS run
@@ -49,6 +54,7 @@ COPY ./startup.sh .
 RUN chmod a+x /app/startup.sh
 RUN mkdir -p /var/app/ottd/
 ENTRYPOINT ["bash", "-c", "./startup.sh"]
+
 
 
 

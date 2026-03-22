@@ -17,6 +17,6 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\OpenttdDiscord.Base\OpenttdDiscord.Base.csproj" />
+    <ProjectReference Include="../OpenttdDiscord.Base/OpenttdDiscord.Base.csproj" />
   </ItemGroup>
 </Project>

@@ -33,7 +33,7 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\OpenttdDiscord.Infrastructure\OpenttdDiscord.Infrastructure.csproj" />
+    <ProjectReference Include="../OpenttdDiscord.Infrastructure/OpenttdDiscord.Infrastructure.csproj" />
   </ItemGroup>
   <ProjectExtensions>
     <VisualStudio>

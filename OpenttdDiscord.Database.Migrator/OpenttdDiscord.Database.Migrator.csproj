@@ -22,6 +22,6 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\OpenttdDiscord.Database\OpenttdDiscord.Database.csproj" />
+    <ProjectReference Include="../OpenttdDiscord.Database/OpenttdDiscord.Database.csproj" />
   </ItemGroup>
 </Project>

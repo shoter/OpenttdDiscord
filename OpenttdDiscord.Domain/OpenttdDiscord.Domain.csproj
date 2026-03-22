@@ -5,7 +5,7 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\OpenttdDiscord.Base\OpenttdDiscord.Base.csproj" />
+    <ProjectReference Include="../OpenttdDiscord.Base/OpenttdDiscord.Base.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Maintenance\UseCases" />
